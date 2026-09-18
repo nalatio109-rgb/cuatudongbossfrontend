@@ -1,0 +1,272 @@
+@import url("https://fonts.googleapis.com/css2?family=Anton&family=Be+Vietnam+Pro:wght@500;600;700&display=swap");
+
+.rolling-title__content {
+  position: relative;
+  width: min(1450px, 100%);
+  margin: 0 auto;
+}
+
+/* =========================
+   MAIN TITLE
+========================= */
+
+.rolling-title__row {
+  display: flex;
+  width: 100%;
+}
+
+.rolling-title__row--top {
+  justify-content: flex-start;
+  padding-left: 8%;
+}
+
+.rolling-title__row--bottom {
+  justify-content: flex-end;
+  margin-top: 15px;
+  padding-right: 16%;
+}
+
+.rolling-title__word {
+  margin: 0;
+  font-family: "Anton", sans-serif;
+  font-size: clamp(25px, 4.5vw, 60px);
+  line-height: 0.92;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #004c36;
+  transform: skewX(-4deg) scaleX(1.5);
+  text-shadow:
+    2px 3px 0 rgba(255, 255, 255, 0.9),
+    5px 7px 5px rgba(0, 0, 0, 0.12);
+  white-space: nowrap;
+  opacity: 0;
+  animation: slideInLeftWord 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideInLeftWord {
+  0% {
+    opacity: 0;
+    transform: translateX(-50px) skewX(-4deg) scaleX(1.5);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) skewX(-4deg) scaleX(1.5);
+  }
+}
+
+/* =========================
+   YELLOW / RED DECORATION
+========================= */
+
+.rolling-title__accent {
+  display: flex;
+  align-items: center;
+  width: 32%;
+  margin-top: 15px;
+  margin-bottom: 8px;
+  margin-left: -5%;
+  gap: 6px;
+}
+
+.rolling-title__line-yellow {
+  display: block;
+  width: 75%;
+  height: 8px;
+  background: #f6b817;
+  transform: skewX(-35deg);
+}
+
+.rolling-title__line-red {
+  display: block;
+  width: 25%;
+  height: 8px;
+  background: #e21d2b;
+  transform: skewX(-35deg);
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.rolling-title__footer {
+  width: 55%;
+  margin: 20px auto 0;
+  display: flex;
+  align-items: flex-end;
+}
+
+/* Left slashes */
+.rolling-title__slashes {
+  display: flex;
+  gap: 3px;
+  margin-right: 15px;
+  margin-left: -50px;
+}
+
+.rolling-title__slashes span {
+  width: 7px;
+  height: 20px;
+  background: #00553d;
+  transform: skewX(-35deg);
+}
+
+/* Center line */
+.rolling-title__footer-line {
+  position: relative;
+  flex: 1;
+  border-top: 1.5px solid #00553d;
+  padding-top: 1px;
+  padding-left: 20px;
+  padding-right: 50px;
+  text-align: center;
+}
+
+.rolling-title__footer-line::before {
+  content: "";
+  position: absolute;
+  right: 100%;
+  top: -1.5px;
+  width: 1.8px;
+  height: 21px;
+  background: #00553d;
+  transform: skewX(-35deg);
+  transform-origin: top right;
+}
+
+.rolling-title__footer-line::after {
+  content: "";
+  position: absolute;
+  left: 100%;
+  top: -1.5px;
+  width: 1.8px;
+  height: 21px;
+  background: #00553d;
+  transform: skewX(-35deg);
+  transform-origin: top left;
+}
+
+/* Tagline */
+.rolling-title__tagline {
+  display: inline-block;
+  font-family: "Be Vietnam Pro", sans-serif;
+  color: #00553d;
+  font-size: clamp(9px, 0.8vw, 13px);
+  font-weight: 700;
+  letter-spacing: 3px;
+  white-space: nowrap;
+  opacity: 0;
+  animation: slideUpTagline 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.5s forwards;
+}
+
+@keyframes slideUpTagline {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Right small colors */
+.rolling-title__footer-colors {
+  display: flex;
+  gap: 4px;
+  margin-left: -5px;
+  margin-bottom: 0px;
+}
+
+.rolling-title__footer-colors span {
+  display: block;
+  width: 35px;
+  height: 8px;
+  transform: skewX(-35deg);
+}
+
+.footer-yellow {
+  background: #f6b817;
+}
+
+.footer-red {
+  background: #e21d2b;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1100px) {
+  .rolling-title__footer {
+    width: 88%;
+  }
+
+  .rolling-title__accent {
+    width: 38%;
+  }
+}
+
+@media (max-width: 768px) {
+  .rolling-title__word {
+    font-size: clamp(60px, 15vw, 105px);
+  }
+
+  .rolling-title__row--bottom {
+    justify-content: flex-start;
+    padding-left: 15%;
+    padding-right: 0;
+  }
+
+  .rolling-title__accent {
+    width: 42%;
+    margin-top: 20px;
+  }
+
+  .rolling-title__footer {
+    width: 100%;
+    margin-top: 40px;
+  }
+
+  .rolling-title__tagline {
+    letter-spacing: 2px;
+    font-size: 11px;
+  }
+
+  .rolling-title__slashes span {
+    width: 8px;
+    height: 25px;
+  }
+
+  .rolling-title__footer-colors span {
+    width: 35px;
+  }
+}
+
+@media (max-width: 500px) {
+  .rolling-title__word {
+    font-size: clamp(50px, 16vw, 75px);
+  }
+
+  .rolling-title__row--bottom {
+    padding-left: 10%;
+  }
+
+  .rolling-title__accent {
+    width: 55%;
+  }
+
+  .rolling-title__footer {
+    margin-top: 32px;
+  }
+
+  .rolling-title__tagline {
+    font-size: 9px;
+    letter-spacing: 1.2px;
+  }
+
+  .rolling-title__footer-colors span {
+    width: 25px;
+    height: 6px;
+  }
+}

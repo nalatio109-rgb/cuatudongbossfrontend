@@ -1,0 +1,830 @@
+/* ==========================================================================
+   EXPANSIVE & PROMINENT ABOUT PAGE STYLES (MAX-WIDTH 1280PX)
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,600;1,700&family=Caveat:wght@600;700&family=Dancing+Script:wght@600;700&family=Playfair+Display:ital,wght@1,600;1,700&display=swap');
+
+.about-page-exact {
+  font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #334155;
+  background-color: #ffffff;
+  line-height: 1.65;
+  width: 100%;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.about-page-exact * {
+  box-sizing: border-box;
+}
+
+/* Expansive Centered Container (Max-Width 1280px) */
+.exact-container {
+  width: min(1280px, calc(100% - 48px));
+  margin: 0 auto;
+}
+
+/* Cursive Accent Font Class */
+.cursive-font {
+  font-family: 'Playfair Display', 'Dancing Script', 'Be Vietnam Pro', serif;
+  font-style: italic;
+}
+
+.handwriting-font {
+  font-family: 'Dancing Script', 'Caveat', 'Be Vietnam Pro', cursive;
+}
+
+/* ==========================================================================
+   1. HERO BANNER (EXPANSIVE & PROMINENT)
+   ========================================================================== */
+.exact-hero-section {
+  background: linear-gradient(135deg, #04361e 0%, #07522f 60%, #022413 100%);
+  position: relative;
+  overflow: hidden;
+  color: #ffffff;
+  padding: 4.25rem 0 3.5rem;
+  border-radius: 0 0 20px 20px;
+}
+
+.exact-hero-bg {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 55%;
+  height: 100%;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.exact-hero-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 1;
+  mask-image: linear-gradient(to right, transparent 0%, black 25%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 25%);
+}
+
+.exact-hero-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+  position: relative;
+  z-index: 2;
+  align-items: center;
+}
+
+.exact-hero-left {
+  max-width: 620px;
+}
+
+.exact-hero-subtitle {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #a7f3d0;
+  text-transform: uppercase;
+  margin-bottom: 0.65rem;
+}
+
+.exact-hero-title {
+  font-size: clamp(2rem, 3.5vw, 3.1rem);
+  font-weight: 800;
+  line-height: 1.25;
+  margin-bottom: 1.25rem;
+  color: #ffffff;
+}
+
+.exact-hero-title .gold-cursive {
+  color: #f5bd20;
+  font-weight: 700;
+  display: block;
+}
+
+.exact-hero-desc {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 1.75rem;
+}
+
+.exact-btn-yellow {
+  background-color: #f5bd20;
+  color: #04361e;
+  font-weight: 800;
+  font-size: 0.98rem;
+  padding: 13px 30px;
+  border-radius: 30px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  box-shadow: 0 4px 15px rgba(245, 189, 32, 0.3);
+  transition: all 0.25s ease;
+}
+
+.exact-btn-yellow:hover {
+  background-color: #ffe066;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(245, 189, 32, 0.45);
+}
+
+.exact-hero-right-slogan {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.75rem;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.88);
+  font-style: italic;
+  text-align: right;
+  z-index: 3;
+}
+
+.exact-hero-dots {
+  position: absolute;
+  bottom: 1.5rem;
+  right: 1.75rem;
+  display: flex;
+  gap: 7px;
+  z-index: 3;
+}
+
+.exact-hero-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.exact-hero-dots span.active {
+  background: #f5bd20;
+  width: 20px;
+  border-radius: 10px;
+}
+
+
+/* ==========================================================================
+   2. GIỚI THIỆU VỀ BOSS ĐÀ NẴNG (SECTION 2 - EXPANSIVE)
+   ========================================================================== */
+.exact-intro-section {
+  padding: 5rem 0 4rem;
+  background-color: #ffffff;
+}
+
+.exact-intro-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3.5rem;
+  align-items: center;
+}
+
+.exact-intro-left-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #64748b;
+  text-transform: uppercase;
+  margin-bottom: 0.65rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.exact-intro-left-label::before {
+  content: "";
+  width: 24px;
+  height: 2px;
+  background-color: #64748b;
+}
+
+.exact-intro-left h2 {
+  font-size: clamp(1.8rem, 2.8vw, 2.4rem);
+  font-weight: 800;
+  color: #07522f;
+  line-height: 1.3;
+  margin-bottom: 1.25rem;
+}
+
+.exact-intro-left p {
+  font-size: 1.02rem;
+  line-height: 1.75;
+  color: #475569;
+  margin-bottom: 1.75rem;
+}
+
+/* 3 KPI Stats Cards */
+.exact-kpi-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  max-width: 560px;
+}
+
+.exact-kpi-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 1.25rem 0.85rem;
+  text-align: center;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f1f5f9;
+  transition: transform 0.25s ease;
+}
+
+.exact-kpi-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(7, 82, 47, 0.1);
+}
+
+.exact-kpi-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #07522f;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 10px;
+}
+
+.exact-kpi-number {
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: #07522f;
+  line-height: 1.1;
+}
+
+.exact-kpi-text {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin-top: 4px;
+  line-height: 1.3;
+}
+
+/* Right Media Layout */
+.exact-intro-right-media {
+  position: relative;
+  max-width: 560px;
+  margin-left: auto;
+}
+
+.exact-door-main-img {
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+}
+
+.exact-door-main-img img,
+.exact-door-main-img video {
+  width: 100%;
+  height: 420px;
+  object-fit: cover;
+  display: block;
+  background: #000;
+}
+
+/* Floating Top-Right Video Badge */
+.exact-video-badge {
+  position: absolute;
+  top: -15px;
+  right: -15px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.12);
+  border: 1px solid #e2e8f0;
+  max-width: 220px;
+}
+
+.exact-play-button {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #07522f;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.exact-video-info {
+  font-size: 0.82rem;
+  color: #334155;
+}
+
+.exact-video-info strong {
+  display: block;
+  font-size: 0.88rem;
+  color: #07522f;
+}
+
+/* Bottom-Right Handwriting Callout */
+.exact-handwriting-callout {
+  position: absolute;
+  bottom: -62px;
+  right: 15px;
+  text-align: center;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.exact-handwriting-text {
+  font-family: 'Dancing Script', 'Caveat', 'Be Vietnam Pro', cursive;
+  font-size: 2.1rem;
+  font-weight: 700;
+  color: #07522f;
+  transform: rotate(-4deg);
+  display: block;
+  line-height: 1;
+}
+
+.exact-handwriting-flourish {
+  width: 140px;
+  height: 6px;
+  background: #f5bd20;
+  border-radius: 3px;
+  margin: 4px auto 0;
+  transform: skewX(-20deg);
+}
+
+
+/* ==========================================================================
+   3. HÀNH TRÌNH PHÁT TRIỂN (SECTION 3 - EXPANSIVE)
+   ========================================================================== */
+.exact-journey-section {
+  padding: 5rem 0;
+  background-color: #f8faf8;
+}
+
+.exact-journey-grid {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 3.5rem;
+  align-items: center;
+}
+
+/* Left Factory Photo */
+.exact-factory-wrapper {
+  position: relative;
+  max-width: 520px;
+}
+
+.exact-factory-img {
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+}
+
+.exact-factory-img img {
+  width: 100%;
+  height: 420px;
+  object-fit: cover;
+  display: block;
+}
+
+.exact-factory-badge {
+  position: absolute;
+  bottom: -18px;
+  left: 18px;
+  background: #07522f;
+  color: #ffffff;
+  padding: 12px 24px;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.exact-factory-badge span {
+  font-family: 'Dancing Script', 'Caveat', 'Be Vietnam Pro', cursive;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #ffffff;
+  line-height: 1;
+}
+
+/* Right Content & Timeline */
+.exact-journey-right .journey-sub {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #64748b;
+  text-transform: uppercase;
+  margin-bottom: 0.65rem;
+}
+
+.exact-journey-right h2 {
+  font-size: clamp(1.8rem, 2.8vw, 2.4rem);
+  font-weight: 800;
+  color: #07522f;
+  line-height: 1.3;
+  margin-bottom: 1.25rem;
+}
+
+.exact-journey-right p {
+  font-size: 1.02rem;
+  line-height: 1.75;
+  color: #475569;
+  margin-bottom: 2.5rem;
+}
+
+/* Timeline Row */
+.exact-timeline-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  position: relative;
+}
+
+.exact-timeline-row::before {
+  content: "";
+  position: absolute;
+  top: 7px;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background-color: #cbd5e1;
+  z-index: 1;
+}
+
+.exact-timeline-item {
+  position: relative;
+  z-index: 2;
+  text-align: left;
+}
+
+.exact-timeline-dot {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background-color: #07522f;
+  border: 3px solid #ffffff;
+  box-shadow: 0 0 0 2px #07522f;
+  margin-bottom: 10px;
+}
+
+.exact-timeline-year {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #07522f;
+  margin-bottom: 4px;
+}
+
+.exact-timeline-desc {
+  font-size: 0.85rem;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+
+/* ==========================================================================
+   4. GIÁ TRỊ CỐT LÕI (SECTION 4 - EXPANSIVE)
+   ========================================================================== */
+.exact-values-section {
+  padding: 5rem 0;
+  background-color: #ffffff;
+}
+
+.exact-values-header {
+  margin-bottom: 3rem;
+}
+
+.exact-values-header .sub {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #64748b;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.exact-values-header h2 {
+  font-size: clamp(1.8rem, 2.8vw, 2.4rem);
+  font-weight: 800;
+  color: #07522f;
+  margin-bottom: 0.75rem;
+}
+
+.exact-values-header p {
+  font-size: 1.02rem;
+  color: #64748b;
+  max-width: 680px;
+}
+
+.exact-values-bottom-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 3.5rem;
+  align-items: center;
+}
+
+/* 5 Circular Feature Items */
+.exact-values-icons-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
+}
+
+.exact-value-circle-item {
+  text-align: center;
+}
+
+.exact-circle-icon {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: #f1f8f4;
+  color: #07522f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+  transition: all 0.25s ease;
+  border: 1px solid #dcfce7;
+}
+
+.exact-value-circle-item:hover .exact-circle-icon {
+  background: #07522f;
+  color: #ffffff;
+  transform: translateY(-4px);
+}
+
+.exact-value-label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #334155;
+  line-height: 1.3;
+}
+
+/* Quote Card Box */
+.exact-quote-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 2.25rem 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  border: 1px solid #f1f5f9;
+  position: relative;
+}
+
+.exact-quote-icon {
+  font-size: 3rem;
+  color: #07522f;
+  line-height: 1;
+  font-family: serif;
+  opacity: 0.25;
+  position: absolute;
+  top: 12px;
+  left: 18px;
+}
+
+.exact-quote-text {
+  font-size: 1.05rem;
+  font-style: italic;
+  color: #334155;
+  line-height: 1.7;
+  margin-bottom: 1.25rem;
+  position: relative;
+  z-index: 2;
+}
+
+.exact-quote-author {
+  font-weight: 800;
+  color: #07522f;
+  font-size: 0.95rem;
+}
+
+.exact-quote-line {
+  width: 45px;
+  height: 3px;
+  background-color: #f5bd20;
+  margin-top: 4px;
+}
+
+
+/* ==========================================================================
+   5. CTA BANNER (SECTION 5 - EXPANSIVE)
+   ========================================================================== */
+.exact-cta-section {
+  padding: 4rem 0;
+  background-color: #ffffff;
+}
+
+.exact-cta-box {
+  background: #04361e;
+  border-radius: 24px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 0.75fr 1.25fr;
+  align-items: center;
+  box-shadow: 0 20px 45px rgba(4, 54, 30, 0.2);
+}
+
+.exact-cta-left-img {
+  height: 100%;
+  min-height: 280px;
+}
+
+.exact-cta-left-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.exact-cta-right-content {
+  padding: 2.75rem 3.25rem;
+  color: #ffffff;
+}
+
+.exact-cta-right-content .sub {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #f5bd20;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+
+.exact-cta-right-content h2 {
+  font-size: clamp(1.8rem, 2.8vw, 2.3rem);
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 0.85rem;
+}
+
+.exact-cta-right-content p {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.88);
+  line-height: 1.65;
+  margin-bottom: 1.75rem;
+}
+
+.exact-cta-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.exact-cta-footer-text {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+
+/* RESPONSIVE STYLES */
+@media (max-width: 1024px) {
+  .exact-hero-grid,
+  .exact-intro-grid,
+  .exact-journey-grid,
+  .exact-values-bottom-grid,
+  .exact-cta-box {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+
+  .exact-hero-bg {
+    width: 100%;
+  }
+
+  .exact-intro-right-media,
+  .exact-factory-wrapper {
+    max-width: 100%;
+    margin-left: 0;
+  }
+
+  .exact-values-icons-row {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .exact-kpi-cards,
+  .exact-values-icons-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .exact-timeline-row {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .exact-timeline-row::before {
+    display: none;
+  }
+
+  .exact-cta-footer-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* VIDEO POPUP LIGHTBOX MODAL STYLES */
+.exact-video-badge, .exact-door-main-img {
+  cursor: pointer;
+}
+
+.exact-door-main-img {
+  position: relative;
+}
+
+.img-play-center-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  width: 68px;
+  height: 68px;
+  background: rgba(0, 77, 50, 0.85);
+  backdrop-filter: blur(6px);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+}
+
+.exact-door-main-img:hover .img-play-center-btn {
+  transform: translate(-50%, -50%) scale(1.1);
+  background: #f5bd20;
+  color: #004d32;
+}
+
+.exact-video-badge {
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.exact-video-badge:hover {
+  transform: scale(1.06);
+  border-color: #f5bd20;
+}
+
+.video-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 999999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.video-modal-container {
+  position: relative;
+  width: min(920px, 92vw);
+  aspect-ratio: 16/9;
+  background: #000000;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(245, 189, 24, 0.4);
+  margin: auto;
+}
+
+.video-modal-container iframe,
+.video-modal-container video {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+.video-modal-close {
+  position: absolute;
+  top: 15px; right: 15px;
+  width: 38px; height: 38px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #004d32;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.3);
+  transition: all 0.25s ease;
+}
+
+.video-modal-close:hover {
+  background: #e30613;
+  color: white;
+  transform: scale(1.1);
+}

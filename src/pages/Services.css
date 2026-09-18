@@ -1,0 +1,707 @@
+/* ==========================================================================
+   BOSS DA NANG - SERVICES PAGE (TRUNGTAMHETHONGCUA293.COM MATCHING STYLE)
+   ========================================================================== */
+
+.boss-services-page.site-293-style {
+  font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #334155;
+  background-color: #ffffff;
+  line-height: 1.6;
+  overflow-x: hidden;
+  padding-bottom: 80px; /* Spacing for fixed sticky bottom bar */
+}
+
+.boss-services-page * {
+  box-sizing: border-box;
+}
+
+.relative-z {
+  position: relative;
+  z-index: 2;
+}
+
+.section-space {
+  padding: 3rem 0 4.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   1. TOP BANNER HEADER
+   -------------------------------------------------------------------------- */
+.site293-top-banner {
+  position: relative;
+  min-height: 220px;
+  background: url('/hero_bg.png') center/cover no-repeat;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  padding: 3.5rem 0;
+  border-bottom: 3px solid #f5bd20;
+}
+
+.banner-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(4, 60, 35, 0.94) 0%, rgba(2, 35, 20, 0.88) 100%);
+}
+
+.banner-text-box {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.banner-text-box h1 {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #f5bd20;
+  margin: 0 0 8px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1.25;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.banner-text-box p {
+  font-size: 0.98rem;
+  color: #e2e8f0;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* --------------------------------------------------------------------------
+   2. BREADCRUMB
+   -------------------------------------------------------------------------- */
+.site293-breadcrumb {
+  background: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 12px 0;
+  font-size: 0.88rem;
+}
+
+.site293-breadcrumb .container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.site293-breadcrumb a {
+  color: #64748b;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.site293-breadcrumb a:hover {
+  color: #043c23;
+  transform: translateX(2px);
+}
+
+.site293-breadcrumb .current-page {
+  color: #043c23;
+  font-weight: 800;
+}
+
+/* --------------------------------------------------------------------------
+   3. TITLE BOX & 3-COLUMN SERVICES GRID
+   -------------------------------------------------------------------------- */
+.site293-title-box {
+  margin-bottom: 2.5rem;
+  position: relative;
+}
+
+.site293-title-box h2 {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #043c23;
+  text-transform: uppercase;
+  margin: 0 0 8px 0;
+  display: inline-block;
+  letter-spacing: 0.5px;
+}
+
+.title-underline {
+  height: 4px;
+  width: 90px;
+  background: linear-gradient(90deg, #043c23 0%, #f5bd20 50%, #dc2626 100%);
+  background-size: 200% 100%;
+  border-radius: 4px;
+  animation: shimmerGradient 3s linear infinite;
+}
+
+@keyframes shimmerGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.site293-news-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 2rem;
+}
+
+@media (min-width: 640px) {
+  .site293-news-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 992px) {
+  .site293-news-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.site293-news-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+}
+
+.site293-news-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 16px 32px rgba(4, 60, 35, 0.12);
+  border-color: #043c23;
+}
+
+.img-article-wrap {
+  position: relative;
+  height: 210px;
+  overflow: hidden;
+  background: #f1f5f9;
+}
+
+.img-article-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.site293-news-card:hover .img-article-wrap img {
+  transform: scale(1.08);
+}
+
+/* Glass Shimmer sweep effect on card image hover */
+.img-article-wrap::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.35),
+    transparent
+  );
+  transform: skewX(-25deg);
+  transition: none;
+  pointer-events: none;
+}
+
+.site293-news-card:hover .img-article-wrap::after {
+  left: 200%;
+  transition: left 0.8s ease-in-out;
+}
+
+.sp-date {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(4, 60, 35, 0.92);
+  color: #ffffff;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  backdrop-filter: blur(6px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.site293-news-card:hover .sp-date {
+  transform: scale(1.05);
+  background: rgba(220, 38, 38, 0.95);
+}
+
+.nd-article {
+  padding: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.title-article {
+  margin: 0 0 10px 0;
+  line-height: 1.35;
+}
+
+.title-article button {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: 1.08rem;
+  font-weight: 800;
+  color: #043c23;
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.25s ease;
+  line-height: 1.4;
+  width: 100%;
+}
+
+.title-article button:hover {
+  color: #dc2626;
+}
+
+.body-content {
+  font-size: 0.88rem;
+  color: #64748b;
+  line-height: 1.6;
+  margin-bottom: 1.2rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex: 1;
+}
+
+.btn-readmore-293 {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: 0.86rem;
+  font-weight: 800;
+  color: #043c23;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: gap 0.25s ease, color 0.25s ease, transform 0.25s ease;
+  margin-top: auto;
+}
+
+.btn-readmore-293:hover {
+  color: #dc2626;
+  gap: 10px;
+  transform: translateX(3px);
+}
+
+/* --------------------------------------------------------------------------
+   4. DETAIL MODAL POPUP
+   -------------------------------------------------------------------------- */
+.site293-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.68);
+  backdrop-filter: blur(7px);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.25s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.site293-modal-card {
+  background: #ffffff;
+  border-radius: 20px;
+  max-width: 720px;
+  width: 100%;
+  max-height: 88vh;
+  overflow-y: auto;
+  position: relative;
+  padding: 2.2rem;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+  animation: modalScaleUp 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modalScaleUp {
+  from { transform: scale(0.92) translateY(20px); opacity: 0; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: #f1f5f9;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.modal-close-btn:hover {
+  background: #dc2626;
+  color: #ffffff;
+  transform: rotate(90deg);
+}
+
+.modal-header {
+  margin-bottom: 1.2rem;
+  padding-right: 40px;
+}
+
+.modal-date {
+  font-size: 0.82rem;
+  color: #043c23;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.modal-header h2 {
+  font-size: 1.45rem;
+  font-weight: 900;
+  color: #043c23;
+  line-height: 1.35;
+  margin: 0;
+}
+
+.modal-img-wrap {
+  width: 100%;
+  height: 260px;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 1.4rem;
+}
+
+.modal-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.modal-desc {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: #0f172a;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.modal-detail-content {
+  font-size: 0.92rem;
+  color: #475569;
+  line-height: 1.7;
+}
+
+.modal-detail-content p {
+  margin-bottom: 0.8rem;
+  white-space: pre-line;
+}
+
+.modal-footer {
+  margin-top: 1.8rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.btn-modal-call {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #dc2626;
+  color: #ffffff;
+  padding: 10px 22px;
+  border-radius: 30px;
+  font-weight: 800;
+  font-size: 0.9rem;
+  text-decoration: none;
+  box-shadow: 0 4px 15px rgba(220, 38, 38, 0.35);
+  transition: all 0.25s ease;
+}
+
+.btn-modal-call:hover {
+  background: #b91c1c;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(220, 38, 38, 0.5);
+}
+
+.btn-modal-close {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+  padding: 9px 20px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-modal-close:hover {
+  background: #e2e8f0;
+}
+
+/* --------------------------------------------------------------------------
+   5. BOOKING FORM SECTION
+   -------------------------------------------------------------------------- */
+.site293-booking-section {
+  background: #f8fafc;
+  padding: 4rem 0;
+  border-top: 1px solid #e2e8f0;
+}
+
+.site293-form-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 2.8rem 2.2rem;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  max-width: 860px;
+  margin: 0 auto;
+  transition: box-shadow 0.3s ease;
+}
+
+.site293-form-card:hover {
+  box-shadow: 0 15px 40px rgba(4, 60, 35, 0.08);
+}
+
+.form-card-title span {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #043c23;
+  letter-spacing: 1px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.form-card-title h3 {
+  font-size: 1.55rem;
+  font-weight: 900;
+  color: #0f172a;
+  margin: 0 0 2rem 0;
+  line-height: 1.35;
+}
+
+.form-row-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 576px) {
+  .form-row-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.site293-real-form .form-group-item {
+  margin-bottom: 1.2rem;
+}
+
+.site293-real-form label {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #334155;
+  margin-bottom: 6px;
+}
+
+.site293-real-form input,
+.site293-real-form select,
+.site293-real-form textarea {
+  width: 100%;
+  background: #f8fafc;
+  border: 1.5px solid #cbd5e1;
+  color: #0f172a;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 0.94rem;
+  transition: all 0.25s ease;
+}
+
+.site293-real-form input:focus,
+.site293-real-form select:focus,
+.site293-real-form textarea:focus {
+  outline: none;
+  border-color: #043c23;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(4, 60, 35, 0.15);
+  transform: translateY(-1px);
+}
+
+.btn-brand-red {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #dc2626;
+  color: #ffffff;
+  padding: 14px 32px;
+  border-radius: 30px;
+  font-weight: 800;
+  font-size: 0.95rem;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(220, 38, 38, 0.35);
+  transition: all 0.25s ease;
+}
+
+.btn-brand-red:hover {
+  background: #b91c1c;
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 10px 25px rgba(220, 38, 38, 0.5);
+}
+
+/* --------------------------------------------------------------------------
+   6. STICKY CALL BAR & ANIMATED PULSE
+   -------------------------------------------------------------------------- */
+.svc-sticky-phone-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #043c23;
+  border-top: 2px solid #f5bd20;
+  padding: 10px 20px;
+  z-index: 999;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.25);
+  animation: slideUpBar 0.5s ease-out;
+}
+
+@keyframes slideUpBar {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.sticky-bar-text {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+/* Green Live Pulsing Indicator Dot */
+.live-pulse-dot {
+  width: 11px;
+  height: 11px;
+  background-color: #22c55e;
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 0 rgba(34, 197, 94, 0.6);
+  animation: pulse-green 1.8s infinite;
+}
+
+@keyframes pulse-green {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+  }
+  70% {
+    transform: scale(1.15);
+    box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+  }
+}
+
+.btn-sticky-red {
+  background: #dc2626;
+  color: #ffffff;
+  padding: 9px 20px;
+  border-radius: 30px;
+  font-size: 0.9rem;
+  font-weight: 900;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 14px rgba(220, 38, 38, 0.4);
+  transition: all 0.25s ease;
+}
+
+.btn-sticky-red:hover {
+  background: #b91c1c;
+  color: #ffffff;
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 8px 20px rgba(220, 38, 38, 0.6);
+}
+
+/* Vibrating Phone Icon Animation */
+.btn-sticky-red svg,
+.btn-modal-call svg {
+  animation: phone-shake 2.4s infinite ease-in-out;
+}
+
+@keyframes phone-shake {
+  0%, 100% { transform: rotate(0deg); }
+  10%, 30%, 50% { transform: rotate(-14deg); }
+  20%, 40%, 60% { transform: rotate(14deg); }
+  70% { transform: rotate(0deg); }
+}
+
+/* Responsive Overrides */
+@media (max-width: 768px) {
+  .site293-top-banner {
+    min-height: 180px;
+    padding: 2rem 0;
+  }
+  .banner-text-box h1 {
+    font-size: 1.6rem;
+  }
+  .banner-text-box p {
+    font-size: 0.88rem;
+  }
+  .site293-form-card {
+    padding: 2rem 1.4rem;
+  }
+  .site293-modal-card {
+    padding: 1.5rem;
+  }
+  .modal-img-wrap {
+    height: 180px;
+  }
+}
+
+@media (max-width: 640px) {
+  .sticky-bar-text { display: none; }
+  .svc-sticky-phone-bar { justify-content: center; }
+  .btn-sticky-red { width: 100%; justify-content: center; }
+}
+
