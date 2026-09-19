@@ -16,6 +16,7 @@ import Services from "./pages/Services";
 import ProjectsPage from "./pages/Projects";
 import Pricing from "./pages/Pricing";
 import NewsPage from "./pages/News";
+import NewsDetail from "./pages/NewsDetail";
 import Contact from "./pages/Contact";
 
 // Helper component to scroll to top on route change
@@ -69,6 +70,7 @@ function AppContent() {
         <Route path="/du-an" element={<ProjectsPage />} />
         <Route path="/bao-gia" element={<Pricing />} />
         <Route path="/tin-tuc" element={<NewsPage />} />
+        <Route path="/tin-tuc/:id" element={<NewsDetail />} />
         <Route path="/lien-he" element={<Contact />} />
         <Route path="/admin" element={<Admin />} />
       </Routes>

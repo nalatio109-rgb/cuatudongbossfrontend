@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowRight, Shield, Zap, Wrench, Headphones, Leaf, CheckCircle2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import RevealOnScroll from '../components/RevealOnScroll';
 import './Home.css';
 
 const Home = () => {
@@ -9,7 +10,7 @@ const Home = () => {
       {/* 1. Hero Section (Dark Green Base) */}
       <section className="hero-gd">
         <div className="hero-gd-container">
-          <div className="hero-gd-content">
+          <RevealOnScroll animation="fade-right" className="hero-gd-content">
             <h1 className="hero-gd-title">
               CỬA TỰ ĐỘNG <br />
               <span className="text-gd-yellow">HIỆN ĐẠI – AN TOÀN – TIỆN LỢI</span>
@@ -50,60 +51,60 @@ const Home = () => {
                 NHẬN BÁO GIÁ <ArrowRight size={18} />
               </Link>
             </div>
-          </div>
-          <div className="hero-gd-image">
+          </RevealOnScroll>
+          <RevealOnScroll animation="fade-left" className="hero-gd-image">
             <div className="hero-img-wrapper">
               <img src="/hero_bg.png" alt="Cửa tự động" />
             </div>
-          </div>
+          </RevealOnScroll>
         </div>
       </section>
 
       {/* 2. Stats Banner (Dark Green Box) */}
       <section className="stats-gd-wrapper container">
         <div className="stats-gd">
-          <div className="stat-gd-item">
+          <RevealOnScroll animation="fade-up" delay={0} className="stat-gd-item">
             <div className="stat-icon-gd"><CheckCircle2 size={36} /></div>
             <div className="stat-text-gd">
               <h3>1000+</h3>
               <p>Khách hàng tin tưởng trên toàn quốc</p>
             </div>
-          </div>
-          <div className="stat-gd-item">
+          </RevealOnScroll>
+          <RevealOnScroll animation="fade-up" delay={150} className="stat-gd-item">
             <div className="stat-icon-gd"><CheckCircle2 size={36} /></div>
             <div className="stat-text-gd">
               <h3>1500+</h3>
               <p>Dự án đã triển khai thành công</p>
             </div>
-          </div>
-          <div className="stat-gd-item">
+          </RevealOnScroll>
+          <RevealOnScroll animation="fade-up" delay={300} className="stat-gd-item">
             <div className="stat-icon-gd"><CheckCircle2 size={36} /></div>
             <div className="stat-text-gd">
               <h3>5+</h3>
               <p>Năm kinh nghiệm trong lĩnh vực</p>
             </div>
-          </div>
-          <div className="stat-gd-item">
+          </RevealOnScroll>
+          <RevealOnScroll animation="fade-up" delay={450} className="stat-gd-item">
             <div className="stat-icon-gd"><Headphones size={36} /></div>
             <div className="stat-text-gd">
               <h3>24/7</h3>
               <p>Hỗ trợ kỹ thuật mọi lúc, mọi nơi</p>
             </div>
-          </div>
+          </RevealOnScroll>
         </div>
       </section>
 
       {/* 3. Products Section (White Background) */}
       <section className="products-gd section-padding">
         <div className="container">
-          <div className="section-title-gd text-center">
+          <RevealOnScroll animation="fade-up" className="section-title-gd text-center">
             <span className="subtitle-gd">SẢN PHẨM</span>
             <h2>DANH MỤC SẢN PHẨM</h2>
-          </div>
+          </RevealOnScroll>
           
           <div className="products-gd-grid">
             {/* Product 1 */}
-            <div className="product-card-gd">
+            <RevealOnScroll animation="fade-up" delay={0} className="product-card-gd">
               <div className="badge-gd red">BÁN CHẠY</div>
               <div className="product-img-gd">
                 <img src="/project_1.png" alt="Cửa trượt tự động" />
@@ -115,10 +116,10 @@ const Home = () => {
                   XEM CHI TIẾT <ArrowRight size={16} />
                 </Link>
               </div>
-            </div>
+            </RevealOnScroll>
 
             {/* Product 2 */}
-            <div className="product-card-gd">
+            <RevealOnScroll animation="fade-up" delay={150} className="product-card-gd">
               <div className="product-img-gd">
                 <img src="/hero_bg.png" alt="Cửa mở tự động" />
               </div>
@@ -129,10 +130,10 @@ const Home = () => {
                   XEM CHI TIẾT <ArrowRight size={16} />
                 </Link>
               </div>
-            </div>
+            </RevealOnScroll>
 
             {/* Product 3 */}
-            <div className="product-card-gd">
+            <RevealOnScroll animation="fade-up" delay={300} className="product-card-gd">
               <div className="product-img-gd">
                 <img src="/project_1.png" alt="Cửa cong tự động" />
               </div>
@@ -143,10 +144,10 @@ const Home = () => {
                   XEM CHI TIẾT <ArrowRight size={16} />
                 </Link>
               </div>
-            </div>
+            </RevealOnScroll>
 
             {/* Product 4 */}
-            <div className="product-card-gd">
+            <RevealOnScroll animation="fade-up" delay={450} className="product-card-gd">
               <div className="badge-gd yellow">NEW</div>
               <div className="product-img-gd">
                 <img src="/hero_bg.png" alt="Cửa cuốn tốc độ cao" />
@@ -158,7 +159,7 @@ const Home = () => {
                   XEM CHI TIẾT <ArrowRight size={16} />
                 </Link>
               </div>
-            </div>
+            </RevealOnScroll>
           </div>
         </div>
       </section>
@@ -167,36 +168,36 @@ const Home = () => {
       <section className="why-gd bg-gd-dark section-padding">
         <div className="container">
           <div className="why-gd-grid">
-            <div className="why-gd-left">
+            <RevealOnScroll animation="fade-right" className="why-gd-left">
               <span className="subtitle-gd text-white">VÌ SAO CHỌN CHÚNG TÔI?</span>
               <h2 className="text-gd-yellow">CHẤT LƯỢNG TẠO NÊN <br/> NIỀM TIN</h2>
               <p className="text-white">BOSS Đà Nẵng cam kết mang đến sản phẩm chất lượng cao, dịch vụ chuyên nghiệp và giải pháp tối ưu cho khách hàng.</p>
               <Link to="/gioi-thieu" className="btn-gd btn-gd-red" style={{marginTop: '1rem'}}>
                 TÌM HIỂU THÊM <ArrowRight size={18} />
               </Link>
-            </div>
+            </RevealOnScroll>
             
             <div className="why-gd-right">
-              <div className="why-feat">
+              <RevealOnScroll animation="fade-left" delay={0} className="why-feat">
                 <div className="why-icon"><Shield size={32} /></div>
                 <h4>SẢN PHẨM CHẤT LƯỢNG</h4>
                 <p>Nhập khẩu chính hãng, đảm bảo độ bền và hiệu suất cao.</p>
-              </div>
-              <div className="why-feat">
+              </RevealOnScroll>
+              <RevealOnScroll animation="fade-left" delay={150} className="why-feat">
                 <div className="why-icon"><Wrench size={32} /></div>
                 <h4>LẮP ĐẶT CHUYÊN NGHIỆP</h4>
                 <p>Đội ngũ kỹ thuật giàu kinh nghiệm, thi công nhanh chóng, chuẩn xác.</p>
-              </div>
-              <div className="why-feat">
+              </RevealOnScroll>
+              <RevealOnScroll animation="fade-left" delay={300} className="why-feat">
                 <div className="why-icon"><Zap size={32} /></div>
                 <h4>BẢO HÀNH UY TÍN</h4>
                 <p>Chính sách bảo hành dài hạn, bảo trì định kỳ, hỗ trợ kịp thời.</p>
-              </div>
-              <div className="why-feat">
+              </RevealOnScroll>
+              <RevealOnScroll animation="fade-left" delay={450} className="why-feat">
                 <div className="why-icon"><Headphones size={32} /></div>
                 <h4>HỖ TRỢ 24/7</h4>
                 <p>Luôn sẵn sàng giải đáp, hỗ trợ khách hàng mọi lúc, mọi nơi.</p>
-              </div>
+              </RevealOnScroll>
             </div>
           </div>
         </div>

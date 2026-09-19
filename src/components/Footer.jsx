@@ -27,8 +27,8 @@ export default function Footer() {
             </p>
 
             <div className="socials">
-              <a href="https://facebook.com" target="_blank" rel="noreferrer" className="social">f</a>
-              <a href="https://youtube.com" target="_blank" rel="noreferrer" className="social">▶</a>
+              <a href="https://www.facebook.com/cuacuoncuacongtudongdanang" target="_blank" rel="noreferrer" className="social">f</a>
+              <a href="https://www.youtube.com/@cuatudongbossdanang" target="_blank" rel="noreferrer" className="social">▶</a>
               <a href="https://zalo.me/0904678323" target="_blank" rel="noreferrer" className="social">Z</a>
               <a href="tel:0904678323" className="social">📞</a>
             </div>

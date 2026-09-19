@@ -11,22 +11,22 @@ export default function Products() {
   const sectionRef = useRef(null);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsVisible(entry.isIntersecting);
-      },
-      { 
-        threshold: 0.1,
-        rootMargin: "0px 0px -60px 0px"
-      }
-    );
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+        }
+      });
+    }, {
+      threshold: 0.1,
+      rootMargin: "0px 0px -50px 0px"
+    });
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
+    const cards = document.querySelectorAll(".new-product-card, .features-bottom-bar, .section-header-flex, .product-category-tabs");
+    cards.forEach((card) => observer.observe(card));
 
     return () => observer.disconnect();
-  }, []);
+  }, [activeTab]);
 
   const categories = [
     { id: "all", label: "TẤT CẢ" },
@@ -131,7 +131,7 @@ export default function Products() {
   return (
     <>
       {/* ================= PRODUCTS ================= */}
-      <section ref={sectionRef} className={`products-section ${isVisible ? 'is-visible' : ''}`} id="products">
+      <section ref={sectionRef} className="products-section" id="products">
         <div className="container">
           <div className="section-header-flex">
             <div className="section-title-left">

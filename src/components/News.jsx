@@ -62,8 +62,8 @@ export default function News() {
               <div className="follow-us">
                 <span>Theo dõi chúng tôi</span>
                 <div className="social-icons">
-                  <a href="https://facebook.com" target="_blank" rel="noreferrer">f</a>
-                  <a href="https://youtube.com" target="_blank" rel="noreferrer">▶</a>
+                  <a href="https://www.facebook.com/cuacuoncuacongtudongdanang" target="_blank" rel="noreferrer">f</a>
+                  <a href="https://www.youtube.com/@cuatudongbossdanang" target="_blank" rel="noreferrer">▶</a>
                   <a href="https://zalo.me/0904678323" target="_blank" rel="noreferrer">Z</a>
                 </div>
               </div>
