@@ -14,7 +14,7 @@ const Projects = () => {
   const [selectedProject, setSelectedProject] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/projects")
+    fetch("https://cuatudongbossbackend-production.up.railway.app/api/projects")
       .then((res) => res.json())
       .then((data) => {
         if (data.success && data.data && data.data.length > 0) {
