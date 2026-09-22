@@ -11,7 +11,7 @@ const Projects = () => {
   ];
 
   const [projects, setProjects] = useState(initialProjects);
-  const [expandedId, setExpandedId] = useState(null);
+  const [selectedProject, setSelectedProject] = useState(null);
 
   useEffect(() => {
     fetch("http://localhost:5000/api/projects")
@@ -24,8 +24,14 @@ const Projects = () => {
       .catch((err) => console.error("Projects API error:", err));
   }, []);
 
-  const toggleExpand = (id) => {
-    setExpandedId(expandedId === id ? null : id);
+  const openModal = (project) => {
+    setSelectedProject(project);
+    document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
+  };
+
+  const closeModal = () => {
+    setSelectedProject(null);
+    document.body.style.overflow = 'auto';
   };
 
   return (
@@ -48,8 +54,8 @@ const Projects = () => {
             {projects.map((proj) => (
               <div 
                 key={proj._id || proj.id} 
-                className={`portfolio-card ${expandedId === (proj._id || proj.id) ? 'expanded' : ''}`}
-                onClick={() => toggleExpand(proj._id || proj.id)}
+                className="portfolio-card"
+                onClick={() => openModal(proj)}
                 style={{ cursor: 'pointer' }}
               >
                 <div className="portfolio-img-wrapper">
@@ -66,21 +72,38 @@ const Projects = () => {
                       <MapPin size={14} /> <span>{proj.location}</span>
                     </div>
                   )}
-                  {proj.description && expandedId === (proj._id || proj.id) && (
-                    <p className="portfolio-desc" style={{
-                      display: 'block', 
-                      WebkitLineClamp: 'unset', 
-                      overflow: 'visible'
-                    }}>
-                      {proj.description}
-                    </p>
-                  )}
                 </div>
               </div>
             ))}
           </div>
         </div>
       </section>
+
+      {/* Project Modal */}
+      {selectedProject && (
+        <div className="project-modal-overlay" onClick={closeModal}>
+          <div className="project-modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="project-modal-close" onClick={closeModal}>&times;</button>
+            <div className="project-modal-body">
+              <div className="project-modal-image">
+                <img src={selectedProject.image || selectedProject.img} alt={selectedProject.title} />
+              </div>
+              <div className="project-modal-info">
+                <span className="portfolio-category">{selectedProject.category}</span>
+                <h2>{selectedProject.title}</h2>
+                {selectedProject.location && (
+                  <div className="portfolio-location">
+                    <MapPin size={16} /> <span>{selectedProject.location}</span>
+                  </div>
+                )}
+                <div className="project-modal-desc">
+                  <p>{selectedProject.description || "Nội dung chi tiết dự án đang được cập nhật..."}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
