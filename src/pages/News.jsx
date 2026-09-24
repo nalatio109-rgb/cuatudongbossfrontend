@@ -11,7 +11,7 @@ const News = () => {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await fetch('https://cuatudongbossbackend-production.up.railway.app/api/news');
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/news`);
         if (!response.ok) {
           throw new Error('Failed to fetch news data');
         }

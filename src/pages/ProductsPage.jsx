@@ -31,7 +31,7 @@ export default function ProductsPage() {
   }, [catFromUrl, searchFromUrl]);
 
   useEffect(() => {
-    fetch("https://cuatudongbossbackend-production.up.railway.app/api/products")
+    fetch(`${import.meta.env.VITE_API_URL}/api/products`)
       .then((res) => res.json())
       .then((resData) => {
         if (resData.success && resData.data && resData.data.length > 0) {

@@ -20,7 +20,7 @@ const Services = () => {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch('https://cuatudongbossbackend-production.up.railway.app/api/contacts', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/contacts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

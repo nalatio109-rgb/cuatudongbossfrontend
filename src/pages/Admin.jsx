@@ -112,10 +112,10 @@ export default function Admin() {
     setLoading(true);
     try {
       const [resC, resP, resPr, resN] = await Promise.all([
-        fetch("https://cuatudongbossbackend-production.up.railway.app/api/contacts"),
-        fetch("https://cuatudongbossbackend-production.up.railway.app/api/products"),
-        fetch("https://cuatudongbossbackend-production.up.railway.app/api/projects"),
-        fetch("https://cuatudongbossbackend-production.up.railway.app/api/news")
+        fetch(`${import.meta.env.VITE_API_URL}/api/contacts`),
+        fetch(`${import.meta.env.VITE_API_URL}/api/products`),
+        fetch(`${import.meta.env.VITE_API_URL}/api/projects`),
+        fetch(`${import.meta.env.VITE_API_URL}/api/news`)
       ]);
 
       const dataC = await resC.json();
@@ -151,7 +151,7 @@ export default function Admin() {
   // ----------------------------------------------------
   const handleUpdateContactStatus = async (id, status) => {
     try {
-      const res = await fetch(`https://cuatudongbossbackend-production.up.railway.app/api/contacts/${id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/contacts/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status })
@@ -170,7 +170,7 @@ export default function Admin() {
   const handleDeleteContact = async (id) => {
     if (!window.confirm("Bạn có chắc chắn muốn xóa yêu cầu tư vấn này?")) return;
     try {
-      const res = await fetch(`https://cuatudongbossbackend-production.up.railway.app/api/contacts/${id}`, { method: "DELETE" });
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/contacts/${id}`, { method: "DELETE" });
       const data = await res.json();
       if (data.success) {
         setContacts(contacts.filter(c => c._id !== id));
@@ -219,7 +219,7 @@ export default function Admin() {
       let res, data;
       if (editingProduct) {
         // PUT EDIT
-        res = await fetch(`https://cuatudongbossbackend-production.up.railway.app/api/products/${editingProduct._id}`, {
+        res = await fetch(`${import.meta.env.VITE_API_URL}/api/products/${editingProduct._id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
@@ -231,7 +231,7 @@ export default function Admin() {
         }
       } else {
         // POST ADD
-        res = await fetch("https://cuatudongbossbackend-production.up.railway.app/api/products", {
+        res = await fetch(`${import.meta.env.VITE_API_URL}/api/products`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload)
@@ -257,7 +257,7 @@ export default function Admin() {
   const handleDeleteProduct = async (id) => {
     if (!window.confirm("Bạn có chắc muốn xóa sản phẩm này khỏi MongoDB?")) return;
     try {
-      const res = await fetch(`https://cuatudongbossbackend-production.up.railway.app/api/products/${id}`, { method: "DELETE" });
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/products/${id}`, { method: "DELETE" });
       const data = await res.json();
       if (data.success) {
         setProducts(products.filter(p => p._id !== id));
@@ -295,7 +295,7 @@ export default function Admin() {
     try {
       let res, data;
       if (editingProject) {
-        res = await fetch(`https://cuatudongbossbackend-production.up.railway.app/api/projects/${editingProject._id}`, {
+        res = await fetch(`${import.meta.env.VITE_API_URL}/api/projects/${editingProject._id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(projectForm)
@@ -306,7 +306,7 @@ export default function Admin() {
           showToast("✨ Đã cập nhật thông tin dự án thành công!");
         }
       } else {
-        res = await fetch("https://cuatudongbossbackend-production.up.railway.app/api/projects", {
+        res = await fetch(`${import.meta.env.VITE_API_URL}/api/projects`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(projectForm)
@@ -330,7 +330,7 @@ export default function Admin() {
   const handleDeleteProject = async (id) => {
     if (!window.confirm("Bạn có chắc muốn xóa dự án này?")) return;
     try {
-      const res = await fetch(`https://cuatudongbossbackend-production.up.railway.app/api/projects/${id}`, { method: "DELETE" });
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/projects/${id}`, { method: "DELETE" });
       const data = await res.json();
       if (data.success) {
         setProjects(projects.filter(p => p._id !== id));
@@ -370,7 +370,7 @@ export default function Admin() {
     try {
       let res, data;
       if (editingNews) {
-        res = await fetch(`https://cuatudongbossbackend-production.up.railway.app/api/news/${editingNews._id}`, {
+        res = await fetch(`${import.meta.env.VITE_API_URL}/api/news/${editingNews._id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(newsForm)
@@ -381,7 +381,7 @@ export default function Admin() {
           showToast("✨ Đã cập nhật bài viết thành công!");
         }
       } else {
-        res = await fetch("https://cuatudongbossbackend-production.up.railway.app/api/news", {
+        res = await fetch(`${import.meta.env.VITE_API_URL}/api/news`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(newsForm)
@@ -405,7 +405,7 @@ export default function Admin() {
   const handleDeleteNews = async (id) => {
     if (!window.confirm("Bạn có chắc muốn xóa bài viết này?")) return;
     try {
-      const res = await fetch(`https://cuatudongbossbackend-production.up.railway.app/api/news/${id}`, { method: "DELETE" });
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/news/${id}`, { method: "DELETE" });
       const data = await res.json();
       if (data.success) {
         setNews(news.filter(n => n._id !== id));

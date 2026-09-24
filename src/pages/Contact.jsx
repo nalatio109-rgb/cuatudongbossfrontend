@@ -23,7 +23,7 @@ const Contact = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("https://cuatudongbossbackend-production.up.railway.app/api/contacts", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/contacts`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
