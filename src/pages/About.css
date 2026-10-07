@@ -722,6 +722,20 @@
     flex-direction: column;
     align-items: flex-start;
   }
+
+  .exact-door-main-img img,
+  .exact-door-main-img video,
+  .exact-factory-img img {
+    height: 240px;
+  }
+
+  .exact-hero-section {
+    padding: 2.5rem 0 2rem;
+  }
+
+  .exact-cta-right-content {
+    padding: 1.8rem 1.4rem;
+  }
 }
 
 /* VIDEO POPUP LIGHTBOX MODAL STYLES */

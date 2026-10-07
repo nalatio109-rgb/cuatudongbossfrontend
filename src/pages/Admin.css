@@ -644,3 +644,49 @@ body.admin-mode {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* Mobile Responsive Adjustments for Admin Dashboard */
+@media (max-width: 992px) {
+  .admin-standalone-wrapper {
+    flex-direction: column;
+  }
+  .admin-sidebar {
+    position: relative;
+    width: 100%;
+    top: auto;
+    bottom: auto;
+    left: auto;
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .admin-main-viewport {
+    margin-left: 0;
+  }
+  .admin-topbar {
+    padding: 0.8rem 1rem;
+  }
+  .admin-content-body {
+    padding: 1rem;
+  }
+  .admin-table-container {
+    overflow-x: auto;
+  }
+  .admin-table {
+    min-width: 680px;
+  }
+  .table-action-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .table-header-controls {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  .admin-search-input {
+    width: 100%;
+  }
+  .admin-search-input:focus {
+    width: 100%;
+  }
+}
+

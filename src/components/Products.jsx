@@ -132,6 +132,9 @@ export default function Products() {
     <>
       {/* ================= PRODUCTS ================= */}
       <section ref={sectionRef} className="products-section" id="products">
+        {/* Leaf photo decorations */}
+        <img src="/leaf_left.png" alt="" className="leaf-deco leaf-deco-1" aria-hidden="true" />
+        <img src="/leaf_right.png" alt="" className="leaf-deco leaf-deco-2" aria-hidden="true" />
         <div className="container">
           <div className="section-header-flex">
             <div className="section-title-left">
@@ -197,37 +200,7 @@ export default function Products() {
             ))}
           </div>
 
-          {/* Features Bottom Bar */}
-          <div className="features-bottom-bar">
-            <div className="feature-item">
-              <div className="feat-icon"><ShieldCheck size={28} /></div>
-              <div className="feat-text">
-                <h4>AN TOÀN</h4>
-                <p>Đảm bảo an toàn<br/>trong mọi vận hành</p>
-              </div>
-            </div>
-            <div className="feature-item">
-              <div className="feat-icon yellow"><CheckCircle2 size={28} /></div>
-              <div className="feat-text">
-                <h4>BỀN BỈ</h4>
-                <p>Chất liệu cao cấp,<br/>độ bền vượt thời gian</p>
-              </div>
-            </div>
-            <div className="feature-item">
-              <div className="feat-icon red"><Star size={28} /></div>
-              <div className="feat-text">
-                <h4>THẨM MỸ</h4>
-                <p>Thiết kế tinh tế,<br/>nâng tầm không gian</p>
-              </div>
-            </div>
-            <div className="feature-item">
-              <div className="feat-icon"><HeadphonesIcon size={28} /></div>
-              <div className="feat-text">
-                <h4>HỖ TRỢ 24/7</h4>
-                <p>Tư vấn nhanh chóng,<br/>hỗ trợ tận tâm</p>
-              </div>
-            </div>
-          </div>
+
         </div>
       </section>
 

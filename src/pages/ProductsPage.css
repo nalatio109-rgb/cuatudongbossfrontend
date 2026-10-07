@@ -932,4 +932,24 @@
   .catalog-guarantee-bar {
     grid-template-columns: 1fr;
   }
+  .category-pills {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    width: 100%;
+    padding-bottom: 8px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .category-pills::-webkit-scrollbar {
+    display: none;
+  }
+  .pill-btn {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .modal-right-info {
+    padding: 20px 18px 24px;
+  }
+  .products-page-modal-card {
+    max-height: 94vh;
+  }
 }

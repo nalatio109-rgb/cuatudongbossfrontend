@@ -197,76 +197,104 @@
    RESPONSIVE
 ========================= */
 
-@media (max-width: 1100px) {
-  .rolling-title__footer {
-    width: 88%;
-  }
-
-  .rolling-title__accent {
-    width: 38%;
-  }
-}
-
 @media (max-width: 768px) {
+  .rolling-title__row--top {
+    justify-content: center;
+    padding-left: 0;
+  }
+
   .rolling-title__word {
-    font-size: clamp(60px, 15vw, 105px);
+    font-size: clamp(38px, 11vw, 55px);
+    transform: none;
+    color: #ffffff;
+    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    font-weight: 800;
+    letter-spacing: 1px;
   }
 
   .rolling-title__row--bottom {
-    justify-content: flex-start;
-    padding-left: 15%;
+    justify-content: center;
+    padding-left: 0;
     padding-right: 0;
+    margin-top: -2px;
   }
 
   .rolling-title__accent {
-    width: 42%;
-    margin-top: 20px;
+    width: 60%;
+    margin: 12px auto;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .rolling-title__line-yellow,
+  .rolling-title__line-red {
+    height: 6px;
+    border-radius: 4px;
+    transform: none;
   }
 
   .rolling-title__footer {
     width: 100%;
-    margin-top: 40px;
+    margin-top: 20px;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .rolling-title__footer-line {
+    border-top: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+  }
+
+  .rolling-title__footer-line::before,
+  .rolling-title__footer-line::after {
+    display: none;
+  }
+
+  .rolling-title__slashes {
+    display: none;
   }
 
   .rolling-title__tagline {
-    letter-spacing: 2px;
+    color: #004d32;
+    background: #f5bd20;
+    border: 1px solid rgba(245, 189, 32, 0.8);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    letter-spacing: 3px;
     font-size: 11px;
+    font-weight: 800;
+    padding: 8px 18px;
+    border-radius: 30px;
   }
 
-  .rolling-title__slashes span {
-    width: 8px;
-    height: 25px;
-  }
-
-  .rolling-title__footer-colors span {
-    width: 35px;
+  .rolling-title__footer-colors {
+    display: none;
   }
 }
 
 @media (max-width: 500px) {
   .rolling-title__word {
-    font-size: clamp(50px, 16vw, 75px);
+    font-size: clamp(34px, 11vw, 42px);
   }
 
   .rolling-title__row--bottom {
-    padding-left: 10%;
+    padding-left: 0;
   }
 
   .rolling-title__accent {
-    width: 55%;
+    width: 75%;
   }
 
   .rolling-title__footer {
-    margin-top: 32px;
+    margin-top: 15px;
   }
 
   .rolling-title__tagline {
-    font-size: 9px;
-    letter-spacing: 1.2px;
-  }
-
-  .rolling-title__footer-colors span {
-    width: 25px;
-    height: 6px;
+    font-size: 9.5px;
+    letter-spacing: 2px;
+    padding: 6px 14px;
   }
 }
