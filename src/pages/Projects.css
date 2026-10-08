@@ -250,3 +250,12 @@
   font-size: 1.05rem;
   margin-bottom: 1rem;
 }
+
+@media (max-width: 600px) {
+  .portfolio-info h3 {
+    font-size: 1.05rem;
+  }
+  .project-modal-info h2 {
+    font-size: 1.4rem;
+  }
+}

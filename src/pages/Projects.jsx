@@ -43,7 +43,7 @@ const Projects = () => {
         textAlign: 'center'
       }}>
         <div className="container">
-          <h1 className="hero-title" style={{fontSize: '3.5rem'}}>Dự Án <span className="text-gradient">Tiêu Biểu</span></h1>
+          <h1 className="hero-title">Dự Án <span className="text-gradient">Tiêu Biểu</span></h1>
           <p className="hero-subtitle" style={{margin: '0 auto'}}>Những công trình khẳng định chất lượng và uy tín của BOSS Đà Nẵng.</p>
         </div>
       </section>

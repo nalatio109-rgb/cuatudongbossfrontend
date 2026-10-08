@@ -927,7 +927,44 @@
 
 @media (max-width: 600px) {
   .products-page-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .card-image-wrap {
+    height: 140px;
+  }
+  .card-details {
+    padding: 12px 8px;
+    align-items: center;
+    text-align: center;
+  }
+  .card-header-icon {
+    justify-content: center;
+    margin-bottom: 6px;
+  }
+  .icon-box,
+  .card-desc,
+  .card-specs-mini,
+  .product-badge,
+  .product-code-tag,
+  .card-overlay-btn {
+    display: none;
+  }
+  .card-header-icon h3 {
+    font-size: 11.5px;
+    margin: 0;
+  }
+  .card-footer-actions {
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+    gap: 6px;
+  }
+  .btn-detail-view,
+  .btn-quick-call {
+    font-size: 9.5px;
+    padding: 6px 10px;
+    justify-content: center;
   }
   .catalog-guarantee-bar {
     grid-template-columns: 1fr;
