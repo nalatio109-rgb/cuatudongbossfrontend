@@ -34,7 +34,7 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="footer-column">
+          <div className="footer-column hide-on-mobile">
             <h4>LIÊN KẾT NHANH</h4>
             <a href="/">Trang chủ</a>
             <a href="/gioi-thieu">Giới thiệu</a>
@@ -44,7 +44,7 @@ export default function Footer() {
             <a href="/lien-he">Liên hệ</a>
           </div>
 
-          <div className="footer-column">
+          <div className="footer-column hide-on-mobile">
             <h4>DANH MỤC SẢN PHẨM</h4>
             <a href="/san-pham">Cửa cuốn BossDoor</a>
             <a href="/san-pham">Cửa trượt tự động</a>

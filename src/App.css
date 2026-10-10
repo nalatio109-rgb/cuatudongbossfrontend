@@ -2491,216 +2491,125 @@ textarea {
   line-height: 1.3;
 }
 
-/* ================= WHY CHOOSE US (BALANCED MODERN LAYOUT) ================= */
+/* ================= WHY CHOOSE US (GRID LAYOUT) ================= */
 .why-section {
-  padding: 80px 0;
-  background: linear-gradient(180deg, #ffffff 0%, #f8faf9 100%);
+  padding: 60px 0;
+  background: #ffffff;
   position: relative;
 }
 
-.why-header-flex {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 45px;
-  gap: 30px;
-  flex-wrap: wrap;
-}
-
-.why-title-group {
-  flex: 1;
-  min-width: 300px;
+.why-header-centered {
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto 40px auto;
 }
 
 .why-subtitle {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 10px;
-  color: #004d32;
-  font-size: 11px;
-  font-weight: 850;
-  letter-spacing: 1px;
+  justify-content: center;
   margin-bottom: 8px;
+  color: #556b60;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
 }
 
-.subtitle-line {
-  width: 40px;
-  height: 2px;
-  background: #f5bd20;
-  border-radius: 2px;
-}
-
-.why-main-title {
+.why-main-title.text-center {
+  text-align: center;
   font-family: 'Be Vietnam Pro', 'Montserrat', sans-serif;
-  font-size: clamp(26px, 3.5vw, 36px);
-  font-weight: 900;
+  font-size: clamp(24px, 3vw, 32px);
+  margin-bottom: 12px;
   color: #004d32;
-  margin: 0;
-  line-height: 1.2;
-  letter-spacing: -0.5px;
+  font-weight: 900;
 }
 
-.why-header-desc {
+.why-header-desc.text-center {
+  text-align: center;
+  color: #66796f;
   font-size: 14px;
-  color: #556b60;
-  line-height: 1.6;
-  max-width: 480px;
-  margin: 0;
 }
 
-/* 4 Feature Cards Grid - Luxury Custom Architecture Style */
-.why-features-grid {
+.why-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
-  margin-bottom: 45px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 40px;
+  max-width: 760px;
+  margin: 0 auto;
 }
 
-.why-feature-card {
+.why-grid-item {
   background: #ffffff;
-  border-radius: 20px;
-  padding: 30px 24px 22px;
-  border: 1px solid rgba(0, 77, 50, 0.09);
-  box-shadow: 0 10px 30px rgba(0, 77, 50, 0.03);
-  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid #eaeaea;
+  border-radius: 12px;
+  padding: 16px 20px;
   display: flex;
   flex-direction: column;
+  gap: 10px;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   overflow: hidden;
 }
 
-/* Accent top golden line on card hover */
-.why-feature-card::before {
-  content: "";
+.why-grid-item::before {
+  content: '';
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #004d32 0%, #f5bd20 50%, #004d32 100%);
-  opacity: 0;
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: all 0.4s ease;
+  width: 4px;
+  height: 0;
+  background: linear-gradient(180deg, #f5bd20 0%, #e21d2b 100%);
+  transition: height 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.why-feature-card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 20px 40px rgba(0, 77, 50, 0.1), 0 0 25px rgba(245, 189, 24, 0.12);
-  border-color: rgba(245, 189, 24, 0.4);
+.why-grid-item:hover {
+  border-color: rgba(245, 189, 32, 0.4);
+  box-shadow: 0 15px 35px rgba(245, 189, 32, 0.08);
+  transform: translateY(-5px);
 }
 
-.why-feature-card:hover::before {
-  opacity: 1;
-  transform: scaleX(1);
+.why-grid-item:hover::before {
+  height: 100%;
 }
 
-.why-card-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
-
-/* Metallic icon ring badge (removes generic solid block) */
-.why-card-icon-ring {
-  width: 50px;
-  height: 50px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, rgba(0, 77, 50, 0.06) 0%, rgba(245, 189, 24, 0.1) 100%);
-  border: 1px solid rgba(0, 77, 50, 0.15);
-  color: #004d32;
+.why-grid-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(245, 189, 32, 0.12);
+  color: #e5aa10;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.why-feature-card:hover .why-card-icon-ring {
-  background: linear-gradient(135deg, #004d32 0%, #002e1e 100%);
-  color: #f5bd20;
-  border-color: #004d32;
-  transform: scale(1.08) rotate(-4deg);
-  box-shadow: 0 8px 20px rgba(0, 77, 50, 0.25);
+.why-grid-item:hover .why-grid-icon {
+  background: linear-gradient(135deg, #f5bd20 0%, #e21d2b 100%);
+  color: #ffffff;
+  transform: scale(1.1) rotate(5deg);
+  box-shadow: 0 5px 15px rgba(226, 29, 43, 0.2);
 }
 
-/* Watermark background numbers 01 - 04 */
-.why-card-number {
-  font-size: 36px;
-  font-weight: 900;
-  font-family: 'Montserrat', sans-serif;
-  letter-spacing: -1px;
-  color: rgba(0, 77, 50, 0.1);
-  line-height: 1;
-  transition: all 0.4s ease;
-  user-select: none;
-}
-
-.why-feature-card:hover .why-card-number {
-  color: rgba(245, 189, 24, 0.5);
-  transform: scale(1.1);
-}
-
-.why-card-badge {
-  align-self: flex-start;
-  font-size: 10px;
-  font-weight: 850;
-  letter-spacing: 0.8px;
-  padding: 4px 10px;
-  border-radius: 12px;
-  background: rgba(0, 77, 50, 0.06);
+.why-grid-content h3 {
+  font-size: 16px;
+  font-weight: 700;
   color: #004d32;
-  text-transform: uppercase;
-  margin-bottom: 14px;
-  border: 1px solid rgba(0, 77, 50, 0.1);
-  transition: all 0.3s ease;
+  margin: 0 0 8px 0;
 }
 
-.why-feature-card:hover .why-card-badge {
-  background: rgba(245, 189, 24, 0.15);
-  color: #8a6400;
-  border-color: rgba(245, 189, 24, 0.4);
+.why-grid-content p {
+  font-size: 13px;
+  color: #556b60;
+  line-height: 1.5;
+  margin: 0;
 }
 
-.why-card-title {
-  font-size: 15px;
-  font-weight: 850;
-  color: #004d32;
-  margin: 0 0 10px 0;
-  letter-spacing: -0.2px;
-  line-height: 1.3;
-  transition: color 0.3s ease;
-}
-
-.why-feature-card:hover .why-card-title {
-  color: #002b1c;
-}
-
-.why-card-text {
-  font-size: 12.8px;
-  color: #52665a;
-  line-height: 1.6;
-  margin: 0 0 18px 0;
-  flex-grow: 1;
-}
-
-.why-card-footer {
-  padding-top: 12px;
-  border-top: 1px dashed rgba(0, 77, 50, 0.12);
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-}
-
-.why-card-check {
-  font-size: 11px;
-  font-weight: 750;
-  color: #004d32;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  opacity: 0.85;
+@media (max-width: 768px) {
+  .why-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Consultation Banner CTA */
@@ -2788,7 +2697,7 @@ textarea {
 }
 
 @media (max-width: 1100px) {
-  .why-features-grid {
+  .why-features-grid-compact {
     grid-template-columns: repeat(2, 1fr);
   }
 }
@@ -2810,7 +2719,7 @@ textarea {
 }
 
 @media (max-width: 550px) {
-  .why-features-grid {
+  .why-features-grid-compact {
     grid-template-columns: 1fr;
   }
 }
@@ -3959,8 +3868,12 @@ footer {
 
   .footer-grid {
     grid-template-columns: 1fr;
-    gap: 30px;
-    padding-bottom: 80px; /* Spacing for bottom floating dock */
+    gap: 25px;
+    padding-bottom: 70px; /* Spacing for bottom floating dock */
+  }
+
+  .hide-on-mobile {
+    display: none;
   }
 
   .footer-brand {

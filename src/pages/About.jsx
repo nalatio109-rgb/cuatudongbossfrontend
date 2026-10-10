@@ -112,7 +112,6 @@ const About = () => {
                   src={videoSrc} 
                   controls 
                   preload="metadata"
-                  style={{ width: '100%', height: '420px', objectFit: 'cover', borderRadius: '20px', display: 'block' }}
                 />
               </div>
 

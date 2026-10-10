@@ -1,84 +1,62 @@
 import React from "react";
-import { ShieldCheck, Cpu, CircleDollarSign, Headphones, Award, Sparkles, CheckCircle2 } from "lucide-react";
+import { ShieldCheck, Cpu, CircleDollarSign, Headphones } from "lucide-react";
 import RevealOnScroll from "./RevealOnScroll";
 
 export default function WhyChooseUs() {
   const reasons = [
     {
-      number: "01",
-      icon: <ShieldCheck size={26} strokeWidth={1.8} />,
-      badge: "ĐẠT CHUẨN EU",
-      title: "SẢN PHẨM CHẤT LƯỢNG",
-      text: "Cam kết nhập khẩu chính hãng 100%, độ bền vượt thời gian đạt tiêu chuẩn Châu Âu cao cấp.",
+      icon: <ShieldCheck size={22} strokeWidth={2} />,
+      title: "Chất lượng đảm bảo",
+      text: "Sản phẩm rõ nguồn gốc, bền bỉ theo thời gian.",
     },
     {
-      number: "02",
-      icon: <Cpu size={26} strokeWidth={1.8} />,
-      badge: "CÔNG NGHỆ 4.0",
-      title: "CÔNG NGHỆ HIỆN ĐẠI",
-      text: "Vận hành siêu êm ái, chống sao chép mã khoá, điều khiển thông minh qua Smartphone.",
+      icon: <Cpu size={22} strokeWidth={2} />,
+      title: "Công nghệ hiện đại",
+      text: "Vận hành tiện lợi, an toàn và thông minh.",
     },
     {
-      number: "03",
-      icon: <CircleDollarSign size={26} strokeWidth={1.8} />,
-      badge: "TỪ NHÀ SẢN XUẤT",
-      title: "GIÁ CẢ CẠNH TRANH",
-      text: "Báo giá minh bạch, trực tiếp từ kho nhà sản xuất, tối ưu chi phí không qua trung gian.",
+      icon: <CircleDollarSign size={22} strokeWidth={2} />,
+      title: "Giá thành hợp lý",
+      text: "Tối ưu chi phí theo nhu cầu công trình.",
     },
     {
-      number: "04",
-      icon: <Headphones size={26} strokeWidth={1.8} />,
-      badge: "HỖ TRỢ 24/7",
-      title: "DỊCH VỤ TẬN TÂM",
-      text: "Khảo sát tận nơi miễn phí, thi công chuẩn tiến độ, bảo hành bảo trì uy tín dài hạn.",
+      icon: <Headphones size={22} strokeWidth={2} />,
+      title: "Hỗ trợ tận tâm",
+      text: "Tư vấn, lắp đặt và bảo hành chu đáo.",
     },
   ];
 
   return (
     <section className="why-section" id="about">
       <div className="container">
-        {/* Header section */}
-        <div className="why-header-flex">
-          <div className="why-title-group">
-            <div className="why-subtitle">
-              <Sparkles size={14} className="subtitle-icon" />
+        <div className="why-header-centered">
+          <RevealOnScroll animation="fade-up">
+            <div className="why-subtitle justify-center">
               <span>GIÁ TRỊ VƯỢT TRỘI</span>
-              <div className="subtitle-line"></div>
             </div>
-            <h2 className="why-main-title">
-              VÌ SAO CHỌN <span className="text-gold">BOSS</span>?
+            <h2 className="why-main-title text-center">
+              VÌ SAO CHỌN <span style={{ color: "#f5bd20" }}>BOSS</span>?
             </h2>
-          </div>
-          <p className="why-header-desc">
-            Tự hào là đơn vị uy tín hàng đầu cung cấp giải pháp Cửa Cuốn, Cửa Tự Động & Nhôm Kính Cao Cấp với cam kết chất lượng vượt trội.
-          </p>
+            <p className="why-header-desc text-center">
+              Giải pháp cửa chất lượng cho mọi công trình.
+            </p>
+          </RevealOnScroll>
         </div>
 
-        {/* 4 Feature Cards Grid - Custom Architectural Style */}
-        <div className="why-features-grid">
+        <div className="why-grid">
           {reasons.map((reason, index) => (
             <RevealOnScroll
               key={index}
-              animation="fade-up"
-              delay={index * 100}
-              className="why-feature-card"
+              animation={index % 2 === 0 ? "fade-left" : "fade-right"}
+              delay={index > 1 ? 150 : 0}
+              className="why-grid-item"
             >
-              <div className="why-card-top">
-                <div className="why-card-icon-ring">
-                  {reason.icon}
-                </div>
-                <span className="why-card-number">{reason.number}</span>
+              <div className="why-grid-icon">
+                {reason.icon}
               </div>
-
-              <div className="why-card-badge">{reason.badge}</div>
-
-              <h3 className="why-card-title">{reason.title}</h3>
-              <p className="why-card-text">{reason.text}</p>
-              
-              <div className="why-card-footer">
-                <span className="why-card-check">
-                  <CheckCircle2 size={15} /> Cam kết BOSS
-                </span>
+              <div className="why-grid-content">
+                <h3>{reason.title}</h3>
+                <p>{reason.text}</p>
               </div>
             </RevealOnScroll>
           ))}
