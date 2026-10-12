@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import { 
   Users, Package, FolderKanban, CheckCircle, Trash2, Plus, Edit,
   RefreshCw, X, Shield, Phone, ArrowLeft, LayoutDashboard, Database,
-  Newspaper, Search, Eye, Tag, FileText, Check
+  Newspaper, Search, Eye, Tag, FileText, Check, Menu, LogOut
 } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 import "./Admin.css";
 
 const SUBCATEGORIES = {
@@ -40,7 +41,9 @@ const SUBCATEGORIES = {
 };
 
 export default function Admin() {
+  const { currentUser, logout } = useAuth();
   const [activeTab, setActiveTab] = useState("contacts");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   // Data states
   const [contacts, setContacts] = useState([]);
@@ -447,42 +450,39 @@ export default function Admin() {
     <div className="admin-standalone-wrapper">
       {/* TOAST NOTIFICATION */}
       {toastMessage && (
-        <div style={{
-          position: "fixed",
-          top: 24,
-          right: 24,
-          background: "#1e293b",
-          color: "#f8fafc",
-          padding: "12px 20px",
-          borderRadius: 12,
-          border: "1px solid rgba(16,185,129,0.4)",
-          boxShadow: "0 10px 25px rgba(0,0,0,0.5)",
-          zIndex: 10000,
-          fontWeight: 600,
-          fontSize: "0.9rem",
-          display: "flex",
-          alignItems: "center",
-          gap: 10,
-          animation: "adminFadeInUp 0.3s ease-out"
-        }}>
+        <div className="admin-toast-message">
           {toastMessage}
         </div>
       )}
 
       {/* 1. SIDEBAR */}
-      <aside className="admin-sidebar">
+      {mobileMenuOpen && (
+        <div 
+          className="admin-sidebar-backdrop" 
+          onClick={() => setMobileMenuOpen(false)}
+        />
+      )}
+      <aside className={`admin-sidebar ${mobileMenuOpen ? "mobile-open" : ""}`}>
         <div className="admin-sidebar-logo">
           <div className="logo-badge">B</div>
-          <div>
+          <div className="admin-logo-text">
             <h2>BOSS ADMIN</h2>
             <span>MONGODB CONTROL</span>
           </div>
+          <button 
+            type="button"
+            className="admin-sidebar-close-btn"
+            onClick={() => setMobileMenuOpen(false)}
+            aria-label="Đóng menu"
+          >
+            <X size={20} />
+          </button>
         </div>
 
         <div className="admin-nav-list">
           <button 
             className={`admin-nav-item ${activeTab === "contacts" ? "active" : ""}`}
-            onClick={() => setActiveTab("contacts")}
+            onClick={() => { setActiveTab("contacts"); setMobileMenuOpen(false); }}
           >
             <Phone size={18} /> Yêu Cầu Báo Giá
             {pendingContactsCount > 0 && <span className="nav-badge-count">{pendingContactsCount}</span>}
@@ -490,30 +490,40 @@ export default function Admin() {
 
           <button 
             className={`admin-nav-item ${activeTab === "products" ? "active" : ""}`}
-            onClick={() => setActiveTab("products")}
+            onClick={() => { setActiveTab("products"); setMobileMenuOpen(false); }}
           >
             <Package size={18} /> Quản Lý Sản Phẩm
           </button>
 
           <button 
             className={`admin-nav-item ${activeTab === "projects" ? "active" : ""}`}
-            onClick={() => setActiveTab("projects")}
+            onClick={() => { setActiveTab("projects"); setMobileMenuOpen(false); }}
           >
             <FolderKanban size={18} /> Quản Lý Dự Án
           </button>
 
           <button 
             className={`admin-nav-item ${activeTab === "news" ? "active" : ""}`}
-            onClick={() => setActiveTab("news")}
+            onClick={() => { setActiveTab("news"); setMobileMenuOpen(false); }}
           >
             <Newspaper size={18} /> Quản Lý Tin Tức
           </button>
         </div>
 
         <div className="sidebar-footer">
-          <Link to="/" className="btn-back-to-site">
+          <Link to="/" className="btn-back-to-site" onClick={() => setMobileMenuOpen(false)}>
             <ArrowLeft size={18} /> Quay về Trang Chủ
           </Link>
+          <button 
+            type="button" 
+            className="btn-sidebar-logout" 
+            onClick={() => {
+              setMobileMenuOpen(false);
+              logout();
+            }}
+          >
+            <LogOut size={18} /> Đăng Xuất
+          </button>
         </div>
       </aside>
 
@@ -521,20 +531,86 @@ export default function Admin() {
       <main className="admin-main-viewport">
         {/* TOPBAR */}
         <header className="admin-topbar">
-          <div className="topbar-status">
-            <span className="status-dot"></span> MongoDB Atlas Connected
+          <div className="topbar-left">
+            <button 
+              type="button"
+              className="admin-mobile-menu-btn" 
+              onClick={() => setMobileMenuOpen(true)}
+              aria-label="Mở menu quản trị"
+            >
+              <Menu size={20} />
+            </button>
+            <div className="topbar-status">
+              <span className="status-dot"></span>
+              <span className="topbar-status-text">MongoDB Atlas Connected</span>
+              <span className="topbar-status-mobile-text">Atlas Live</span>
+            </div>
           </div>
 
           <div className="topbar-user">
-            <button className="btn-add-new" onClick={fetchData} disabled={loading} style={{ padding: "6px 14px", fontSize: "0.85rem" }}>
-              <RefreshCw size={14} className={loading ? "spin" : ""} /> {loading ? "Đang nạp..." : "Làm mới dữ liệu"}
+            <button className="btn-add-new btn-refresh-data" onClick={fetchData} disabled={loading}>
+              <RefreshCw size={14} className={loading ? "spin" : ""} />
+              <span className="refresh-btn-text">{loading ? "Đang nạp..." : "Làm mới dữ liệu"}</span>
             </button>
-            <div className="user-avatar">A</div>
+            <div className="admin-user-profile-badge" title={currentUser?.email || "admin@boss.vn"}>
+              <div className="user-avatar">
+                {currentUser?.fullName ? currentUser.fullName[0].toUpperCase() : "A"}
+              </div>
+              <div className="admin-profile-text">
+                <span className="admin-name">{currentUser?.fullName || "Admin"}</span>
+                <span className="admin-role-tag">QUẢN TRỊ VIÊN</span>
+              </div>
+            </div>
+            <button 
+              type="button" 
+              className="btn-admin-logout"
+              onClick={() => logout()}
+              title="Đăng xuất khỏi trang quản trị"
+            >
+              <LogOut size={16} />
+              <span className="logout-btn-text">Đăng Xuất</span>
+            </button>
           </div>
         </header>
 
         {/* CONTENT BODY */}
         <div className="admin-content-body">
+          {/* MOBILE QUICK TABS BAR */}
+          <div className="admin-mobile-quick-tabs">
+            <button 
+              className={`mobile-quick-tab ${activeTab === "contacts" ? "active" : ""}`}
+              onClick={() => setActiveTab("contacts")}
+            >
+              <Phone size={14} />
+              <span>Báo Giá</span>
+              {pendingContactsCount > 0 && <span className="tab-pill-count">{pendingContactsCount}</span>}
+            </button>
+
+            <button 
+              className={`mobile-quick-tab ${activeTab === "products" ? "active" : ""}`}
+              onClick={() => setActiveTab("products")}
+            >
+              <Package size={14} />
+              <span>Sản Phẩm</span>
+            </button>
+
+            <button 
+              className={`mobile-quick-tab ${activeTab === "projects" ? "active" : ""}`}
+              onClick={() => setActiveTab("projects")}
+            >
+              <FolderKanban size={14} />
+              <span>Dự Án</span>
+            </button>
+
+            <button 
+              className={`mobile-quick-tab ${activeTab === "news" ? "active" : ""}`}
+              onClick={() => setActiveTab("news")}
+            >
+              <Newspaper size={14} />
+              <span>Tin Tức</span>
+            </button>
+          </div>
+
           {/* STATS CARDS */}
           <div className="admin-stats-grid">
             <div className="admin-stat-card">
@@ -596,6 +672,7 @@ export default function Admin() {
                   </div>
                 </div>
               </div>
+              <div className="table-scroll-hint"><span>⇄ Vuốt sang ngang để xem đầy đủ cột</span></div>
               <table className="admin-table">
                 <thead>
                   <tr>
@@ -679,6 +756,7 @@ export default function Admin() {
                   </button>
                 </div>
               </div>
+              <div className="table-scroll-hint"><span>⇄ Vuốt sang ngang để xem đầy đủ cột</span></div>
               <table className="admin-table">
                 <thead>
                   <tr>
@@ -757,6 +835,7 @@ export default function Admin() {
                   </button>
                 </div>
               </div>
+              <div className="table-scroll-hint"><span>⇄ Vuốt sang ngang để xem đầy đủ cột</span></div>
               <table className="admin-table">
                 <thead>
                   <tr>
@@ -830,6 +909,7 @@ export default function Admin() {
                   </button>
                 </div>
               </div>
+              <div className="table-scroll-hint"><span>⇄ Vuốt sang ngang để xem đầy đủ cột</span></div>
               <table className="admin-table">
                 <thead>
                   <tr>
@@ -906,7 +986,7 @@ export default function Admin() {
                 />
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
+              <div className="admin-form-grid-3">
                 <div className="admin-form-group">
                   <label>Mã sản phẩm *</label>
                   <input 
@@ -950,7 +1030,7 @@ export default function Admin() {
                 </div>
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              <div className="admin-form-grid-2">
                 <div className="admin-form-group">
                   <label>Giá tham khảo</label>
                   <input 
@@ -1034,7 +1114,7 @@ export default function Admin() {
                 />
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              <div className="admin-form-grid-2">
                 <div className="admin-form-group">
                   <label>Hạng mục / Loại dự án</label>
                   <input 
@@ -1109,7 +1189,7 @@ export default function Admin() {
                 />
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              <div className="admin-form-grid-2">
                 <div className="admin-form-group">
                   <label>Ngày đăng</label>
                   <input 

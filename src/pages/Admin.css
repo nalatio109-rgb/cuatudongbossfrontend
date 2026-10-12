@@ -196,6 +196,31 @@ body.admin-mode {
   box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);
 }
 
+.btn-sidebar-logout {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  margin-top: 8px;
+  padding: 12px 16px;
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 12px;
+  color: #fca5a5;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn-sidebar-logout:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+  border-color: rgba(239, 68, 68, 0.45);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+}
+
 /* Main Content Area */
 .admin-main-viewport {
   margin-left: 260px;
@@ -270,6 +295,58 @@ body.admin-mode {
 
 .user-avatar:hover {
   transform: scale(1.1) rotate(5deg);
+}
+
+.admin-user-profile-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 12px 4px 5px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 30px;
+}
+
+.admin-profile-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.admin-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.admin-role-tag {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #d4af37;
+  letter-spacing: 0.5px;
+}
+
+.btn-admin-logout {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #fca5a5;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn-admin-logout:hover {
+  background: #ef4444;
+  color: white;
+  border-color: #ef4444;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+  transform: translateY(-1px);
 }
 
 .admin-content-body {
@@ -644,49 +721,461 @@ body.admin-mode {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Mobile Responsive Adjustments for Admin Dashboard */
+
+/* Toast Notification */
+.admin-toast-message {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  background: #1e293b;
+  color: #f8fafc;
+  padding: 12px 20px;
+  border-radius: 12px;
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  z-index: 10000;
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: adminFadeInUp 0.3s ease-out;
+}
+
+/* Modal Form Grids (Desktop 3 & 2 columns) */
+.admin-form-grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+}
+
+.admin-form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* Desktop Defaults for Mobile-specific Elements */
+.admin-mobile-menu-btn,
+.admin-sidebar-close-btn,
+.admin-sidebar-backdrop,
+.admin-mobile-quick-tabs,
+.table-scroll-hint,
+.topbar-status-mobile-text {
+  display: none !important;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.topbar-status-text {
+  display: inline;
+}
+
+.btn-refresh-data {
+  padding: 6px 14px;
+  font-size: 0.85rem;
+}
+
+/* ==========================================================
+   MOBILE & TABLET RESPONSIVE ADJUSTMENTS (<= 992px)
+   ========================================================== */
 @media (max-width: 992px) {
   .admin-standalone-wrapper {
     flex-direction: column;
+    min-height: 100vh;
   }
+
+  /* Off-canvas Mobile Drawer Sidebar */
   .admin-sidebar {
-    position: relative;
-    width: 100%;
-    top: auto;
-    bottom: auto;
-    left: auto;
-    border-right: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 280px;
+    max-width: 82vw;
+    height: 100vh;
+    z-index: 10002;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: none;
+    overflow-y: auto;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
   }
+
+  .admin-sidebar.mobile-open {
+    transform: translateX(0);
+    box-shadow: 12px 0 35px rgba(0, 0, 0, 0.85);
+  }
+
+  .admin-sidebar-backdrop {
+    display: block !important;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 10001;
+    animation: adminFadeIn 0.25s ease-out;
+  }
+
+  @keyframes adminFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .admin-sidebar-logo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 1.2rem;
+  }
+
+  .admin-sidebar-logo .admin-logo-text {
+    flex: 1;
+    margin-left: 10px;
+  }
+
+  .admin-sidebar-close-btn {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #cbd5e1;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .admin-sidebar-close-btn:active {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .admin-nav-item {
+    padding: 14px 16px;
+    font-size: 1rem;
+  }
+
+  /* Main Viewport */
   .admin-main-viewport {
-    margin-left: 0;
+    margin-left: 0 !important;
+    width: 100%;
+    min-height: 100vh;
   }
+
+  /* Sticky Topbar */
   .admin-topbar {
-    padding: 0.8rem 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    padding: 0.75rem 1rem;
+    background: rgba(15, 23, 42, 0.94);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
   }
+
+  .admin-mobile-menu-btn {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: #f8fafc;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .admin-mobile-menu-btn:active {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
   .admin-content-body {
-    padding: 1rem;
+    padding: 1rem 0.85rem 3rem 0.85rem;
   }
+
+  /* Mobile Quick Tabs Bar */
+  .admin-mobile-quick-tabs {
+    display: flex !important;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 12px;
+    margin-bottom: 1rem;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .admin-mobile-quick-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .mobile-quick-tab {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 20px;
+    background: rgba(30, 41, 59, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #94a3b8;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .mobile-quick-tab:active {
+    transform: scale(0.96);
+  }
+
+  .mobile-quick-tab.active {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.3) 0%, rgba(16, 185, 129, 0.15) 100%);
+    color: #10b981;
+    border-color: rgba(16, 185, 129, 0.45);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+  }
+
+  .tab-pill-count {
+    background: #ef4444;
+    color: white;
+    font-size: 0.7rem;
+    padding: 1px 6px;
+    border-radius: 8px;
+    font-weight: 700;
+  }
+
+  /* Scroll hint */
+  .table-scroll-hint {
+    display: flex !important;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+    font-size: 0.75rem;
+    color: #94a3b8;
+    padding: 6px 12px;
+    background: rgba(255, 255, 255, 0.02);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  /* Table styling on mobile */
   .admin-table-container {
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 12px;
   }
-  .admin-table {
-    min-width: 680px;
-  }
+
   .table-action-header {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
     gap: 12px;
+    padding: 1rem;
   }
+
+  .table-action-header h2 {
+    font-size: 1rem;
+    line-height: 1.35;
+  }
+
   .table-header-controls {
     width: 100%;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
   }
+
+  .admin-search-box {
+    width: 100%;
+  }
+
   .admin-search-input {
-    width: 100%;
+    width: 100% !important;
+    font-size: 0.95rem;
+    padding: 10px 12px 10px 38px;
   }
-  .admin-search-input:focus {
+
+  .btn-add-new {
     width: 100%;
+    justify-content: center;
+    padding: 11px 16px;
+    font-size: 0.9rem;
+  }
+
+  .admin-table {
+    min-width: 650px;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    padding: 12px 10px;
+    font-size: 0.85rem;
+  }
+
+  .btn-action-icon {
+    width: 36px;
+    height: 36px;
+    margin-right: 4px;
   }
 }
+
+/* ==========================================================
+   PHONE SCREEN REFINEMENTS (<= 768px)
+   ========================================================== */
+@media (max-width: 768px) {
+  .topbar-status-text {
+    display: none !important;
+  }
+
+  .topbar-status-mobile-text {
+    display: inline !important;
+    font-size: 0.8rem;
+  }
+
+  .topbar-status {
+    padding: 5px 10px;
+  }
+
+  .refresh-btn-text {
+    display: none;
+  }
+
+  .btn-refresh-data {
+    padding: 8px 10px !important;
+    border-radius: 8px;
+  }
+
+  /* 2x2 Compact Stats Grid on Phones */
+  .admin-stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+    margin-bottom: 1.25rem !important;
+  }
+
+  .admin-stat-card {
+    padding: 12px 10px !important;
+    gap: 8px !important;
+    border-radius: 12px !important;
+  }
+
+  .admin-stat-card:hover {
+    transform: none !important;
+  }
+
+  .stat-icon {
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 10px !important;
+    flex-shrink: 0;
+  }
+
+  .stat-icon svg {
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  .stat-info h4 {
+    font-size: 0.72rem !important;
+    line-height: 1.25 !important;
+    margin-bottom: 2px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .stat-info p {
+    font-size: 1.2rem !important;
+    line-height: 1.1;
+  }
+
+  /* Responsive Form Grids in Modals */
+  .admin-form-grid-3,
+  .admin-form-grid-2 {
+    grid-template-columns: 1fr !important;
+    gap: 8px !important;
+  }
+
+  /* Modals on Phones */
+  .admin-modal-overlay {
+    padding: 10px !important;
+    align-items: flex-end;
+  }
+
+  .admin-modal-card {
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+    padding: 1.25rem 1rem !important;
+    border-radius: 20px 20px 14px 14px !important;
+    width: 100% !important;
+  }
+
+  .modal-header h3 {
+    font-size: 1.1rem !important;
+  }
+
+  .admin-form-group {
+    margin-bottom: 0.9rem !important;
+  }
+
+  .admin-form-group input,
+  .admin-form-group select,
+  .admin-form-group textarea {
+    font-size: 16px !important; /* Prevents auto zoom in iOS Safari */
+    padding: 11px 12px !important;
+  }
+
+  .modal-footer {
+    flex-direction: column-reverse;
+    gap: 8px;
+    margin-top: 1.2rem;
+  }
+
+  .modal-footer button {
+    width: 100%;
+    padding: 12px;
+    font-size: 0.95rem;
+  }
+
+  /* Toast Notification on Mobile */
+  .admin-toast-message {
+    top: 12px !important;
+    right: 12px !important;
+    left: 12px !important;
+    padding: 10px 14px !important;
+    font-size: 0.85rem !important;
+    justify-content: center !important;
+    text-align: center;
+  }
+
+  .admin-user-profile-badge {
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+  }
+
+  .admin-profile-text {
+    display: none !important;
+  }
+
+  .logout-btn-text {
+    display: none !important;
+  }
+
+  .btn-admin-logout {
+    padding: 8px 10px !important;
+    border-radius: 8px !important;
+  }
+}
+
 

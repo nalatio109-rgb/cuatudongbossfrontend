@@ -2,8 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { 
   Menu, X, ChevronDown, PhoneCall, ArrowRight, ShieldCheck, ChevronRight, 
-  DoorClosed, Cpu, Sliders, Zap, Sparkles 
+  DoorClosed, Cpu, Sliders, Zap, Sparkles, User, LogOut, Shield 
 } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 export const FLYOUT_PRODUCT_NAV_DATA = [
   {
@@ -74,6 +75,10 @@ export default function Navbar() {
   const lastActiveCatRef = useRef(FLYOUT_PRODUCT_NAV_DATA[0]);
   const location = useLocation();
 
+  const { currentUser, logout } = useAuth();
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const userDropdownRef = useRef(null);
+
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
@@ -82,12 +87,24 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Close mega menu on route changes
+  // Close mega menu & user menu on route changes
   useEffect(() => {
     setMegaOpen(false);
     setMenu(false);
+    setUserMenuOpen(false);
     setHoveredCatKey(null);
   }, [location]);
+
+  // Click outside to close user menu
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (userDropdownRef.current && !userDropdownRef.current.contains(e.target)) {
+        setUserMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const updatePill = () => {
@@ -365,13 +382,119 @@ export default function Navbar() {
             <span>LIÊN HỆ</span>
           </NavLink>
 
+          {/* MOBILE USER SECTION */}
+          <div className="mobile-nav-auth-wrapper">
+            {currentUser ? (
+              <div className="mobile-user-card">
+                <div className="mobile-user-head">
+                  <div className="mobile-user-avatar">
+                    {currentUser.fullName ? currentUser.fullName[0].toUpperCase() : "U"}
+                  </div>
+                  <div className="mobile-user-details">
+                    <strong>{currentUser.fullName}</strong>
+                    <span>{currentUser.email}</span>
+                  </div>
+                </div>
+
+                {currentUser.role === "admin" && (
+                  <Link 
+                    to="/admin" 
+                    onClick={() => setMenu(false)} 
+                    className="mobile-btn-admin-portal"
+                  >
+                    <Shield size={16} /> Trang Quản Trị BOSS
+                  </Link>
+                )}
+
+                <button 
+                  type="button" 
+                  onClick={() => {
+                    setMenu(false);
+                    logout();
+                  }}
+                  className="mobile-btn-logout"
+                >
+                  <LogOut size={16} /> Đăng Xuất
+                </button>
+              </div>
+            ) : (
+              <Link 
+                to="/login" 
+                onClick={() => setMenu(false)} 
+                className="mobile-btn-login"
+              >
+                <User size={18} /> Đăng Nhập / Đăng Ký
+              </Link>
+            )}
+          </div>
+
         </nav>
 
-        <a className="call-btn" href="tel:0904678323">
-          <span className="call-btn-pulse"></span>
-          <PhoneCall size={17} className="call-icon" />
-          <span className="call-number">0904 678 323</span>
-        </a>
+        {/* RIGHT ACTIONS: HOTLINE & USER AUTH */}
+        <div className="nav-right-actions">
+          {currentUser ? (
+            <div className="nav-user-dropdown-box" ref={userDropdownRef}>
+              <button 
+                type="button"
+                className="nav-user-trigger-btn"
+                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                title={currentUser.fullName}
+              >
+                <span className="user-initial-badge">
+                  {currentUser.fullName ? currentUser.fullName[0].toUpperCase() : "U"}
+                </span>
+                <span className="user-short-name">{currentUser.fullName}</span>
+                {currentUser.role === "admin" && <span className="admin-chip">ADMIN</span>}
+              </button>
+
+              {userMenuOpen && (
+                <div className="nav-user-floating-menu">
+                  <div className="user-floating-header">
+                    <strong>{currentUser.fullName}</strong>
+                    <span>{currentUser.email}</span>
+                    <span className={`user-role-badge ${currentUser.role}`}>
+                      {currentUser.role === "admin" ? "🛡️ Quản trị viên" : "👤 Thành viên"}
+                    </span>
+                  </div>
+
+                  <div className="floating-divider"></div>
+
+                  {currentUser.role === "admin" && (
+                    <Link 
+                      to="/admin" 
+                      className="floating-menu-link admin"
+                      onClick={() => setUserMenuOpen(false)}
+                    >
+                      <Shield size={16} /> Vào Trang Quản Trị
+                    </Link>
+                  )}
+
+                  <button 
+                    type="button"
+                    className="floating-menu-link logout"
+                    onClick={() => {
+                      setUserMenuOpen(false);
+                      logout();
+                    }}
+                  >
+                    <LogOut size={16} /> Đăng Xuất
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <Link to="/login" className="nav-login-pill-btn" title="Đăng nhập tài khoản">
+              <User size={16} />
+              <span className="login-pill-text">Đăng Nhập</span>
+            </Link>
+          )}
+
+          <a className="call-btn" href="tel:0904678323">
+            <span className="call-btn-pulse"></span>
+            <PhoneCall size={17} className="call-icon" />
+            <span className="call-number">0904 678 323</span>
+          </a>
+        </div>
 
       </div>
     </header>
