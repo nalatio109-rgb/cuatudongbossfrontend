@@ -18,12 +18,14 @@
 .rolling-title__row--top {
   justify-content: flex-start;
   padding-left: 8%;
+  transform: translateY(-40px);
 }
 
 .rolling-title__row--bottom {
   justify-content: flex-end;
   margin-top: 15px;
   padding-right: 16%;
+  transform: translateY(-25px) translateX(-130px);
 }
 
 .rolling-title__word {
@@ -49,6 +51,7 @@
     opacity: 0;
     transform: translateX(-50px) skewX(-4deg) scaleX(1.5);
   }
+
   100% {
     opacity: 1;
     transform: translateX(0) skewX(-4deg) scaleX(1.5);
@@ -67,6 +70,7 @@
   margin-bottom: 8px;
   margin-left: -5%;
   gap: 6px;
+  transform: translateY(-40px);
 }
 
 .rolling-title__line-yellow {
@@ -164,6 +168,7 @@
     opacity: 0;
     transform: translateY(10px);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0);

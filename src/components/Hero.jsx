@@ -41,12 +41,12 @@ export default function Hero() {
       {/* ================= HERO ================= */}
       <section className="hero" id="home">
         <div className="hero-bg">
-          <video 
-            src={videoSrc} 
-            autoPlay 
-            loop 
-            muted 
-            playsInline 
+          <video
+            src={videoSrc}
+            autoPlay
+            loop
+            muted
+            playsInline
             className="hero-video-element"
           />
         </div>
@@ -67,18 +67,22 @@ export default function Hero() {
             </div>
 
             {/* Gạch vàng + đỏ */}
-            <div className="rolling-title__accent">
+            {/* <div className="rolling-title__accent">
               <span className="rolling-title__line-yellow"></span>
               <span className="rolling-title__line-red"></span>
-            </div>
+            </div> */}
 
             {/* Dòng 2 */}
             <div className="rolling-title__row rolling-title__row--bottom">
               <h2 className="rolling-title__word">
-                ĐÀ NẴNG
+                CỬA KÉO
               </h2>
             </div>
-
+            <div className="rolling-title__row rolling-title__row--top" style={{ transform: 'translateY(6px) translateX(18px)' }}>
+              <h1 className="rolling-title__word">
+                CỬA TỰ ĐỘNG
+              </h1>
+            </div>
             {/* Footer trang trí */}
             <div className="rolling-title__footer">
               <div className="rolling-title__slashes">
@@ -142,10 +146,10 @@ export default function Hero() {
             <button className="video-modal-close" onClick={() => setIsVideoOpen(false)}>
               <X size={20} />
             </button>
-            <video 
+            <video
               src={videoSrc}
-              controls 
-              autoPlay 
+              controls
+              autoPlay
               style={{ width: '100%', height: '100%', objectFit: 'contain' }}
             />
           </div>
