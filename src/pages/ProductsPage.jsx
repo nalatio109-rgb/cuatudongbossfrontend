@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
-import { 
-  ArrowRight, Search, ShieldCheck, CheckCircle2, Star, HeadphonesIcon, 
+import {
+  ArrowRight, Search, ShieldCheck, CheckCircle2, Star, HeadphonesIcon,
   Home, AlignJustify, ArrowRightLeft, Columns, Eye, X, Check, Filter, Sparkles, PhoneCall
 } from "lucide-react";
 import "./ProductsPage.css";
@@ -42,12 +42,11 @@ export default function ProductsPage() {
   }, []);
 
   const categories = [
-    { id: "all", label: "TẤT CẢ SẢN PHẨM" },
-    { id: "cuacuon", label: "CỬA CUỐN" },
-    { id: "phukien", label: "PHỤ KIỆN CỬA CUỐN" },
-    { id: "cuakeo", label: "CỬA KÉO" },
-    { id: "cuatudong", label: "CỔNG & CỬA TỰ ĐỘNG" },
-    { id: "nhomkinh", label: "NHÔM KÍNH" },
+    { id: "all", label: "TẤT CẢ" },
+    { id: "cuacuon", label: "CỬA CUỐN" },
+    { id: "phukien", label: "PHỤ KIỆN CỬA" },
+    { id: "cuakeo", label: "CỬA KÉO" },
+    { id: "cuatudong", label: "CỔNG & CỬA" },
   ];
 
   const products = [
@@ -282,9 +281,9 @@ export default function ProductsPage() {
 
   const filteredProducts = productList.filter((item) => {
     const matchesCategory = activeCategory === "all" || item.category === activeCategory;
-    const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                          item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                          item.code.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.code.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 
@@ -344,9 +343,9 @@ export default function ProductsPage() {
           <div className="search-filter-box">
             <div className="search-input-wrapper">
               <Search size={20} className="search-icon" />
-              <input 
-                type="text" 
-                placeholder="Tìm kiếm sản phẩm (Ví dụ: Cửa cuốn, Cửa trượt, Xingfa)..." 
+              <input
+                type="text"
+                placeholder="Tìm kiếm sản phẩm (Ví dụ: Cửa cuốn, Cửa trượt, Xingfa)..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -363,7 +362,7 @@ export default function ProductsPage() {
       {/* 2. MAIN CATALOG SECTION */}
       <section className="products-catalog-section section-padding">
         <div className="container">
-          
+
           {/* Category Filter Pills */}
           <div className="catalog-category-bar">
             <div className="category-pills">
@@ -386,9 +385,9 @@ export default function ProductsPage() {
           {filteredProducts.length > 0 ? (
             <div className="products-page-grid" key={activeCategory + searchQuery}>
               {filteredProducts.map((product, index) => (
-                <div 
-                  key={product.id} 
-                  className="product-page-card" 
+                <div
+                  key={product.id}
+                  className="product-page-card"
                   style={{ "--card-index": index }}
                   onMouseMove={handleCardMouseMove}
                   onMouseLeave={handleCardMouseLeave}
@@ -413,7 +412,7 @@ export default function ProductsPage() {
                     </div>
                     {product.price && <div className="product-price">{product.price}</div>}
                     <p className="card-desc">{product.description}</p>
-                    
+
                     <div className="card-specs-mini">
                       {product.specs.slice(0, 2).map((s, idx) => (
                         <div key={idx} className="mini-spec-tag">
@@ -430,8 +429,8 @@ export default function ProductsPage() {
                       }}>
                         XEM CHI TIẾT <ArrowRight size={14} />
                       </button>
-                      <a 
-                        href="tel:0904678323" 
+                      <a
+                        href="tel:0904678323"
                         className="btn-quick-call"
                         onClick={(e) => e.stopPropagation()}
                       >

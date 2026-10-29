@@ -436,7 +436,7 @@
 /* Timeline Row */
 .exact-timeline-row {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
   position: relative;
 }
@@ -445,8 +445,8 @@
   content: "";
   position: absolute;
   top: 7px;
-  left: 10%;
-  right: 10%;
+  left: 7px;
+  right: calc(25% - 7px);
   height: 2px;
   background-color: #cbd5e1;
   z-index: 1;

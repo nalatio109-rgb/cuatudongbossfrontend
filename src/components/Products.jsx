@@ -30,10 +30,10 @@ export default function Products() {
 
   const categories = [
     { id: "all", label: "TẤT CẢ" },
-    { id: "cuacuon", label: "CỬA CUỐN" },
-    { id: "cuatudong", label: "CỬA TỰ ĐỘNG" },
-    { id: "barrier", label: "BARRIER & CỔNG" },
-    { id: "nhomkinh", label: "NHÔM KÍNH" },
+    { id: "cuacuon", label: "CỬA CUỐN" },
+    { id: "cuatudong", label: "PHỤ KIỆN CỬA" },
+    { id: "barrier", label: "CỬA KÉO" },
+    { id: "nhomkinh", label: "CỔNG & CỬA" },
   ];
 
   const products = [
@@ -105,8 +105,8 @@ export default function Products() {
     },
   ];
 
-  const filteredProducts = activeTab === "all" 
-    ? products 
+  const filteredProducts = activeTab === "all"
+    ? products
     : products.filter(p => p.category === activeTab);
 
   // 3D Parallax Tilt Handler
@@ -161,11 +161,11 @@ export default function Products() {
               </button>
             ))}
           </div>
-          
+
           <div className="new-product-grid" key={activeTab}>
             {filteredProducts.map((product, index) => (
-              <div 
-                className="new-product-card" 
+              <div
+                className="new-product-card"
                 key={product.id}
                 style={{ "--card-index": index }}
                 onMouseMove={handleMouseMove}

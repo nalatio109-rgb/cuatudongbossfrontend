@@ -18,7 +18,7 @@ export default function Hero() {
     },
     {
       icon: <CalendarCheck />,
-      number: "15+",
+      number: "10+",
       text: "NĂM",
       sub: "Kinh nghiệm",
     },
@@ -78,7 +78,7 @@ export default function Hero() {
                 CỬA KÉO
               </h2>
             </div>
-            <div className="rolling-title__row rolling-title__row--top" style={{ transform: 'translateY(6px) translateX(18px)' }}>
+            <div className="rolling-title__row rolling-title__row--top" style={{ transform: 'translateY(6px)' }}>
               <h1 className="rolling-title__word">
                 CỬA TỰ ĐỘNG
               </h1>

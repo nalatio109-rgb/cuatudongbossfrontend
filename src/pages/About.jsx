@@ -178,6 +178,12 @@ const About = () => {
                   <div className="exact-timeline-year">2024</div>
                   <div className="exact-timeline-desc">Phát triển hệ thống đại lý trên toàn quốc</div>
                 </div>
+
+                <div className="exact-timeline-item">
+                  <div className="exact-timeline-dot"></div>
+                  <div className="exact-timeline-year">2026</div>
+                  <div className="exact-timeline-desc">Ra mắt showroom hiện đại & mở rộng thị trường miền Trung</div>
+                </div>
               </div>
             </RevealOnScroll>
           </div>
