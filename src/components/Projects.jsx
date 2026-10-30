@@ -1,6 +1,6 @@
 import React from "react";
-import { ArrowRight } from "lucide-react";
-import { Link } from "react-router-dom";
+
+
 import RevealOnScroll from "./RevealOnScroll";
 
 export default function Projects() {
@@ -60,9 +60,7 @@ export default function Projects() {
                 </div>
                 <h2>NHỮNG CÔNG TRÌNH ĐÃ THỰC HIỆN</h2>
               </div>
-              <Link to="/du-an" className="btn-outline">
-                XEM TẤT CẢ DỰ ÁN <ArrowRight size={14} />
-              </Link>
+
             </div>
           </RevealOnScroll>
         </div>

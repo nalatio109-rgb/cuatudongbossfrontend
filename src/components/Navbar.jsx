@@ -351,11 +351,11 @@ export default function Navbar() {
           )}
 
           <NavLink 
-            to="/du-an" 
+            to="/bang-gia" 
             onClick={() => setMenu(false)} 
             className={({ isActive }) => (isActive ? "nav-link-item active" : "nav-link-item")}
           >
-            <span>DỰ ÁN</span>
+            <span>BẢNG GIÁ</span>
           </NavLink>
 
           <NavLink 

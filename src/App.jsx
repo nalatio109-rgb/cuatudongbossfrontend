@@ -10,7 +10,7 @@ import Home from "./pages/Home";
 import About from "./pages/About";
 import ProductsPage from "./pages/ProductsPage";
 import ProductDetail from "./pages/ProductDetail";
-import Projects from "./pages/Projects";
+import Pricing from "./pages/Pricing";
 import Services from "./pages/Services";
 import NewsPage from "./pages/News";
 import NewsDetail from "./pages/NewsDetail";
@@ -69,7 +69,7 @@ export default function App() {
         <Route path="/gioi-thieu" element={<About />} />
         <Route path="/san-pham" element={<ProductsPage />} />
         <Route path="/san-pham/:id" element={<ProductDetail />} />
-        <Route path="/du-an" element={<Projects />} />
+        <Route path="/bang-gia" element={<Pricing />} />
         <Route path="/dich-vu" element={<Services />} />
         <Route path="/tin-tuc" element={<NewsPage />} />
         <Route path="/tin-tuc/:id" element={<NewsDetail />} />

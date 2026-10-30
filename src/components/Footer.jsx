@@ -39,7 +39,7 @@ export default function Footer() {
             <a href="/">Trang chủ</a>
             <a href="/gioi-thieu">Giới thiệu</a>
             <a href="/san-pham">Sản phẩm</a>
-            <a href="/du-an">Dự án</a>
+            <a href="/bang-gia">Bảng giá</a>
             <a href="/tin-tuc">Tin tức</a>
             <a href="/lien-he">Liên hệ</a>
           </div>
