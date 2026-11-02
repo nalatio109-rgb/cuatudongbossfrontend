@@ -687,10 +687,22 @@ a {
   width: 100%;
   background: rgba(0, 0, 0, 0.35);
   border-radius: 12px;
-  padding: 12px;
-  margin-top: 8px;
+  padding: 0 12px;
   flex-direction: column;
   gap: 12px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    padding 0.35s ease,
+    opacity 0.35s ease;
+  opacity: 0;
+}
+
+.mobile-sub-accordion.show {
+  max-height: 600px;
+  padding: 12px;
+  opacity: 1;
+  margin-top: 8px;
 }
 
 .mobile-acc-group {
@@ -735,6 +747,14 @@ a {
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .mobile-expand-btn svg {
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .mobile-expand-btn svg.rotate {
+    transform: rotate(180deg);
   }
 
   .mobile-sub-accordion {
@@ -1993,16 +2013,27 @@ a {
   justify-content: center;
 }
 
-.products-section .section-header-flex .btn-outline {
-  position: absolute;
-  right: 0;
-  bottom: 5px;
+.view-all-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 28px;
+}
+
+.view-all-wrapper .btn-outline {
   border-radius: 30px;
   border-color: #333;
   color: #333;
-  padding: 10px 20px;
+  padding: 10px 24px;
   font-size: 12px;
   font-weight: 800;
+  transition: background 0.3s, color 0.3s, transform 0.25s;
+}
+
+.view-all-wrapper .btn-outline:hover {
+  background: #004d32;
+  border-color: #004d32;
+  color: #ffffff;
+  transform: translateY(-2px);
 }
 
 .section-title-left h2 {
@@ -2699,10 +2730,6 @@ textarea {
 }
 
 @media (max-width: 600px) {
-  .products-section .section-header-flex .btn-outline {
-    position: static;
-    margin-top: 15px;
-  }
 
   .new-product-card {
     flex-direction: column;
@@ -2947,8 +2974,51 @@ textarea {
 }
 
 @media (max-width: 768px) {
+  .why-section {
+    padding: 40px 0;
+  }
+
+  .why-header-centered {
+    margin-bottom: 24px;
+  }
+
   .why-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    max-width: 100%;
+  }
+
+  .why-grid-item {
+    padding: 14px 12px;
+    border-radius: 14px;
+    gap: 8px;
+    align-items: center;
+    text-align: center;
+    border: 1px solid #eef2f0;
+    background: #f9fcfa;
+  }
+
+  .why-grid-item::before {
+    display: none;
+  }
+
+  .why-grid-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    margin-bottom: 2px;
+  }
+
+  .why-grid-content h3 {
+    font-size: 12.5px;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+
+  .why-grid-content p {
+    font-size: 10.5px;
+    line-height: 1.45;
+    color: #6b8070;
   }
 }
 
@@ -3826,6 +3896,19 @@ footer {
     height: 62px;
   }
 
+  /* Đổi vị trí: User/Admin sang giữa, Hamburger sang phải */
+  .logo {
+    order: 1;
+  }
+
+  .nav-right-actions {
+    order: 2;
+  }
+
+  .mobile-menu {
+    order: 3;
+  }
+
   .logo-img {
     height: 38px !important;
   }
@@ -3852,30 +3935,50 @@ footer {
     display: none !important;
   }
 
-  /* Full Screen Slide-Down Mobile Drawer */
+  /* Backdrop khi mở drawer */
+  .mobile-nav-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0);
+    z-index: 99998;
+    animation: backdropFadeIn 0.25s ease forwards;
+  }
+
+  @keyframes backdropFadeIn {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* Mobile Right-Side Drawer */
   .nav {
     display: none;
-    position: absolute;
-    top: 62px;
-    left: 0;
-    width: 100%;
-    height: calc(100vh - 62px);
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 62%;
+    max-width: 250px;
+    height: 100vh;
     background: linear-gradient(175deg, #021a10 0%, #010d08 100%);
-    border-top: 1px solid rgba(245, 189, 32, 0.3);
+    border-left: 1.5px solid rgba(245, 189, 32, 0.35);
+    border-top: none;
     flex-direction: column;
     align-items: stretch;
     justify-content: flex-start;
     gap: 10px;
-    padding: 20px 18px 80px;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+    padding: 80px 18px 80px;
+    box-shadow: -8px 0 40px rgba(0, 0, 0, 0.6);
     overflow-y: auto;
     z-index: 99999;
     animation: mobileDrawerSlide 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     /* Resets from desktop nav pill */
-    max-width: 100%;
+    max-width: 340px;
     margin: 0;
-    border-radius: 0;
-    border-left: none;
+    border-radius: 18px 0 0 18px;
     border-right: none;
     border-bottom: none;
   }
@@ -3883,12 +3986,12 @@ footer {
   @keyframes mobileDrawerSlide {
     from {
       opacity: 0;
-      transform: translateY(-10px);
+      transform: translateX(100%);
     }
 
     to {
       opacity: 1;
-      transform: translateY(0);
+      transform: translateX(0);
     }
   }
 
@@ -3952,12 +4055,16 @@ footer {
     background: rgba(0, 0, 0, 0.45);
     border: 1px solid rgba(245, 189, 32, 0.25);
     border-radius: 14px;
-    padding: 14px;
-    margin-top: 8px;
+    padding: 0 14px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     gap: 12px;
+  }
+
+  .mobile-sub-accordion.show {
+    padding: 14px;
+    margin-top: 8px;
   }
 
   .mobile-acc-title {
@@ -4021,9 +4128,10 @@ footer {
     height: 100%;
     z-index: 2;
     background: linear-gradient(180deg,
-        rgba(0, 0, 0, 0.35) 0%,
-        rgba(0, 77, 50, 0.6) 45%,
-        rgba(0, 30, 18, 0.95) 100%);
+        rgba(0, 0, 0, 0.25) 0%,
+        rgba(0, 60, 35, 0.55) 40%,
+        rgba(0, 43, 28, 0.85) 75%,
+        rgba(0, 25, 15, 0.95) 100%);
     display: block;
   }
 
@@ -4049,12 +4157,13 @@ footer {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding-top: 20px;
+    padding-top: 30px;
+    padding-bottom: 15px;
   }
 
   .hero-content {
     max-width: 100%;
-    padding: 0 20px;
+    padding: 0 24px;
     margin-top: 0;
     text-align: center;
     display: flex;
@@ -4064,33 +4173,56 @@ footer {
 
   .hero-label {
     text-align: center;
-    margin-bottom: 25px;
-    font-size: 11px;
-    letter-spacing: 2px;
+    margin-bottom: 20px;
+    transform: translateY(0);
+    font-size: 10px;
+    letter-spacing: 2.5px;
     color: #f5bd20;
-    background: rgba(245, 189, 32, 0.15);
+    background: rgba(245, 189, 32, 0.12);
     border: 1px solid rgba(245, 189, 32, 0.4);
-    padding: 8px 18px;
+    padding: 8px 20px;
     border-radius: 30px;
     display: inline-block;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    backdrop-filter: blur(5px);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    line-height: 1.5;
   }
 
   .hero-video-play-badge {
     position: relative;
     top: auto;
     right: auto;
-    margin: 30px auto 0;
+    margin: 25px auto 0;
     width: fit-content;
     background: rgba(255, 255, 255, 0.95);
-    border: 1.5px solid rgba(245, 189, 32, 0.8);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1.5px solid rgba(245, 189, 32, 0.7);
+    box-shadow:
+      0 8px 28px rgba(0, 0, 0, 0.35),
+      0 0 12px rgba(245, 189, 32, 0.2);
     z-index: 4;
+    padding: 8px 20px 8px 10px;
+    border-radius: 30px;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .hero-play-icon {
+    width: 34px;
+    height: 34px;
   }
 
   .hero-play-text {
     color: #004d32;
+  }
+
+  .hero-play-text strong {
+    font-size: 11px;
+  }
+
+  .hero-play-text span {
+    font-size: 9px;
   }
 
   .hero-video-play-badge:hover .hero-play-text {
@@ -4213,6 +4345,43 @@ footer {
     padding-top: 20px;
   }
 
+  .products-section .section-header-flex {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .products-section .section-title-left h2 {
+    font-size: 25px;
+    letter-spacing: -0.5px;
+    margin-bottom: 4px;
+  }
+
+  .products-section .section-subtitle {
+    font-size: 9px;
+    letter-spacing: 1px;
+  }
+
+  .products-section .section-title-left p {
+    font-size: 11px;
+  }
+
+  .view-all-wrapper .btn-outline {
+    padding: 8px 20px;
+    font-size: 11px;
+  }
+
+  .product-category-tabs {
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+
+  .category-tab-btn {
+    padding: 5px 12px;
+    font-size: 9.5px;
+    letter-spacing: 0.3px;
+  }
+
   .new-product-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 12px;
@@ -4307,5 +4476,359 @@ footer {
 
   .copyright-inner div {
     margin: 5px 0;
+  }
+}
+
+/* ==========================================
+   BOSS MOBILE DRAWER - MODERN LUXURY
+   ========================================== */
+
+@media (max-width: 768px) {
+
+  /* 1. Lớp phủ phía sau menu */
+  .mobile-nav-backdrop {
+    background: rgba(0, 10, 6, 0.68) !important;
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    transition: opacity 0.3s ease;
+  }
+
+  /* 2. Khung menu trượt */
+  .nav {
+    display: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+
+    width: min(88vw, 360px);
+    max-width: none;
+    height: 100vh;
+    height: 100dvh;
+
+    box-sizing: border-box;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+
+    gap: 10px;
+
+    padding:
+      calc(env(safe-area-inset-top) + 88px) 16px calc(env(safe-area-inset-bottom) + 24px);
+
+    background: linear-gradient(160deg,
+        #032719 0%,
+        #021b12 48%,
+        #010e09 100%);
+
+    border-left: 1px solid rgba(245, 189, 32, 0.35);
+    border-radius: 22px 0 0 22px;
+
+    box-shadow: -18px 0 55px rgba(0, 0, 0, 0.42);
+
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+
+    z-index: 99999;
+
+    animation: bossDrawerIn 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .nav.open {
+    display: flex;
+  }
+
+  @keyframes bossDrawerIn {
+    from {
+      opacity: 0;
+      transform: translateX(35px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  /* 3. Các nút điều hướng */
+  .nav>a,
+  .nav>.nav-dropdown-wrapper>a {
+    width: 100%;
+    min-height: 46px;
+    height: 46px;
+
+    display: flex;
+    align-items: center;
+
+    box-sizing: border-box;
+    padding: 0 17px;
+
+    border-radius: 24px;
+
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+
+    color: #f5f7f5 !important;
+
+    font-size: 15px;
+    font-weight: 750;
+    letter-spacing: 0.2px;
+
+    text-decoration: none;
+
+    transition:
+      background 0.25s ease,
+      border-color 0.25s ease,
+      color 0.25s ease,
+      transform 0.25s ease,
+      box-shadow 0.25s ease;
+
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .nav>a:active,
+  .nav>.nav-dropdown-wrapper>a:active {
+    transform: scale(0.98);
+  }
+
+  /* 4. Mục menu đang được chọn */
+  .nav>a.active,
+  .nav>.nav-dropdown-wrapper>a.active {
+    background: linear-gradient(110deg,
+        rgba(245, 189, 32, 0.18),
+        rgba(245, 189, 32, 0.045)) !important;
+
+    color: #ffc928 !important;
+
+    border: 1px solid rgba(245, 189, 32, 0.65) !important;
+
+    box-shadow:
+      0 4px 16px rgba(245, 189, 32, 0.09),
+      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+
+    font-weight: 850;
+  }
+
+  /* 5. Nhóm Sản phẩm */
+  .nav-dropdown-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  .nav-dropdown-wrapper>a {
+    justify-content: space-between;
+  }
+
+  .mobile-expand-btn {
+    right: 9px;
+    top: 7px;
+
+    width: 34px;
+    height: 34px;
+
+    border-radius: 11px;
+
+    background: rgba(245, 189, 32, 0.12);
+    border: 1px solid rgba(245, 189, 32, 0.35);
+
+    color: #ffca35;
+    transition: all 0.25s ease;
+  }
+
+  .mobile-expand-btn:active {
+    transform: scale(0.92);
+  }
+
+  /* 6. Danh sách sản phẩm mở rộng */
+  .mobile-sub-accordion {
+    margin-top: 8px;
+    padding: 12px;
+
+    border-radius: 14px;
+
+    background: rgba(0, 0, 0, 0.22);
+    border: 1px solid rgba(245, 189, 32, 0.15);
+
+    gap: 9px;
+  }
+
+  .mobile-acc-link {
+    border-radius: 9px;
+    padding: 9px 12px !important;
+
+    background: rgba(255, 255, 255, 0.035) !important;
+    border: 1px solid rgba(255, 255, 255, 0.055) !important;
+
+    color: rgba(255, 255, 255, 0.88) !important;
+    font-size: 13px !important;
+  }
+
+  /* 7. Khu vực tài khoản quản trị */
+  .mobile-nav-auth-wrapper {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+
+    margin-top: 12px;
+    padding: 15px 0 0;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .mobile-user-card {
+    width: 100%;
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+
+    padding: 14px;
+
+    background: linear-gradient(145deg,
+        #111d2d 0%,
+        #0b1422 100%);
+
+    border: 1px solid rgba(245, 189, 32, 0.28);
+    border-radius: 19px;
+
+    box-shadow:
+      0 10px 25px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.045);
+  }
+
+  /* 8. Thông tin quản trị viên */
+  .mobile-user-head {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+  }
+
+  .mobile-user-avatar {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: linear-gradient(135deg,
+        #ffd34d,
+        #f2b80e);
+
+    color: #06351f;
+    font-size: 17px;
+    font-weight: 900;
+
+    box-shadow: 0 4px 12px rgba(245, 189, 32, 0.18);
+  }
+
+  .mobile-user-details {
+    min-width: 0;
+    gap: 3px;
+  }
+
+  .mobile-user-details strong {
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1.35;
+  }
+
+  .mobile-user-details span {
+    color: #9baabd;
+    font-size: 12px;
+  }
+
+  /* 9. Nút trang quản trị */
+  .mobile-btn-admin-portal {
+    width: 100%;
+    min-height: 48px;
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 10px 12px;
+
+    border-radius: 14px;
+
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    color: #ffffff !important;
+
+    font-size: 14px;
+    font-weight: 800 !important;
+
+    text-decoration: none;
+
+    transition: all 0.25s ease;
+  }
+
+  .mobile-btn-admin-portal:active {
+    background: rgba(245, 189, 32, 0.12);
+    border-color: rgba(245, 189, 32, 0.4);
+    transform: scale(0.98);
+  }
+
+  /* 10. Nút đăng xuất */
+  .mobile-btn-logout {
+    width: 100%;
+    min-height: 46px;
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+
+    padding: 10px 12px;
+
+    border-radius: 13px;
+
+    background: rgba(226, 29, 43, 0.12);
+    border: 1px solid rgba(226, 29, 43, 0.38);
+
+    color: #ff9b9f;
+
+    font-size: 14px;
+    font-weight: 800;
+
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+
+  .mobile-btn-logout:active {
+    background: rgba(226, 29, 43, 0.24);
+    transform: scale(0.98);
+  }
+}
+
+/* Màn hình điện thoại thấp */
+@media (max-width: 768px) {
+  .mobile-nav-backdrop {
+    position: fixed;
+    inset: 0;
+
+    background: rgba(0, 10, 6, 0.65) !important;
+
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+
+    z-index: 9990 !important;
+  }
+
+  .nav {
+    position: fixed;
+    z-index: 10000 !important;
   }
 }

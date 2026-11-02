@@ -144,9 +144,6 @@ export default function Products() {
               </div>
               <h2>DANH MỤC SẢN PHẨM</h2>
             </div>
-            <a href="#products" className="btn-outline">
-              XEM TẤT CẢ <ArrowRight size={14} />
-            </a>
           </div>
 
           {/* Interactive Category Filter Tabs */}
@@ -200,6 +197,11 @@ export default function Products() {
             ))}
           </div>
 
+          <div className="view-all-wrapper">
+            <a href="#products" className="btn-outline">
+              XEM TẤT CẢ <ArrowRight size={14} />
+            </a>
+          </div>
 
         </div>
       </section>

@@ -154,8 +154,17 @@ export default function Navbar() {
     : lastActiveCatRef.current;
 
   return (
-    <header className={`navbar ${scrolled ? "scrolled" : ""}`}>
-      <div className="container nav-inner">
+    <>
+      {/* Mobile Backdrop Overlay */}
+      {menu && (
+        <div
+          className="mobile-nav-backdrop"
+          onClick={() => setMenu(false)}
+          aria-hidden="true"
+        />
+      )}
+      <header className={`navbar ${scrolled ? "scrolled" : ""}`}>
+        <div className="container nav-inner">
 
         <Link className="logo" to="/" onClick={() => setMenu(false)}>
           <img src="/logo.png" alt="BOSS Đà Nẵng" className="logo-img" />
@@ -322,11 +331,9 @@ export default function Navbar() {
 
               </div>
             </div>
-          </div>
 
-          {/* MOBILE ACCORDION SUBLIST */}
-          {mobileProdExpanded && (
-            <div className="mobile-sub-accordion">
+            {/* MOBILE ACCORDION SUBLIST */}
+            <div className={`mobile-sub-accordion ${mobileProdExpanded ? "show" : ""}`}>
               {FLYOUT_PRODUCT_NAV_DATA.map((cat, cIdx) => (
                 <div key={cIdx} className="mobile-acc-group">
                   <div className="mobile-acc-title">{cat.title}</div>
@@ -348,7 +355,9 @@ export default function Navbar() {
                 </div>
               ))}
             </div>
-          )}
+
+          </div>
+
 
           <NavLink 
             to="/bang-gia" 
@@ -498,6 +507,7 @@ export default function Navbar() {
 
       </div>
     </header>
+    </>
   );
 }
 
