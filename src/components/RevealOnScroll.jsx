@@ -1,48 +1,53 @@
+
 import React, { useEffect, useRef, useState } from "react";
 
 export default function RevealOnScroll({
   children,
   animation = "fade-up",
   delay = 0,
-  duration = 750,
-  threshold = 0.12,
   className = "",
-  style = {}
 }) {
+  const elementRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
-  const ref = useRef(null);
+
 
   useEffect(() => {
+    const element = elementRef.current;
+    if (!element) return;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           setIsVisible(true);
+          observer.unobserve(element);
         }
       },
       {
-        threshold,
-        rootMargin: "0px 0px -40px 0px"
+        threshold: 0.15,
+        rootMargin: "0px 0px -80px 0px",
       }
     );
 
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
+    observer.observe(element);
 
     return () => observer.disconnect();
-  }, [threshold]);
+  }, []);
 
-  const customStyle = {
-    ...style,
-    transitionDuration: `${duration}ms`,
-    transitionDelay: `${delay}ms`
-  };
 
   return (
     <div
-      ref={ref}
-      style={customStyle}
-      className={`reveal-element reveal-${animation} ${isVisible ? "is-revealed" : ""} ${className}`}
+      ref={elementRef}
+      className={[
+        "reveal-element",
+        `reveal-${animation}`,
+        isVisible ? "is-revealed" : "",
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
+      style={{
+        "--reveal-delay": `${delay}ms`,
+      }}
     >
       {children}
     </div>

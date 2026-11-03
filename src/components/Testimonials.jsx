@@ -1,5 +1,13 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Star, ChevronLeft, ChevronRight, Quote } from "lucide-react";
+import React, { useState, useEffect, useCallback } from "react";
+import {
+  Star,
+  ChevronLeft,
+  ChevronRight,
+  Quote,
+  MessageCircle,
+  ArrowUpRight,
+} from "lucide-react";
+
 import RevealOnScroll from "./RevealOnScroll";
 import "./Testimonials.css";
 
@@ -54,22 +62,38 @@ const reviews = [
 export default function Testimonials() {
   const [current, setCurrent] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
-  const autoRef = useRef(null);
 
-  const goTo = (idx) => {
-    if (isAnimating) return;
-    setIsAnimating(true);
+  const goTo = useCallback((idx) => {
     setCurrent((idx + reviews.length) % reviews.length);
-    setTimeout(() => setIsAnimating(false), 400);
-  };
+    setIsAnimating(true);
+  }, []);
 
-  const next = () => goTo(current + 1);
-  const prev = () => goTo(current - 1);
+  const next = useCallback(() => {
+    setCurrent((prev) => (prev + 1) % reviews.length);
+    setIsAnimating(true);
+  }, []);
 
+  const prev = useCallback(() => {
+    setCurrent((prev) => (prev - 1 + reviews.length) % reviews.length);
+    setIsAnimating(true);
+  }, []);
+
+  // Tự động chuyển đánh giá sau mỗi 6 giây
   useEffect(() => {
-    autoRef.current = setInterval(next, 5000);
-    return () => clearInterval(autoRef.current);
-  }, [current]);
+    const timer = setInterval(next, 6000);
+    return () => clearInterval(timer);
+  }, [next]);
+
+  // Reset animation khi nội dung đánh giá thay đổi
+  useEffect(() => {
+    if (!isAnimating) return;
+
+    const timer = setTimeout(() => {
+      setIsAnimating(false);
+    }, 450);
+
+    return () => clearTimeout(timer);
+  }, [isAnimating, current]);
 
   const review = reviews[current];
 
@@ -77,109 +101,232 @@ export default function Testimonials() {
     <section className="testimonials-section">
       {/* Background decoration */}
       <div className="testimonials-bg-deco" aria-hidden="true">
-        <div className="deco-circle deco-1" />
-        <div className="deco-circle deco-2" />
+        <div className="testimonials-deco-circle deco-1" />
+        <div className="testimonials-deco-circle deco-2" />
       </div>
 
-      <div className="container">
-        <RevealOnScroll animation="fade-up" className="testimonials-header">
-          <div className="testimonials-subtitle">
-            <span>KHÁCH HÀNG NÓI GÌ</span>
-          </div>
+      <div className="container testimonials-container">
+        {/* Section heading */}
+        <RevealOnScroll
+          animation="fade-up"
+          className="testimonials-heading"
+        >
+          <span className="testimonials-eyebrow">
+            <span className="eyebrow-line" />
+            KHÁCH HÀNG CỦA CHÚNG TÔI
+            <span className="eyebrow-line" />
+          </span>
+
           <h2 className="testimonials-title">
-            ĐÁNH GIÁ TỪ <span className="text-gold">KHÁCH HÀNG</span>
+            NIỀM TIN
+
+            TỪ <span>TRẢI NGHIỆM THỰC TẾ</span>
           </h2>
+
           <p className="testimonials-desc">
-            Hơn 10,000 khách hàng đã tin tưởng và hài lòng với sản phẩm & dịch vụ của chúng tôi.
+            Sự hài lòng của khách hàng là động lực để Boss Đà Nẵng
+            không ngừng nâng cao chất lượng sản phẩm và dịch vụ.
           </p>
         </RevealOnScroll>
 
-        {/* Stars summary bar */}
-        <RevealOnScroll animation="fade-up" delay={100} className="rating-summary">
-          <div className="rating-score">4.9</div>
-          <div className="rating-stars-big">
-            {[...Array(5)].map((_, i) => (
-              <Star key={i} size={22} fill="#f5bd20" color="#f5bd20" />
-            ))}
-          </div>
-          <div className="rating-count">Từ 10,000+ đánh giá</div>
-        </RevealOnScroll>
-
-        {/* Main Card */}
-        <RevealOnScroll animation="fade-up" delay={150} className="testimonials-card-wrapper">
-          <div className={`testimonials-card ${isAnimating ? "fading" : ""}`}>
-            {/* Quote Icon */}
-            <div className="quote-icon">
-              <Quote size={32} fill="#07522f" color="#07522f" strokeWidth={0} />
-            </div>
-
-            {/* Review Text */}
-            <p className="review-text">"{review.text}"</p>
-
-            {/* Stars */}
-            <div className="review-stars">
-              {[...Array(review.rating)].map((_, i) => (
-                <Star key={i} size={18} fill="#f5bd20" color="#f5bd20" />
-              ))}
-            </div>
-
-            {/* Reviewer Info */}
-            <div className="reviewer-info">
-              <div
-                className="reviewer-avatar"
-                style={{ background: review.color }}
-              >
-                {review.avatar}
+        {/* Main two-column layout */}
+        <div className="testimonials-layout">
+          {/* LEFT COLUMN: slide in from left */}
+          <RevealOnScroll
+            animation="fade-left"
+            className="testimonials-left-reveal"
+          >
+            <div className="testimonials-intro">
+              <div className="intro-tag">
+                <MessageCircle size={15} />
+                CHIA SẺ TỪ KHÁCH HÀNG
               </div>
-              <div className="reviewer-meta">
-                <strong>{review.name}</strong>
-                <span>{review.role}</span>
-              </div>
-            </div>
-          </div>
 
-          {/* Navigation */}
-          <div className="testimonials-nav">
-            <button className="nav-btn" onClick={prev} aria-label="Trước">
-              <ChevronLeft size={20} />
-            </button>
-            <div className="nav-dots">
-              {reviews.map((_, i) => (
-                <button
-                  key={i}
-                  className={`nav-dot ${i === current ? "active" : ""}`}
-                  onClick={() => goTo(i)}
-                  aria-label={`Đánh giá ${i + 1}`}
-                />
-              ))}
-            </div>
-            <button className="nav-btn" onClick={next} aria-label="Tiếp">
-              <ChevronRight size={20} />
-            </button>
-          </div>
-        </RevealOnScroll>
+              <h3 className="intro-title">
+                Mỗi công trình
+                <br />
+                là một <span>niềm tin.</span>
+              </h3>
 
-        {/* Mini cards row */}
-        <RevealOnScroll animation="fade-up" delay={200} className="mini-reviews-row">
-          {reviews.map((r, i) => (
-            <button
-              key={r.id}
-              className={`mini-review-card ${i === current ? "active" : ""}`}
-              onClick={() => goTo(i)}
-            >
-              <div className="mini-avatar" style={{ background: r.color }}>
-                {r.avatar}
-              </div>
-              <div className="mini-meta">
-                <strong>{r.name.split(" ").slice(-2).join(" ")}</strong>
-                <div className="mini-stars">
-                  {[...Array(5)].map((_, si) => (
-                    <Star key={si} size={10} fill="#f5bd20" color="#f5bd20" />
-                  ))}
+              <p className="intro-description">
+                Không chỉ cung cấp sản phẩm, Boss Đà Nẵng còn mang đến
+                giải pháp phù hợp và sự đồng hành lâu dài trong từng công trình.
+              </p>
+
+              <div className="rating-overview">
+                <div className="rating-number">4.9</div>
+
+                <div className="rating-overview-info">
+                  <div className="rating-stars">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        size={17}
+                        fill="#f5bd20"
+                        color="#f5bd20"
+                      />
+                    ))}
+                  </div>
+
+                  <strong>Đánh giá tích cực</strong>
+                  <span>Từ 10,000+ lượt đánh giá</span>
                 </div>
               </div>
-            </button>
-          ))}
+
+              <div className="intro-bottom">
+                <div className="customer-stack">
+                  {reviews.slice(0, 4).map((r) => (
+                    <div
+                      key={r.id}
+                      className="stack-avatar"
+                      style={{ background: r.color }}
+                    >
+                      {r.avatar}
+                    </div>
+                  ))}
+                </div>
+
+                <span>Những khách hàng đã tin tưởng Boss</span>
+              </div>
+            </div>
+          </RevealOnScroll>
+
+          {/* RIGHT COLUMN: slide in from right */}
+          <RevealOnScroll
+            animation="fade-right"
+            className="testimonials-right-reveal"
+          >
+            <div className="testimonial-feature">
+              <div className="feature-card">
+                <div className="feature-card-top">
+                  <div className="quote-mark">
+                    <Quote size={29} fill="currentColor" />
+                  </div>
+
+                  <span className="verified-label">
+                    <span className="verified-dot" />
+                    KHÁCH HÀNG CHIA SẺ
+                  </span>
+                </div>
+
+                <div
+                  key={review.id}
+                  className={`feature-review-content ${isAnimating ? "review-animate" : ""
+                    }`}
+                >
+                  <div className="feature-stars">
+                    {[...Array(review.rating)].map((_, i) => (
+                      <Star
+                        key={i}
+                        size={17}
+                        fill="#f5bd20"
+                        color="#f5bd20"
+                      />
+                    ))}
+                  </div>
+
+                  <p className="feature-review-text">
+                    “{review.text}”
+                  </p>
+
+                  <div className="feature-reviewer">
+                    <div
+                      className="feature-avatar"
+                      style={{ background: review.color }}
+                    >
+                      {review.avatar}
+                    </div>
+
+                    <div className="feature-reviewer-info">
+                      <strong>{review.name}</strong>
+                      <span>{review.role}</span>
+                    </div>
+
+                    <div className="reviewer-arrow">
+                      <ArrowUpRight size={20} />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="feature-card-footer">
+                  <span>
+                    Đánh giá{" "}
+                    <strong>
+                      {String(current + 1).padStart(2, "0")}
+                    </strong>
+                    {" / "}
+                    {String(reviews.length).padStart(2, "0")}
+                  </span>
+
+                  <div className="feature-controls">
+                    <button
+                      type="button"
+                      onClick={prev}
+                      aria-label="Đánh giá trước"
+                    >
+                      <ChevronLeft size={19} />
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={next}
+                      aria-label="Đánh giá tiếp theo"
+                    >
+                      <ChevronRight size={19} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </RevealOnScroll>
+        </div>
+
+        {/* Customer selection */}
+        <RevealOnScroll
+          animation="fade-up"
+          delay={150}
+          className="testimonials-list-section"
+        >
+          <div className="list-heading">
+            <div>
+              <span className="list-eyebrow">
+                KHÁCH HÀNG TIÊU BIỂU
+              </span>
+              <h3>Lắng nghe những chia sẻ khác</h3>
+            </div>
+
+            <span className="list-count">
+              {String(reviews.length).padStart(2, "0")} ĐÁNH GIÁ
+            </span>
+          </div>
+
+          <div className="mini-reviews-row">
+            {reviews.map((r, i) => (
+              <button
+                type="button"
+                key={r.id}
+                className={`mini-review-card ${i === current ? "active" : ""
+                  }`}
+                onClick={() => goTo(i)}
+                aria-pressed={i === current}
+                aria-label={`Xem đánh giá của ${r.name}`}
+              >
+                <div
+                  className="mini-avatar"
+                  style={{ background: r.color }}
+                >
+                  {r.avatar}
+                </div>
+
+                <div className="mini-meta">
+                  <strong>{r.name}</strong>
+                  <span>{r.role}</span>
+                </div>
+
+                <ChevronRight className="mini-arrow" size={17} />
+              </button>
+            ))}
+          </div>
         </RevealOnScroll>
       </div>
     </section>
