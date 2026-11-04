@@ -3,8 +3,9 @@ import { createPortal } from "react-dom";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import {
   ArrowRight, Search, ShieldCheck, CheckCircle2, Star, HeadphonesIcon,
-  Home, AlignJustify, ArrowRightLeft, Columns, Eye, X, Check, Filter, Sparkles, PhoneCall
+  Home, AlignJustify, ArrowRightLeft, Columns, Eye, X, Check, Filter, Sparkles, PhoneCall, Tag
 } from "lucide-react";
+import CategorySeoContent from "../components/CategorySeoContent";
 import "./ProductsPage.css";
 
 export default function ProductsPage() {
@@ -429,13 +430,17 @@ export default function ProductsPage() {
                       }}>
                         XEM CHI TIẾT <ArrowRight size={14} />
                       </button>
-                      <a
-                        href="tel:0904678323"
+                      <button
                         className="btn-quick-call"
-                        onClick={(e) => e.stopPropagation()}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const { icon, ...serializableProduct } = product;
+                          navigate(`/bang-gia/${product.code || product.id}`, { state: { product: serializableProduct } });
+                        }}
+                        title={`Xem bảng báo giá chi tiết sản phẩm ${product.code || product.title}`}
                       >
-                        <PhoneCall size={14} /> Báo giá
-                      </a>
+                        <Tag size={14} /> Báo giá
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -452,7 +457,10 @@ export default function ProductsPage() {
             </div>
           )}
 
-          {/* 3. GUARANTEE BAR */}
+          {/* 3. CHUYÊN SÂU NỘI DUNG SEO BÁN HÀNG THEO DANH MỤC */}
+          <CategorySeoContent activeCategory={activeCategory} />
+
+          {/* 4. GUARANTEE BAR */}
           <div className="catalog-guarantee-bar">
             <div className="guarantee-item">
               <ShieldCheck size={32} className="g-icon" />

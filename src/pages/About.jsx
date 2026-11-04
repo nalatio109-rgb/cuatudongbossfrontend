@@ -5,6 +5,7 @@ import {
   ShieldCheck, 
   Users, 
   Star, 
+  Headphones,
   Leaf, 
   Lightbulb, 
   Handshake, 
@@ -15,6 +16,7 @@ import {
 } from 'lucide-react';
 import './About.css';
 import RevealOnScroll from '../components/RevealOnScroll';
+import AnimatedCounter from '../components/AnimatedCounter';
 import Workflow from '../components/Workflow';
 
 const About = () => {
@@ -24,6 +26,10 @@ const About = () => {
     <div className="about-page-exact">
       {/* 1. HERO BANNER */}
       <section className="exact-hero-section">
+        {/* Ambient Decorative Lighting */}
+        <div className="exact-hero-glow-1"></div>
+        <div className="exact-hero-glow-2"></div>
+
         <div className="exact-hero-bg">
           <img src="/hero_building.png" alt="Tòa nhà BOSS Đà Nẵng" />
         </div>
@@ -35,7 +41,9 @@ const About = () => {
         <div className="exact-container">
           <div className="exact-hero-grid">
             <RevealOnScroll animation="fade-up" className="exact-hero-left">
-              <div className="exact-hero-subtitle">VỀ CHÚNG TÔI</div>
+              <div className="exact-hero-subtitle">
+                <span className="hero-live-dot"></span> VỀ CHÚNG TÔI
+              </div>
               
               <h1 className="exact-hero-title">
                 BOSS ĐÀ NẴNG <br />
@@ -48,7 +56,7 @@ const About = () => {
               </p>
 
               <Link to="/san-pham" className="exact-btn-yellow">
-                Khám phá sản phẩm <ArrowRight size={18} />
+                <span>Khám phá sản phẩm</span> <ArrowRight size={18} />
               </Link>
             </RevealOnScroll>
           </div>
@@ -77,13 +85,15 @@ const About = () => {
                 BOSS Đà Nẵng là đơn vị chuyên cung cấp và thi công các sản phẩm cửa nhựa cao cấp, chất lượng vượt trội và dịch vụ chuyên nghiệp nhất cho khách hàng. Với nhiều năm kinh nghiệm trong ngành, chúng tôi luôn đặt chất lượng sản phẩm và sự hài lòng của khách hàng lên hàng đầu.
               </p>
 
-              {/* 3 KPI Stats Cards */}
+              {/* 4 KPI Stats Cards */}
               <div className="exact-kpi-cards">
                 <RevealOnScroll animation="zoom-in" delay={100} className="exact-kpi-card">
                   <div className="exact-kpi-icon">
                     <ShieldCheck size={22} />
                   </div>
-                  <div className="exact-kpi-number">+5000</div>
+                  <div className="exact-kpi-number">
+                    <AnimatedCounter end={5000} prefix="+" />
+                  </div>
                   <div className="exact-kpi-text">Công trình đã thi công</div>
                 </RevealOnScroll>
 
@@ -91,7 +101,9 @@ const About = () => {
                   <div className="exact-kpi-icon">
                     <Users size={22} />
                   </div>
-                  <div className="exact-kpi-number">+10 năm</div>
+                  <div className="exact-kpi-number">
+                    <AnimatedCounter end={10} prefix="+" suffix=" năm" />
+                  </div>
                   <div className="exact-kpi-text">Kinh nghiệm trong ngành</div>
                 </RevealOnScroll>
 
@@ -99,14 +111,27 @@ const About = () => {
                   <div className="exact-kpi-icon">
                     <Star size={22} />
                   </div>
-                  <div className="exact-kpi-number">100%</div>
+                  <div className="exact-kpi-number">
+                    <AnimatedCounter end={100} suffix="%" />
+                  </div>
                   <div className="exact-kpi-text">Khách hàng hài lòng</div>
+                </RevealOnScroll>
+
+                <RevealOnScroll animation="zoom-in" delay={400} className="exact-kpi-card">
+                  <div className="exact-kpi-icon">
+                    <Headphones size={22} />
+                  </div>
+                  <div className="exact-kpi-number">
+                    <AnimatedCounter end={24} suffix="/7" />
+                  </div>
+                  <div className="exact-kpi-text">Hỗ trợ khách hàng</div>
                 </RevealOnScroll>
               </div>
             </RevealOnScroll>
 
             {/* Right Media */}
             <RevealOnScroll animation="fade-right" delay={200} className="exact-intro-right-media">
+              <div className="exact-media-backdrop-glow"></div>
               <div className="exact-door-main-img">
                 <video 
                   src={videoSrc} 
@@ -118,6 +143,7 @@ const About = () => {
               {/* Floating Top-Right Video Badge */}
               <div className="exact-video-badge" onClick={() => setIsVideoOpen(true)} title="Bấm để xem Video">
                 <div className="exact-play-button">
+                  <span className="play-pulse-ring"></span>
                   <Play size={16} fill="#ffffff" />
                 </div>
                 <div className="exact-video-info">
@@ -179,8 +205,10 @@ const About = () => {
                   <div className="exact-timeline-desc">Phát triển hệ thống đại lý trên toàn quốc</div>
                 </div>
 
-                <div className="exact-timeline-item">
-                  <div className="exact-timeline-dot"></div>
+                <div className="exact-timeline-item current-milestone">
+                  <div className="exact-timeline-dot">
+                    <span className="dot-ripple"></span>
+                  </div>
                   <div className="exact-timeline-year">2026</div>
                   <div className="exact-timeline-desc">Ra mắt showroom hiện đại & mở rộng thị trường miền Trung</div>
                 </div>
@@ -203,42 +231,42 @@ const About = () => {
 
           <div className="exact-values-bottom-grid">
             {/* 5 Circular Feature Items */}
-            <RevealOnScroll animation="fade-left" delay={150} className="exact-values-icons-row">
-              <div className="exact-value-circle-item">
+            <div className="exact-values-icons-row">
+              <RevealOnScroll animation="fade-up" delay={80} className="exact-value-circle-item">
                 <div className="exact-circle-icon">
                   <Leaf size={24} />
                 </div>
                 <div className="exact-value-label">Chất lượng<br />vượt trội</div>
-              </div>
+              </RevealOnScroll>
 
-              <div className="exact-value-circle-item">
+              <RevealOnScroll animation="fade-up" delay={160} className="exact-value-circle-item">
                 <div className="exact-circle-icon">
                   <ShieldCheck size={24} />
                 </div>
                 <div className="exact-value-label">Uy tín<br />trách nhiệm</div>
-              </div>
+              </RevealOnScroll>
 
-              <div className="exact-value-circle-item">
+              <RevealOnScroll animation="fade-up" delay={240} className="exact-value-circle-item">
                 <div className="exact-circle-icon">
                   <Users size={24} />
                 </div>
                 <div className="exact-value-label">Khách hàng<br />là trung tâm</div>
-              </div>
+              </RevealOnScroll>
 
-              <div className="exact-value-circle-item">
+              <RevealOnScroll animation="fade-up" delay={320} className="exact-value-circle-item">
                 <div className="exact-circle-icon">
                   <Lightbulb size={24} />
                 </div>
                 <div className="exact-value-label">Sáng tạo<br />không ngừng</div>
-              </div>
+              </RevealOnScroll>
 
-              <div className="exact-value-circle-item">
+              <RevealOnScroll animation="fade-up" delay={400} className="exact-value-circle-item">
                 <div className="exact-circle-icon">
                   <Handshake size={24} />
                 </div>
                 <div className="exact-value-label">Hợp tác<br />phát triển</div>
-              </div>
-            </RevealOnScroll>
+              </RevealOnScroll>
+            </div>
 
             {/* Quote Box Card */}
             <RevealOnScroll animation="fade-right" delay={250} className="exact-quote-card">
@@ -260,6 +288,9 @@ const About = () => {
       <section className="exact-cta-section">
         <div className="exact-container">
           <RevealOnScroll animation="zoom-in" className="exact-cta-box">
+            {/* Ambient Lighting in CTA */}
+            <div className="exact-cta-glow"></div>
+
             <div className="exact-cta-left-img">
               <img src="/about_door_1.png" alt="Cửa nhựa cao cấp" />
             </div>
@@ -273,7 +304,7 @@ const About = () => {
 
               <div className="exact-cta-footer-row">
                 <a href="tel:0904678323" className="exact-btn-yellow">
-                  <Phone size={18} /> Liên hệ ngay <ArrowRight size={18} />
+                  <Phone size={18} className="cta-phone-icon" /> <span>Liên hệ ngay</span> <ArrowRight size={18} />
                 </a>
 
                 <div className="exact-cta-footer-text">
@@ -293,7 +324,7 @@ const About = () => {
               <X size={20} />
             </button>
             <video 
-              src={videoSrc}
+              src={videoSrc} 
               controls 
               autoPlay 
               style={{ width: '100%', height: '100%', objectFit: 'contain' }}

@@ -3,8 +3,10 @@ import { Link } from "react-router-dom";
 import { 
   Users, Package, FolderKanban, CheckCircle, Trash2, Plus, Edit,
   RefreshCw, X, Shield, Phone, ArrowLeft, LayoutDashboard, Database,
-  Newspaper, Search, Eye, Tag, FileText, Check, Menu, LogOut
+  Newspaper, Search, Eye, Tag, FileText, Check, Menu, LogOut, Sparkles, FileSpreadsheet
 } from "lucide-react";
+import AdminCategorySeo from "../components/AdminCategorySeo";
+import AdminPriceQuote from "../components/AdminPriceQuote";
 import { useAuth } from "../context/AuthContext";
 import "./Admin.css";
 
@@ -508,6 +510,20 @@ export default function Admin() {
           >
             <Newspaper size={18} /> Quản Lý Tin Tức
           </button>
+
+          <button 
+            className={`admin-nav-item ${activeTab === "seo" ? "active" : ""}`}
+            onClick={() => { setActiveTab("seo"); setMobileMenuOpen(false); }}
+          >
+            <Sparkles size={18} /> Bài Sale & SEO Danh Mục
+          </button>
+
+          <button 
+            className={`admin-nav-item ${activeTab === "pricing" ? "active" : ""}`}
+            onClick={() => { setActiveTab("pricing"); setMobileMenuOpen(false); }}
+          >
+            <FileSpreadsheet size={18} /> Quản Lý Bảng Báo Giá
+          </button>
         </div>
 
         <div className="sidebar-footer">
@@ -609,6 +625,14 @@ export default function Admin() {
               <Newspaper size={14} />
               <span>Tin Tức</span>
             </button>
+
+            <button 
+              className={`mobile-quick-tab ${activeTab === "seo" ? "active" : ""}`}
+              onClick={() => setActiveTab("seo")}
+            >
+              <Sparkles size={14} />
+              <span>Bài Sale</span>
+            </button>
           </div>
 
           {/* STATS CARDS */}
@@ -696,8 +720,18 @@ export default function Admin() {
                             {item.phone}
                           </a>
                         </td>
-                        <td><span className="admin-badge-category">{item.productCategory}</span></td>
-                        <td style={{ maxWidth: 220, color: "#94a3b8" }}>{item.message || "Không có nội dung"}</td>
+                        <td>
+                          <span className="admin-badge-category">
+                            {item.productName || item.productCategory}
+                            {item.productCode ? ` (${item.productCode})` : ""}
+                          </span>
+                        </td>
+                        <td style={{ maxWidth: 260, color: "#94a3b8", fontSize: "0.85rem" }}>
+                          {item.dimensions && <div><strong>KT:</strong> {item.dimensions} (SL: {item.quantity || 1})</div>}
+                          {item.address && <div><strong>Đ/c:</strong> {item.address}</div>}
+                          {item.message && <div>{item.message}</div>}
+                          {!item.dimensions && !item.address && !item.message && "Không có ghi chú"}
+                        </td>
                         <td>
                           <span className={`status-pill ${item.status}`}>
                             {item.status === "pending" ? "Chờ tư vấn" : item.status === "contacted" ? "Đã liên hệ" : "Hoàn thành"}
@@ -960,6 +994,16 @@ export default function Admin() {
                 </tbody>
               </table>
             </div>
+          )}
+
+          {/* 5. QUẢN LÝ BÀI VIẾT SALE & SEO DANH MỤC */}
+          {activeTab === "seo" && (
+            <AdminCategorySeo showToast={showToast} />
+          )}
+
+          {/* 6. QUẢN LÝ BẢNG BÁO GIÁ KỸ THUẬT */}
+          {activeTab === "pricing" && (
+            <AdminPriceQuote showToast={showToast} />
           )}
         </div>
       </main>

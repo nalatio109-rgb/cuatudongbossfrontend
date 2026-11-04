@@ -19,23 +19,26 @@ button, input, select, textarea {
   opacity: 0;
   will-change: transform, opacity;
   transition-property: opacity, transform;
+  transition-duration: 0.85s;
+  transition-delay: var(--reveal-delay, 0ms);
   transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+  backface-visibility: hidden;
 }
 
 .reveal-fade-up {
-  transform: translateY(45px);
+  transform: translateY(40px);
 }
 
 .reveal-fade-down {
-  transform: translateY(-45px);
+  transform: translateY(-40px);
 }
 
 .reveal-fade-left {
-  transform: translateX(-45px);
+  transform: translateX(-40px);
 }
 
 .reveal-fade-right {
-  transform: translateX(45px);
+  transform: translateX(40px);
 }
 
 .reveal-zoom-in {

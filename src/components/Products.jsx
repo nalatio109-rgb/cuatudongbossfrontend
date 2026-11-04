@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { ArrowRight, Home, AlignJustify, ArrowRightLeft, Columns, ShieldCheck, CheckCircle2, Star, HeadphonesIcon, X, Check, Eye } from "lucide-react";
 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 export default function Products() {
   const navigate = useNavigate();
@@ -198,9 +198,9 @@ export default function Products() {
           </div>
 
           <div className="view-all-wrapper">
-            <a href="#products" className="btn-outline">
+            <Link to="/san-pham" className="btn-outline">
               XEM TẤT CẢ <ArrowRight size={14} />
-            </a>
+            </Link>
           </div>
 
         </div>

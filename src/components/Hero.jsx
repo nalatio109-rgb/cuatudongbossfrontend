@@ -41,6 +41,11 @@ export default function Hero() {
       {/* ================= HERO ================= */}
       <section className="hero" id="home">
         <div className="hero-bg">
+          <img
+            src="/hero_bg.png"
+            alt="Cửa cuốn BOSS Đà Nẵng"
+            className="hero-mobile-bg-img"
+          />
           <video
             src={videoSrc}
             autoPlay
@@ -60,8 +65,8 @@ export default function Hero() {
             </div>
 
             {/* Dòng 1 */}
-            <div className="rolling-title__row rolling-title__row--top">
-              <h1 className="rolling-title__word">
+            <div className="rolling-title__row rolling-title__row--top rolling-title__row--1">
+              <h1 className="rolling-title__word rolling-title__word--cuacuon">
                 CỬA CUỐN
               </h1>
             </div>
@@ -73,13 +78,13 @@ export default function Hero() {
             </div> */}
 
             {/* Dòng 2 */}
-            <div className="rolling-title__row rolling-title__row--bottom">
-              <h2 className="rolling-title__word">
-                CỬA KÉO
+            <div className="rolling-title__row rolling-title__row--bottom rolling-title__row--2">
+              <h2 className="rolling-title__word rolling-title__word--cuakeo">
+                CỬA KÉO
               </h2>
             </div>
-            <div className="rolling-title__row rolling-title__row--top" style={{ transform: 'translateY(6px)' }}>
-              <h1 className="rolling-title__word">
+            <div className="rolling-title__row rolling-title__row--top rolling-title__row--3" style={{ transform: 'translateY(6px)' }}>
+              <h1 className="rolling-title__word rolling-title__word--cuatudong">
                 CỬA TỰ ĐỘNG
               </h1>
             </div>
@@ -105,12 +110,18 @@ export default function Hero() {
         </section>
 
         {/* Floating Video Badge on Hero */}
-        <div className="hero-video-play-badge" onClick={() => setIsVideoOpen(true)} title="Bấm để xem video với âm thanh">
+        <div 
+          className="hero-video-play-badge" 
+          onClick={() => setIsVideoOpen(true)} 
+          title="Bấm để xem video mẫu cửa cuốn"
+          aria-label="Xem video mẫu cửa cuốn BossDoor"
+        >
           <div className="hero-play-icon">
             <Play size={18} fill="#004d32" />
           </div>
           <div className="hero-play-text">
-            <strong>XEM VIDEO THỰC TẾ</strong>
+            <strong className="video-badge-title-desktop">XEM VIDEO THỰC TẾ</strong>
+            <strong className="video-badge-title-mobile">XEM MẪU</strong>
             <span>Cửa cuốn BossDoor</span>
           </div>
         </div>

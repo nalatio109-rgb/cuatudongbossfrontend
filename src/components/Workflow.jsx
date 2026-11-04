@@ -45,7 +45,10 @@ export default function Workflow() {
               <span>QUY TRÌNH LÀM VIỆC</span>
               <div className="subtitle-line"></div>
             </div>
-            <h2>QUY TRÌNH PHỤC VỤ CHUYÊN NGHIỆP</h2>
+            <h2>
+              QUY TRÌNH PHỤC VỤ <br className="workflow-title-br" />
+              <span className="workflow-phrase-nowrap">CHUYÊN NGHIỆP</span>
+            </h2>
           </div>
         </RevealOnScroll>
 

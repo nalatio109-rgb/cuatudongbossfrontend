@@ -103,7 +103,11 @@ export default function Navbar() {
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside, { passive: true });
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
   }, []);
 
   useEffect(() => {
@@ -446,49 +450,72 @@ export default function Navbar() {
               <button 
                 type="button"
                 className="nav-user-trigger-btn"
-                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                onClick={() => {
+                  if (!userMenuOpen && menu) setMenu(false);
+                  setUserMenuOpen(!userMenuOpen);
+                }}
                 title={currentUser.fullName}
+                aria-label={`Tài khoản: ${currentUser.fullName}`}
               >
                 <span className="user-initial-badge">
                   {currentUser.fullName ? currentUser.fullName[0].toUpperCase() : "U"}
                 </span>
                 <span className="user-short-name">{currentUser.fullName}</span>
-                {currentUser.role === "admin" && <span className="admin-chip">ADMIN</span>}
+                {currentUser.role === "admin" && (
+                  <>
+                    <span className="admin-chip">ADMIN</span>
+                    <span className="admin-status-dot" title="Quản trị viên"></span>
+                  </>
+                )}
               </button>
 
               {userMenuOpen && (
-                <div className="nav-user-floating-menu">
-                  <div className="user-floating-header">
-                    <strong>{currentUser.fullName}</strong>
-                    <span>{currentUser.email}</span>
-                    <span className={`user-role-badge ${currentUser.role}`}>
-                      {currentUser.role === "admin" ? "🛡️ Quản trị viên" : "👤 Thành viên"}
-                    </span>
-                  </div>
+                <>
+                  <div
+                    className="nav-user-backdrop"
+                    onClick={() => setUserMenuOpen(false)}
+                    aria-hidden="true"
+                  />
+                  <div className="nav-user-floating-menu">
+                    <div className="user-floating-header">
+                      <div className="user-floating-profile">
+                        <span className="user-floating-avatar">
+                          {currentUser.fullName ? currentUser.fullName[0].toUpperCase() : "U"}
+                        </span>
+                        <div className="user-floating-meta">
+                          <strong>{currentUser.fullName}</strong>
+                          <span>{currentUser.email}</span>
+                        </div>
+                      </div>
+                      <span className={`user-role-badge ${currentUser.role}`}>
+                        {currentUser.role === "admin" ? "🛡️ Quản trị viên" : "👤 Thành viên"}
+                      </span>
+                    </div>
 
-                  <div className="floating-divider"></div>
+                    <div className="floating-divider"></div>
 
-                  {currentUser.role === "admin" && (
-                    <Link 
-                      to="/admin" 
-                      className="floating-menu-link admin"
-                      onClick={() => setUserMenuOpen(false)}
+                    {currentUser.role === "admin" && (
+                      <Link 
+                        to="/admin" 
+                        className="floating-menu-link admin"
+                        onClick={() => setUserMenuOpen(false)}
+                      >
+                        <Shield size={16} /> Vào Trang Quản Trị
+                      </Link>
+                    )}
+
+                    <button 
+                      type="button"
+                      className="floating-menu-link logout"
+                      onClick={() => {
+                        setUserMenuOpen(false);
+                        logout();
+                      }}
                     >
-                      <Shield size={16} /> Vào Trang Quản Trị
-                    </Link>
-                  )}
-
-                  <button 
-                    type="button"
-                    className="floating-menu-link logout"
-                    onClick={() => {
-                      setUserMenuOpen(false);
-                      logout();
-                    }}
-                  >
-                    <LogOut size={16} /> Đăng Xuất
-                  </button>
-                </div>
+                      <LogOut size={16} /> Đăng Xuất
+                    </button>
+                  </div>
+                </>
               )}
             </div>
           ) : (

@@ -1,0 +1,469 @@
+/* ==========================================================
+   CATEGORY SEO CONTENT COMPONENT - BOSS ĐÀ NẴNG
+   ========================================================== */
+
+.seo-content-section {
+  width: 100%;
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.seo-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+/* Article Wrapper with Expand / Collapse animation */
+.seo-article-wrapper {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 40px 36px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+  position: relative;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.seo-article-wrapper.is-collapsed {
+  max-height: 520px;
+  overflow: hidden;
+}
+
+.seo-article-wrapper.is-expanded {
+  max-height: 12000px;
+}
+
+/* Gradient Fade Overlay when Collapsed */
+.seo-collapse-fade {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 220px;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.8) 50%,
+    #ffffff 100%
+  );
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Toggle Expand / Collapse Action */
+.seo-toggle-action {
+  display: flex;
+  justify-content: center;
+  margin-top: -24px;
+  position: relative;
+  z-index: 10;
+  margin-bottom: 30px;
+}
+
+.btn-seo-toggle {
+  background: #ffffff;
+  color: #004d32;
+  border: 2px solid #004d32;
+  font-weight: 750;
+  font-size: 15px;
+  padding: 12px 28px;
+  border-radius: 30px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 8px 20px rgba(0, 77, 50, 0.15);
+  transition: all 0.3s ease;
+}
+
+.btn-seo-toggle:hover {
+  background: #004d32;
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0, 77, 50, 0.25);
+}
+
+/* HEADER SECTION */
+.seo-article-header {
+  text-align: center;
+  max-width: 900px;
+  margin: 0 auto 30px;
+}
+
+.seo-main-heading {
+  font-size: 26px;
+  font-weight: 850;
+  color: #004d32;
+  line-height: 1.4;
+  margin: 0 0 12px;
+}
+
+.seo-heading-divider {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 14px auto 18px;
+}
+
+.seo-heading-divider .dot {
+  width: 6px;
+  height: 6px;
+  background: #f5bd20;
+  border-radius: 50%;
+}
+
+.seo-heading-divider .bar {
+  width: 60px;
+  height: 2.5px;
+  background: linear-gradient(90deg, #f5bd20, #004d32);
+  border-radius: 2px;
+}
+
+.seo-lead-text {
+  font-size: 16px;
+  line-height: 1.8;
+  color: #334155;
+  text-align: justify;
+}
+
+.seo-body-content {
+  font-size: 15.5px;
+  line-height: 1.8;
+  color: #334155;
+  margin-bottom: 30px;
+  text-align: justify;
+}
+
+.seo-body-content p {
+  margin-bottom: 14px;
+}
+
+/* REUSABLE SECTION STYLES */
+.seo-section {
+  margin-bottom: 38px;
+}
+
+.section-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.section-title-wrap h3 {
+  font-size: 20px;
+  font-weight: 800;
+  color: #004d32;
+  margin: 0;
+}
+
+.title-icon {
+  color: #004d32;
+  flex-shrink: 0;
+}
+
+.section-subtext {
+  font-size: 15px;
+  color: #475569;
+  margin: 0 0 18px;
+  line-height: 1.6;
+}
+
+/* TECH POINTS GRID */
+.tech-points-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.tech-point-item {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 16px 18px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  transition: all 0.3s ease;
+}
+
+.tech-point-item:hover {
+  background: #ffffff;
+  border-color: #004d32;
+  box-shadow: 0 6px 18px rgba(0, 77, 50, 0.08);
+}
+
+.tech-number {
+  background: linear-gradient(135deg, #004d32, #00704a);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 900;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.tech-point-body h4 {
+  font-size: 15px;
+  font-weight: 750;
+  color: #0f172a;
+  margin: 0 0 6px;
+}
+
+.tech-point-body p {
+  font-size: 13.5px;
+  color: #475569;
+  line-height: 1.6;
+  margin: 0;
+  text-align: justify;
+}
+
+/* BENEFITS GRID */
+.benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.benefit-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 22px 18px;
+  text-align: center;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.benefit-card:hover {
+  transform: translateY(-4px);
+  border-color: #004d32;
+  box-shadow: 0 10px 24px rgba(0, 77, 50, 0.1);
+}
+
+.benefit-icon-box {
+  width: 50px;
+  height: 50px;
+  background: #f0f7f4;
+  color: #004d32;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  border: 1.5px solid rgba(0, 77, 50, 0.15);
+}
+
+.benefit-card h4 {
+  font-size: 15px;
+  font-weight: 800;
+  color: #004d32;
+  margin: 0 0 8px;
+  line-height: 1.35;
+}
+
+.benefit-card p {
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* APPLICATIONS */
+.applications-list-box {
+  background: #f8fafc;
+  border-radius: 12px;
+  padding: 18px 20px;
+  border-left: 4px solid #f5bd20;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.app-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.app-dot {
+  width: 8px;
+  height: 8px;
+  background: #004d32;
+  border-radius: 50%;
+  margin-top: 7px;
+  flex-shrink: 0;
+}
+
+.app-item p {
+  font-size: 14px;
+  color: #334155;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* BUYING GUIDE */
+.guide-box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.guide-step {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+
+.guide-step-badge {
+  background: #f5bd20;
+  color: #004d32;
+  font-weight: 850;
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.guide-step p {
+  font-size: 14px;
+  color: #334155;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* FAQ ACCORDION */
+.faq-accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.faq-item {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.25s ease;
+}
+
+.faq-item.is-open {
+  border-color: #004d32;
+  box-shadow: 0 6px 18px rgba(0, 77, 50, 0.06);
+}
+
+.faq-question-btn {
+  width: 100%;
+  padding: 16px 20px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+  gap: 14px;
+  font-family: inherit;
+  transition: background 0.2s ease;
+}
+
+.faq-question-btn:hover {
+  background: #f8fafc;
+}
+
+.faq-q-text {
+  font-size: 15px;
+  font-weight: 750;
+  color: #0f172a;
+  line-height: 1.4;
+}
+
+.faq-arrow-icon {
+  color: #004d32;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.faq-answer-collapse {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.faq-item.is-open .faq-answer-collapse {
+  max-height: 400px;
+}
+
+.faq-answer-content {
+  padding: 0 20px 18px;
+  border-top: 1px dashed #e2e8f0;
+  margin-top: 4px;
+  padding-top: 12px;
+}
+
+.faq-answer-content p {
+  font-size: 14px;
+  color: #475569;
+  line-height: 1.7;
+  margin: 0;
+  text-align: justify;
+}
+
+/* CTA BANNER */
+/* ==========================================================
+   RESPONSIVE DESIGN (MOBILE & TABLET)
+   ========================================================== */
+
+@media (max-width: 1024px) {
+  .benefits-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .tech-points-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .seo-article-wrapper {
+    padding: 24px 18px;
+    border-radius: 16px;
+  }
+  .seo-article-wrapper.is-collapsed {
+    max-height: 480px;
+  }
+  .seo-main-heading {
+    font-size: 21px;
+  }
+  .seo-lead-text {
+    font-size: 14.5px;
+    line-height: 1.7;
+  }
+  .benefits-grid {
+    grid-template-columns: 1fr;
+  }
+  .section-title-wrap h3 {
+    font-size: 17.5px;
+  }
+  .btn-seo-toggle {
+    font-size: 13.5px;
+    padding: 10px 22px;
+  }
+}
+

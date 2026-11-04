@@ -21,6 +21,8 @@ export default function News() {
     },
   ];
 
+  const marqueeNews = [...newsList, ...newsList];
+
   return (
     <>
       {/* ================= NEWS ================= */}
@@ -28,22 +30,24 @@ export default function News() {
         <div className="container news-grid-layout">
           <RevealOnScroll animation="fade-left" className="news-left">
             <h2 className="news-title">TIN TỨC - KIẾN THỨC</h2>
-            <div className="news-cards">
-              {newsList.map((news, index) => (
-                <RevealOnScroll
-                  key={index}
-                  animation="fade-up"
-                  delay={index * 130}
-                  className="news-card"
-                >
-                  <img src={news.image} alt={news.title} />
-                  <div className="news-content">
-                    <span className="news-date">{news.date}</span>
-                    <h3 className="news-card-title">{news.title}</h3>
-                    <a href="#news" className="news-link">XEM THÊM <ArrowRight size={14} /></a>
+            <div className="news-cards-wrapper">
+              <div className="news-cards">
+                {marqueeNews.map((news, index) => (
+                  <div
+                    key={index}
+                    className={`news-card ${index >= newsList.length ? "news-card-duplicate" : ""}`}
+                  >
+                    <img src={news.image} alt={news.title} />
+                    <div className="news-content">
+                      <span className="news-date">{news.date}</span>
+                      <h3 className="news-card-title">{news.title}</h3>
+                      <a href="#news" className="news-link">
+                        XEM THÊM <ArrowRight size={14} />
+                      </a>
+                    </div>
                   </div>
-                </RevealOnScroll>
-              ))}
+                ))}
+              </div>
             </div>
           </RevealOnScroll>
 

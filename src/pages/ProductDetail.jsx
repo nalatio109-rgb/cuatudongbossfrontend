@@ -1,18 +1,33 @@
-import React, { useEffect } from "react";
-import { useLocation, useNavigate, Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate, Link, useParams } from "react-router-dom";
 import { 
-  ArrowLeft, Check, PhoneCall, ShieldCheck, CheckCircle2, Star, HeadphonesIcon 
+  ArrowLeft, Check, PhoneCall, ShieldCheck, CheckCircle2, Star, HeadphonesIcon, Tag 
 } from "lucide-react";
 import "./ProductDetail.css";
 
 export default function ProductDetail() {
+  const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const product = location.state?.product;
+  const [product, setProduct] = useState(location.state?.product || null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+  }, [id]);
+
+  useEffect(() => {
+    if (product) return;
+    if (import.meta.env.VITE_API_URL && id) {
+      fetch(`${import.meta.env.VITE_API_URL}/api/products/${id}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success && data.data) {
+            setProduct(data.data);
+          }
+        })
+        .catch((err) => console.log("Detail fetch error:", err));
+    }
+  }, [id, product]);
 
   if (!product) {
     return (
@@ -92,8 +107,17 @@ export default function ProductDetail() {
             </div>
 
             <div className="detail-actions">
+              <button
+                className="btn-pricing-action"
+                onClick={() => {
+                  const { icon, ...serializableProduct } = product;
+                  navigate(`/bang-gia/${product.code || product.id}`, { state: { product: serializableProduct } });
+                }}
+              >
+                <Tag size={18} /> XEM BẢNG GIÁ CHI TIẾT
+              </button>
               <a href="tel:0904678323" className="btn-call-action">
-                <PhoneCall size={20} /> LIÊN HỆ NHẬN BÁO GIÁ
+                <PhoneCall size={18} /> GỌI BÁO GIÁ: 0904.678.323
               </a>
               <button className="btn-secondary-action" onClick={() => navigate(-1)}>
                 QUAY LẠI
