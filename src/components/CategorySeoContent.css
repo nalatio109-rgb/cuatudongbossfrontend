@@ -245,9 +245,16 @@
 }
 
 .benefit-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-8px) scale(1.02);
   border-color: #004d32;
-  box-shadow: 0 10px 24px rgba(0, 77, 50, 0.1);
+  box-shadow: 0 16px 34px rgba(0, 77, 50, 0.14);
+}
+
+.benefit-card:hover .benefit-icon-box {
+  transform: scale(1.18) rotate(8deg);
+  background: #004d32;
+  color: #f5bd20;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .benefit-icon-box {

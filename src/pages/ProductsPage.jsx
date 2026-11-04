@@ -6,6 +6,7 @@ import {
   Home, AlignJustify, ArrowRightLeft, Columns, Eye, X, Check, Filter, Sparkles, PhoneCall, Tag
 } from "lucide-react";
 import CategorySeoContent from "../components/CategorySeoContent";
+import { getProductSlug } from "../utils/slug.js";
 import "./ProductsPage.css";
 
 export default function ProductsPage() {
@@ -56,11 +57,25 @@ export default function ProductsPage() {
       id: 1,
       category: "cuacuon",
       image: "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=800&q=80",
-      title: "CỬA CUỐN KHE THOÁNG ĐỨC BOSSDOOR",
+      title: "CỬA CUỐN KHE THOÁNG ECO BEC.5810",
+      code: "BEC.5810",
+      description: "Cửa cuốn Bossdoor ECO BEC.5810 cân bằng chất lượng, thẩm mỹ hiện đại và chi phí đầu tư hợp lý.",
+      details: "Cửa cuốn Bossdoor ECO BEC.5810 nan nhôm 6063-T5 cao cấp sơn tĩnh điện AkzoNobel CHLB Đức, tích hợp gioăng giảm chấn 2 chiều siêu êm.",
+      specs: ["Hợp kim nhôm 6063-T5 siêu bền", "Sơn AkzoNobel Đức bảo hành 10 năm", "Giảm chấn 2 chiều siêu êm", "Bảo hành 5 năm"],
+      price: "1.500.000đ/m²",
+      badge: "HOT NHẤT",
+      icon: <Home size={22} />
+    },
+    {
+      id: 2,
+      category: "cuacuon",
+      image: "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=800&q=80",
+      title: "CỬA CUỐN KHE THOÁNG ĐỨC BOSSDOOR BD-900",
       code: "BD-900",
       description: "Thân cửa hợp kim nhôm 6063-T5 cao cấp, sơn tĩnh điện CHLB Đức bảo hành 10 năm.",
       details: "Dòng cửa cuốn cao cấp thế hệ mới BossDoor tích hợp công nghệ chống sao chép mã khoá, cảm biến tự dừng khi gặp vật cản và điều khiển qua Smartphone từ xa.",
       specs: ["Hợp kim nhôm 6063-T5 siêu bền", "Độ dày nan: 1.4 - 2.2 mm", "Cảm biến hồng ngoại an toàn", "Bảo hành mô-tơ 5 năm"],
+      price: "1.450.000đ/m²",
       badge: "BÁN CHẠY",
       icon: <Home size={22} />
     },
@@ -164,6 +179,58 @@ export default function ProductsPage() {
     },
 
     // 3. CỬA KÉO
+    {
+      id: 101,
+      category: "cuakeo",
+      image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
+      title: "CỬA KÉO CÔNG NGHỆ ĐỨC SR1",
+      code: "CK-SR1",
+      description: "U dày 1.3 mm sơn tĩnh điện AKZO NOBEL, máng đúc bi treo siêu êm, nhíp đặc lập là kiên cố.",
+      details: "Cửa kéo công nghệ Đức SR1 là sản phẩm cao cấp với độ dày U 1.3 mm sơn AkzoNobel CHLB Đức, máng đúc hợp kim, bi treo bạc đạn chịu lực an toàn.",
+      specs: ["Độ dày U: 1.3 mm chuẩn kỹ thuật", "Sơn AkzoNobel CHLB Đức", "Máng đúc bi treo siêu êm", "Bảo hành 5 năm"],
+      price: "1.120.000đ/m²",
+      badge: "BÁN CHẠY NHẤT",
+      icon: <Star size={22} />
+    },
+    {
+      id: 102,
+      category: "cuakeo",
+      image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=800&q=80",
+      title: "CỬA KÉO CÔNG NGHỆ ĐỨC SR2",
+      code: "CK-SR2",
+      description: "U dày 1.1 mm sơn tĩnh điện AKZO NOBEL, máng đúc bi treo, nhíp đặc lập là, giá thành kinh tế.",
+      details: "Cửa kéo công nghệ Đức SR2 độ dày 1.1 mm chuẩn mực cho nhà phố, vận hành nhẹ nhàng, chống rỉ sét hoàn hảo.",
+      specs: ["Độ dày U: 1.1 mm", "Sơn AkzoNobel Đức", "Máng đúc bi treo", "Bảo hành 5 năm"],
+      price: "1.030.000đ/m²",
+      badge: "PHỔ THÔNG",
+      icon: <Columns size={22} />
+    },
+    {
+      id: 103,
+      category: "cuakeo",
+      image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80",
+      title: "CỬA KÉO CÔNG NGHỆ ĐỨC SR3",
+      code: "CK-SR3",
+      description: "U dày 0.9 mm sơn tĩnh điện AKZO NOBEL, máng đúc bi treo, tối ưu chi phí cho gia đình.",
+      details: "Cửa kéo công nghệ Đức SR3 độ dày 0.9 mm kinh tế, máng đúc bi treo bạc đạn kéo nhẹ tênh.",
+      specs: ["Độ dày U: 0.9 mm", "Sơn AkzoNobel Đức", "Máng đúc bi treo", "Bảo hành 3 năm"],
+      price: "980.000đ/m²",
+      badge: "TIẾT KIỆM",
+      icon: <Columns size={22} />
+    },
+    {
+      id: 104,
+      category: "cuakeo",
+      image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80",
+      title: "CỬA KÉO CÔNG NGHỆ ĐỨC VIP (U DÀY 1.5 MM)",
+      code: "VIP",
+      description: "U dày 1.5 mm sơn tĩnh điện AKZO NOBEL, máng đúc bi treo chịu lực lớn, bảo vệ an ninh tuyệt đối.",
+      details: "Phiên bản đỉnh cao cửa kéo công nghệ Đức VIP U dày 1.5 mm chống trộm cắt phá cho biệt thự, ngân hàng.",
+      specs: ["Độ dày U: 1.5 mm siêu dày", "Sơn AkzoNobel Đức", "Máng đúc bi treo siêu tải", "Bảo hành 5 năm"],
+      price: "1.180.000đ/m²",
+      badge: "VIP SIÊU DÀY",
+      icon: <Star size={22} />
+    },
     {
       id: 10,
       category: "cuakeo",
@@ -394,7 +461,8 @@ export default function ProductsPage() {
                   onMouseLeave={handleCardMouseLeave}
                   onClick={() => {
                     const { icon, ...serializableProduct } = product;
-                    navigate(`/san-pham/${product.id}`, { state: { product: serializableProduct } });
+                    const targetSlug = getProductSlug(product);
+                    navigate(`/san-pham/${targetSlug}`, { state: { product: serializableProduct } });
                   }}
                 >
                   <div className="card-image-wrap">
@@ -426,7 +494,8 @@ export default function ProductsPage() {
                       <button className="btn-detail-view" onClick={(e) => {
                         e.stopPropagation();
                         const { icon, ...serializableProduct } = product;
-                        navigate(`/san-pham/${product.id}`, { state: { product: serializableProduct } });
+                        const targetSlug = getProductSlug(product);
+                        navigate(`/san-pham/${targetSlug}`, { state: { product: serializableProduct } });
                       }}>
                         XEM CHI TIẾT <ArrowRight size={14} />
                       </button>

@@ -25,6 +25,7 @@ import {
   Filter
 } from "lucide-react";
 import { DEFAULT_PRICE_QUOTES } from "../data/defaultPriceQuotes";
+import { getProductSlug } from "../utils/slug.js";
 import "./ProductPricing.css";
 
 // Fallback products dictionary if not yet in state/DB
@@ -726,7 +727,7 @@ export default function ProductPricing() {
                 <PhoneCall size={18} /> GỌI: 0904.678.323
               </a>
               <Link 
-                to={`/san-pham/${product.id || product._id || product.code}`} 
+                to={`/san-pham/${getProductSlug(product)}`} 
                 state={{ product }}
                 className="btn-view-tech-specs"
               >
@@ -784,103 +785,110 @@ export default function ProductPricing() {
             </div>
           </div>
 
-          {/* BẢNG GIÁ KẺ VIỀN KỸ THUẬT CHUẨN THỰC TẾ */}
-          <div className="table-responsive-box technical-grid-box">
-            <div className="table-scroll-hint">↔ Vuốt ngang để xem đầy đủ các cột giá</div>
-            <table className="boss-technical-table">
-              <thead>
-                <tr>
-                  <th style={{ width: "45px", textAlign: "center" }}>STT</th>
-                  <th style={{ width: "105px" }}>Mã SP</th>
-                  <th style={{ minWidth: "280px" }}>Diễn giải (Cấu tạo, độ dày, chất liệu)</th>
-                  <th style={{ width: "65px", textAlign: "center" }}>ĐVT</th>
-                  <th style={{ minWidth: "150px" }}>Màu sắc</th>
-                  <th className={`price-head ${activeAreaFilter === "over8" ? "highlight-head" : ""}`}>
-                    Đơn giá<br /><small>(trên 8m²)</small>
-                  </th>
-                  <th className={`price-head ${activeAreaFilter === "from6to8" ? "highlight-head" : ""}`}>
-                    Đơn giá<br /><small>(từ 6 - &lt; 8m²)</small>
-                  </th>
-                  <th className={`price-head ${activeAreaFilter === "from4to6" ? "highlight-head" : ""}`}>
-                    Đơn giá<br /><small>(từ 4 - &lt; 6m²)</small>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {(priceQuote?.items && priceQuote.items.length > 0 ? priceQuote.items : pricingTiers.map((t, idx) => ({
-                  stt: idx + 1,
-                  code: product.code,
-                  name: t.name,
-                  description: t.spec,
-                  unit: t.unit,
-                  colors: "Theo tiêu chuẩn",
-                  priceOver8: t.price,
-                  price6to8: t.price,
-                  price4to6: t.price
-                }))).map((row, rIdx) => {
-                  const isCurrentProduct = 
-                    product.code && 
-                    (product.code.toUpperCase() === row.code?.toUpperCase() || 
-                     row.code?.toUpperCase().includes(product.code.toUpperCase()));
+          {/* BẢNG GIÁ KỸ THUẬT THEO ĐÚNG MẪU BẢNG KẺ VIỀN THỰC TẾ CỦA BOSS */}
+          <div className="technical-table-container-card">
+            <div className="table-section-title-bar">
+              <div className="table-title-group">
+                <Tag size={18} className="table-title-tag-icon" />
+                <h3 className="table-title-heading">BẢNG GIÁ SẢN PHẨM KỸ THUẬT (PHÂN TẦNG THEO DIỆN TÍCH)</h3>
+              </div>
+              <div className="table-scroll-hint-pill">
+                ↔ Vuốt ngang để xem đầy đủ các cột giá
+              </div>
+            </div>
 
-                  return (
-                    <tr 
-                      key={rIdx} 
-                      className={isCurrentProduct ? "highlight-current-row" : ""}
-                    >
-                      <td className="text-center font-bold text-muted">{row.stt || rIdx + 1}</td>
-                      <td>
-                        <div className="technical-code-cell">
-                          <span className="technical-code-tag">{row.code}</span>
-                          {isCurrentProduct && (
-                            <span className="viewing-badge">Đang xem</span>
-                          )}
-                          {row.note && <span className="row-note-tag">{row.note}</span>}
-                        </div>
-                      </td>
-                      <td>
-                        <div className="technical-desc-cell">
-                          {row.name && <strong className="row-item-name">{row.name}</strong>}
-                          <div className="row-item-description">
-                            {row.description.split("\n").map((line, lIdx) => (
-                              <div key={lIdx} className="desc-line-item">
-                                {line.startsWith("-") || line.startsWith("•") ? (
-                                  <>
-                                    <Check size={13} className="bullet-check-icon" />
-                                    <span>{line.replace(/^[-•]\s*/, "")}</span>
-                                  </>
-                                ) : (
-                                  <span>{line}</span>
-                                )}
-                              </div>
-                            ))}
+            <div className="admin-table-scroll-wrapper">
+              <table className="admin-quote-data-table customer-quote-table">
+                <thead>
+                  <tr>
+                    <th style={{ width: "45px", textAlign: "center" }}>STT</th>
+                    <th style={{ width: "95px", textAlign: "center" }}>Mã SP</th>
+                    <th style={{ minWidth: "280px" }}>Diễn giải (Cấu tạo, độ dày, sơn phủ)</th>
+                    <th style={{ width: "65px", textAlign: "center" }}>ĐVT</th>
+                    <th style={{ minWidth: "160px" }}>Màu sắc</th>
+                    <th className={`price-head ${activeAreaFilter === "over8" ? "highlight-head" : ""}`} style={{ width: "135px", textAlign: "center" }}>
+                      Đơn giá (&gt; 8m²)
+                    </th>
+                    <th className={`price-head ${activeAreaFilter === "from6to8" ? "highlight-head" : ""}`} style={{ width: "135px", textAlign: "center" }}>
+                      Đơn giá (6 - &lt; 8m²)
+                    </th>
+                    <th className={`price-head ${activeAreaFilter === "from4to6" ? "highlight-head" : ""}`} style={{ width: "135px", textAlign: "center" }}>
+                      Đơn giá (4 - &lt; 6m²)
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(priceQuote?.items && priceQuote.items.length > 0 ? priceQuote.items : pricingTiers.map((t, idx) => ({
+                    stt: idx + 1,
+                    code: product.code,
+                    name: t.name,
+                    description: t.spec,
+                    unit: t.unit,
+                    colors: "Theo tiêu chuẩn",
+                    priceOver8: t.price,
+                    price6to8: t.price,
+                    price4to6: t.price
+                  }))).map((row, rIdx) => {
+                    const isCurrentProduct = 
+                      product.code && 
+                      (product.code.toUpperCase() === row.code?.toUpperCase() || 
+                       row.code?.toUpperCase().includes(product.code.toUpperCase()));
+
+                    return (
+                      <tr 
+                        key={rIdx} 
+                        className={isCurrentProduct ? "highlight-current-row" : ""}
+                      >
+                        <td className="text-center cell-stt font-bold">
+                          {row.stt || rIdx + 1}
+                        </td>
+                        <td>
+                          <div className="table-box-view code-box">
+                            <span className="code-text">{row.code}</span>
+                            {isCurrentProduct && (
+                              <span className="viewing-badge">Đang xem</span>
+                            )}
                           </div>
-                        </div>
-                      </td>
-                      <td className="text-center font-bold text-dark">{row.unit || "m²"}</td>
-                      <td>
-                        <div className="colors-render-box">
-                          {row.colors.split(",").map((cName, cIdx) => (
-                            <span key={cIdx} className="color-pill-tag">
-                              {cName.trim()}
-                            </span>
-                          ))}
-                        </div>
-                      </td>
-                      <td className={`price-cell ${activeAreaFilter === "over8" ? "highlight-cell" : ""}`}>
-                        <span className="price-val">{row.priceOver8 || "Liên hệ"}</span>
-                      </td>
-                      <td className={`price-cell ${activeAreaFilter === "from6to8" ? "highlight-cell" : ""}`}>
-                        <span className="price-val">{row.price6to8 || "Liên hệ"}</span>
-                      </td>
-                      <td className={`price-cell ${activeAreaFilter === "from4to6" ? "highlight-cell" : ""}`}>
-                        <span className="price-val">{row.price4to6 || "Liên hệ"}</span>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                        </td>
+                        <td>
+                          <div className="table-box-view desc-box">
+                            {row.name && !row.description?.includes(row.name) && (
+                              <div className="desc-box-name">{row.name}</div>
+                            )}
+                            <div className="desc-box-content">{row.description}</div>
+                          </div>
+                        </td>
+                        <td className="text-center">
+                          <div className="table-box-view unit-box">
+                            {row.unit || "m2"}
+                          </div>
+                        </td>
+                        <td>
+                          <div className="table-box-view color-box">
+                            {row.colors || "Theo tiêu chuẩn"}
+                          </div>
+                        </td>
+                        <td>
+                          <div className={`table-box-view price-box ${activeAreaFilter === "over8" ? "highlight-price-box" : ""}`}>
+                            {row.priceOver8 || "Liên hệ"}
+                          </div>
+                        </td>
+                        <td>
+                          <div className={`table-box-view price-box ${activeAreaFilter === "from6to8" ? "highlight-price-box" : ""}`}>
+                            {row.price6to8 || "Liên hệ"}
+                          </div>
+                        </td>
+                        <td>
+                          <div className={`table-box-view price-box ${activeAreaFilter === "from4to6" ? "highlight-price-box" : ""}`}>
+                            {row.price4to6 || "Liên hệ"}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
 
           {/* 4. KHU VỰC "LỰA CHỌN THÊM" (PHỤ KIỆN & NÂNG CẤP) */}

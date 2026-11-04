@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { ChevronRight, Calendar, ArrowRight } from 'lucide-react';
 import RevealOnScroll from '../components/RevealOnScroll';
+import { getNewsSlug } from '../utils/slug';
 import './News.css';
 
 const News = () => {
@@ -78,23 +80,25 @@ const News = () => {
                 >
                   <div className="news-page-card">
                     <div className="news-img-wrap">
-                      <img src={item.image} alt={item.title} />
+                      <Link to={`/tin-tuc/${getNewsSlug(item)}`}>
+                        <img src={item.image} alt={item.title} />
+                      </Link>
                       <span className="news-date-badge">
                         <Calendar size={13} /> {item.date}
                       </span>
                     </div>
                     <div className="news-card-content">
                       <h3 className="news-card-title">
-                        <a href={`/tin-tuc/${item._id || item.slug || ''}`}>
+                        <Link to={`/tin-tuc/${getNewsSlug(item)}`}>
                           {item.title}
-                        </a>
+                        </Link>
                       </h3>
                       <div className="news-card-summary">
-                        {item.summary || item.content.substring(0, 150) + '...'}
+                        {item.summary || (item.content ? item.content.substring(0, 150) + '...' : '')}
                       </div>
-                      <a href={`/tin-tuc/${item._id || item.slug || ''}`} className="btn-news-readmore">
+                      <Link to={`/tin-tuc/${getNewsSlug(item)}`} className="btn-news-readmore">
                         Đọc tiếp <ArrowRight size={14} />
-                      </a>
+                      </Link>
                     </div>
                   </div>
                 </RevealOnScroll>

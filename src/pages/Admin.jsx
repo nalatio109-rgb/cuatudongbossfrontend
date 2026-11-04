@@ -3,11 +3,13 @@ import { Link } from "react-router-dom";
 import { 
   Users, Package, FolderKanban, CheckCircle, Trash2, Plus, Edit,
   RefreshCw, X, Shield, Phone, ArrowLeft, LayoutDashboard, Database,
-  Newspaper, Search, Eye, Tag, FileText, Check, Menu, LogOut, Sparkles, FileSpreadsheet
+  Newspaper, Search, Eye, Tag, FileText, Check, Menu, LogOut, Sparkles, FileSpreadsheet, FileEdit
 } from "lucide-react";
 import AdminCategorySeo from "../components/AdminCategorySeo";
 import AdminPriceQuote from "../components/AdminPriceQuote";
+import AdminProductArticleEditor from "../components/AdminProductArticleEditor";
 import { useAuth } from "../context/AuthContext";
+import { slugify } from "../utils/slug.js";
 import "./Admin.css";
 
 const SUBCATEGORIES = {
@@ -45,6 +47,8 @@ const SUBCATEGORIES = {
 export default function Admin() {
   const { currentUser, logout } = useAuth();
   const [activeTab, setActiveTab] = useState("contacts");
+  const [productSubTab, setProductSubTab] = useState("list"); // "list" | "editor"
+  const [editingArticleCode, setEditingArticleCode] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   // Data states
@@ -373,12 +377,17 @@ export default function Admin() {
   const handleNewsSubmit = async (e) => {
     e.preventDefault();
     try {
+      const payload = {
+        ...newsForm,
+        slug: newsForm.slug && newsForm.slug.trim() ? newsForm.slug.trim() : slugify(newsForm.title)
+      };
+
       let res, data;
       if (editingNews) {
         res = await fetch(`${import.meta.env.VITE_API_URL}/api/news/${editingNews._id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(newsForm)
+          body: JSON.stringify(payload)
         });
         data = await res.json();
         if (data.success) {
@@ -389,7 +398,7 @@ export default function Admin() {
         res = await fetch(`${import.meta.env.VITE_API_URL}/api/news`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(newsForm)
+          body: JSON.stringify(payload)
         });
         data = await res.json();
         if (data.success) {
@@ -491,8 +500,12 @@ export default function Admin() {
           </button>
 
           <button 
-            className={`admin-nav-item ${activeTab === "products" ? "active" : ""}`}
-            onClick={() => { setActiveTab("products"); setMobileMenuOpen(false); }}
+            className={`admin-nav-item ${activeTab === "products" && productSubTab === "list" ? "active" : ""}`}
+            onClick={() => { 
+              setActiveTab("products"); 
+              setProductSubTab("list");
+              setMobileMenuOpen(false); 
+            }}
           >
             <Package size={18} /> Quản Lý Sản Phẩm
           </button>
@@ -523,6 +536,17 @@ export default function Admin() {
             onClick={() => { setActiveTab("pricing"); setMobileMenuOpen(false); }}
           >
             <FileSpreadsheet size={18} /> Quản Lý Bảng Báo Giá
+          </button>
+
+          <button 
+            className={`admin-nav-item ${activeTab === "products" && productSubTab === "editor" ? "active" : ""}`}
+            onClick={() => { 
+              setActiveTab("products"); 
+              setProductSubTab("editor");
+              setMobileMenuOpen(false); 
+            }}
+          >
+            <FileEdit size={18} /> Soạn Bài Chi Tiết SP (Word)
           </button>
         </div>
 
@@ -769,82 +793,134 @@ export default function Admin() {
             </div>
           )}
 
-          {/* TAB 2: PRODUCTS (FULL THÊM - SỬA - XÓA) */}
+          {/* TAB 2: PRODUCTS (QUẢN LÝ DANH MỤC & SOẠN BÀI CHI TIẾT WORD) */}
           {activeTab === "products" && (
-            <div className="admin-table-container">
-              <div className="table-action-header">
-                <h2>DANH MỤC SẢN PHẨM TRONG MONGODB ({products.length})</h2>
-                <div className="table-header-controls">
-                  <div className="admin-search-box">
-                    <Search size={16} />
-                    <input 
-                      type="text" 
-                      placeholder="Tìm mã SP, tên sản phẩm..."
-                      value={productSearch}
-                      onChange={(e) => setProductSearch(e.target.value)}
-                      className="admin-search-input"
-                    />
-                  </div>
-                  <button className="btn-add-new" onClick={handleOpenAddProduct}>
-                    <Plus size={16} /> THÊM SẢN PHẨM MỚI
-                  </button>
-                </div>
-              </div>
-              <div className="table-scroll-hint"><span>⇄ Vuốt sang ngang để xem đầy đủ cột</span></div>
-              <table className="admin-table">
-                <thead>
-                  <tr>
-                    <th>Hình ảnh</th>
-                    <th>Tên sản phẩm</th>
-                    <th>Mã SP</th>
-                    <th>Danh mục</th>
-                    <th>Mô tả chi tiết</th>
-                    <th>Giá tham khảo</th>
-                    <th>Thao tác</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredProducts.length > 0 ? (
-                    filteredProducts.map((p) => (
-                      <tr key={p._id}>
-                        <td>
-                          <img src={p.image} alt={p.title} style={{ width: 50, height: 40, objectFit: "cover", borderRadius: 6 }} />
-                        </td>
-                        <td style={{ fontWeight: 600 }}>
-                          {p.title}
-                          {p.badge && <span style={{ marginLeft: 8, fontSize: "0.7rem", background: "#d4af37", color: "#000", padding: "2px 6px", borderRadius: 4, fontWeight: 700 }}>{p.badge}</span>}
-                        </td>
-                        <td><span style={{ background: "rgba(255,255,255,0.1)", padding: "2px 8px", borderRadius: 4, fontWeight: 600 }}>{p.code}</span></td>
-                        <td><span className="admin-badge-category">{p.category}</span></td>
-                        <td style={{ maxWidth: 250, fontSize: "0.85rem", color: "#94a3b8" }}>{p.description}</td>
-                        <td style={{ color: "#10b981", fontWeight: 600 }}>{p.price || "Liên hệ"}</td>
-                        <td>
-                          <button 
-                            className="btn-action-icon edit"
-                            onClick={() => handleOpenEditProduct(p)}
-                            title="Sửa sản phẩm"
-                          >
-                            <Edit size={16} />
-                          </button>
-                          <button 
-                            className="btn-action-icon delete"
-                            onClick={() => handleDeleteProduct(p._id)}
-                            title="Xóa sản phẩm"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="7" style={{ textAlign: "center", padding: "2rem" }}>
-                        Chưa có sản phẩm nào phù hợp với tìm kiếm.
-                      </td>
-                    </tr>
+            <div className="product-management-wrapper">
+              {/* THANH ĐIỀU HƯỚNG PHÂN HỆ QUẢN LÝ SẢN PHẨM */}
+              <div className="product-subnav-bar">
+                <button
+                  type="button"
+                  className={`product-subnav-btn ${productSubTab === "list" ? "active" : ""}`}
+                  onClick={() => setProductSubTab("list")}
+                >
+                  <Package size={17} />
+                  <span>Danh Mục Sản Phẩm</span>
+                  <span className="subnav-count-pill">{products.length}</span>
+                </button>
+
+                <button
+                  type="button"
+                  className={`product-subnav-btn ${productSubTab === "editor" ? "active" : ""}`}
+                  onClick={() => {
+                    setProductSubTab("editor");
+                  }}
+                >
+                  <FileEdit size={17} />
+                  <span>Soạn Bài Chi Tiết SP & SEO (Word)</span>
+                  {editingArticleCode && (
+                    <span className="subnav-active-code-pill">{editingArticleCode}</span>
                   )}
-                </tbody>
-              </table>
+                </button>
+              </div>
+
+              {/* PHÂN HỆ 1: BẢNG DANH MỤC SẢN PHẨM (MONGODB CRUD) */}
+              {productSubTab === "list" && (
+                <div className="admin-table-container">
+                  <div className="table-action-header">
+                    <h2>DANH MỤC SẢN PHẨM TRONG MONGODB ({products.length})</h2>
+                    <div className="table-header-controls">
+                      <div className="admin-search-box">
+                        <Search size={16} />
+                        <input 
+                          type="text" 
+                          placeholder="Tìm mã SP, tên sản phẩm..."
+                          value={productSearch}
+                          onChange={(e) => setProductSearch(e.target.value)}
+                          className="admin-search-input"
+                        />
+                      </div>
+                      <button className="btn-add-new" onClick={handleOpenAddProduct}>
+                        <Plus size={16} /> THÊM SẢN PHẨM MỚI
+                      </button>
+                    </div>
+                  </div>
+                  <div className="table-scroll-hint"><span>⇄ Vuốt sang ngang để xem đầy đủ cột</span></div>
+                  <table className="admin-table">
+                    <thead>
+                      <tr>
+                        <th>Hình ảnh</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Mã SP</th>
+                        <th>Danh mục</th>
+                        <th>Mô tả chi tiết</th>
+                        <th>Giá tham khảo</th>
+                        <th>Thao tác</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredProducts.length > 0 ? (
+                        filteredProducts.map((p) => (
+                          <tr key={p._id}>
+                            <td>
+                              <img src={p.image} alt={p.title} style={{ width: 50, height: 40, objectFit: "cover", borderRadius: 6 }} />
+                            </td>
+                            <td style={{ fontWeight: 600 }}>
+                              {p.title}
+                              {p.badge && <span style={{ marginLeft: 8, fontSize: "0.7rem", background: "#d4af37", color: "#000", padding: "2px 6px", borderRadius: 4, fontWeight: 700 }}>{p.badge}</span>}
+                            </td>
+                            <td><span style={{ background: "rgba(255,255,255,0.1)", padding: "2px 8px", borderRadius: 4, fontWeight: 600 }}>{p.code}</span></td>
+                            <td><span className="admin-badge-category">{p.category}</span></td>
+                            <td style={{ maxWidth: 250, fontSize: "0.85rem", color: "#94a3b8" }}>{p.description}</td>
+                            <td style={{ color: "#10b981", fontWeight: 600 }}>{p.price || "Liên hệ"}</td>
+                            <td>
+                              <button 
+                                className="btn-action-icon article"
+                                onClick={() => {
+                                  setEditingArticleCode(p.code);
+                                  setProductSubTab("editor");
+                                }}
+                                title={`Soạn bài viết chi tiết Word cho ${p.code}`}
+                              >
+                                <FileEdit size={16} />
+                              </button>
+                              <button 
+                                className="btn-action-icon edit"
+                                onClick={() => handleOpenEditProduct(p)}
+                                title="Sửa thông tin sản phẩm"
+                              >
+                                <Edit size={16} />
+                              </button>
+                              <button 
+                                className="btn-action-icon delete"
+                                onClick={() => handleDeleteProduct(p._id)}
+                                title="Xóa sản phẩm"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan="7" style={{ textAlign: "center", padding: "2rem" }}>
+                            Chưa có sản phẩm nào phù hợp với tìm kiếm.
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              {/* PHÂN HỆ 2: TRÌNH SOẠN BÀI VIẾT CHI TIẾT & SEO (WYSIWYG WORD) */}
+              {productSubTab === "editor" && (
+                <AdminProductArticleEditor 
+                  showToast={showToast} 
+                  initialProductCode={editingArticleCode}
+                  onBackToProducts={() => setProductSubTab("list")}
+                  dbProducts={products}
+                />
+              )}
             </div>
           )}
 
@@ -962,7 +1038,14 @@ export default function Admin() {
                         <td>
                           <img src={n.image} alt={n.title} style={{ width: 60, height: 40, objectFit: "cover", borderRadius: 6 }} />
                         </td>
-                        <td style={{ fontWeight: 600 }}>{n.title}</td>
+                        <td style={{ fontWeight: 600 }}>
+                          <div>{n.title}</div>
+                          <div style={{ fontSize: "0.78rem", color: "#38bdf8", marginTop: 4 }}>
+                            <Link to={`/tin-tuc/${n.slug || slugify(n.title)}`} target="_blank" style={{ color: "#38bdf8", textDecoration: "none" }}>
+                              🔗 /tin-tuc/{n.slug || slugify(n.title)}
+                            </Link>
+                          </div>
+                        </td>
                         <td>{n.date}</td>
                         <td><span className="admin-badge-category">{n.author || "BOSS"}</span></td>
                         <td style={{ maxWidth: 280, fontSize: "0.85rem", color: "#94a3b8" }}>{n.summary}</td>
@@ -1004,6 +1087,19 @@ export default function Admin() {
           {/* 6. QUẢN LÝ BẢNG BÁO GIÁ KỸ THUẬT */}
           {activeTab === "pricing" && (
             <AdminPriceQuote showToast={showToast} />
+          )}
+
+          {/* 7. QUẢN LÝ BÀI VIẾT CHI TIẾT SẢN PHẨM (WYSIWYG WORD EDITOR) */}
+          {activeTab === "article-editor" && (
+            <AdminProductArticleEditor 
+              showToast={showToast}
+              initialProductCode={editingArticleCode}
+              onBackToProducts={() => {
+                setActiveTab("products");
+                setProductSubTab("list");
+              }}
+              dbProducts={products}
+            />
           )}
         </div>
       </main>
@@ -1125,11 +1221,31 @@ export default function Admin() {
                 />
               </div>
 
-              <div className="modal-footer">
-                <button type="button" className="btn-cancel" onClick={() => setShowProductModal(false)}>Hủy</button>
-                <button type="submit" className="btn-save">
-                  {editingProduct ? "Cập Nhật Sản Phẩm" : "Lưu Vào MongoDB"}
-                </button>
+              <div className="modal-footer modal-footer-spaced">
+                <div>
+                  {productForm.code && (
+                    <button
+                      type="button"
+                      className="btn-shortcut-to-editor"
+                      onClick={() => {
+                        const code = productForm.code;
+                        setShowProductModal(false);
+                        setActiveTab("products");
+                        setEditingArticleCode(code);
+                        setProductSubTab("editor");
+                      }}
+                      title="Mở trình soạn thảo bài viết Word cho sản phẩm này"
+                    >
+                      <FileEdit size={15} /> Soạn Bài Chi Tiết (Word)
+                    </button>
+                  )}
+                </div>
+                <div className="modal-actions-right">
+                  <button type="button" className="btn-cancel" onClick={() => setShowProductModal(false)}>Hủy</button>
+                  <button type="submit" className="btn-save">
+                    {editingProduct ? "Cập Nhật Sản Phẩm" : "Lưu Vào MongoDB"}
+                  </button>
+                </div>
               </div>
             </form>
           </div>
@@ -1227,9 +1343,26 @@ export default function Admin() {
                 <input 
                   type="text" 
                   value={newsForm.title} 
-                  onChange={(e) => setNewsForm({ ...newsForm, title: e.target.value })} 
+                  onChange={(e) => {
+                    const newTitle = e.target.value;
+                    setNewsForm((prev) => ({
+                      ...prev,
+                      title: newTitle,
+                      slug: !editingNews ? slugify(newTitle) : prev.slug
+                    }));
+                  }} 
                   required 
                   placeholder="Ví dụ: Xu Hướng Lắp Đặt Cửa Cuốn Cao Cấp 2026"
+                />
+              </div>
+
+              <div className="admin-form-group">
+                <label>Đường dẫn tĩnh SEO (Slug không dấu)</label>
+                <input 
+                  type="text" 
+                  value={newsForm.slug} 
+                  onChange={(e) => setNewsForm({ ...newsForm, slug: e.target.value })} 
+                  placeholder="ví dụ: cua-khe-thoang-giai-phap-lay-sang"
                 />
               </div>
 

@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { ArrowRight, Home, AlignJustify, ArrowRightLeft, Columns, ShieldCheck, CheckCircle2, Star, HeadphonesIcon, X, Check, Eye } from "lucide-react";
 
 import { useNavigate, Link } from "react-router-dom";
+import { getProductSlug } from "../utils/slug.js";
 
 export default function Products() {
   const navigate = useNavigate();
@@ -169,7 +170,8 @@ export default function Products() {
                 onMouseLeave={handleMouseLeave}
                 onClick={() => {
                   const { icon, ...serializableProduct } = product;
-                  navigate(`/san-pham/${product.id}`, { state: { product: serializableProduct } });
+                  const targetSlug = getProductSlug(product);
+                  navigate(`/san-pham/${targetSlug}`, { state: { product: serializableProduct } });
                 }}
               >
                 <div className="new-product-content">
@@ -181,7 +183,8 @@ export default function Products() {
                   <button className="btn-explore" onClick={(e) => {
                     e.stopPropagation();
                     const { icon, ...serializableProduct } = product;
-                    navigate(`/san-pham/${product.id}`, { state: { product: serializableProduct } });
+                    const targetSlug = getProductSlug(product);
+                    navigate(`/san-pham/${targetSlug}`, { state: { product: serializableProduct } });
                   }}>
                     KHÁM PHÁ NGAY <ArrowRight size={14} />
                   </button>
