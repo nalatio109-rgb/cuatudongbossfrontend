@@ -11,7 +11,6 @@ import {
 import "./CategorySeoContent.css";
 
 export default function CategorySeoContent({ activeCategory = "all" }) {
-  const [isExpanded, setIsExpanded] = useState(false);
   const [activeFaq, setActiveFaq] = useState(null);
   const [data, setData] = useState(null);
 
@@ -107,7 +106,7 @@ export default function CategorySeoContent({ activeCategory = "all" }) {
       )}
 
       <div className="seo-container">
-        <div className={`seo-article-wrapper ${isExpanded ? "is-expanded" : "is-collapsed"}`}>
+        <div className="seo-article-wrapper">
 
           {/* HEADER SECTION - 100% DYNAMIC */}
           <header className="seo-article-header">
@@ -240,29 +239,6 @@ export default function CategorySeoContent({ activeCategory = "all" }) {
               </div>
             </section>
           )}
-
-          {/* GRADIENT OVERLAY WHEN COLLAPSED */}
-          {!isExpanded && <div className="seo-collapse-fade" aria-hidden="true" />}
-        </div>
-
-        {/* TOGGLE EXPAND / COLLAPSE BUTTON */}
-        <div className="seo-toggle-action">
-          <button
-            type="button"
-            className="btn-seo-toggle"
-            onClick={() => setIsExpanded(!isExpanded)}
-            aria-label={isExpanded ? "Thu gọn bài viết" : "Xem thêm bài viết"}
-          >
-            {isExpanded ? (
-              <>
-                Thu gọn nội dung <ChevronUp size={18} />
-              </>
-            ) : (
-              <>
-                Xem thêm nội dung chi tiết <ChevronDown size={18} />
-              </>
-            )}
-          </button>
         </div>
       </div>
     </article>

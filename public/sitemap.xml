@@ -2,53 +2,316 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-  <!-- created with antigravity -->
-  
-  <url>
-    <loc>https://cuatudongboss.vn/</loc>
-    <lastmod>2026-09-22T00:00:00+00:00</lastmod>
-    <priority>1.00</priority>
-  </url>
-  
-  <url>
-    <loc>https://cuatudongboss.vn/gioi-thieu</loc>
-    <lastmod>2026-09-22T00:00:00+00:00</lastmod>
-    <priority>0.80</priority>
-  </url>
-  
-  <url>
-    <loc>https://cuatudongboss.vn/san-pham</loc>
-    <lastmod>2026-09-22T00:00:00+00:00</lastmod>
-    <priority>0.90</priority>
-  </url>
+<!-- created with BOSS Da Nang Sitemap Generator www.cuatudongboss.vn -->
 
-  <url>
-    <loc>https://cuatudongboss.vn/dich-vu</loc>
-    <lastmod>2026-09-22T00:00:00+00:00</lastmod>
-    <priority>0.80</priority>
-  </url>
+<url>
+  <loc>https://cuatudongboss.vn/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/gioi-thieu/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/san-pham/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.90</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/bang-gia/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.90</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/dich-vu/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/du-an/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/tin-tuc/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/lien-he/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
 
-  <url>
-    <loc>https://cuatudongboss.vn/du-an</loc>
-    <lastmod>2026-09-22T00:00:00+00:00</lastmod>
-    <priority>0.80</priority>
-  </url>
+<!-- BẢNG GIÁ CHI TIẾT SẢN PHẨM -->
+<url>
+  <loc>https://cuatudongboss.vn/bang-gia/BD-900/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.85</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/bang-gia/DL-75/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.85</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/bang-gia/BD-L70/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.85</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/bang-gia/SN-100/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.85</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/bang-gia/BD-LUX/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.85</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/bang-gia/BEC.5810/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.85</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/bang-gia/CK-SR1/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.85</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/bang-gia/CK-SR2/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.85</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/bang-gia/CK-VIP/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.85</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/bang-gia/CK-DL/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.85</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/bang-gia/CK-DE/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.85</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/bang-gia/CK-IX304/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.85</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/bang-gia/MT-500/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/bang-gia/UPS-800/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/bang-gia/WF-APP/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/bang-gia/RF-433/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/bang-gia/IT-GHOST/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.85</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/bang-gia/NAB-150/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.85</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/bang-gia/XF-55/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.85</priority>
+</url>
 
-  <url>
-    <loc>https://cuatudongboss.vn/bao-gia</loc>
-    <lastmod>2026-09-22T00:00:00+00:00</lastmod>
-    <priority>0.80</priority>
-  </url>
+<!-- TRANG CHI TIẾT SẢN PHẨM -->
+<url>
+  <loc>https://cuatudongboss.vn/san-pham/BD-900/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/san-pham/DL-75/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/san-pham/BD-L70/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/san-pham/SN-100/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/san-pham/BD-LUX/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/san-pham/BEC.5810/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/san-pham/CK-SR1/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/san-pham/CK-SR2/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/san-pham/CK-VIP/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/san-pham/CK-DL/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/san-pham/CK-DE/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/san-pham/CK-IX304/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/san-pham/MT-500/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.75</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/san-pham/UPS-800/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.75</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/san-pham/WF-APP/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.75</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/san-pham/RF-433/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.75</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/san-pham/IT-GHOST/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/san-pham/NAB-150/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/san-pham/XF-55/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
 
-  <url>
-    <loc>https://cuatudongboss.vn/tin-tuc</loc>
-    <lastmod>2026-09-22T00:00:00+00:00</lastmod>
-    <priority>0.80</priority>
-  </url>
+<!-- TRANG DỊCH VỤ CHUYÊN NGHIỆP -->
+<url>
+  <loc>https://cuatudongboss.vn/dich-vu/sua-chua-cua-cuon-247/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/dich-vu/lap-dat-cua-cuon-chinh-hang/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/dich-vu/bao-duong-dinh-ky-cua-tu-dong/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/dich-vu/thay-the-phu-kien-mo-to-binh-luu-dien/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/dich-vu/lap-dat-cong-tu-dong-barrier/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
 
-  <url>
-    <loc>https://cuatudongboss.vn/lien-he</loc>
-    <lastmod>2026-09-22T00:00:00+00:00</lastmod>
-    <priority>0.80</priority>
-  </url>
+<!-- DỰ ÁN THI CÔNG TIÊU BIỂU -->
+<url>
+  <loc>https://cuatudongboss.vn/du-an/cua-truot-sieu-thi-lotte-da-nang/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.75</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/du-an/cong-tu-dong-biet-thu-euro-village/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.75</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/du-an/cua-xoay-khach-san-5-sao-muong-thanh/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.75</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/du-an/barie-tu-dong-khu-cong-nghiep-hoa-khanh/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.75</priority>
+</url>
+
+<!-- TIN TỨC & CẨM NANG HƯỚNG DẪN -->
+<url>
+  <loc>https://cuatudongboss.vn/tin-tuc/cach-chon-cua-cuon-phu-hop/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.75</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/tin-tuc/uu-diem-cua-cua-tu-dong/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.75</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/tin-tuc/cua-khe-thoang-giai-phap-lay-sang/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.75</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/tin-tuc/bao-gia-cua-cuon-bossdoor-da-nang-moi-nhat/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.75</priority>
+</url>
+<url>
+  <loc>https://cuatudongboss.vn/tin-tuc/huong-dan-bao-tri-mo-to-va-binh-luu-dien/</loc>
+  <lastmod>2026-11-05T17:35:00+00:00</lastmod>
+  <priority>0.75</priority>
+</url>
 </urlset>

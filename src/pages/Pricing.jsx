@@ -283,6 +283,33 @@ export default function Pricing() {
     return matchCat && matchQuery;
   });
 
+  // Scroll reveal observer: elements start appearing only when scrolled into view
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry, index) => {
+          if (entry.isIntersecting) {
+            setTimeout(() => {
+              entry.target.classList.add("is-visible");
+            }, Math.min(index * 75, 300));
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.08,
+        rootMargin: "0px 0px -40px 0px"
+      }
+    );
+
+    const elements = document.querySelectorAll(
+      ".pricing-horizontal-card, .pricing-fast-cta, .pricing-hub-guarantee, .catalog-status-bar"
+    );
+    elements.forEach((el) => observer.observe(el));
+
+    return () => observer.disconnect();
+  }, [filteredProducts, activeCategory]);
+
   return (
     <div className="pricing-hub-page">
       {/* 1. HERO BANNER */}
@@ -320,11 +347,12 @@ export default function Pricing() {
       <main className="container pricing-hub-container">
         {/* Category Tabs */}
         <div className="pricing-tabs-row">
-          {categories.map((cat) => (
+          {categories.map((cat, catIdx) => (
             <button
               key={cat.id}
               className={`pricing-tab-btn ${activeCategory === cat.id ? "active" : ""}`}
               onClick={() => setActiveCategory(cat.id)}
+              style={{ animationDelay: `${catIdx * 60}ms` }}
             >
               {cat.label}
             </button>

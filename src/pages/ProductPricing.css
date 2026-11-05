@@ -280,8 +280,9 @@
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
   box-shadow: 0 4px 14px rgba(227, 6, 19, 0.3);
+  animation: pulseRedRing 2.8s infinite ease-in-out;
 }
 
 .btn-request-quote-now:hover {
@@ -301,7 +302,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
   box-shadow: 0 4px 14px rgba(0, 77, 50, 0.25);
 }
 
@@ -309,6 +310,10 @@
   background: #003623;
   transform: translateY(-2px);
   box-shadow: 0 6px 18px rgba(0, 77, 50, 0.35);
+}
+
+.btn-call-hotline-now:hover svg {
+  animation: phoneShake 0.6s ease infinite;
 }
 
 .btn-view-tech-specs {
@@ -401,6 +406,311 @@
   margin-bottom: 6px;
 }
 
+/* ================================================================= */
+/* MOBILE SMART PRICING CARDS (DÀNH RIÊNG CHO ĐIỆN THOẠI) */
+/* ================================================================= */
+.mobile-pricing-cards-container {
+  display: none; /* Mặc định ẩn trên Desktop */
+}
+
+@media (max-width: 768px) {
+  /* Ẩn bảng CTA banner ("Bạn cần báo giá chính xác cho công trình của mình?") trên điện thoại */
+  .pricing-cta-highlight-banner {
+    display: none !important;
+  }
+
+  /* Ẩn 3 khung chính sách (Chính Sách Bảo Hành, Vận Chuyển Miễn Phí, Lắp Đặt) trên điện thoại */
+  .pricing-policies-section {
+    display: none !important;
+  }
+
+  /* Hiển thị danh sách thẻ thông minh trên điện thoại */
+  .mobile-pricing-cards-container {
+    display: flex !important;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  /* Ẩn bảng kỹ thuật gốc trên điện thoại (đã được hiển thị gọn qua thẻ card phía trên) */
+  .technical-table-container-card {
+    display: none !important;
+  }
+
+  /* Card styling */
+  .mq-product-card {
+    background: #ffffff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mq-product-card.is-current-active {
+    border-color: #004d32;
+    border-width: 2px;
+    box-shadow: 0 8px 24px rgba(0, 77, 50, 0.14);
+    background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 35%);
+  }
+
+  .mq-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .mq-code-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .mq-code-badge {
+    background: #004d32;
+    color: #f5bd20;
+    font-size: 12px;
+    font-weight: 900;
+    padding: 3px 9px;
+    border-radius: 5px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 5px rgba(0, 77, 50, 0.25);
+  }
+
+  .mq-viewing-badge {
+    background: #e30613;
+    color: #ffffff;
+    font-size: 9px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    animation: badgePulseGlow 2.5s infinite ease-in-out;
+  }
+
+  .mq-stt-text {
+    font-size: 11px;
+    color: #94a3b8;
+    font-weight: 700;
+  }
+
+  .mq-unit-badge {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: #004d32;
+    background: #e6f7ef;
+    padding: 2px 8px;
+    border-radius: 16px;
+    border: 1px solid #bbf7d0;
+  }
+
+  .mq-card-name {
+    font-size: 13.5px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 8px;
+    line-height: 1.35;
+  }
+
+  .mq-specs-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 7px;
+    padding: 8px 10px;
+    margin-bottom: 10px;
+  }
+
+  .mq-box-title {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #004d32;
+    margin-bottom: 4px;
+  }
+
+  .mq-desc-content {
+    font-size: 11px;
+    color: #334155;
+    line-height: 1.45;
+    margin: 0 0 4px;
+    white-space: pre-line;
+  }
+
+  .mq-colors-tag {
+    font-size: 11px;
+    color: #475569;
+    border-top: 1px dashed #cbd5e1;
+    padding-top: 4px;
+    margin-top: 4px;
+  }
+
+  .mq-colors-tag strong {
+    color: #0f172a;
+  }
+
+  /* Pricing Grid in Card */
+  .mq-pricing-section {
+    background: #ffffff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 8px;
+    margin-bottom: 10px;
+  }
+
+  .mq-price-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  .mq-price-heading {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #475569;
+  }
+
+  .mq-price-hint {
+    font-size: 9.5px;
+    color: #059669;
+    font-weight: 600;
+  }
+
+  .mq-price-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+  }
+
+  .mq-tier-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 6px 3px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.2s ease;
+  }
+
+  .mq-tier-box.filter-highlight {
+    background: #fefce8;
+    border-color: #f5bd20;
+    box-shadow: 0 2px 6px rgba(245, 189, 32, 0.2);
+    transform: translateY(-1px);
+  }
+
+  .mq-tier-head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    margin-bottom: 2px;
+  }
+
+  .mq-area-text {
+    font-size: 10px;
+    font-weight: 800;
+    color: #1e293b;
+  }
+
+  .mq-best-tag {
+    font-size: 8px;
+    font-weight: 800;
+    background: #fef08a;
+    color: #854d0e;
+    padding: 1px 3px;
+    border-radius: 2px;
+    text-transform: uppercase;
+    line-height: 1.1;
+  }
+
+  .mq-std-tag, .mq-small-tag {
+    font-size: 8px;
+    color: #64748b;
+    font-weight: 600;
+  }
+
+  .mq-tier-price {
+    font-size: 11.5px;
+    font-weight: 900;
+    color: #e30613;
+    margin: 2px 0 1px;
+    line-height: 1.2;
+  }
+
+  .mq-tier-sub {
+    font-size: 8.5px;
+    color: #94a3b8;
+  }
+
+  /* Action button inside card */
+  .mq-action-bar {
+    margin-top: 4px;
+  }
+
+  .mq-btn-quote {
+    width: 100%;
+    background: #004d32;
+    color: #ffffff;
+    border: none;
+    border-radius: 7px;
+    padding: 8px 10px;
+    font-size: 11.5px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .mq-btn-quote:hover {
+    background: #003623;
+  }
+
+  /* Table sticky columns when user views table mode on mobile */
+  .customer-quote-table th:nth-child(1),
+  .customer-quote-table td:nth-child(1) {
+    position: sticky;
+    left: 0;
+    z-index: 3;
+    background: #ffffff;
+    box-shadow: 1px 0 0 #cbd5e1;
+  }
+
+  .customer-quote-table thead th:nth-child(1) {
+    background: #004d32;
+    z-index: 5;
+  }
+
+  .customer-quote-table th:nth-child(2),
+  .customer-quote-table td:nth-child(2) {
+    position: sticky;
+    left: 45px;
+    z-index: 3;
+    background: #ffffff;
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.08);
+  }
+
+  .customer-quote-table thead th:nth-child(2) {
+    background: #004d32;
+    z-index: 5;
+  }
+}
+
 /* TECHNICAL GRID TABLE - STYLED EXACTLY AS ADMIN & REFERENCE IMAGE */
 .technical-table-container-card {
   background: #ffffff;
@@ -483,19 +793,24 @@
   color: #fde047;
 }
 
+.customer-quote-table tbody tr {
+  transition: all 0.2s ease;
+}
+
 .customer-quote-table tbody td {
   padding: 8px 10px;
   border: 1px solid #e2e8f0;
   vertical-align: top;
   background: #ffffff;
+  transition: background-color 0.2s ease;
 }
 
 .customer-quote-table tbody tr:hover td {
-  background: #f8fafc;
+  background: #f0fdf4;
 }
 
 .customer-quote-table tbody tr.highlight-current-row td {
-  background: #f0fdf4 !important;
+  background: #e6f7ef !important;
 }
 
 .cell-stt {
@@ -518,6 +833,12 @@
   display: flex;
   align-items: center;
   transition: all 0.2s ease;
+}
+
+.table-box-view:hover {
+  border-color: #004d32;
+  box-shadow: 0 2px 8px rgba(0, 77, 50, 0.08);
+  transform: translateY(-1px);
 }
 
 .table-box-view.code-box {
@@ -1186,6 +1507,28 @@
   margin: 0;
 }
 
+/* ================= SCROLL REVEAL FOR PRODUCT PRICING SECTIONS ================= */
+.pricing-table-section,
+.pricing-accessories-section,
+.pricing-policies-section,
+.pricing-quote-form-section,
+.pricing-guarantee-bar {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.75s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.pricing-table-section.is-visible,
+.pricing-accessories-section.is-visible,
+.pricing-policies-section.is-visible,
+.pricing-quote-form-section.is-visible,
+.pricing-guarantee-bar.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 /* 3. DETAILED PRICING TABLE */
 .pricing-table-section {
   background: #ffffff;
@@ -1752,20 +2095,72 @@
   }
 
   .pricing-product-hero {
-    padding: 20px 16px;
+    padding: 16px 14px;
+    border-radius: 14px;
   }
 
   .pricing-product-title {
-    font-size: 22px;
+    font-size: 17px;
+    line-height: 1.35;
+    margin-bottom: 8px;
   }
 
   .price-big, .price-contact-text {
-    font-size: 22px;
+    font-size: 18px;
+    font-weight: 900;
+  }
+
+  .pricing-desc-text {
+    font-size: 12px;
+    line-height: 1.5;
+    margin-bottom: 14px;
+  }
+
+  .spec-tag-item {
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+
+  .technical-main-title {
+    font-size: 17px;
+    line-height: 1.35;
+    margin-bottom: 6px;
+  }
+
+  .section-head-bar h2 {
+    font-size: 16px;
+    margin-bottom: 4px;
+  }
+
+  .head-badge {
+    font-size: 10px;
+    padding: 3px 10px;
+  }
+
+  .technical-sub-note {
+    font-size: 11.5px;
+    line-height: 1.45;
+    margin-bottom: 12px;
+  }
+
+  .effective-date-pill {
+    font-size: 10.5px;
+    padding: 3px 10px;
+  }
+
+  .area-filter-title {
+    font-size: 11.5px;
+  }
+
+  .area-btn {
+    font-size: 11px;
+    padding: 6px 10px;
   }
 
   .pricing-cta-actions {
     flex-direction: column;
     align-items: stretch;
+    gap: 8px;
   }
 
   .btn-request-quote-now,
@@ -1773,6 +2168,10 @@
   .btn-view-tech-specs {
     justify-content: center;
     width: 100%;
+    padding: 10px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 8px;
   }
 
   .quote-form-grid {
@@ -1780,12 +2179,64 @@
   }
 
   .pricing-quote-form-section {
-    padding: 24px 16px;
+    padding: 20px 14px;
+    border-radius: 16px;
+  }
+
+  .form-header-intro h2 {
+    font-size: 17px;
+    margin-bottom: 6px;
+  }
+
+  .form-header-intro p {
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  .quote-tag {
+    font-size: 10px;
+    padding: 3px 10px;
+  }
+
+  .form-group label {
+    font-size: 11.5px;
+  }
+
+  .form-control {
+    font-size: 12px;
+    padding: 9px 12px;
+  }
+
+  .btn-submit-quote {
+    font-size: 13px;
+    padding: 11px 16px;
+  }
+
+  .policy-box {
+    padding: 18px 16px;
+  }
+
+  .policy-box h3 {
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+
+  .policy-box p {
+    font-size: 11.5px;
+    line-height: 1.45;
   }
 
   .pricing-guarantee-bar {
     grid-template-columns: 1fr;
-    padding: 20px;
+    padding: 16px 14px;
+  }
+
+  .pricing-guarantee-bar h4 {
+    font-size: 12px;
+  }
+
+  .pricing-guarantee-bar p {
+    font-size: 10.5px;
   }
 }
 

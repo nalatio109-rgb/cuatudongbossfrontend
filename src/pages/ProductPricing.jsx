@@ -1,3 +1,4 @@
+// Product pricing details page - Boss Door
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useLocation, useNavigate, Link } from "react-router-dom";
 import {
@@ -584,6 +585,33 @@ export default function ProductPricing() {
     }
   };
 
+  // Scroll reveal observer: sections appear only when scrolled into view
+  useEffect(() => {
+    if (loading || !product) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.08,
+        rootMargin: "0px 0px -40px 0px"
+      }
+    );
+
+    const sections = document.querySelectorAll(
+      ".pricing-table-section, .pricing-accessories-section, .pricing-policies-section, .pricing-quote-form-section, .pricing-guarantee-bar"
+    );
+    sections.forEach((sec) => observer.observe(sec));
+
+    return () => observer.disconnect();
+  }, [loading, product]);
+
   if (loading) {
     return (
       <div className="pricing-loading-screen">
@@ -656,6 +684,21 @@ export default function ProductPricing() {
     : [
         { name: "Phụ kiện đồng bộ chính hãng", price: "Theo quy cách", warranty: "Chính hãng 100%" }
       ];
+
+  // Danh sách dòng sản phẩm cho bảng giá (dùng chung cho cả Desktop và Mobile)
+  const quoteTableItems = priceQuote?.items && priceQuote.items.length > 0 
+    ? priceQuote.items 
+    : pricingTiers.map((t, idx) => ({
+        stt: idx + 1,
+        code: product.code,
+        name: t.name,
+        description: t.spec,
+        unit: t.unit,
+        colors: "Theo tiêu chuẩn",
+        priceOver8: t.price,
+        price6to8: t.price,
+        price4to6: t.price
+      }));
 
   return (
     <div className="product-pricing-page">
@@ -785,7 +828,105 @@ export default function ProductPricing() {
             </div>
           </div>
 
-          {/* BẢNG GIÁ KỸ THUẬT THEO ĐÚNG MẪU BẢNG KẺ VIỀN THỰC TẾ CỦA BOSS */}
+          {/* 1. HIỂN THỊ DẠNG THẺ (CARD VIEW) DÀNH RIÊNG CHO ĐIỆN THOẠI - THẤY RÕ 100% CÁC CỘT GIÁ */}
+          <div className="mobile-pricing-cards-container">
+            {quoteTableItems.map((row, rIdx) => {
+              const isCurrentProduct = 
+                product.code && 
+                (product.code.toUpperCase() === row.code?.toUpperCase() || 
+                 row.code?.toUpperCase().includes(product.code.toUpperCase()));
+
+              return (
+                <article 
+                  key={`mq-${rIdx}`} 
+                  className={`mq-product-card ${isCurrentProduct ? "is-current-active" : ""}`}
+                >
+                  <div className="mq-card-top">
+                    <div className="mq-code-group">
+                      <span className="mq-code-badge">{row.code || `SP-${rIdx + 1}`}</span>
+                      {isCurrentProduct && <span className="mq-viewing-badge">Đang xem</span>}
+                      <span className="mq-stt-text">#{row.stt || rIdx + 1}</span>
+                    </div>
+                    <span className="mq-unit-badge">ĐVT: {row.unit || "m²"}</span>
+                  </div>
+
+                  {row.name && <h4 className="mq-card-name">{row.name}</h4>}
+
+                  <div className="mq-specs-box">
+                    <div className="mq-box-title">Đặc tính kỹ thuật &amp; Cấu tạo:</div>
+                    <p className="mq-desc-content">{row.description}</p>
+                    {row.colors && (
+                      <div className="mq-colors-tag">
+                        <strong>Màu sắc:</strong> {row.colors}
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="mq-pricing-section">
+                    <div className="mq-price-label-row">
+                      <span className="mq-price-heading">Bảng đơn giá theo diện tích:</span>
+                      <span className="mq-price-hint">
+                        {activeAreaFilter !== "all" ? "Đã lọc theo lựa chọn" : "Nhấn lọc phía trên"}
+                      </span>
+                    </div>
+
+                    <div className="mq-price-grid">
+                      <div className={`mq-tier-box ${activeAreaFilter === "over8" ? "filter-highlight" : ""}`}>
+                        <div className="mq-tier-head">
+                          <span className="mq-area-text">&gt; 8 m²</span>
+                          <span className="mq-best-tag">Giá tốt nhất</span>
+                        </div>
+                        <div className="mq-tier-price">
+                          {row.priceOver8 || "Liên hệ"}
+                        </div>
+                        <span className="mq-tier-sub">Cho cửa lớn</span>
+                      </div>
+
+                      <div className={`mq-tier-box ${activeAreaFilter === "from6to8" ? "filter-highlight" : ""}`}>
+                        <div className="mq-tier-head">
+                          <span className="mq-area-text">6 - &lt; 8 m²</span>
+                          <span className="mq-std-tag">Tiêu chuẩn</span>
+                        </div>
+                        <div className="mq-tier-price">
+                          {row.price6to8 || "Liên hệ"}
+                        </div>
+                        <span className="mq-tier-sub">Cửa vừa</span>
+                      </div>
+
+                      <div className={`mq-tier-box ${activeAreaFilter === "from4to6" ? "filter-highlight" : ""}`}>
+                        <div className="mq-tier-head">
+                          <span className="mq-area-text">4 - &lt; 6 m²</span>
+                          <span className="mq-small-tag">Cửa nhỏ</span>
+                        </div>
+                        <div className="mq-tier-price">
+                          {row.price4to6 || "Liên hệ"}
+                        </div>
+                        <span className="mq-tier-sub">Cửa nhỏ</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mq-action-bar">
+                    <button
+                      type="button"
+                      className="mq-btn-quote"
+                      onClick={() => {
+                        setFormData((prev) => ({
+                          ...prev,
+                          message: `Tôi muốn tư vấn và nhận báo giá chi tiết dòng: ${row.code} (${row.name || ""})`
+                        }));
+                        scrollToQuoteForm();
+                      }}
+                    >
+                      <FileText size={15} /> Nhận báo giá mẫu {row.code}
+                    </button>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+
+          {/* 2. BẢNG GIÁ KỸ THUẬT GỐC (GIỮ NGUYÊN 100% TRÊN MÁY TÍNH; TRÊN MOBILE ĐƯỢC THAY BẰNG THẺ DỄ NHÌN) */}
           <div className="technical-table-container-card">
             <div className="table-section-title-bar">
               <div className="table-title-group">
@@ -818,17 +959,7 @@ export default function ProductPricing() {
                   </tr>
                 </thead>
                 <tbody>
-                  {(priceQuote?.items && priceQuote.items.length > 0 ? priceQuote.items : pricingTiers.map((t, idx) => ({
-                    stt: idx + 1,
-                    code: product.code,
-                    name: t.name,
-                    description: t.spec,
-                    unit: t.unit,
-                    colors: "Theo tiêu chuẩn",
-                    priceOver8: t.price,
-                    price6to8: t.price,
-                    price4to6: t.price
-                  }))).map((row, rIdx) => {
+                  {quoteTableItems.map((row, rIdx) => {
                     const isCurrentProduct = 
                       product.code && 
                       (product.code.toUpperCase() === row.code?.toUpperCase() || 

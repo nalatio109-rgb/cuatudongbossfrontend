@@ -1,3 +1,137 @@
+/* ================= MOTION ANIMATIONS & KEYFRAMES ================= */
+@keyframes pricingCardSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(26px) scale(0.985);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes heroReveal {
+  0% {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes subtagPulse {
+  0%, 100% {
+    transform: translateY(0);
+    box-shadow: 0 0 0 rgba(245, 189, 24, 0);
+  }
+  50% {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(245, 189, 24, 0.25);
+  }
+}
+
+@keyframes cardShineSweep {
+  0% {
+    left: -130%;
+    opacity: 0.85;
+  }
+  100% {
+    left: 200%;
+    opacity: 0;
+  }
+}
+
+@keyframes badgePulseGlow {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 2px 8px rgba(227, 6, 19, 0.35);
+  }
+  50% {
+    transform: scale(1.04);
+    box-shadow: 0 4px 14px rgba(227, 6, 19, 0.65), 0 0 10px rgba(245, 189, 24, 0.4);
+  }
+}
+
+@keyframes statusDotPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 7px rgba(16, 185, 129, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+@keyframes arrowNudge {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(5px);
+  }
+}
+
+@keyframes phoneRingWiggle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  20% {
+    transform: rotate(-12deg);
+  }
+  40% {
+    transform: rotate(12deg);
+  }
+  60% {
+    transform: rotate(-8deg);
+  }
+  80% {
+    transform: rotate(8deg);
+  }
+}
+
+@keyframes ctaGradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes sonarWaveHotline {
+  0% {
+    box-shadow: 0 0 0 0 rgba(227, 6, 19, 0.6), 0 4px 14px rgba(227, 6, 19, 0.35);
+  }
+  70% {
+    box-shadow: 0 0 0 12px rgba(227, 6, 19, 0), 0 4px 14px rgba(227, 6, 19, 0.35);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(227, 6, 19, 0), 0 4px 14px rgba(227, 6, 19, 0.35);
+  }
+}
+
+@keyframes ctaOrbFloat {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.15;
+  }
+  50% {
+    transform: translate(-25px, 20px) scale(1.15);
+    opacity: 0.25;
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.15;
+  }
+}
+
 /* ================= PRICING HUB STYLES ================= */
 .pricing-hub-page {
   background: #f8faf9;
@@ -18,6 +152,7 @@
 .pricing-hero-content {
   max-width: 800px;
   margin: 0 auto;
+  animation: heroReveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .hero-subtag {
@@ -34,6 +169,7 @@
   letter-spacing: 1px;
   margin-bottom: 16px;
   text-transform: uppercase;
+  animation: subtagPulse 3s infinite ease-in-out;
 }
 
 .pricing-hero-content h1 {
@@ -134,19 +270,23 @@
   padding: 10px 22px;
   border-radius: 30px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: heroReveal 0.5s ease both;
 }
 
 .pricing-tab-btn:hover {
   border-color: #004d32;
   color: #004d32;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 77, 50, 0.12);
 }
 
 .pricing-tab-btn.active {
   background: #004d32;
   border-color: #004d32;
   color: #ffffff;
-  box-shadow: 0 4px 12px rgba(0, 77, 50, 0.25);
+  box-shadow: 0 6px 16px rgba(0, 77, 50, 0.25);
+  transform: translateY(-2px) scale(1.02);
 }
 
 .catalog-status-bar {
@@ -163,6 +303,16 @@
   color: #64748b;
   margin-bottom: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.catalog-status-bar.is-visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .status-bar-left {
@@ -204,13 +354,24 @@
   grid-template-columns: 240px 1fr 270px;
   align-items: stretch;
   overflow: hidden;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 0;
+  transform: translateY(34px) scale(0.985);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.25s ease,
+              box-shadow 0.25s ease;
+  will-change: transform, opacity;
 }
 
-.pricing-horizontal-card:hover {
-  transform: translateY(-3px);
-  border-color: #a7f3d0;
-  box-shadow: 0 12px 28px rgba(0, 77, 50, 0.1);
+.pricing-horizontal-card.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.pricing-horizontal-card.is-visible:hover {
+  transform: translateY(-5px);
+  border-color: #86efac;
+  box-shadow: 0 16px 36px rgba(0, 77, 50, 0.12), 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
 /* CỘT 1: THUMBNAIL BÊN TRÁI */
@@ -225,6 +386,28 @@
   width: 100%;
   height: 100%;
   min-height: 190px;
+  overflow: hidden;
+}
+
+.card-image-box::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -130%;
+  width: 80%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 100%
+  );
+  transform: skewX(-25deg);
+  pointer-events: none;
+}
+
+.pricing-horizontal-card:hover .card-image-box::after {
+  animation: cardShineSweep 0.85s ease-out;
 }
 
 .card-image-box img {
@@ -232,11 +415,11 @@
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.4s ease;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .pricing-horizontal-card:hover .card-image-box img {
-  transform: scale(1.05);
+  transform: scale(1.08);
 }
 
 .card-badge-pill {
@@ -253,6 +436,7 @@
   letter-spacing: 0.5px;
   box-shadow: 0 2px 8px rgba(227, 6, 19, 0.4);
   z-index: 2;
+  animation: badgePulseGlow 3s infinite ease-in-out;
 }
 
 .card-code-pill {
@@ -267,6 +451,11 @@
   border-radius: 6px;
   box-shadow: 0 2px 8px rgba(0, 77, 50, 0.4);
   z-index: 2;
+  transition: transform 0.2s ease;
+}
+
+.pricing-horizontal-card:hover .card-code-pill {
+  transform: scale(1.04);
 }
 
 /* CỘT 2: THÔNG TIN CHI TIẾT Ở GIỮA */
@@ -295,6 +484,12 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   border: 1px solid #a7f3d0;
+  transition: all 0.2s ease;
+}
+
+.pricing-horizontal-card:hover .card-cat-badge {
+  background: #d1fae5;
+  border-color: #6ee7b7;
 }
 
 .card-business-status {
@@ -308,6 +503,7 @@
   padding: 4px 12px;
   border-radius: 20px;
   border: 1px solid #bbf7d0;
+  transition: all 0.2s ease;
 }
 
 .status-pulse-dot {
@@ -316,19 +512,7 @@
   border-radius: 50%;
   background: #16a34a;
   box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.25);
-  animation: pulseGreen 2s infinite;
-}
-
-@keyframes pulseGreen {
-  0% {
-    box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.6);
-  }
-  70% {
-    box-shadow: 0 0 0 6px rgba(22, 163, 74, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(22, 163, 74, 0);
-  }
+  animation: statusDotPulse 2s infinite ease-in-out;
 }
 
 .card-prod-title {
@@ -376,11 +560,24 @@
   font-size: 12px;
   color: #334155;
   font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.spec-tag-item:hover {
+  background: #f0fdf4;
+  border-color: #86efac;
+  color: #004d32;
+  transform: translateY(-1px);
 }
 
 .spec-tag-item .spec-check-icon {
   color: #004d32;
   flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.spec-tag-item:hover .spec-check-icon {
+  transform: scale(1.15);
 }
 
 /* CỘT 3: GIÁ & NÚT HÀNH ĐỘNG BÊN PHẢI */
@@ -393,6 +590,11 @@
   justify-content: center;
   align-items: stretch;
   gap: 12px;
+  transition: background-color 0.25s ease;
+}
+
+.pricing-horizontal-card:hover .card-action-column {
+  background: #f4fbf7;
 }
 
 .price-box-wrapper {
@@ -401,6 +603,12 @@
   padding: 12px 14px;
   border-radius: 10px;
   border: 1px solid #e2e8f0;
+  transition: all 0.25s ease;
+}
+
+.pricing-horizontal-card:hover .price-box-wrapper {
+  border-color: #a7f3d0;
+  box-shadow: 0 4px 12px rgba(0, 77, 50, 0.06);
 }
 
 .price-title-caption {
@@ -418,6 +626,13 @@
   color: #e30613;
   letter-spacing: -0.3px;
   line-height: 1.2;
+  display: inline-block;
+  transition: transform 0.25s ease, color 0.25s ease;
+}
+
+.pricing-horizontal-card:hover .price-main-highlight {
+  transform: scale(1.04);
+  color: #c80510;
 }
 
 .price-subnote-text {
@@ -442,14 +657,31 @@
   justify-content: center;
   gap: 8px;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 0 4px 12px rgba(0, 77, 50, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-open-pricing-detail::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+  transition: all 0.5s ease;
+}
+
+.btn-open-pricing-detail:hover::before {
+  left: 100%;
 }
 
 .btn-open-pricing-detail:hover {
   background: linear-gradient(135deg, #003824 0%, #005034 100%);
   transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(0, 77, 50, 0.3);
+  box-shadow: 0 8px 20px rgba(0, 77, 50, 0.35);
 }
 
 .btn-open-pricing-detail .btn-arrow {
@@ -457,7 +689,7 @@
 }
 
 .btn-open-pricing-detail:hover .btn-arrow {
-  transform: translateX(3px);
+  animation: arrowNudge 0.6s infinite alternate ease-in-out;
 }
 
 .quick-call-link {
@@ -476,6 +708,10 @@
 
 .quick-call-link:hover {
   color: #e30613;
+}
+
+.quick-call-link:hover svg {
+  animation: phoneRingWiggle 0.6s ease infinite alternate;
 }
 
 /* Empty search state */
@@ -526,12 +762,40 @@
 /* 3. FAST CTA BANNER */
 /* ========================================================= */
 .pricing-fast-cta {
-  background: linear-gradient(135deg, #004d32 0%, #002e1e 100%);
+  background: linear-gradient(135deg, #003622 0%, #004d32 40%, #006844 70%, #003622 100%);
+  background-size: 250% 250%;
+  animation: ctaGradientFlow 9s ease infinite;
   border-radius: 20px;
   padding: 36px 40px;
   color: #ffffff;
   margin-bottom: 40px;
-  box-shadow: 0 12px 30px rgba(0, 77, 50, 0.2);
+  box-shadow: 0 16px 36px rgba(0, 77, 50, 0.25);
+  position: relative;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(36px);
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.3s ease;
+  will-change: opacity, transform;
+}
+
+.pricing-fast-cta.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.pricing-fast-cta::after {
+  content: '';
+  position: absolute;
+  top: -40%;
+  right: -10%;
+  width: 340px;
+  height: 340px;
+  background: radial-gradient(circle, rgba(245, 189, 24, 0.16) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: ctaOrbFloat 6s infinite alternate ease-in-out;
 }
 
 .cta-inner {
@@ -539,6 +803,8 @@
   align-items: center;
   justify-content: space-between;
   gap: 30px;
+  position: relative;
+  z-index: 2;
 }
 
 .cta-left h3 {
@@ -573,12 +839,17 @@
   align-items: center;
   gap: 8px;
   box-shadow: 0 4px 14px rgba(227, 6, 19, 0.35);
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
+  animation: sonarWaveHotline 2.2s infinite ease-out;
 }
 
 .btn-cta-hotline:hover {
   background: #c80510;
-  transform: translateY(-2px);
+  transform: translateY(-2px) scale(1.02);
+}
+
+.btn-cta-hotline:hover svg {
+  animation: phoneRingWiggle 0.5s ease infinite alternate;
 }
 
 .btn-cta-contact {
@@ -592,12 +863,14 @@
   border-radius: 10px;
   display: inline-flex;
   align-items: center;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
 }
 
 .btn-cta-contact:hover {
   background: #ffffff;
   color: #004d32;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
 }
 
 /* ========================================================= */
@@ -612,17 +885,56 @@
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.03);
+  opacity: 0;
+  transform: translateY(36px);
+  transition: opacity 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.75s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.3s ease;
+  will-change: opacity, transform;
+}
+
+.pricing-hub-guarantee.is-visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .pricing-hub-guarantee .g-item {
   display: flex;
   align-items: center;
   gap: 14px;
+  padding: 10px;
+  border-radius: 12px;
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              background-color 0.25s ease;
+}
+
+.pricing-hub-guarantee.is-visible .g-item {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.pricing-hub-guarantee.is-visible .g-item:nth-child(1) { transition-delay: 0.08s; }
+.pricing-hub-guarantee.is-visible .g-item:nth-child(2) { transition-delay: 0.18s; }
+.pricing-hub-guarantee.is-visible .g-item:nth-child(3) { transition-delay: 0.28s; }
+.pricing-hub-guarantee.is-visible .g-item:nth-child(4) { transition-delay: 0.38s; }
+
+.pricing-hub-guarantee .g-item:hover {
+  transform: translateY(-4px);
+  background: #f8fafc;
+}
+
+.pricing-hub-guarantee .g-item:hover .g-icon {
+  transform: scale(1.15) rotate(6deg);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .pricing-hub-guarantee .g-icon {
   color: #004d32;
   flex-shrink: 0;
+  transition: transform 0.25s ease;
 }
 
 .pricing-hub-guarantee .g-icon.gold {
@@ -674,32 +986,351 @@
 }
 
 @media (max-width: 768px) {
+  /* 1. HERO BANNER TRÊN DIỆN THOẠI - CỠ CHỮ TINH GỌN, CHUẨN ĐIỆN THOẠI */
+  .pricing-hero-banner {
+    padding: 30px 14px 22px;
+  }
+
+  .hero-subtag {
+    font-size: 9px;
+    padding: 4px 11px;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+  }
+
+  .pricing-hero-content h1 {
+    font-size: 19px;
+    font-weight: 800;
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+
+  .pricing-hero-content p {
+    font-size: 12px;
+    line-height: 1.45;
+    margin-bottom: 16px;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .pricing-search-wrapper {
+    padding: 3px 12px;
+    border-radius: 25px;
+    max-width: 100%;
+  }
+
+  .pricing-search-wrapper input {
+    font-size: 12px;
+    padding: 6px 0;
+  }
+
+  .pricing-search-wrapper .search-icon {
+    width: 15px;
+    height: 15px;
+    margin-right: 8px;
+  }
+
+  /* 2. MAIN CONTAINER */
+  .pricing-hub-container {
+    padding: 0 12px;
+    margin-top: 16px;
+  }
+
+  /* Thanh tab danh mục dạng trượt ngang mượt mà (Mobile Touch Carousel) */
+  .pricing-tabs-row {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    justify-content: flex-start;
+    gap: 6px;
+    padding: 2px 2px 8px;
+    margin-bottom: 12px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .pricing-tabs-row::-webkit-scrollbar {
+    display: none;
+  }
+
+  .pricing-tab-btn {
+    white-space: nowrap;
+    flex-shrink: 0;
+    padding: 6px 13px;
+    font-size: 11px;
+    font-weight: 700;
+    border-radius: 20px;
+  }
+
+  /* Status Bar */
+  .catalog-status-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 11px;
+    margin-bottom: 14px;
+  }
+
+  .catalog-status-bar .status-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .live-pricing-note {
+    font-size: 10.5px;
+    line-height: 1.35;
+  }
+
+  /* 3. CARD SẢN PHẨM BẢNG GIÁ TRÊN MOBILE */
+  .pricing-products-horizontal-list {
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
   .pricing-horizontal-card {
     grid-template-columns: 1fr;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
   }
 
   .card-image-box {
-    min-height: 220px;
+    height: 160px;
+    min-height: 160px;
   }
 
+  .card-badge-pill {
+    top: 8px;
+    left: 8px;
+    font-size: 8.5px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .card-code-pill {
+    bottom: 8px;
+    left: 8px;
+    font-size: 9.5px;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 4px;
+  }
+
+  /* Thông tin sản phẩm */
+  .card-info-column {
+    padding: 12px 12px 8px;
+  }
+
+  .card-meta-row {
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+
+  .card-cat-badge {
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .card-business-status {
+    font-size: 10px;
+    padding: 2px 7px;
+  }
+
+  .status-pulse-dot {
+    width: 5px;
+    height: 5px;
+  }
+
+  .card-prod-title {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    line-height: 1.35;
+  }
+
+  .card-prod-title .title-link {
+    color: #0f172a;
+  }
+
+  .card-prod-desc {
+    font-size: 11.5px;
+    line-height: 1.45;
+    margin-bottom: 8px;
+    color: #64748b;
+    -webkit-line-clamp: 2;
+  }
+
+  .card-specs-list {
+    gap: 5px;
+  }
+
+  .spec-tag-item {
+    font-size: 10.5px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    gap: 4px;
+  }
+
+  .spec-tag-item .spec-check-icon {
+    width: 11px;
+    height: 11px;
+  }
+
+  /* Khối giá & Nút bấm dưới card */
   .card-action-column {
     border-left: none;
-    border-top: 1px solid #eef2f6;
-    padding: 20px;
+    border-top: 1px solid #f1f5f9;
+    padding: 10px 12px 12px;
+    background: #f8fafc;
+    gap: 8px;
+  }
+
+  .price-box-wrapper {
+    padding: 8px 10px;
+    border-radius: 7px;
+  }
+
+  .price-title-caption {
+    font-size: 9.5px;
+    margin-bottom: 1px;
+  }
+
+  .price-main-highlight {
+    font-size: 15px;
+    font-weight: 800;
+  }
+
+  .price-subnote-text {
+    font-size: 9.5px;
+    margin-top: 1px;
+  }
+
+  .btn-open-pricing-detail {
+    padding: 9px 12px;
+    font-size: 11.5px;
+    font-weight: 700;
+    border-radius: 7px;
+    gap: 6px;
+  }
+
+  .btn-open-pricing-detail svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .quick-call-link {
+    font-size: 11px;
+    padding: 2px;
+    gap: 4px;
+  }
+
+  .quick-call-link svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  /* 4. FAST CTA BANNER */
+  .pricing-fast-cta {
+    padding: 18px 14px;
+    border-radius: 14px;
+    margin-bottom: 20px;
+  }
+
+  .cta-inner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .cta-left h3 {
+    font-size: 15px;
+    font-weight: 800;
+    margin-bottom: 4px;
+    line-height: 1.35;
+  }
+
+  .cta-left p {
+    font-size: 11.5px;
+    line-height: 1.45;
   }
 
   .cta-right {
     flex-direction: column;
     width: 100%;
+    gap: 8px;
   }
 
   .btn-cta-hotline,
   .btn-cta-contact {
     justify-content: center;
     width: 100%;
+    padding: 10px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 7px;
+    gap: 6px;
   }
 
+  .btn-cta-hotline svg {
+    width: 15px;
+    height: 15px;
+  }
+
+  /* 5. GUARANTEE BAR DẠNG LƯỚI 2x2 TINH GỌN */
   .pricing-hub-guarantee {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    padding: 12px 10px;
+    border-radius: 12px;
+  }
+
+  .pricing-hub-guarantee .g-item {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 8px 4px;
+    gap: 6px;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid #f1f5f9;
+  }
+
+  .pricing-hub-guarantee .g-icon {
+    width: 22px;
+    height: 22px;
+  }
+
+  .pricing-hub-guarantee h4 {
+    font-size: 11px;
+    font-weight: 800;
+    margin-bottom: 2px;
+    line-height: 1.3;
+  }
+
+  .pricing-hub-guarantee p {
+    font-size: 9.5px;
+    line-height: 1.3;
+  }
+}
+
+@media (max-width: 480px) {
+  .pricing-hero-content h1 {
+    font-size: 18px;
+  }
+
+  .card-image-box {
+    height: 150px;
+    min-height: 150px;
+  }
+
+  .card-prod-title {
+    font-size: 13.5px;
+  }
+
+  .price-main-highlight {
+    font-size: 14.5px;
   }
 }
