@@ -27,7 +27,7 @@ export default function Footer() {
         <div className="container footer-grid">
           {/* Brand Info */}
           <div className="footer-brand">
-            <a className="logo footer-logo" href="#home">
+            <a className="logo footer-logo" href="/" title="Trang chủ BOSS Đà Nẵng">
               <img src="/logo.png" alt="BOSS" style={{ height: "45px", objectFit: "contain" }} />
             </a>
 
@@ -92,6 +92,7 @@ export default function Footer() {
             <a href="/gioi-thieu">Giới thiệu</a>
             <a href="/san-pham">Sản phẩm</a>
             <a href="/bang-gia">Bảng giá</a>
+            <a href="/dich-vu">Dịch vụ</a>
             <a href="/tin-tuc">Tin tức</a>
             <a href="/lien-he">Liên hệ</a>
           </div>

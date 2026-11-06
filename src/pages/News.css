@@ -315,3 +315,33 @@
   border-radius: 8px;
   margin: 2rem 0;
 }
+
+/* Mobile typography & layout */
+@media (max-width: 768px) {
+  .news-page-grid {
+    gap: 1.2rem;
+  }
+  .news-img-wrap {
+    height: 180px;
+  }
+  .news-card-content {
+    padding: 1rem 0.9rem;
+  }
+  .news-card-title a {
+    font-size: 0.98rem;
+    line-height: 1.35;
+  }
+  .news-card-summary {
+    font-size: 0.82rem;
+    line-height: 1.5;
+    margin-bottom: 0.9rem;
+    -webkit-line-clamp: 2;
+  }
+  .news-date-badge {
+    font-size: 0.7rem;
+    padding: 3px 9px;
+  }
+  .btn-news-readmore {
+    font-size: 0.82rem;
+  }
+}

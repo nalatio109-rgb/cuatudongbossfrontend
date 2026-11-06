@@ -241,6 +241,14 @@ a {
   align-items: center;
 }
 
+.desktop-only-arrow {
+  display: inline-block;
+}
+
+.mobile-nav-prod-trigger-row {
+  display: contents;
+}
+
 .nav-arrow.rotate {
   transform: rotate(180deg) !important;
 }
@@ -741,24 +749,6 @@ a {
 @media (max-width: 992px) {
   .flyout-dropdown-menu {
     display: none !important;
-  }
-
-  .mobile-expand-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .mobile-expand-btn svg {
-    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .mobile-expand-btn svg.rotate {
-    transform: rotate(180deg);
-  }
-
-  .mobile-sub-accordion {
-    display: flex;
   }
 }
 
@@ -4293,67 +4283,62 @@ footer {
     position: relative;
   }
 
-  .nav-dropdown-wrapper>a {
+  .mobile-nav-prod-trigger-row {
+    position: relative;
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+  }
+
+  .desktop-only-arrow {
+    display: none !important;
+  }
+
+  .mobile-nav-prod-trigger-row > a {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-right: 52px !important;
   }
 
   .mobile-expand-btn {
     position: absolute;
-    right: 10px;
-    top: 8px;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
     color: #f5bd20;
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
     background: rgba(245, 189, 32, 0.15);
-    border: 1px solid rgba(245, 189, 32, 0.3);
+    border: 1px solid rgba(245, 189, 32, 0.35);
     display: flex;
     align-items: center;
     justify-content: center;
+    z-index: 25;
+    cursor: pointer;
+    pointer-events: auto;
+    transition: all 0.25s ease;
   }
 
-  .mobile-sub-accordion {
-    width: 100%;
-    background: rgba(0, 0, 0, 0.45);
-    border: 1px solid rgba(245, 189, 32, 0.25);
-    border-radius: 14px;
-    padding: 0 14px;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+  .mobile-expand-btn:active {
+    transform: translateY(-50%) scale(0.92);
   }
 
-  .mobile-sub-accordion.show {
-    padding: 14px;
-    margin-top: 8px;
+  .mobile-expand-btn.is-expanded {
+    background: rgba(245, 189, 32, 0.28) !important;
+    border-color: #ffca35 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 12px rgba(245, 189, 32, 0.35);
   }
 
-  .mobile-acc-title {
-    font-size: 12px;
-    font-weight: 850;
-    color: #f5bd20;
-    letter-spacing: 1px;
-    text-transform: uppercase;
+  .mobile-expand-btn svg {
+    transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1) !important;
   }
 
-  .mobile-acc-link {
-    color: rgba(255, 255, 255, 0.88) !important;
-    font-size: 13px !important;
-    padding: 8px 12px !important;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.03) !important;
-    border: 1px solid rgba(255, 255, 255, 0.05) !important;
-    height: auto !important;
-    margin-top: 4px;
-  }
-
-  .mobile-acc-link:hover {
-    color: #f5bd20 !important;
-    background: rgba(245, 189, 32, 0.1) !important;
+  .mobile-expand-btn svg.rotate {
+    transform: rotate(180deg) !important;
   }
 
   .call-btn {
@@ -5577,59 +5562,324 @@ footer {
 
   /* 5. Nhóm Sản phẩm */
   .nav-dropdown-wrapper {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 0;
+    position: relative !important;
+    width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0 !important;
   }
 
-  .nav-dropdown-wrapper>a {
-    justify-content: space-between;
+  .mobile-nav-prod-trigger-row {
+    position: relative !important;
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .desktop-only-arrow {
+    display: none !important;
+  }
+
+  .mobile-nav-prod-trigger-row > a {
+    width: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    padding-right: 52px !important;
   }
 
   .mobile-expand-btn {
-    right: 9px;
-    top: 7px;
-
-    width: 34px;
-    height: 34px;
-
-    border-radius: 11px;
-
-    background: rgba(245, 189, 32, 0.12);
-    border: 1px solid rgba(245, 189, 32, 0.35);
-
-    color: #ffca35;
-    transition: all 0.25s ease;
+    display: flex !important;
+    position: absolute !important;
+    right: 8px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 11px !important;
+    background: rgba(245, 189, 32, 0.14) !important;
+    border: 1px solid rgba(245, 189, 32, 0.4) !important;
+    color: #ffca35 !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 25 !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+    -webkit-tap-highlight-color: transparent !important;
+    transition: all 0.25s ease !important;
   }
 
   .mobile-expand-btn:active {
-    transform: scale(0.92);
+    transform: translateY(-50%) scale(0.92) !important;
   }
 
-  /* 6. Danh sách sản phẩm mở rộng */
+  .mobile-expand-btn.is-expanded {
+    background: rgba(245, 189, 32, 0.28) !important;
+    border-color: #ffca35 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 12px rgba(245, 189, 32, 0.35) !important;
+  }
+
+  .mobile-expand-btn svg {
+    transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  .mobile-expand-btn svg.rotate {
+    transform: rotate(180deg) !important;
+  }
+
+  /* 6. Danh sách sản phẩm mở rộng chuẩn Danh Mục Thông Minh theo Hình 2 */
   .mobile-sub-accordion {
-    margin-top: 8px;
-    padding: 12px;
-
-    border-radius: 14px;
-
-    background: rgba(0, 0, 0, 0.22);
-    border: 1px solid rgba(245, 189, 32, 0.15);
-
-    gap: 9px;
+    width: 100% !important;
+    margin-top: 0 !important;
+    padding: 0 12px !important;
+    border-radius: 16px !important;
+    background: rgba(0, 0, 0, 0.45) !important;
+    border: 1px solid transparent !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    max-height: 0 !important;
+    overflow: hidden !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    transition: max-height 0.38s cubic-bezier(0.16, 1, 0.3, 1),
+                padding 0.3s ease,
+                opacity 0.3s ease,
+                margin 0.3s ease !important;
   }
 
-  .mobile-acc-link {
-    border-radius: 9px;
-    padding: 9px 12px !important;
+  .mobile-sub-accordion.show {
+    max-height: 3000px !important;
+    padding: 14px 12px !important;
+    margin-top: 10px !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    border-color: rgba(245, 189, 32, 0.25) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
+  }
 
-    background: rgba(255, 255, 255, 0.035) !important;
-    border: 1px solid rgba(255, 255, 255, 0.055) !important;
+  .mobile-flyout-panel-title {
+    font-size: 11px;
+    font-weight: 850;
+    letter-spacing: 1.5px;
+    color: #f5bd20;
+    text-transform: uppercase;
+    padding: 4px 6px 8px 6px;
+    border-bottom: 1px solid rgba(245, 189, 32, 0.15);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+  }
 
+  .mobile-cats-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .mobile-flyout-cat-group {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mobile-flyout-cat-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1.2px solid rgba(245, 189, 32, 0.15);
+    cursor: pointer;
+    transition: all 0.22s ease;
+    user-select: none;
+  }
+
+  .mobile-flyout-cat-item:active,
+  .mobile-flyout-cat-item.active {
+    background: rgba(245, 189, 32, 0.1);
+    border-color: rgba(245, 189, 32, 0.45);
+  }
+
+  .mobile-flyout-cat-item .cat-icon-box {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    background: rgba(245, 189, 32, 0.12);
+    border: 1px solid rgba(245, 189, 32, 0.3);
+    color: #f5bd20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .mobile-flyout-cat-item .cat-info-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+    gap: 2px;
+  }
+
+  .mobile-flyout-cat-item .cat-title-text {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.2;
+  }
+
+  .mobile-flyout-cat-item .cat-sub-text {
+    font-size: 11px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.55);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .mobile-flyout-cat-item .cat-badge-count {
+    font-size: 10px;
+    font-weight: 800;
+    color: #f5bd20;
+    background: rgba(245, 189, 32, 0.15);
+    border: 1px solid rgba(245, 189, 32, 0.3);
+    padding: 3px 8px;
+    border-radius: 12px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .mobile-flyout-cat-item .cat-chevron {
+    color: rgba(255, 255, 255, 0.4);
+    transition: transform 0.25s ease, color 0.25s ease;
+    flex-shrink: 0;
+  }
+
+  .mobile-flyout-cat-item.active .cat-chevron.rotate-chevron {
+    transform: rotate(180deg);
+    color: #f5bd20;
+  }
+
+  /* Danh sách con khi bấm mở từng danh mục */
+  .mobile-flyout-subitems-box {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px 6px 6px 12px;
+    margin-top: 6px;
+    border-left: 2px solid rgba(245, 189, 32, 0.35);
+    margin-left: 18px;
+    animation: fadeInSub 0.25s ease-out;
+  }
+
+  @keyframes fadeInSub {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .mobile-sub-viewall-pill {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 7px 12px !important;
+    border-radius: 8px;
+    background: rgba(245, 189, 32, 0.12) !important;
+    border: 1px solid rgba(245, 189, 32, 0.3) !important;
+    color: #f5bd20 !important;
+    font-size: 11.5px !important;
+    font-weight: 750 !important;
+    text-decoration: none;
+    height: auto !important;
+    margin-bottom: 2px;
+  }
+
+  .mobile-flyout-sub-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px 10px !important;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.03) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
     color: rgba(255, 255, 255, 0.88) !important;
-    font-size: 13px !important;
+    text-decoration: none;
+    height: auto !important;
+    transition: background 0.2s ease;
+  }
+
+  .mobile-flyout-sub-link:active {
+    background: rgba(255, 255, 255, 0.08) !important;
+  }
+
+  .mobile-sub-text-col {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+  }
+
+  .mobile-sub-name {
+    font-size: 12px;
+    font-weight: 600;
+    color: #ffffff;
+    line-height: 1.25;
+  }
+
+  .mobile-sub-desc {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.5);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .mobile-sub-tag {
+    font-size: 9px;
+    font-weight: 800;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(227, 6, 19, 0.25);
+    color: #ff6b6b;
+    border: 1px solid rgba(227, 6, 19, 0.4);
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .mobile-flyout-all-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 14px !important;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(245, 189, 32, 0.15) 0%, rgba(245, 189, 32, 0.05) 100%) !important;
+    border: 1px solid rgba(245, 189, 32, 0.35) !important;
+    color: #f5bd20 !important;
+    font-size: 12px !important;
+    font-weight: 750 !important;
+    text-decoration: none;
+    height: auto !important;
+    margin-top: 4px;
+    transition: all 0.2s ease;
+  }
+
+  .mobile-flyout-all-link:active {
+    background: rgba(245, 189, 32, 0.25) !important;
+    transform: scale(0.98);
   }
 
   /* 7. Khu vực tài khoản quản trị */

@@ -3,13 +3,15 @@ import { Link } from "react-router-dom";
 import { 
   Users, Package, FolderKanban, CheckCircle, Trash2, Plus, Edit,
   RefreshCw, X, Shield, Phone, ArrowLeft, LayoutDashboard, Database,
-  Newspaper, Search, Eye, Tag, FileText, Check, Menu, LogOut, Sparkles, FileSpreadsheet, FileEdit
+  Newspaper, Search, Eye, Tag, FileText, Check, Menu, LogOut, Sparkles, FileSpreadsheet, FileEdit,
+  Wrench, Upload, Image as ImageIcon, ExternalLink, Filter, RotateCcw, Loader2
 } from "lucide-react";
 import AdminCategorySeo from "../components/AdminCategorySeo";
 import AdminPriceQuote from "../components/AdminPriceQuote";
 import AdminProductArticleEditor from "../components/AdminProductArticleEditor";
 import { useAuth } from "../context/AuthContext";
 import { slugify } from "../utils/slug.js";
+import { DEFAULT_SERVICES as DEFAULT_SAMPLE_SERVICES } from "../data/defaultServices";
 import "./Admin.css";
 
 const SUBCATEGORIES = {
@@ -56,6 +58,7 @@ export default function Admin() {
   const [products, setProducts] = useState([]);
   const [projects, setProjects] = useState([]);
   const [news, setNews] = useState([]);
+  const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
 
@@ -64,6 +67,8 @@ export default function Admin() {
   const [projectSearch, setProjectSearch] = useState("");
   const [newsSearch, setNewsSearch] = useState("");
   const [contactSearch, setContactSearch] = useState("");
+  const [serviceSearch, setServiceSearch] = useState("");
+  const [contactFilter, setContactFilter] = useState("all"); // "all" | "service" | "product"
 
   // Modals state
   const [showProductModal, setShowProductModal] = useState(false);
@@ -74,6 +79,10 @@ export default function Admin() {
 
   const [showNewsModal, setShowNewsModal] = useState(false);
   const [editingNews, setEditingNews] = useState(null);
+
+  const [showServiceModal, setShowServiceModal] = useState(false);
+  const [editingService, setEditingService] = useState(null);
+  const [isUploadingServiceImg, setIsUploadingServiceImg] = useState(false);
 
   // Form states
   const initialProductState = {
@@ -106,9 +115,20 @@ export default function Admin() {
     author: "BOSS Đà Nẵng"
   };
 
+  const initialServiceState = {
+    title: "",
+    date: new Date().toLocaleDateString("vi-VN"),
+    img: "/service_repair_247.png",
+    desc: "",
+    content: "",
+    order: 0,
+    phone: "0904.678.323"
+  };
+
   const [productForm, setProductForm] = useState(initialProductState);
   const [projectForm, setProjectForm] = useState(initialProjectState);
   const [newsForm, setNewsForm] = useState(initialNewsState);
+  const [serviceForm, setServiceForm] = useState(initialServiceState);
 
   // Notification Toast Helper
   const showToast = (msg) => {
@@ -116,26 +136,69 @@ export default function Admin() {
     setTimeout(() => setToastMessage(""), 3500);
   };
 
+  // Helper formatting image source
+  const formatImgSrc = (src) => {
+    if (!src) return '/service_repair_247.png';
+    if (src.startsWith('http://') || src.startsWith('https://') || src.startsWith('data:')) {
+      return src;
+    }
+    if (src.startsWith('/uploads')) {
+      const backendBase = import.meta.env.VITE_API_URL || '';
+      return `${backendBase}${src}`;
+    }
+    return src;
+  };
+
   // Fetch all data from MongoDB Backend
   const fetchData = async () => {
     setLoading(true);
     try {
-      const [resC, resP, resPr, resN] = await Promise.all([
+      const [resC, resP, resPr, resN, resS] = await Promise.all([
         fetch(`${import.meta.env.VITE_API_URL}/api/contacts`),
         fetch(`${import.meta.env.VITE_API_URL}/api/products`),
         fetch(`${import.meta.env.VITE_API_URL}/api/projects`),
-        fetch(`${import.meta.env.VITE_API_URL}/api/news`)
+        fetch(`${import.meta.env.VITE_API_URL}/api/news`),
+        fetch(`${import.meta.env.VITE_API_URL}/api/services`)
       ]);
 
       const dataC = await resC.json();
       const dataP = await resP.json();
       const dataPr = await resPr.json();
       const dataN = await resN.json();
+      const dataS = await resS.json();
 
       if (dataC.success) setContacts(dataC.data);
       if (dataP.success) setProducts(dataP.data);
       if (dataPr.success) setProjects(dataPr.data);
       if (dataN.success) setNews(dataN.data);
+      
+      let loadedServices = [];
+      if (dataS && dataS.success && Array.isArray(dataS.data) && dataS.data.length > 0) {
+        loadedServices = dataS.data;
+      } else {
+        const local = localStorage.getItem("boss_admin_services");
+        if (local) {
+          try {
+            const parsed = JSON.parse(local);
+            if (Array.isArray(parsed) && parsed.length > 0) loadedServices = parsed;
+          } catch (e) {
+            console.error("Parse local services error:", e);
+          }
+        }
+        if (loadedServices.length === 0) {
+          loadedServices = DEFAULT_SAMPLE_SERVICES;
+        }
+      }
+      setServices(loadedServices);
+      localStorage.setItem("boss_admin_services", JSON.stringify(loadedServices));
+
+      // Auto-sync with backend if backend DB is empty
+      if (dataS && dataS.success && Array.isArray(dataS.data) && dataS.data.length === 0) {
+        try {
+          fetch(`${import.meta.env.VITE_API_URL}/api/services/seed`, { method: "POST" })
+            .catch(() => {});
+        } catch (_) {}
+      }
     } catch (err) {
       console.error("Admin Fetch Error:", err);
       showToast("❌ Lỗi khi kết nối MongoDB backend");
@@ -431,6 +494,226 @@ export default function Admin() {
     }
   };
 
+  // ----------------------------------------------------
+  // SERVICE HANDLERS (ADD & EDIT & DELETE & UPLOAD)
+  // ----------------------------------------------------
+  const handleOpenAddService = () => {
+    setEditingService(null);
+    setServiceForm({
+      title: "",
+      date: new Date().toLocaleDateString("vi-VN"),
+      img: "/service_repair_247.png",
+      desc: "",
+      content: "",
+      order: services.length + 1,
+      phone: "0904.678.323"
+    });
+    setShowServiceModal(true);
+  };
+
+  const handleOpenEditService = (service) => {
+    setEditingService(service);
+    setServiceForm({
+      title: service.title || "",
+      date: service.date || new Date().toLocaleDateString("vi-VN"),
+      img: service.img || "/service_repair_247.png",
+      desc: service.desc || "",
+      content: service.content || "",
+      order: service.order ?? 0,
+      phone: service.phone || "0904.678.323"
+    });
+    setShowServiceModal(true);
+  };
+
+  const handleUploadServiceImage = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIsUploadingServiceImg(true);
+
+    try {
+      const backendBase = import.meta.env.VITE_API_URL || "";
+      const uploadEndpoint = backendBase ? `${backendBase}/api/upload` : "/api/upload";
+      const formData = new FormData();
+      formData.append("image", file);
+
+      const res = await fetch(uploadEndpoint, {
+        method: "POST",
+        body: formData
+      });
+      const data = await res.json();
+      if (data.success && data.url) {
+        setServiceForm(prev => ({ ...prev, img: data.url }));
+        showToast("🎉 Tải ảnh dịch vụ lên thành công!");
+      } else {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          setServiceForm(prev => ({ ...prev, img: event.target.result }));
+          showToast("✨ Đã tải ảnh dịch vụ trực tiếp!");
+        };
+        reader.readAsDataURL(file);
+      }
+    } catch (err) {
+      console.warn("Upload error, using Base64 fallback:", err);
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setServiceForm(prev => ({ ...prev, img: event.target.result }));
+        showToast("✨ Đã tải ảnh dịch vụ trực tiếp!");
+      };
+      reader.readAsDataURL(file);
+    } finally {
+      setIsUploadingServiceImg(false);
+      e.target.value = "";
+    }
+  };
+
+  const [seedingServices, setSeedingServices] = useState(false);
+
+  const handleSeedDefaultServices = async (silent = false) => {
+    if (!silent && !window.confirm("Bạn có muốn nạp 8 dịch vụ tiêu chuẩn vào hệ thống Admin không?")) return;
+    setSeedingServices(true);
+    try {
+      const backendBase = import.meta.env.VITE_API_URL || '';
+      let res = await fetch(`${backendBase}/api/services/seed`, { method: "POST" });
+      let data = await res.json().catch(() => null);
+
+      if (data && data.success && Array.isArray(data.data) && data.data.length > 0) {
+        setServices(data.data);
+        localStorage.setItem("boss_admin_services", JSON.stringify(data.data));
+        if (!silent) showToast("✨ Đã nạp thành công 8 dịch vụ vào hệ thống!");
+        setSeedingServices(false);
+        return;
+      }
+
+      // Fallback: POST one by one to /api/services
+      const createdServices = [];
+      for (const item of DEFAULT_SAMPLE_SERVICES) {
+        try {
+          const postRes = await fetch(`${backendBase}/api/services`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(item)
+          });
+          const postData = await postRes.json();
+          if (postData.success && postData.data) {
+            createdServices.push(postData.data);
+          }
+        } catch (e) {
+          console.warn("Post service error:", e);
+        }
+      }
+
+      if (createdServices.length > 0) {
+        setServices(createdServices);
+        localStorage.setItem("boss_admin_services", JSON.stringify(createdServices));
+        if (!silent) showToast(`✨ Đã nạp ${createdServices.length} dịch vụ vào cơ sở dữ liệu!`);
+      } else {
+        const localServices = DEFAULT_SAMPLE_SERVICES.map((s, idx) => ({ ...s, _id: `seed_${Date.now()}_${idx}` }));
+        setServices(localServices);
+        localStorage.setItem("boss_admin_services", JSON.stringify(localServices));
+        if (!silent) showToast("✨ Đã nạp 8 dịch vụ tiêu chuẩn vào Admin!");
+      }
+    } catch (err) {
+      console.error("Seed services error:", err);
+      const localServices = DEFAULT_SAMPLE_SERVICES.map((s, idx) => ({ ...s, _id: `seed_${Date.now()}_${idx}` }));
+      setServices(localServices);
+      localStorage.setItem("boss_admin_services", JSON.stringify(localServices));
+      if (!silent) showToast("✨ Đã nạp 8 dịch vụ tiêu chuẩn vào Admin!");
+    } finally {
+      setSeedingServices(false);
+    }
+  };
+
+  const handleServiceSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      let res, data;
+      if (editingService) {
+        res = await fetch(`${import.meta.env.VITE_API_URL}/api/services/${editingService._id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(serviceForm)
+        });
+        data = await res.json();
+        if (data.success) {
+          const updated = services.map(s => s._id === editingService._id ? data.data : s);
+          setServices(updated);
+          localStorage.setItem("boss_admin_services", JSON.stringify(updated));
+          showToast("✨ Đã cập nhật dịch vụ thành công!");
+        }
+      } else {
+        res = await fetch(`${import.meta.env.VITE_API_URL}/api/services`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(serviceForm)
+        });
+        data = await res.json();
+        if (data.success) {
+          const updated = [...services, data.data];
+          setServices(updated);
+          localStorage.setItem("boss_admin_services", JSON.stringify(updated));
+          showToast("🎉 Thêm dịch vụ mới thành công!");
+        }
+      }
+
+      if (data && data.success) {
+        setShowServiceModal(false);
+      } else {
+        // Fallback for offline mode
+        if (editingService) {
+          const updated = services.map(s => s._id === editingService._id ? { ...serviceForm, _id: editingService._id } : s);
+          setServices(updated);
+          localStorage.setItem("boss_admin_services", JSON.stringify(updated));
+          setShowServiceModal(false);
+          showToast("✨ Đã lưu cập nhật dịch vụ!");
+        } else {
+          const newLocal = { ...serviceForm, _id: `local_svc_${Date.now()}` };
+          const updated = [...services, newLocal];
+          setServices(updated);
+          localStorage.setItem("boss_admin_services", JSON.stringify(updated));
+          setShowServiceModal(false);
+          showToast("🎉 Đã lưu dịch vụ mới!");
+        }
+      }
+    } catch (err) {
+      console.error("Service Submit Error:", err);
+      // Fallback local save
+      if (editingService) {
+        const updated = services.map(s => s._id === editingService._id ? { ...serviceForm, _id: editingService._id } : s);
+        setServices(updated);
+        localStorage.setItem("boss_admin_services", JSON.stringify(updated));
+        setShowServiceModal(false);
+        showToast("✨ Đã lưu cập nhật dịch vụ vào hệ thống!");
+      } else {
+        const newLocal = { ...serviceForm, _id: `local_svc_${Date.now()}` };
+        const updated = [...services, newLocal];
+        setServices(updated);
+        localStorage.setItem("boss_admin_services", JSON.stringify(updated));
+        setShowServiceModal(false);
+        showToast("🎉 Đã lưu dịch vụ mới vào hệ thống!");
+      }
+    }
+  };
+
+  const handleDeleteService = async (id) => {
+    if (!window.confirm("Bạn có chắc chắn muốn xóa dịch vụ này khỏi hệ thống?")) return;
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/services/${id}`, { method: "DELETE" });
+      const data = await res.json();
+      if (data.success) {
+        const updated = services.filter(s => s._id !== id);
+        setServices(updated);
+        localStorage.setItem("boss_admin_services", JSON.stringify(updated));
+        showToast("🗑️ Đã xóa dịch vụ thành công!");
+      }
+    } catch (err) {
+      console.error("Delete service error:", err);
+      const updated = services.filter(s => s._id !== id);
+      setServices(updated);
+      localStorage.setItem("boss_admin_services", JSON.stringify(updated));
+      showToast("🗑️ Đã xóa dịch vụ khỏi hệ thống!");
+    }
+  };
+
   // Filtered Lists for Search
   const filteredProducts = products.filter(p => 
     p.title?.toLowerCase().includes(productSearch.toLowerCase()) ||
@@ -449,13 +732,31 @@ export default function Admin() {
     n.summary?.toLowerCase().includes(newsSearch.toLowerCase())
   );
 
-  const filteredContacts = contacts.filter(c => 
-    c.fullName?.toLowerCase().includes(contactSearch.toLowerCase()) ||
-    c.phone?.includes(contactSearch) ||
-    c.productCategory?.toLowerCase().includes(contactSearch.toLowerCase())
+  const filteredServices = services.filter(s =>
+    s.title?.toLowerCase().includes(serviceSearch.toLowerCase()) ||
+    s.desc?.toLowerCase().includes(serviceSearch.toLowerCase()) ||
+    s.content?.toLowerCase().includes(serviceSearch.toLowerCase())
   );
 
+  const filteredContacts = contacts.filter(c => {
+    const matchesSearch =
+      c.fullName?.toLowerCase().includes(contactSearch.toLowerCase()) ||
+      c.phone?.includes(contactSearch) ||
+      c.productCategory?.toLowerCase().includes(contactSearch.toLowerCase()) ||
+      c.message?.toLowerCase().includes(contactSearch.toLowerCase());
+
+    if (!matchesSearch) return false;
+
+    const isServiceBooking = c.productCategory?.toLowerCase().includes("dịch vụ");
+    if (contactFilter === "service") return isServiceBooking;
+    if (contactFilter === "product") return !isServiceBooking;
+    return true;
+  });
+
   const pendingContactsCount = contacts.filter(c => c.status === "pending").length;
+  const serviceContactsCount = contacts.filter(c => 
+    c.productCategory?.toLowerCase().includes("dịch vụ")
+  ).length;
 
   return (
     <div className="admin-standalone-wrapper">
@@ -522,6 +823,14 @@ export default function Admin() {
             onClick={() => { setActiveTab("news"); setMobileMenuOpen(false); }}
           >
             <Newspaper size={18} /> Quản Lý Tin Tức
+          </button>
+
+          <button 
+            className={`admin-nav-item ${activeTab === "services" ? "active" : ""}`}
+            onClick={() => { setActiveTab("services"); setMobileMenuOpen(false); }}
+          >
+            <Wrench size={18} /> Quản Lý Dịch Vụ
+            {services.length > 0 && <span className="nav-badge-count">{services.length}</span>}
           </button>
 
           <button 
@@ -627,8 +936,17 @@ export default function Admin() {
             </button>
 
             <button 
-              className={`mobile-quick-tab ${activeTab === "products" ? "active" : ""}`}
-              onClick={() => setActiveTab("products")}
+              className={`mobile-quick-tab ${activeTab === "services" ? "active" : ""}`}
+              onClick={() => setActiveTab("services")}
+            >
+              <Wrench size={14} />
+              <span>Dịch Vụ</span>
+              {services.length > 0 && <span className="tab-pill-count">{services.length}</span>}
+            </button>
+
+            <button 
+              className={`mobile-quick-tab ${activeTab === "products" && productSubTab === "list" ? "active" : ""}`}
+              onClick={() => { setActiveTab("products"); setProductSubTab("list"); }}
             >
               <Package size={14} />
               <span>Sản Phẩm</span>
@@ -657,6 +975,22 @@ export default function Admin() {
               <Sparkles size={14} />
               <span>Bài Sale</span>
             </button>
+
+            <button 
+              className={`mobile-quick-tab ${activeTab === "pricing" ? "active" : ""}`}
+              onClick={() => setActiveTab("pricing")}
+            >
+              <FileSpreadsheet size={14} />
+              <span>Bảng Giá KT</span>
+            </button>
+
+            <button 
+              className={`mobile-quick-tab ${activeTab === "products" && productSubTab === "editor" ? "active" : ""}`}
+              onClick={() => { setActiveTab("products"); setProductSubTab("editor"); }}
+            >
+              <FileEdit size={14} />
+              <span>Soạn Bài SP</span>
+            </button>
           </div>
 
           {/* STATS CARDS */}
@@ -668,6 +1002,16 @@ export default function Admin() {
               <div className="stat-info">
                 <h4>Báo Giá Mới Chờ Xử Lý</h4>
                 <p>{pendingContactsCount} <span style={{ fontSize: "0.85rem", color: "#f59e0b" }}>({contacts.length} tổng)</span></p>
+              </div>
+            </div>
+
+            <div className="admin-stat-card">
+              <div className="stat-icon" style={{ background: "rgba(234, 179, 8, 0.15)", color: "#eab308" }}>
+                <Wrench size={24} />
+              </div>
+              <div className="stat-info">
+                <h4>Dịch Vụ Cửa Cuốn / Kéo</h4>
+                <p>{services.length} <span style={{ fontSize: "0.85rem", color: "#38bdf8" }}>({serviceContactsCount} đơn dịch vụ)</span></p>
               </div>
             </div>
 
@@ -720,6 +1064,32 @@ export default function Admin() {
                   </div>
                 </div>
               </div>
+
+              {/* FILTER CHIPS (TẤT CẢ VS ĐƠN DỊCH VỤ VS ĐƠN SẢN PHẨM) */}
+              <div className="contact-filter-chips">
+                <button 
+                  type="button" 
+                  className={`chip-btn ${contactFilter === "all" ? "active" : ""}`}
+                  onClick={() => setContactFilter("all")}
+                >
+                  Tất cả ({contacts.length})
+                </button>
+                <button 
+                  type="button" 
+                  className={`chip-btn service ${contactFilter === "service" ? "active" : ""}`}
+                  onClick={() => setContactFilter("service")}
+                >
+                  🛠️ Đơn Dịch Vụ Sửa Chữa ({serviceContactsCount})
+                </button>
+                <button 
+                  type="button" 
+                  className={`chip-btn ${contactFilter === "product" ? "active" : ""}`}
+                  onClick={() => setContactFilter("product")}
+                >
+                  📦 Đơn Sản Phẩm ({contacts.length - serviceContactsCount})
+                </button>
+              </div>
+
               <div className="table-scroll-hint"><span>⇄ Vuốt sang ngang để xem đầy đủ cột</span></div>
               <table className="admin-table">
                 <thead>
@@ -727,7 +1097,7 @@ export default function Admin() {
                     <th>Thời gian</th>
                     <th>Khách hàng</th>
                     <th>Số điện thoại</th>
-                    <th>Sản phẩm tư vấn</th>
+                    <th>Hạng mục tư vấn</th>
                     <th>Nội dung yêu cầu</th>
                     <th>Trạng thái</th>
                     <th>Thao tác</th>
@@ -745,10 +1115,16 @@ export default function Admin() {
                           </a>
                         </td>
                         <td>
-                          <span className="admin-badge-category">
-                            {item.productName || item.productCategory}
-                            {item.productCode ? ` (${item.productCode})` : ""}
-                          </span>
+                          {item.productCategory?.toLowerCase().includes("dịch vụ") ? (
+                            <span className="admin-badge-service">
+                              🛠️ {item.productCategory}
+                            </span>
+                          ) : (
+                            <span className="admin-badge-category">
+                              {item.productName || item.productCategory}
+                              {item.productCode ? ` (${item.productCode})` : ""}
+                            </span>
+                          )}
                         </td>
                         <td style={{ maxWidth: 260, color: "#94a3b8", fontSize: "0.85rem" }}>
                           {item.dimensions && <div><strong>KT:</strong> {item.dimensions} (SL: {item.quantity || 1})</div>}
@@ -1071,6 +1447,144 @@ export default function Admin() {
                     <tr>
                       <td colSpan="6" style={{ textAlign: "center", padding: "2rem" }}>
                         Chưa có bài viết tin tức nào.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {/* TAB: SERVICES (FULL CRUD QUẢN LÝ DỊCH VỤ) */}
+          {activeTab === "services" && (
+            <div className="admin-table-container">
+              <div className="table-action-header">
+                <h2>DANH SÁCH DỊCH VỤ BOSS ĐÀ NẴNG ({services.length})</h2>
+                <div className="table-header-controls">
+                  <div className="admin-search-box">
+                    <Search size={16} />
+                    <input 
+                      type="text" 
+                      placeholder="Tìm tiêu đề, nội dung dịch vụ..."
+                      value={serviceSearch}
+                      onChange={(e) => setServiceSearch(e.target.value)}
+                      className="admin-search-input"
+                    />
+                  </div>
+                  <button 
+                    className="btn-seed-services" 
+                    onClick={() => handleSeedDefaultServices(false)}
+                    disabled={seedingServices}
+                    title="Khôi phục hoặc nạp thêm 8 dịch vụ tiêu chuẩn"
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 6,
+                      padding: "8px 14px",
+                      background: "rgba(212,175,55,0.15)",
+                      border: "1px solid rgba(212,175,55,0.4)",
+                      color: "#d4af37",
+                      borderRadius: 8,
+                      cursor: "pointer",
+                      fontSize: "0.82rem",
+                      fontWeight: 600,
+                      transition: "all 0.2s ease"
+                    }}
+                  >
+                    <RotateCcw size={14} className={seedingServices ? "spin" : ""} />
+                    {seedingServices ? "Đang nạp..." : "Nạp 8 Dịch Vụ Mẫu"}
+                  </button>
+                  <button className="btn-add-new" onClick={handleOpenAddService}>
+                    <Plus size={16} /> THÊM DỊCH VỤ MỚI
+                  </button>
+                </div>
+              </div>
+              <div className="table-scroll-hint"><span>⇄ Vuốt sang ngang để xem đầy đủ cột</span></div>
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>Hình ảnh</th>
+                    <th>Tiêu đề dịch vụ</th>
+                    <th>Ngày đăng</th>
+                    <th>Thứ tự</th>
+                    <th>Mô tả tóm tắt</th>
+                    <th>Thao tác</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredServices.length > 0 ? (
+                    filteredServices.map((s, idx) => (
+                      <tr key={s._id || s.id || idx}>
+                        <td>
+                          <img 
+                            src={formatImgSrc(s.img)} 
+                            alt={s.title} 
+                            style={{ width: 64, height: 44, objectFit: "cover", borderRadius: 6, border: "1px solid rgba(212,175,55,0.3)" }} 
+                          />
+                        </td>
+                        <td style={{ fontWeight: 600 }}>
+                          <div style={{ color: "#f8fafc" }}>{s.title}</div>
+                          <div style={{ fontSize: "0.78rem", color: "#38bdf8", marginTop: 4, display: "flex", alignItems: "center", gap: 8 }}>
+                            <span>📞 Hotline: {s.phone || "0904.678.323"}</span>
+                            <span>•</span>
+                            <Link to="/dich-vu" target="_blank" style={{ color: "#38bdf8", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 3 }}>
+                              <ExternalLink size={12} /> Xem trên web
+                            </Link>
+                          </div>
+                        </td>
+                        <td>{s.date}</td>
+                        <td>
+                          <span className="admin-badge-category" style={{ background: "rgba(212,175,55,0.15)", color: "#d4af37", fontWeight: 700 }}>
+                            #{s.order ?? (idx + 1)}
+                          </span>
+                        </td>
+                        <td style={{ maxWidth: 280, fontSize: "0.85rem", color: "#94a3b8" }}>
+                          {s.desc}
+                        </td>
+                        <td>
+                          <button 
+                            className="btn-action-icon edit"
+                            onClick={() => handleOpenEditService(s)}
+                            title="Sửa dịch vụ"
+                          >
+                            <Edit size={16} />
+                          </button>
+                          <button 
+                            className="btn-action-icon delete"
+                            onClick={() => handleDeleteService(s._id)}
+                            title="Xóa dịch vụ"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="6" style={{ textAlign: "center", padding: "3rem 1.5rem" }}>
+                        <div style={{ maxWidth: 500, margin: "0 auto", color: "#94a3b8" }}>
+                          <Wrench size={40} style={{ color: "#d4af37", margin: "0 auto 12px", display: "block" }} />
+                          <h3 style={{ color: "#f8fafc", fontSize: "1.1rem", marginBottom: 8, fontWeight: 700 }}>
+                            Chưa có dịch vụ nào trong cơ sở dữ liệu
+                          </h3>
+                          <p style={{ fontSize: "0.85rem", marginBottom: 20, color: "#94a3b8", lineHeight: 1.5 }}>
+                            Hệ thống hiện chưa có bản ghi dịch vụ nào. Bạn có thể tự tạo dịch vụ mới hoặc nạp sẵn 8 dịch vụ tiêu chuẩn (cửa cuốn, sửa chữa 24/7, cửa kéo, phụ kiện...).
+                          </p>
+                          <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+                            <button 
+                              className="btn-add-new" 
+                              onClick={() => handleSeedDefaultServices(false)}
+                              disabled={seedingServices}
+                              style={{ background: "linear-gradient(135deg, #d4af37 0%, #b8972e 100%)", color: "#000", fontWeight: 700 }}
+                            >
+                              {seedingServices ? <Loader2 size={16} className="spin" /> : <RotateCcw size={16} />}
+                              {seedingServices ? "Đang nạp dữ liệu..." : "⚡ Nạp 8 Dịch Vụ Mẫu Vào Admin"}
+                            </button>
+                            <button className="btn-add-new" onClick={handleOpenAddService}>
+                              <Plus size={16} /> Thêm Dịch Vụ Mới
+                            </button>
+                          </div>
+                        </div>
                       </td>
                     </tr>
                   )}
@@ -1419,6 +1933,155 @@ export default function Admin() {
                 <button type="button" className="btn-cancel" onClick={() => setShowNewsModal(false)}>Hủy</button>
                 <button type="submit" className="btn-save">
                   {editingNews ? "Cập Nhật Bài Viết" : "Lưu Bài Viết"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL THÊM / SỬA DỊCH VỤ */}
+      {showServiceModal && (
+        <div className="admin-modal-overlay">
+          <div className="admin-modal-card">
+            <div className="modal-header">
+              <h3>{editingService ? "✏️ Chỉnh Sửa Dịch Vụ BOSS" : "➕ Thêm Dịch Vụ Mới Vào Hệ Thống"}</h3>
+              <button 
+                type="button"
+                style={{ background: "none", border: "none", color: "white", cursor: "pointer" }} 
+                onClick={() => setShowServiceModal(false)}
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <form onSubmit={handleServiceSubmit}>
+              <div className="admin-form-group">
+                <label>Tiêu đề dịch vụ *</label>
+                <input 
+                  type="text" 
+                  value={serviceForm.title} 
+                  onChange={(e) => setServiceForm({ ...serviceForm, title: e.target.value })} 
+                  required 
+                  placeholder="Ví dụ: SỬA CHỮA CỬA CUỐN 24/24 TẠI ĐÀ NẴNG"
+                />
+              </div>
+
+              <div className="admin-form-grid-3">
+                <div className="admin-form-group">
+                  <label>Ngày đăng</label>
+                  <input 
+                    type="text" 
+                    value={serviceForm.date} 
+                    onChange={(e) => setServiceForm({ ...serviceForm, date: e.target.value })} 
+                    placeholder="DD/MM/YYYY"
+                  />
+                </div>
+                <div className="admin-form-group">
+                  <label>Thứ tự hiển thị</label>
+                  <input 
+                    type="number" 
+                    value={serviceForm.order} 
+                    onChange={(e) => setServiceForm({ ...serviceForm, order: Number(e.target.value) })} 
+                    placeholder="1, 2, 3..."
+                  />
+                </div>
+                <div className="admin-form-group">
+                  <label>Hotline hỗ trợ</label>
+                  <input 
+                    type="text" 
+                    value={serviceForm.phone} 
+                    onChange={(e) => setServiceForm({ ...serviceForm, phone: e.target.value })} 
+                    placeholder="0904.678.323"
+                  />
+                </div>
+              </div>
+
+              <div className="admin-form-group">
+                <label>Hình ảnh đại diện dịch vụ *</label>
+                <div className="service-img-input-row" style={{ display: "flex", gap: "10px", alignItems: "center", marginBottom: "8px" }}>
+                  <input 
+                    type="text" 
+                    value={serviceForm.img} 
+                    onChange={(e) => setServiceForm({ ...serviceForm, img: e.target.value })} 
+                    required
+                    placeholder="Đường dẫn ảnh: /service_repair_247.png hoặc URL"
+                    style={{ flex: 1 }}
+                  />
+                  <label className="btn-upload-file-label" style={{ 
+                    display: "inline-flex", 
+                    alignItems: "center", 
+                    gap: "6px", 
+                    background: "rgba(212, 175, 55, 0.2)", 
+                    color: "#f5d77f", 
+                    border: "1px solid rgba(212, 175, 55, 0.4)", 
+                    padding: "9px 14px", 
+                    borderRadius: "6px", 
+                    cursor: "pointer", 
+                    fontSize: "0.85rem",
+                    fontWeight: "600",
+                    whiteSpace: "nowrap"
+                  }}>
+                    <Upload size={15} />
+                    {isUploadingServiceImg ? "Đang tải..." : "Tải ảnh từ máy"}
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      onChange={handleUploadServiceImage} 
+                      disabled={isUploadingServiceImg} 
+                      style={{ display: "none" }} 
+                    />
+                  </label>
+                </div>
+
+                {/* Preview Thumbnail */}
+                {serviceForm.img && (
+                  <div className="service-img-preview-box" style={{ 
+                    marginTop: "6px", 
+                    display: "flex", 
+                    alignItems: "center", 
+                    gap: "12px",
+                    background: "rgba(0,0,0,0.3)",
+                    padding: "8px 12px",
+                    borderRadius: "6px",
+                    border: "1px dashed rgba(212,175,55,0.3)"
+                  }}>
+                    <img 
+                      src={formatImgSrc(serviceForm.img)} 
+                      alt="Preview" 
+                      style={{ width: "70px", height: "50px", objectFit: "cover", borderRadius: "4px" }} 
+                      onError={(e) => { e.target.style.display = 'none'; }}
+                    />
+                    <span style={{ fontSize: "0.8rem", color: "#94a3b8" }}>
+                      Xem trước hình ảnh đại diện dịch vụ
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              <div className="admin-form-group">
+                <label>Mô tả tóm tắt (hiển thị trên thẻ dịch vụ)</label>
+                <textarea 
+                  rows="2" 
+                  value={serviceForm.desc} 
+                  onChange={(e) => setServiceForm({ ...serviceForm, desc: e.target.value })}
+                  placeholder="Mô tả ngắn gọn về dịch vụ này..."
+                ></textarea>
+              </div>
+
+              <div className="admin-form-group">
+                <label>Nội dung chi tiết dịch vụ (khi bấm 'Xem chi tiết')</label>
+                <textarea 
+                  rows="6" 
+                  value={serviceForm.content} 
+                  onChange={(e) => setServiceForm({ ...serviceForm, content: e.target.value })}
+                  placeholder="Nội dung chi tiết từng gạch đầu dòng, quy trình, cam kết bảo hành..."
+                ></textarea>
+              </div>
+
+              <div className="modal-footer">
+                <button type="button" className="btn-cancel" onClick={() => setShowServiceModal(false)}>Hủy</button>
+                <button type="submit" className="btn-save">
+                  {editingService ? "Cập Nhật Dịch Vụ" : "Lưu Dịch Vụ Mới"}
                 </button>
               </div>
             </form>

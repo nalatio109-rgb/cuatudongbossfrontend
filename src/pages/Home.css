@@ -406,3 +406,45 @@
   line-height: 1.5;
   margin: 0;
 }
+
+/* =========================================
+   MOBILE TYPOGRAPHY OPTIMIZATION (< 768px)
+========================================= */
+@media (max-width: 768px) {
+  .hero-gd-content {
+    padding: 2.5rem 0 4rem;
+  }
+  .hero-gd-title {
+    font-size: clamp(1.65rem, 6vw, 2.1rem);
+    line-height: 1.25;
+    margin-bottom: 1rem;
+  }
+  .hero-gd-desc {
+    font-size: 0.92rem;
+    line-height: 1.55;
+    margin-bottom: 1.8rem;
+  }
+  .why-gd-grid {
+    gap: 2rem;
+  }
+  .why-gd-left h2 {
+    font-size: 1.45rem;
+    line-height: 1.3;
+  }
+  .why-gd-left p {
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+  .product-info-gd {
+    padding: 1.1rem 1rem;
+  }
+  .product-info-gd h3 {
+    font-size: 1rem;
+  }
+  .product-info-gd p {
+    font-size: 0.82rem;
+    line-height: 1.45;
+    min-height: auto;
+    margin-bottom: 1rem;
+  }
+}

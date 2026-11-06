@@ -69,6 +69,7 @@ export default function Navbar() {
   const [megaOpen, setMegaOpen] = useState(false);
   const [hoveredCatKey, setHoveredCatKey] = useState(null);
   const [mobileProdExpanded, setMobileProdExpanded] = useState(false);
+  const [mobileExpandedCatKey, setMobileExpandedCatKey] = useState(null);
 
   const navRef = useRef(null);
   const hoverTimeoutRef = useRef(null);
@@ -93,6 +94,8 @@ export default function Navbar() {
     setMenu(false);
     setUserMenuOpen(false);
     setHoveredCatKey(null);
+    setMobileProdExpanded(false);
+    setMobileExpandedCatKey(null);
   }, [location]);
 
   // Click outside to close user menu
@@ -217,26 +220,39 @@ export default function Navbar() {
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
-            <NavLink 
-              to="/san-pham" 
-              onClick={() => setMenu(false)} 
-              className={({ isActive }) => (isActive ? "nav-link-item active has-dropdown" : "nav-link-item has-dropdown")}
-            >
-              <span>SẢN PHẨM</span>
-              <ChevronDown size={14} className={`nav-arrow ${megaOpen ? "rotate" : ""}`} />
-            </NavLink>
+            <div className="mobile-nav-prod-trigger-row">
+              <NavLink 
+                to="/san-pham" 
+                onClick={(e) => {
+                  // Trên mobile hoặc khi drawer menu đang mở:
+                  // Chạm vào thanh "SẢN PHẨM" thì trượt mở/đóng danh mục con thay vì đóng menu và tải lại trang!
+                  if (window.innerWidth <= 992 || menu) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setMobileProdExpanded((prev) => !prev);
+                  } else {
+                    setMenu(false);
+                  }
+                }} 
+                className={({ isActive }) => (isActive ? "nav-link-item active has-dropdown" : "nav-link-item has-dropdown")}
+              >
+                <span>SẢN PHẨM</span>
+                <ChevronDown size={14} className={`nav-arrow desktop-only-arrow ${megaOpen ? "rotate" : ""}`} />
+              </NavLink>
 
-            <button 
-              className="mobile-expand-btn"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                setMobileProdExpanded(!mobileProdExpanded);
-              }}
-              aria-label="Expand products list"
-            >
-              <ChevronDown size={16} className={mobileProdExpanded ? "rotate" : ""} />
-            </button>
+              <button 
+                type="button"
+                className={`mobile-expand-btn ${mobileProdExpanded ? "is-expanded" : ""}`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setMobileProdExpanded((prev) => !prev);
+                }}
+                aria-label="Mở rộng danh mục sản phẩm"
+              >
+                <ChevronDown size={17} className={mobileProdExpanded ? "rotate" : ""} />
+              </button>
+            </div>
 
             {/* DESKTOP ULTRA LUXURY FLYOUT DROPDOWN MENU */}
             <div className={`flyout-dropdown-menu ${megaOpen ? "show" : ""}`}>
@@ -336,28 +352,90 @@ export default function Navbar() {
               </div>
             </div>
 
-            {/* MOBILE ACCORDION SUBLIST */}
+            {/* MOBILE ACCORDION SUBLIST - GIAO DIỆN CHUẨN DANH MỤC THÔNG MINH THEO HÌNH ẢNH */}
             <div className={`mobile-sub-accordion ${mobileProdExpanded ? "show" : ""}`}>
-              {FLYOUT_PRODUCT_NAV_DATA.map((cat, cIdx) => (
-                <div key={cIdx} className="mobile-acc-group">
-                  <div className="mobile-acc-title">{cat.title}</div>
-                  <div className="mobile-acc-items">
-                    {cat.items.map((sub, sIdx) => (
-                      <Link 
-                        key={sIdx}
-                        to={`/san-pham?search=${encodeURIComponent(sub.query)}`}
-                        onClick={() => {
-                          setMenu(false);
-                          setMobileProdExpanded(false);
+              <div className="mobile-flyout-panel-title">DANH MỤC SẢN PHẨM</div>
+
+              <div className="mobile-cats-container">
+                {FLYOUT_PRODUCT_NAV_DATA.map((cat) => {
+                  const isCatExpanded = mobileExpandedCatKey === cat.categoryKey;
+                  return (
+                    <div key={cat.categoryKey} className="mobile-flyout-cat-group">
+                      <div
+                        className={`mobile-flyout-cat-item ${isCatExpanded ? "active" : ""}`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setMobileExpandedCatKey(isCatExpanded ? null : cat.categoryKey);
                         }}
-                        className="mobile-acc-link"
                       >
-                        • {sub.name}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              ))}
+                        <span className="cat-icon-box">{cat.icon}</span>
+                        <div className="cat-info-group">
+                          <span className="cat-title-text">{cat.title}</span>
+                          <span className="cat-sub-text">{cat.subtitle}</span>
+                        </div>
+                        <span className="cat-badge-count">{cat.badgeCount}</span>
+                        <ChevronDown 
+                          size={15} 
+                          className={`cat-chevron ${isCatExpanded ? "rotate-chevron" : ""}`} 
+                        />
+                      </div>
+
+                      {/* Khi bấm vào từng danh mục thì trượt mở ra các dòng con */}
+                      {isCatExpanded && (
+                        <div className="mobile-flyout-subitems-box">
+                          <Link
+                            to={`/san-pham?cat=${cat.categoryKey}`}
+                            onClick={() => {
+                              setMenu(false);
+                              setMobileProdExpanded(false);
+                              setMobileExpandedCatKey(null);
+                            }}
+                            className="mobile-sub-viewall-pill"
+                          >
+                            <span>Xem tất cả {cat.title}</span>
+                            <ChevronRight size={13} />
+                          </Link>
+
+                          {cat.items.map((sub, sIdx) => (
+                            <Link
+                              key={sIdx}
+                              to={`/san-pham?search=${encodeURIComponent(sub.query)}`}
+                              onClick={() => {
+                                setMenu(false);
+                                setMobileProdExpanded(false);
+                                setMobileExpandedCatKey(null);
+                              }}
+                              className="mobile-flyout-sub-link"
+                            >
+                              <div className="mobile-sub-text-col">
+                                <span className="mobile-sub-name">{sub.name}</span>
+                                {sub.desc && <span className="mobile-sub-desc">{sub.desc}</span>}
+                              </div>
+                              {sub.tag && <span className="mobile-sub-tag">{sub.tag}</span>}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Nút xem toàn bộ catalog */}
+              <Link
+                to="/san-pham"
+                onClick={() => {
+                  setMenu(false);
+                  setMobileProdExpanded(false);
+                  setMobileExpandedCatKey(null);
+                }}
+                className="mobile-flyout-all-link"
+              >
+                <Sparkles size={15} className="sparkle-gold" />
+                <span>Xem toàn bộ Catalog Sản Phẩm</span>
+                <ChevronRight size={14} />
+              </Link>
             </div>
 
           </div>

@@ -2203,7 +2203,7 @@
   }
 
   .form-control {
-    font-size: 12px;
+    font-size: 16px; /* Ngăn chặn iOS Safari tự phóng to khung nhìn */
     padding: 9px 12px;
   }
 

@@ -1019,7 +1019,7 @@
   }
 
   .pricing-search-wrapper input {
-    font-size: 12px;
+    font-size: 16px; /* Ngăn chặn iOS Safari tự động phóng to màn hình khi gõ phím */
     padding: 6px 0;
   }
 
