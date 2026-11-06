@@ -87,6 +87,8 @@ export default function App() {
             </AdminRoute>
           } 
         />
+        {/* Chuyển hướng các đường dẫn không tồn tại về trang chủ */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       {!hideNavAndFooter && <Footer />}
     </>

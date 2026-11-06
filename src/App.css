@@ -4686,106 +4686,125 @@ footer {
   .floating-buttons-container {
     position: fixed;
     bottom: 12px;
-    left: 12px;
-    right: 12px;
+    left: 10px;
+    right: 10px;
+    max-width: 440px;
+    margin: 0 auto;
     top: auto;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
+    gap: 6px;
     background: rgba(2, 28, 16, 0.94);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1.5px solid rgba(245, 189, 32, 0.45);
     border-radius: 40px;
-    padding: 6px 10px;
+    padding: 6px 8px;
     box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5), 0 0 20px rgba(245, 189, 32, 0.25);
     z-index: 99999;
     box-sizing: border-box;
   }
 
+  /* Nền tảng chung cho các nút trên thanh dock mobile */
   .floating-btn {
-    width: 38px;
     height: 38px;
-    min-width: 38px;
     min-height: 38px;
-    max-width: 38px;
     max-height: 38px;
-    border-radius: 50%;
-    flex-shrink: 0;
-    aspect-ratio: 1 / 1;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     box-shadow: none;
     box-sizing: border-box;
+    text-decoration: none;
+    transition: transform 0.2s ease;
   }
 
   .floating-btn svg {
     flex-shrink: 0;
-    width: 18px;
-    height: 18px;
+    width: 17px;
+    height: 17px;
   }
 
+  /* NÚT HOTLINE (Dạng viên nang bao trọn chữ và icon) */
   .btn-hotline {
     width: auto !important;
+    min-width: 0 !important;
     max-width: none !important;
     height: 38px !important;
     min-height: 38px !important;
-    padding: 0 14px !important;
+    max-height: 38px !important;
     border-radius: 24px !important;
+    aspect-ratio: auto !important;
+    flex-shrink: 1 !important;
+    padding: 0 12px !important;
+    gap: 6px !important;
     font-size: 11px !important;
     font-weight: 850 !important;
-    gap: 6px !important;
-    flex-shrink: 1 !important;
-    aspect-ratio: auto !important;
+    color: #ffffff !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+
+  .btn-hotline .pulse-ring {
+    display: none !important;
   }
 
   .btn-hotline::after {
     content: "Gọi 0904 678 323";
     white-space: nowrap;
+    display: inline-block;
   }
 
+  /* NÚT ZALO (Dạng viên nang bao trọn chữ và icon) */
   .btn-zalo {
     width: auto !important;
+    min-width: 0 !important;
     max-width: none !important;
     height: 38px !important;
     min-height: 38px !important;
-    padding: 0 12px !important;
+    max-height: 38px !important;
     border-radius: 24px !important;
+    aspect-ratio: auto !important;
+    flex-shrink: 0 !important;
+    padding: 0 10px !important;
+    gap: 5px !important;
     font-size: 11px !important;
     font-weight: 850 !important;
-    gap: 5px !important;
-    flex-shrink: 0 !important;
-    aspect-ratio: auto !important;
+    color: #ffffff !important;
+    white-space: nowrap !important;
   }
 
   .btn-zalo::after {
     content: "Zalo";
     white-space: nowrap;
+    display: inline-block;
   }
 
+  /* NÚT FACEBOOK (Hình tròn hoàn hảo 1:1, không bị co kéo) */
   .btn-facebook {
     width: 38px !important;
-    height: 38px !important;
     min-width: 38px !important;
-    min-height: 38px !important;
     max-width: 38px !important;
+    height: 38px !important;
+    min-height: 38px !important;
     max-height: 38px !important;
     border-radius: 50% !important;
-    flex-shrink: 0 !important;
     aspect-ratio: 1 / 1 !important;
+    flex-shrink: 0 !important;
     padding: 0 !important;
     box-sizing: border-box !important;
   }
 
+  /* NÚT VỀ ĐẦU TRANG (Hình tròn hoàn hảo 1:1, không bị co kéo) */
   .btn-top {
     width: 38px !important;
-    height: 38px !important;
     min-width: 38px !important;
-    min-height: 38px !important;
     max-width: 38px !important;
+    height: 38px !important;
+    min-height: 38px !important;
     max-height: 38px !important;
     border-radius: 50% !important;
     flex-shrink: 0 !important;
@@ -4794,17 +4813,23 @@ footer {
     box-sizing: border-box !important;
   }
 
-  @media (max-width: 390px) {
+  /* ----------------------------------------------------------------- */
+  /* RESPONSIVE THÍCH ỨNG TẤT CẢ CÁC CỠ MÀN HÌNH ĐIỆN THOẠI KHÁC NHAU */
+  /* ----------------------------------------------------------------- */
+
+  /* Màn hình điện thoại tiêu chuẩn (iPhone X/11/12/13/14/15, Samsung Galaxy vừa và nhỏ <= 420px) */
+  @media (max-width: 420px) {
     .floating-buttons-container {
       left: 8px;
       right: 8px;
-      padding: 5px 8px;
-      gap: 6px;
+      padding: 5px 6px;
+      gap: 5px;
     }
 
     .btn-hotline {
       padding: 0 10px !important;
-      font-size: 10px !important;
+      font-size: 10.5px !important;
+      gap: 5px !important;
     }
 
     .btn-hotline::after {
@@ -4812,19 +4837,18 @@ footer {
     }
 
     .btn-zalo {
-      padding: 0 9px !important;
-      font-size: 10px !important;
+      padding: 0 8px !important;
+      font-size: 10.5px !important;
     }
 
-    .floating-btn,
     .btn-facebook,
     .btn-top {
-      width: 35px !important;
-      height: 35px !important;
-      min-width: 35px !important;
-      min-height: 35px !important;
-      max-width: 35px !important;
-      max-height: 35px !important;
+      width: 36px !important;
+      min-width: 36px !important;
+      max-width: 36px !important;
+      height: 36px !important;
+      min-height: 36px !important;
+      max-height: 36px !important;
     }
 
     .floating-btn svg {
@@ -4833,9 +4857,59 @@ footer {
     }
   }
 
-  @media (max-width: 340px) {
+  /* Màn hình điện thoại nhỏ (iPhone SE, Galaxy đời cũ <= 360px) */
+  @media (max-width: 360px) {
+    .floating-buttons-container {
+      left: 6px;
+      right: 6px;
+      padding: 4px 5px;
+      gap: 4px;
+    }
+
+    .btn-hotline {
+      padding: 0 8px !important;
+      font-size: 10px !important;
+      gap: 4px !important;
+    }
+
     .btn-hotline::after {
       content: "Gọi ngay" !important;
+    }
+
+    .btn-zalo {
+      padding: 0 7px !important;
+      font-size: 10px !important;
+    }
+
+    .btn-facebook,
+    .btn-top {
+      width: 34px !important;
+      min-width: 34px !important;
+      max-width: 34px !important;
+      height: 34px !important;
+      min-height: 34px !important;
+      max-height: 34px !important;
+    }
+
+    .floating-btn svg {
+      width: 15px !important;
+      height: 15px !important;
+    }
+  }
+
+  /* Màn hình siêu nhỏ gập (Galaxy Z Fold ngoài <= 330px) */
+  @media (max-width: 330px) {
+    .btn-zalo::after {
+      display: none !important;
+    }
+
+    .btn-zalo {
+      width: 34px !important;
+      min-width: 34px !important;
+      max-width: 34px !important;
+      padding: 0 !important;
+      border-radius: 50% !important;
+      aspect-ratio: 1 / 1 !important;
     }
   }
 
