@@ -83,7 +83,7 @@ export default function Hero() {
                 CỬA KÉO
               </h2>
             </div>
-            <div className="rolling-title__row rolling-title__row--top rolling-title__row--3" style={{ transform: 'translateY(6px)' }}>
+            <div className="rolling-title__row rolling-title__row--top rolling-title__row--3">
               <h1 className="rolling-title__word rolling-title__word--cuatudong">
                 CỬA TỰ ĐỘNG
               </h1>
@@ -150,7 +150,7 @@ export default function Hero() {
         </div>
       </section>
 
-      {/* Video Lightbox Modal */}
+      {/* Video Lightbox Modal (Giữ nguyên 100% cho máy tính khi bấm nút xem video) */}
       {isVideoOpen && createPortal(
         <div className="video-modal-backdrop" onClick={() => setIsVideoOpen(false)}>
           <div className="video-modal-container" onClick={(e) => e.stopPropagation()}>

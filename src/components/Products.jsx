@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { ArrowRight, Home, AlignJustify, ArrowRightLeft, Columns, ShieldCheck, CheckCircle2, Star, HeadphonesIcon, X, Check, Eye } from "lucide-react";
+import { 
+  ArrowRight, Home, AlignJustify, ArrowRightLeft, Columns, ShieldCheck, 
+  CheckCircle2, Star, HeadphonesIcon, X, Check, Eye, Play, Volume2, VolumeX 
+} from "lucide-react";
 
 import { useNavigate, Link } from "react-router-dom";
 import { getProductSlug } from "../utils/slug.js";
@@ -9,7 +12,17 @@ export default function Products() {
   const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
+  const [isMuted, setIsMuted] = useState(true);
+  const mobileVideoRef = useRef(null);
   const sectionRef = useRef(null);
+
+  const toggleSound = (e) => {
+    e.stopPropagation();
+    if (mobileVideoRef.current) {
+      mobileVideoRef.current.muted = !mobileVideoRef.current.muted;
+      setIsMuted(mobileVideoRef.current.muted);
+    }
+  };
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {
@@ -136,6 +149,51 @@ export default function Products() {
         {/* Leaf photo decorations */}
         <img src="/leaf_left.png" alt="" className="leaf-deco leaf-deco-1" aria-hidden="true" />
         <img src="/leaf_right.png" alt="" className="leaf-deco leaf-deco-2" aria-hidden="true" />
+        
+        {/* Video thực tế trên mobile - Tách biệt hoàn toàn khỏi Hero, nằm ngay trên phần Danh Sách Sản Phẩm */}
+        <div className="mobile-products-video-block">
+          <div className="container">
+            <div className="mobile-video-card">
+              <div className="mobile-video-header">
+                <span className="mobile-video-badge">
+                  <Play size={12} fill="#d4af37" color="#d4af37" />
+                  VIDEO THỰC TẾ CÔNG TRÌNH
+                </span>
+                <h3 className="mobile-video-title">
+                  Hệ Thống Cửa Cuốn &amp; Cửa Kéo BOSS
+                </h3>
+                <p className="mobile-video-desc">
+                  Hình ảnh thực tế thi công &amp; vận hành êm ái tại Đà Nẵng
+                </p>
+              </div>
+
+              <div className="mobile-video-wrapper">
+                <video
+                  ref={mobileVideoRef}
+                  src="/0910.mp4"
+                  controls
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  preload="metadata"
+                  className="mobile-inline-video"
+                />
+
+                <button
+                  type="button"
+                  className={`mobile-video-sound-pill ${!isMuted ? "is-unmuted" : ""}`}
+                  onClick={toggleSound}
+                  aria-label={isMuted ? "Bật âm thanh" : "Tắt âm thanh"}
+                >
+                  {isMuted ? <VolumeX size={14} /> : <Volume2 size={14} />}
+                  <span>{isMuted ? "Bật âm thanh" : "Đã bật tiếng"}</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div className="container">
           <div className="section-header-flex">
             <div className="section-title-left">

@@ -1280,6 +1280,11 @@ a {
   display: block;
 }
 
+/* Hidden by default on Desktop to keep desktop layout 100% untouched */
+.mobile-products-video-block {
+  display: none !important;
+}
+
 .hero-play-text span {
   font-size: 9.5px;
   opacity: 0.85;
@@ -4458,68 +4463,9 @@ footer {
     text-transform: uppercase;
   }
 
+  /* On mobile: Hide video popup button completely as user requested (move video directly below hero) */
   .hero-video-play-badge {
-    order: 3 !important;
-    position: relative !important;
-    top: auto !important;
-    right: auto !important;
-    margin: 4px auto 45px auto !important;
-    width: fit-content;
-    background: rgba(255, 255, 255, 0.96) !important;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1.5px solid #f5bd20 !important;
-    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45), 0 0 16px rgba(245, 189, 32, 0.25) !important;
-    z-index: 10;
-    padding: 9px 22px 9px 12px;
-    border-radius: 35px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    cursor: pointer;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
-  }
-
-  .hero-video-play-badge:active {
-    transform: scale(0.95);
-  }
-
-  .hero-play-icon {
-    width: 36px;
-    height: 36px;
-    background: #f5bd20;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 12px rgba(245, 189, 32, 0.4);
-    animation: playBadgePulse 2s infinite ease-in-out;
-  }
-
-  @keyframes playBadgePulse {
-    0%, 100% {
-      box-shadow: 0 0 0 0 rgba(245, 189, 32, 0.6);
-    }
-    50% {
-      box-shadow: 0 0 0 8px rgba(245, 189, 32, 0);
-    }
-  }
-
-  .hero-play-text {
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-    color: #004d32;
-  }
-
-  .hero-play-text span {
-    font-size: 10.5px !important;
-    color: #4b6357 !important;
-    font-weight: 600;
-  }
-
-  .hero-video-play-badge:hover .hero-play-text {
-    color: #004d32;
+    display: none !important;
   }
 
   /* 3. Floating Glass Stats Box on Mobile (< 768px) */
@@ -4530,8 +4476,115 @@ footer {
     left: auto !important;
     transform: none !important;
     width: min(100% - 24px, 420px) !important;
-    margin: 16px auto 14px auto !important;
+    margin: 16px auto 32px auto !important;
     z-index: 10;
+  }
+
+  /* 4. Dedicated Direct Video Section - Tách riêng biệt khỏi Hero, nằm trên phần danh sách sản phẩm */
+  .mobile-products-video-block {
+    display: block !important;
+    position: relative;
+    z-index: 2;
+    margin-bottom: 24px;
+    padding-top: 4px;
+  }
+
+  .mobile-video-card {
+    background: linear-gradient(145deg, #03361e 0%, #011e11 100%);
+    border: 1.5px solid rgba(212, 175, 55, 0.45);
+    border-radius: 20px;
+    padding: 18px 14px 20px;
+    box-shadow: 
+      0 12px 35px rgba(0, 0, 0, 0.22), 
+      0 0 20px rgba(212, 175, 55, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  .mobile-video-header {
+    text-align: center;
+    margin-bottom: 14px;
+  }
+
+  .mobile-video-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    color: #d4af37;
+    background: rgba(212, 175, 55, 0.12);
+    border: 1px solid rgba(212, 175, 55, 0.35);
+    padding: 5px 14px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .mobile-video-title {
+    color: #f8fafc;
+    font-size: 1.15rem;
+    font-weight: 800;
+    margin: 0 0 4px;
+    line-height: 1.35;
+    letter-spacing: -0.2px;
+  }
+
+  .mobile-video-desc {
+    color: #cbd5e1;
+    font-size: 0.82rem;
+    margin: 0;
+    line-height: 1.45;
+  }
+
+  .mobile-video-wrapper {
+    position: relative;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #000;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    aspect-ratio: 16 / 9;
+    width: 100%;
+  }
+
+  .mobile-inline-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .mobile-video-sound-pill {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    z-index: 4;
+    transition: all 0.25s ease;
+  }
+
+  .mobile-video-sound-pill:active {
+    transform: scale(0.96);
+  }
+
+  .mobile-video-sound-pill.is-unmuted {
+    background: rgba(4, 60, 35, 0.95);
+    border-color: #d4af37;
+    color: #f5bd20;
   }
 
   .stats {
