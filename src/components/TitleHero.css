@@ -217,16 +217,23 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 10px 16px 8px !important;
+    padding: 16px 22px 14px !important;
     margin: 0 auto;
     opacity: 1 !important;
     background: radial-gradient(
-      ellipse 90% 75% at 50% 50%,
-      rgba(0, 28, 16, 0.65) 0%,
-      rgba(1, 15, 9, 0.35) 60%,
+      ellipse 96% 90% at 50% 50%,
+      rgba(0, 30, 18, 0.9) 0%,
+      rgba(0, 18, 10, 0.75) 65%,
+      rgba(0, 10, 5, 0.35) 90%,
       transparent 100%
     ) !important;
-    border-radius: 20px;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1.5px solid rgba(245, 189, 32, 0.3);
+    border-radius: 22px;
+    box-shadow:
+      0 12px 36px rgba(0, 0, 0, 0.55),
+      inset 0 0 30px rgba(245, 189, 32, 0.1);
     animation: heroTitlePopIn 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
   }
 
@@ -250,22 +257,23 @@
     width: 100% !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
-    margin: 3px 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
     opacity: 0;
     animation: heroRowFadeUp 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
   }
 
-  /* Hiệu ứng xuất hiện tầng mượt mà, sau đó đứng vững vàng, không nhấp nhô gây hoa mắt */
+  /* Hiệu ứng xuất hiện tầng êm dịu, sau đó đứng cố định hoàn toàn */
   .rolling-title__row--1 {
-    animation-delay: 0.1s !important;
+    animation-delay: 0.08s !important;
   }
 
   .rolling-title__row--2 {
-    animation-delay: 0.22s !important;
+    animation-delay: 0.18s !important;
   }
 
   .rolling-title__row--3 {
-    animation-delay: 0.34s !important;
+    animation-delay: 0.28s !important;
   }
 
   @keyframes heroRowFadeUp {
@@ -279,65 +287,52 @@
     }
   }
 
-  /* Bố cục chữ thẳng đứng, đĩnh đạc, font Roboto 30px theo yêu cầu người dùng */
-  .rolling-title__word {
-    font-family: "Roboto", -apple-system, BlinkMacSystemFont, sans-serif !important;
-    font-size: 30px !important;
-    transform: none !important; /* Bỏ nghiêng skewX làm méo chữ */
-    font-weight: 900 !important;
+  /* Tiêu đề TO RÕ, ĐẬM ĐÀ, NỔI BẬT: CẢ 3 DÒNG CÓ KÍCH CỠ TO ĐỀU NHAU 100% (Font thanh thoát, nhẹ nhàng, sang trọng) */
+  .rolling-title__word,
+  .rolling-title__word--cuacuon,
+  .rolling-title__word--cuakeo,
+  .rolling-title__word--cuatudong {
+    font-family: "Be Vietnam Pro", "Montserrat", -apple-system, BlinkMacSystemFont, sans-serif !important;
+    font-size: clamp(40px, 11vw, 50px) !important;
+    font-weight: 700 !important;
     text-transform: uppercase !important;
     line-height: 1.25 !important;
-    padding: 2px 4px !important;
+    letter-spacing: 0.8px !important;
+    margin: 0 !important;
+    padding: 8px 4px 5px 4px !important;
+    overflow: visible !important;
     text-align: center !important;
     display: block !important;
     opacity: 1 !important;
     visibility: visible !important;
     white-space: nowrap !important;
+    transform: none !important;
     color: #f5bd20 !important;
     text-shadow: none !important;
+    /* Dải vàng ánh kim 24K đa tầng chuẩn đứng (180deg) mượt mà, tươi sáng và sang trọng */
     background: linear-gradient(
       180deg,
-      #fffbe8 0%,
-      #ffe169 22%,
-      #f5bd20 54%,
-      #d48800 82%,
-      #a36200 100%
+      #ffffff 0%,
+      #fffbe0 18%,
+      #ffd83b 48%,
+      #f5b014 75%,
+      #c78100 100%
     ) !important;
+    background-size: 100% 100% !important;
     -webkit-background-clip: text !important;
     background-clip: text !important;
     -webkit-text-fill-color: transparent !important;
-    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.95)) 
-            drop-shadow(0 5px 14px rgba(0, 0, 0, 0.8)) 
-            drop-shadow(0 0 14px rgba(245, 189, 32, 0.45)) !important;
-  }
-
-  /* 1. DÒNG 1: CỬA CUỐN */
-  .rolling-title__word--cuacuon {
-    font-size: 30px !important;
-    letter-spacing: 1.5px !important;
-    text-shadow: none !important;
-  }
-
-  /* 2. DÒNG 2: CỬA KÉO - Bỏ hoàn toàn 2 gạch cánh én làm mất cân đối */
-  .rolling-title__word--cuakeo {
-    font-size: 30px !important;
-    letter-spacing: 2px !important;
-    text-shadow: none !important;
-    display: block !important;
-    position: relative;
+    /* Đổ bóng tự nhiên, mềm mại, thanh thoát, không còn viền đen thô ráp */
+    filter: 
+      drop-shadow(0 2px 5px rgba(0, 0, 0, 0.7))
+      drop-shadow(0 5px 15px rgba(0, 0, 0, 0.5))
+      drop-shadow(0 0 18px rgba(245, 189, 32, 0.35)) !important;
   }
 
   .rolling-title__word--cuakeo::before,
   .rolling-title__word--cuakeo::after {
     display: none !important;
     content: none !important;
-  }
-
-  /* 3. DÒNG 3: CỬA TỰ ĐỘNG */
-  .rolling-title__word--cuatudong {
-    font-size: 30px !important;
-    letter-spacing: 0.6px !important;
-    text-shadow: none !important;
   }
 
   .rolling-title__accent {
@@ -375,16 +370,16 @@
   }
 
   .rolling-title__tagline {
-    color: #004d32 !important;
-    background: #f5bd20 !important;
-    border: 1.5px solid rgba(245, 189, 32, 0.9) !important;
+    color: #ffd700 !important;
+    background: rgba(0, 42, 26, 0.92) !important;
+    border: 1.5px solid rgba(245, 189, 32, 0.8) !important;
     box-shadow:
-      0 6px 18px rgba(0, 0, 0, 0.35),
-      0 0 14px rgba(245, 189, 32, 0.4) !important;
-    letter-spacing: 1.8px !important;
-    font-size: 10.5px !important;
+      0 6px 18px rgba(0, 0, 0, 0.45),
+      0 0 14px rgba(245, 189, 32, 0.35) !important;
+    letter-spacing: 2px !important;
+    font-size: 11px !important;
     font-weight: 850 !important;
-    padding: 7px 18px !important;
+    padding: 7px 20px !important;
     border-radius: 25px !important;
     text-transform: uppercase !important;
     white-space: nowrap !important;
@@ -396,70 +391,63 @@
 }
 
 @media (max-width: 500px) {
+  .rolling-title__content {
+    padding: 10px 2px 8px !important;
+  }
+
   .rolling-title__row,
   .rolling-title__row--top,
   .rolling-title__row--bottom {
-    margin: 2.5px 0 !important;
+    margin: -1px 0 !important;
+    overflow: visible !important;
   }
 
-  .rolling-title__word {
-    font-family: "Roboto", -apple-system, BlinkMacSystemFont, sans-serif !important;
-    font-size: 30px !important;
-    padding: 2px 2px !important;
-  }
-
-  .rolling-title__word--cuacuon {
-    font-size: 30px !important;
-    letter-spacing: 1.2px !important;
-  }
-
-  .rolling-title__word--cuakeo {
-    font-size: 30px !important;
-    letter-spacing: 1.6px !important;
-  }
-
+  .rolling-title__word,
+  .rolling-title__word--cuacuon,
+  .rolling-title__word--cuakeo,
   .rolling-title__word--cuatudong {
-    font-size: 30px !important;
-    letter-spacing: 0.4px !important;
+    font-size: clamp(36px, 10vw, 44px) !important;
+    line-height: 1.25 !important;
+    letter-spacing: 0.8px !important;
+    margin: 0 !important;
+    padding: 7px 3px 4px 3px !important;
+    overflow: visible !important;
   }
 
   .rolling-title__tagline {
-    font-size: 9.8px !important;
-    letter-spacing: 1.5px !important;
-    padding: 6px 16px !important;
+    font-size: 9.5px !important;
+    letter-spacing: 1.4px !important;
+    padding: 5px 16px !important;
   }
 }
 
 @media (max-width: 380px) {
+  .rolling-title__content {
+    padding: 8px 2px 6px !important;
+  }
+
   .rolling-title__row,
   .rolling-title__row--top,
   .rolling-title__row--bottom {
-    margin: 2px 0 !important;
+    margin: -1px 0 !important;
+    overflow: visible !important;
   }
 
-  .rolling-title__word {
-    font-family: "Roboto", -apple-system, BlinkMacSystemFont, sans-serif !important;
-    font-size: 30px !important;
-  }
-
-  .rolling-title__word--cuacuon {
-    font-size: 30px !important;
-    letter-spacing: 1px !important;
-  }
-
-  .rolling-title__word--cuakeo {
-    font-size: 30px !important;
-    letter-spacing: 1.2px !important;
-  }
-
+  .rolling-title__word,
+  .rolling-title__word--cuacuon,
+  .rolling-title__word--cuakeo,
   .rolling-title__word--cuatudong {
-    font-size: 30px !important;
-    letter-spacing: 0.2px !important;
+    font-size: clamp(30px, 8.8vw, 35px) !important;
+    line-height: 1.25 !important;
+    letter-spacing: 0.1px !important;
+    margin: 0 !important;
+    padding: 6px 2px 3px 2px !important;
+    overflow: visible !important;
   }
 
   .rolling-title__tagline {
     font-size: 9px !important;
     letter-spacing: 1.2px !important;
-    padding: 5px 13px !important;
+    padding: 5px 14px !important;
   }
 }

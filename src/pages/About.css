@@ -1242,6 +1242,15 @@
 }
 
 
+/* Responsive text switches between Desktop & Mobile */
+.about-desktop-text {
+  display: inline;
+}
+
+.about-mobile-text {
+  display: none !important;
+}
+
 /* ==========================================================================
    RESPONSIVE STYLES
    ========================================================================== */
@@ -1280,6 +1289,18 @@
 }
 
 @media (max-width: 768px) {
+  .about-desktop-text {
+    display: none !important;
+  }
+
+  .about-mobile-text {
+    display: inline !important;
+  }
+
+  /* Ẩn slogan trôi nổi trên mobile để đỡ rối mắt */
+  .exact-hero-right-slogan {
+    display: none !important;
+  }
 
   /* Bố cục 2 trên 2 dưới cho 4 ô KPI trên thiết bị di động */
   .exact-kpi-cards {
@@ -1395,9 +1416,9 @@
   .exact-journey-right p,
   .exact-values-header p,
   .exact-cta-right-content p {
-    font-size: 0.88rem;
-    line-height: 1.65;
-    margin-bottom: 1.25rem;
+    font-size: 0.86rem;
+    line-height: 1.55;
+    margin-bottom: 0.95rem;
   }
 
   /* Bố cục 2 trên 2 dưới cho 4 ô KPI trên điện thoại */

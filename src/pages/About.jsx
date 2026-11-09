@@ -52,7 +52,12 @@ const About = () => {
               </h1>
 
               <p className="exact-hero-desc">
-                BOSS Đà Nẵng tự hào là đơn vị chuyên cung cấp và thi công các sản phẩm cửa nhựa cao cấp, mang đến giải pháp hoàn hảo cho mọi công trình.
+                <span className="about-desktop-text">
+                  BOSS Đà Nẵng tự hào là đơn vị chuyên cung cấp và thi công các sản phẩm cửa nhựa cao cấp, mang đến giải pháp hoàn hảo cho mọi công trình.
+                </span>
+                <span className="about-mobile-text">
+                  Chuyên cung cấp & thi công cửa cuốn, cửa kéo, cửa tự động cao cấp tại Đà Nẵng.
+                </span>
               </p>
 
               <Link to="/san-pham" className="exact-btn-yellow">
@@ -79,10 +84,18 @@ const About = () => {
                 GIỚI THIỆU VỀ BOSS ĐÀ NẴNG
               </div>
 
-              <h2>Thương hiệu cửa nhựa cao cấp hàng đầu</h2>
+              <h2>
+                <span className="about-desktop-text">Thương hiệu cửa nhựa cao cấp hàng đầu</span>
+                <span className="about-mobile-text">Thương hiệu cửa hàng đầu</span>
+              </h2>
 
               <p>
-                BOSS Đà Nẵng là đơn vị chuyên cung cấp và thi công các sản phẩm cửa nhựa cao cấp, chất lượng vượt trội và dịch vụ chuyên nghiệp nhất cho khách hàng. Với nhiều năm kinh nghiệm trong ngành, chúng tôi luôn đặt chất lượng sản phẩm và sự hài lòng của khách hàng lên hàng đầu.
+                <span className="about-desktop-text">
+                  BOSS Đà Nẵng là đơn vị chuyên cung cấp và thi công các sản phẩm cửa nhựa cao cấp, chất lượng vượt trội và dịch vụ chuyên nghiệp nhất cho khách hàng. Với nhiều năm kinh nghiệm trong ngành, chúng tôi luôn đặt chất lượng sản phẩm và sự hài lòng của khách hàng lên hàng đầu.
+                </span>
+                <span className="about-mobile-text">
+                  Chuyên cung cấp & thi công cửa cao cấp chính hãng, cam kết chất lượng vượt trội và dịch vụ bảo hành tận tâm.
+                </span>
               </p>
 
               {/* 4 KPI Stats Cards */}
@@ -182,7 +195,12 @@ const About = () => {
               <h2>TỪ ĐAM MÊ ĐẾN GIÁ TRỊ BỀN VỮNG</h2>
 
               <p>
-                BOSS Đà Nẵng được thành lập với sứ mệnh mang đến những sản phẩm cửa nhựa cao cấp, chất lượng vượt trội và dịch vụ chuyên nghiệp nhất cho khách hàng. Chúng tôi không ngừng đổi mới, ứng dụng công nghệ hiện đại, nâng cao chất lượng sản phẩm và dịch vụ, nhằm đáp ứng tốt nhất nhu cầu của khách hàng trong và ngoài khu vực Đà Nẵng.
+                <span className="about-desktop-text">
+                  BOSS Đà Nẵng được thành lập với sứ mệnh mang đến những sản phẩm cửa nhựa cao cấp, chất lượng vượt trội và dịch vụ chuyên nghiệp nhất cho khách hàng. Chúng tôi không ngừng đổi mới, ứng dụng công nghệ hiện đại, nâng cao chất lượng sản phẩm và dịch vụ, nhằm đáp ứng tốt nhất nhu cầu của khách hàng trong và ngoài khu vực Đà Nẵng.
+                </span>
+                <span className="about-mobile-text">
+                  Không ngừng đổi mới công nghệ và nâng cao chất lượng dịch vụ để mang đến sản phẩm an toàn, bền bỉ nhất.
+                </span>
               </p>
 
               {/* Timeline */}
@@ -190,19 +208,28 @@ const About = () => {
                 <div className="exact-timeline-item">
                   <div className="exact-timeline-dot"></div>
                   <div className="exact-timeline-year">2015</div>
-                  <div className="exact-timeline-desc">Thành lập BOSS Đà Nẵng</div>
+                  <div className="exact-timeline-desc">
+                    <span className="about-desktop-text">Thành lập BOSS Đà Nẵng</span>
+                    <span className="about-mobile-text">Thành lập thương hiệu</span>
+                  </div>
                 </div>
 
                 <div className="exact-timeline-item">
                   <div className="exact-timeline-dot"></div>
                   <div className="exact-timeline-year">2018</div>
-                  <div className="exact-timeline-desc">Mở rộng nhà xưởng, đầu tư công nghệ hiện đại</div>
+                  <div className="exact-timeline-desc">
+                    <span className="about-desktop-text">Mở rộng nhà xưởng, đầu tư công nghệ hiện đại</span>
+                    <span className="about-mobile-text">Mở rộng xưởng sản xuất hiện đại</span>
+                  </div>
                 </div>
 
                 <div className="exact-timeline-item">
                   <div className="exact-timeline-dot"></div>
                   <div className="exact-timeline-year">2024</div>
-                  <div className="exact-timeline-desc">Phát triển hệ thống đại lý trên toàn quốc</div>
+                  <div className="exact-timeline-desc">
+                    <span className="about-desktop-text">Phát triển hệ thống đại lý trên toàn quốc</span>
+                    <span className="about-mobile-text">Hệ thống đại lý toàn quốc</span>
+                  </div>
                 </div>
 
                 <div className="exact-timeline-item current-milestone">
@@ -210,7 +237,10 @@ const About = () => {
                     <span className="dot-ripple"></span>
                   </div>
                   <div className="exact-timeline-year">2026</div>
-                  <div className="exact-timeline-desc">Ra mắt showroom hiện đại & mở rộng thị trường miền Trung</div>
+                  <div className="exact-timeline-desc">
+                    <span className="about-desktop-text">Ra mắt showroom hiện đại & mở rộng thị trường miền Trung</span>
+                    <span className="about-mobile-text">Showroom mới & mở rộng miền Trung</span>
+                  </div>
                 </div>
               </div>
             </RevealOnScroll>
@@ -225,7 +255,12 @@ const About = () => {
             <div className="sub">GIÁ TRỊ CỐT LÕI</div>
             <h2>Vì một không gian sống tốt hơn</h2>
             <p>
-              BOSS Đà Nẵng luôn nỗ lực mang đến những sản phẩm và dịch vụ tốt nhất, đồng hành cùng khách hàng kiến tạo không gian sống hiện đại, tiện nghi và bền vững.
+              <span className="about-desktop-text">
+                BOSS Đà Nẵng luôn nỗ lực mang đến những sản phẩm và dịch vụ tốt nhất, đồng hành cùng khách hàng kiến tạo không gian sống hiện đại, tiện nghi và bền vững.
+              </span>
+              <span className="about-mobile-text">
+                Đồng hành kiến tạo không gian sống an toàn, hiện đại và bền vững.
+              </span>
             </p>
           </RevealOnScroll>
 
@@ -299,7 +334,12 @@ const About = () => {
               <div className="sub">BOSS ĐÀ NẴNG</div>
               <h2>Sẵn sàng đồng hành cùng bạn</h2>
               <p>
-                Liên hệ ngay để được tư vấn miễn phí và nhận báo giá tốt nhất cho các sản phẩm cửa nhựa cao cấp.
+                <span className="about-desktop-text">
+                  Liên hệ ngay để được tư vấn miễn phí và nhận báo giá tốt nhất cho các sản phẩm cửa nhựa cao cấp.
+                </span>
+                <span className="about-mobile-text">
+                  Liên hệ ngay để nhận tư vấn và báo giá ưu đãi tốt nhất.
+                </span>
               </p>
 
               <div className="exact-cta-footer-row">

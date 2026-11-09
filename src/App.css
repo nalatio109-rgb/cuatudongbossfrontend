@@ -4424,7 +4424,7 @@ footer {
 
   .hero-content {
     max-width: 100%;
-    padding: 0 24px;
+    padding: 0 12px;
     margin-top: 0;
     text-align: center;
     display: flex;
@@ -4434,20 +4434,20 @@ footer {
 
   .hero-label {
     text-align: center;
-    margin-bottom: 20px;
+    margin-bottom: 12px;
     transform: translateY(0);
-    font-size: 10px;
-    letter-spacing: 2.5px;
+    font-size: 9px;
+    letter-spacing: 1.6px;
     color: #f5bd20;
     background: rgba(245, 189, 32, 0.12);
     border: 1px solid rgba(245, 189, 32, 0.4);
-    padding: 8px 20px;
+    padding: 6px 16px;
     border-radius: 30px;
     display: inline-block;
     box-shadow: 0 4px 18px rgba(0, 0, 0, 0.3);
     backdrop-filter: blur(8px);
     -webkit-backdrop-filter: blur(8px);
-    line-height: 1.5;
+    line-height: 1.4;
   }
 
   .video-badge-title-desktop {
@@ -5757,6 +5757,41 @@ footer {
   .mobile-flyout-cat-item.active {
     background: rgba(245, 189, 32, 0.1);
     border-color: rgba(245, 189, 32, 0.45);
+  }
+
+  /* Mục Tất Cả Sản Phẩm nổi bật */
+  .mobile-flyout-cat-item.mobile-flyout-cat-all {
+    background: linear-gradient(135deg, rgba(245, 189, 32, 0.15) 0%, rgba(245, 189, 32, 0.04) 100%) !important;
+    border: 1.2px solid rgba(245, 189, 32, 0.4) !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+    text-decoration: none !important;
+  }
+
+  .mobile-flyout-cat-item.mobile-flyout-cat-all:active {
+    background: rgba(245, 189, 32, 0.22) !important;
+    border-color: rgba(245, 189, 32, 0.6) !important;
+  }
+
+  .mobile-flyout-cat-item.mobile-flyout-cat-all .cat-icon-all {
+    background: linear-gradient(135deg, #f5bd20 0%, #d48800 100%) !important;
+    color: #032a1a !important;
+    border-color: #ffd700 !important;
+  }
+
+  .mobile-flyout-cat-item.mobile-flyout-cat-all .cat-title-text {
+    color: #f5bd20 !important;
+    font-weight: 800 !important;
+  }
+
+  .mobile-flyout-cat-item.mobile-flyout-cat-all .cat-badge-all {
+    background: rgba(245, 189, 32, 0.22) !important;
+    border-color: rgba(245, 189, 32, 0.45) !important;
+    color: #ffffff !important;
+    font-weight: 750 !important;
+  }
+
+  .mobile-flyout-cat-item.mobile-flyout-cat-all .cat-chevron {
+    color: #f5bd20 !important;
   }
 
   .mobile-flyout-cat-item .cat-icon-box {

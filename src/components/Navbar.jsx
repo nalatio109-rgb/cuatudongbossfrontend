@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { 
   Menu, X, ChevronDown, PhoneCall, ArrowRight, ShieldCheck, ChevronRight, 
-  DoorClosed, Cpu, Sliders, Zap, Sparkles, User, LogOut, Shield 
+  DoorClosed, Cpu, Sliders, Zap, Sparkles, User, LogOut, Shield, LayoutGrid 
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
@@ -225,11 +225,18 @@ export default function Navbar() {
                 to="/san-pham" 
                 onClick={(e) => {
                   // Trên mobile hoặc khi drawer menu đang mở:
-                  // Chạm vào thanh "SẢN PHẨM" thì trượt mở/đóng danh mục con thay vì đóng menu và tải lại trang!
+                  // Nếu danh mục đang đóng: chạm vào để mở rộng các danh mục
+                  // Nếu danh mục đã mở rộng: chạm vào chữ "SẢN PHẨM" sẽ chuyển ngay đến trang hiện tất cả sản phẩm!
                   if (window.innerWidth <= 992 || menu) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    setMobileProdExpanded((prev) => !prev);
+                    if (!mobileProdExpanded) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setMobileProdExpanded(true);
+                    } else {
+                      setMenu(false);
+                      setMobileProdExpanded(false);
+                      setMobileExpandedCatKey(null);
+                    }
                   } else {
                     setMenu(false);
                   }
@@ -357,6 +364,27 @@ export default function Navbar() {
               <div className="mobile-flyout-panel-title">DANH MỤC SẢN PHẨM</div>
 
               <div className="mobile-cats-container">
+                {/* Mục Xem Tất Cả Sản Phẩm nổi bật ngay đầu danh mục */}
+                <Link
+                  to="/san-pham"
+                  onClick={() => {
+                    setMenu(false);
+                    setMobileProdExpanded(false);
+                    setMobileExpandedCatKey(null);
+                  }}
+                  className="mobile-flyout-cat-item mobile-flyout-cat-all"
+                >
+                  <span className="cat-icon-box cat-icon-all">
+                    <LayoutGrid size={18} />
+                  </span>
+                  <div className="cat-info-group">
+                    <span className="cat-title-text">Tất Cả Sản Phẩm</span>
+                    <span className="cat-sub-text">Hiển thị toàn bộ sản phẩm chính hãng</span>
+                  </div>
+                  <span className="cat-badge-count cat-badge-all">Tất cả</span>
+                  <ChevronRight size={15} className="cat-chevron" />
+                </Link>
+
                 {FLYOUT_PRODUCT_NAV_DATA.map((cat) => {
                   const isCatExpanded = mobileExpandedCatKey === cat.categoryKey;
                   return (
