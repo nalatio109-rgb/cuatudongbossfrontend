@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { 
   Users, Package, FolderKanban, CheckCircle, Trash2, Plus, Edit,
   RefreshCw, X, Shield, Phone, ArrowLeft, LayoutDashboard, Database,
@@ -47,7 +47,13 @@ const SUBCATEGORIES = {
 };
 
 export default function Admin() {
-  const { currentUser, logout } = useAuth();
+  const { currentUser, logout, isAdmin } = useAuth();
+
+  // Phân quyền tuyệt đối: Chỉ duy nhất admin@boss.vn mới có quyền vào trang quản trị
+  if (!currentUser || currentUser.email?.toLowerCase().trim() !== "admin@boss.vn") {
+    return <Navigate to="/" replace />;
+  }
+
   const [activeTab, setActiveTab] = useState("contacts");
   const [productSubTab, setProductSubTab] = useState("list"); // "list" | "editor"
   const [editingArticleCode, setEditingArticleCode] = useState(null);
@@ -1000,7 +1006,10 @@ export default function Admin() {
                 <Phone size={24} />
               </div>
               <div className="stat-info">
-                <h4>Báo Giá Mới Chờ Xử Lý</h4>
+                <h4>
+                  <span className="desktop-stat-label">Báo Giá Mới Chờ Xử Lý</span>
+                  <span className="mobile-stat-label">Báo Giá Chờ Xử Lý</span>
+                </h4>
                 <p>{pendingContactsCount} <span style={{ fontSize: "0.85rem", color: "#f59e0b" }}>({contacts.length} tổng)</span></p>
               </div>
             </div>
@@ -1010,8 +1019,17 @@ export default function Admin() {
                 <Wrench size={24} />
               </div>
               <div className="stat-info">
-                <h4>Dịch Vụ Cửa Cuốn / Kéo</h4>
-                <p>{services.length} <span style={{ fontSize: "0.85rem", color: "#38bdf8" }}>({serviceContactsCount} đơn dịch vụ)</span></p>
+                <h4>
+                  <span className="desktop-stat-label">Dịch Vụ Cửa Cuốn / Kéo</span>
+                  <span className="mobile-stat-label">Dịch Vụ Cửa Cuốn</span>
+                </h4>
+                <p>
+                  {services.length}{" "}
+                  <span style={{ fontSize: "0.85rem", color: "#38bdf8" }}>
+                    <span className="desktop-stat-label">({serviceContactsCount} đơn dịch vụ)</span>
+                    <span className="mobile-stat-label">({serviceContactsCount} đơn)</span>
+                  </span>
+                </p>
               </div>
             </div>
 
@@ -1020,7 +1038,10 @@ export default function Admin() {
                 <Package size={24} />
               </div>
               <div className="stat-info">
-                <h4>Sản Phẩm Trong Database</h4>
+                <h4>
+                  <span className="desktop-stat-label">Sản Phẩm Trong Database</span>
+                  <span className="mobile-stat-label">Tổng Sản Phẩm</span>
+                </h4>
                 <p>{products.length}</p>
               </div>
             </div>
@@ -1040,7 +1061,10 @@ export default function Admin() {
                 <Newspaper size={24} />
               </div>
               <div className="stat-info">
-                <h4>Bài Viết & Tin Tức</h4>
+                <h4>
+                  <span className="desktop-stat-label">Bài Viết & Tin Tức</span>
+                  <span className="mobile-stat-label">Tin Tức & Bài Viết</span>
+                </h4>
                 <p>{news.length}</p>
               </div>
             </div>
@@ -1079,19 +1103,22 @@ export default function Admin() {
                   className={`chip-btn service ${contactFilter === "service" ? "active" : ""}`}
                   onClick={() => setContactFilter("service")}
                 >
-                  🛠️ Đơn Dịch Vụ Sửa Chữa ({serviceContactsCount})
+                  <span className="desktop-stat-label">🛠️ Đơn Dịch Vụ Sửa Chữa ({serviceContactsCount})</span>
+                  <span className="mobile-stat-label">🛠️ Dịch Vụ ({serviceContactsCount})</span>
                 </button>
                 <button 
                   type="button" 
                   className={`chip-btn ${contactFilter === "product" ? "active" : ""}`}
                   onClick={() => setContactFilter("product")}
                 >
-                  📦 Đơn Sản Phẩm ({contacts.length - serviceContactsCount})
+                  <span className="desktop-stat-label">📦 Đơn Sản Phẩm ({contacts.length - serviceContactsCount})</span>
+                  <span className="mobile-stat-label">📦 Sản Phẩm ({contacts.length - serviceContactsCount})</span>
                 </button>
               </div>
 
-              <div className="table-scroll-hint"><span>⇄ Vuốt sang ngang để xem đầy đủ cột</span></div>
-              <table className="admin-table">
+              {/* CUỘN NGANG DÀNH CHO BẢNG DESKTOP */}
+              <div className="table-scroll-hint contact-scroll-hint"><span>⇄ Vuốt sang ngang để xem đầy đủ cột</span></div>
+              <table className="admin-table contact-desktop-table">
                 <thead>
                   <tr>
                     <th>Thời gian</th>
@@ -1166,6 +1193,100 @@ export default function Admin() {
                   )}
                 </tbody>
               </table>
+
+              {/* GIAO DIỆN DẠNG THẺ (CARD VIEW) DÀNH CHO ĐIỆN THOẠI - KHÔNG CẦN VUỐT NGANG */}
+              <div className="admin-mobile-contact-cards">
+                {filteredContacts.length > 0 ? (
+                  filteredContacts.map((item) => (
+                    <div key={item._id} className="admin-contact-card-item">
+                      <div className="admin-contact-card-header">
+                        <div className="contact-card-customer-info">
+                          <span className="contact-card-name">{item.fullName || "Khách Hàng"}</span>
+                          <span className="contact-card-time">{new Date(item.createdAt).toLocaleString("vi-VN")}</span>
+                        </div>
+                        <span className={`status-pill ${item.status}`}>
+                          {item.status === "pending" ? "Chờ tư vấn" : item.status === "contacted" ? "Đã liên hệ" : "Hoàn thành"}
+                        </span>
+                      </div>
+
+                      <div className="admin-contact-card-phone-row">
+                        <div className="contact-phone-display">
+                          <Phone size={14} className="phone-icon" />
+                          <a href={`tel:${item.phone}`} className="contact-phone-link">
+                            {item.phone}
+                          </a>
+                        </div>
+                        <a href={`tel:${item.phone}`} className="btn-quick-call">
+                          Gọi ngay
+                        </a>
+                      </div>
+
+                      <div className="admin-contact-card-category-row">
+                        <span className="contact-label">Hạng mục:</span>
+                        {item.productCategory?.toLowerCase().includes("dịch vụ") ? (
+                          <span className="admin-badge-service">
+                            🛠️ {item.productCategory}
+                          </span>
+                        ) : (
+                          <span className="admin-badge-category">
+                            {item.productName || item.productCategory}
+                            {item.productCode ? ` (${item.productCode})` : ""}
+                          </span>
+                        )}
+                      </div>
+
+                      {(item.dimensions || item.address || item.message) ? (
+                        <div className="admin-contact-card-details">
+                          {item.dimensions && (
+                            <div className="detail-line">
+                              <strong>Kích thước:</strong> {item.dimensions} {item.quantity ? `(SL: ${item.quantity})` : ""}
+                            </div>
+                          )}
+                          {item.address && (
+                            <div className="detail-line">
+                              <strong>Địa chỉ:</strong> {item.address}
+                            </div>
+                          )}
+                          {item.message && (
+                            <div className="detail-line message-line">
+                              <strong>Lời nhắn:</strong> {item.message}
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="admin-contact-card-details empty-note">
+                          Không có ghi chú thêm
+                        </div>
+                      )}
+
+                      <div className="admin-contact-card-actions">
+                        {item.status === "pending" && (
+                          <button 
+                            type="button"
+                            className="card-contact-btn btn-mark-contacted"
+                            onClick={() => handleUpdateContactStatus(item._id, "contacted")}
+                          >
+                            <CheckCircle size={14} />
+                            <span>Đã liên hệ</span>
+                          </button>
+                        )}
+                        <button 
+                          type="button"
+                          className="card-contact-btn btn-delete-contact"
+                          onClick={() => handleDeleteContact(item._id)}
+                        >
+                          <Trash2 size={14} />
+                          <span>Xóa yêu cầu</span>
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="admin-contact-card-empty">
+                    Không tìm thấy yêu cầu tư vấn nào.
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
@@ -1203,7 +1324,7 @@ export default function Admin() {
               {productSubTab === "list" && (
                 <div className="admin-table-container">
                   <div className="table-action-header">
-                    <h2>DANH MỤC SẢN PHẨM TRONG MONGODB ({products.length})</h2>
+                    <h2>DANH MỤC SẢN PHẨM ({products.length})</h2>
                     <div className="table-header-controls">
                       <div className="admin-search-box">
                         <Search size={16} />
@@ -1220,8 +1341,9 @@ export default function Admin() {
                       </button>
                     </div>
                   </div>
-                  <div className="table-scroll-hint"><span>⇄ Vuốt sang ngang để xem đầy đủ cột</span></div>
-                  <table className="admin-table">
+                  {/* CUỘN NGANG DÀNH CHO BẢNG DESKTOP */}
+                  <div className="table-scroll-hint product-scroll-hint"><span>⇄ Vuốt sang ngang để xem đầy đủ cột</span></div>
+                  <table className="admin-table product-desktop-table">
                     <thead>
                       <tr>
                         <th>Hình ảnh</th>
@@ -1285,6 +1407,79 @@ export default function Admin() {
                       )}
                     </tbody>
                   </table>
+
+                  {/* GIAO DIỆN DẠNG THẺ (CARD VIEW) DÀNH RIÊNG CHO ĐIỆN THOẠI - KHÔNG CẦN VUỐT NGANG */}
+                  <div className="admin-mobile-product-cards">
+                    {filteredProducts.length > 0 ? (
+                      filteredProducts.map((p) => (
+                        <div key={p._id} className="admin-prod-card-item">
+                          <div className="admin-prod-card-top">
+                            <div className="admin-prod-card-img-wrap">
+                              <img src={p.image} alt={p.title} className="admin-prod-card-img" />
+                              {p.badge && <span className="admin-prod-card-badge">{p.badge}</span>}
+                            </div>
+                            
+                            <div className="admin-prod-card-main-info">
+                              <div className="admin-prod-card-meta">
+                                <span className="admin-prod-card-code">{p.code}</span>
+                                <span className="admin-badge-category">{p.category}</span>
+                              </div>
+                              <h3 className="admin-prod-card-title">{p.title}</h3>
+                              <div className="admin-prod-card-price-row">
+                                <span className="card-price-label">Giá:</span>
+                                <span className="card-price-value">{p.price || "Liên hệ"}</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {p.description && (
+                            <div className="admin-prod-card-desc">
+                              {p.description}
+                            </div>
+                          )}
+
+                          <div className="admin-prod-card-actions">
+                            <button 
+                              type="button"
+                              className="card-action-btn card-action-article"
+                              onClick={() => {
+                                setEditingArticleCode(p.code);
+                                setProductSubTab("editor");
+                              }}
+                              title={`Soạn bài chi tiết cho ${p.code}`}
+                            >
+                              <FileEdit size={14} />
+                              <span>Soạn bài</span>
+                            </button>
+                            
+                            <button 
+                              type="button"
+                              className="card-action-btn card-action-edit"
+                              onClick={() => handleOpenEditProduct(p)}
+                              title="Sửa thông tin sản phẩm"
+                            >
+                              <Edit size={14} />
+                              <span>Sửa</span>
+                            </button>
+                            
+                            <button 
+                              type="button"
+                              className="card-action-btn card-action-delete"
+                              onClick={() => handleDeleteProduct(p._id)}
+                              title="Xóa sản phẩm"
+                            >
+                              <Trash2 size={14} />
+                              <span>Xóa</span>
+                            </button>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="admin-prod-card-empty">
+                        Chưa có sản phẩm nào phù hợp với tìm kiếm.
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
 
@@ -1304,7 +1499,7 @@ export default function Admin() {
           {activeTab === "projects" && (
             <div className="admin-table-container">
               <div className="table-action-header">
-                <h2>DỰ ÁN TIÊU BIỂU TRONG MONGODB ({projects.length})</h2>
+                <h2>DỰ ÁN TIÊU BIỂU ({projects.length})</h2>
                 <div className="table-header-controls">
                   <div className="admin-search-box">
                     <Search size={16} />
@@ -1378,7 +1573,7 @@ export default function Admin() {
           {activeTab === "news" && (
             <div className="admin-table-container">
               <div className="table-action-header">
-                <h2>BÀI VIẾT & TIN TỨC TRONG MONGODB ({news.length})</h2>
+                <h2>BÀI VIẾT & TIN TỨC ({news.length})</h2>
                 <div className="table-header-controls">
                   <div className="admin-search-box">
                     <Search size={16} />

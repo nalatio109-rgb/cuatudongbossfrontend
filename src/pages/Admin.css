@@ -418,6 +418,14 @@ body.admin-mode {
   margin: 0;
 }
 
+/* Stat label responsive toggle */
+.mobile-stat-label {
+  display: none;
+}
+.desktop-stat-label {
+  display: inline;
+}
+
 /* Data Tables */
 .admin-table-container {
   background: #0f172a;
@@ -546,6 +554,12 @@ body.admin-mode {
   color: #ef4444;
   transform: translateY(-2px) scale(1.08);
   border-color: #ef4444;
+}
+
+/* Mobile Product & Contact Cards (Hidden by default on Desktop) */
+.admin-mobile-product-cards,
+.admin-mobile-contact-cards {
+  display: none;
 }
 
 /* Modal Animations */
@@ -795,8 +809,8 @@ body.admin-mode {
     top: 0;
     bottom: 0;
     left: 0;
-    width: 280px;
-    max-width: 82vw;
+    width: 292px;
+    max-width: 86vw;
     height: 100vh;
     z-index: 10002;
     transform: translateX(-100%);
@@ -804,6 +818,8 @@ body.admin-mode {
     box-shadow: none;
     overflow-y: auto;
     border-right: 1px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    flex-direction: column;
   }
 
   .admin-sidebar.mobile-open {
@@ -834,12 +850,35 @@ body.admin-mode {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1.25rem 1.2rem;
+    padding: 1.1rem 1rem;
+    gap: 10px;
+  }
+
+  .admin-sidebar-logo .logo-badge {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+    border-radius: 9px;
   }
 
   .admin-sidebar-logo .admin-logo-text {
     flex: 1;
-    margin-left: 10px;
+    margin-left: 6px;
+  }
+
+  .admin-sidebar-logo h2 {
+    font-size: 1rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.3px;
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  .admin-sidebar-logo span {
+    font-size: 0.68rem !important;
+    letter-spacing: 0.6px;
+    margin-top: 2px;
+    font-weight: 600;
   }
 
   .admin-sidebar-close-btn {
@@ -849,38 +888,104 @@ body.admin-mode {
     background: rgba(255, 255, 255, 0.08);
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: #cbd5e1;
-    width: 34px;
-    height: 34px;
+    width: 32px;
+    height: 32px;
     border-radius: 8px;
     cursor: pointer;
     transition: background 0.2s ease;
+    flex-shrink: 0;
   }
 
   .admin-sidebar-close-btn:active {
     background: rgba(255, 255, 255, 0.2);
   }
 
+  .admin-nav-list {
+    padding: 0.85rem 0.75rem;
+    gap: 6px;
+    flex: 1;
+  }
+
   .admin-nav-item {
-    padding: 14px 16px;
-    font-size: 1rem;
+    padding: 10px 12px;
+    font-size: 0.85rem;
+    font-weight: 550;
+    gap: 10px;
+    border-radius: 10px;
+    line-height: 1.3;
+    white-space: nowrap;
+    letter-spacing: 0.1px;
+  }
+
+  .admin-nav-item svg {
+    width: 17px;
+    height: 17px;
+    flex-shrink: 0;
+  }
+
+  .admin-nav-item .nav-badge-count {
+    font-size: 0.68rem;
+    padding: 2px 6px;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 9px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
+  .sidebar-footer {
+    padding: 0.85rem 0.75rem 1.25rem 0.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .btn-back-to-site,
+  .btn-sidebar-logout {
+    padding: 9px 12px;
+    font-size: 0.82rem;
+    border-radius: 9px;
+    gap: 8px;
+    margin-top: 0;
+  }
+
+  .btn-back-to-site svg,
+  .btn-sidebar-logout svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
   }
 
   /* Main Viewport */
   .admin-main-viewport {
     margin-left: 0 !important;
     width: 100%;
+    max-width: 100vw !important;
+    box-sizing: border-box !important;
     min-height: 100vh;
+    padding-top: 58px !important; /* Bù đắp chiều cao của thanh topbar cố định (fixed) */
+    overflow-x: hidden !important;
   }
 
-  /* Sticky Topbar */
+  /* Fixed Topbar trên Điện thoại (luôn giữ nguyên vị trí ở đầu màn hình khi cuộn trang) */
   .admin-topbar {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-    padding: 0.75rem 1rem;
-    background: rgba(15, 23, 42, 0.94);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    z-index: 1000 !important;
+    padding: 0.75rem 1rem !important;
+    background: rgba(15, 23, 42, 0.94) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45) !important;
   }
 
   .admin-mobile-menu-btn {
@@ -901,8 +1006,15 @@ body.admin-mode {
     background: rgba(255, 255, 255, 0.2);
   }
 
+  .topbar-status {
+    display: none !important;
+  }
+
   .admin-content-body {
     padding: 1rem 0.85rem 3rem 0.85rem;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   /* Mobile Quick Tabs Bar */
@@ -1060,17 +1172,411 @@ body.admin-mode {
    PHONE SCREEN REFINEMENTS (<= 768px)
    ========================================================== */
 @media (max-width: 768px) {
-  .topbar-status-text {
+  /* Thay thế bảng cuộn ngang bằng danh sách thẻ gọn gàng trên điện thoại */
+  .product-scroll-hint {
     display: none !important;
   }
 
-  .topbar-status-mobile-text {
-    display: inline !important;
+  .product-desktop-table {
+    display: none !important;
+  }
+
+  .admin-mobile-product-cards {
+    display: flex !important;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px 10px 18px 10px;
+  }
+
+  .admin-prod-card-item {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.75) 0%, rgba(15, 23, 42, 0.95) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    padding: 12px 14px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+
+  .admin-prod-card-item:active {
+    border-color: rgba(212, 175, 55, 0.45);
+  }
+
+  .admin-prod-card-top {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .admin-prod-card-img-wrap {
+    width: 68px;
+    height: 68px;
+    min-width: 68px;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    background: #0b1320;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .admin-prod-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .admin-prod-card-badge {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    font-size: 0.62rem;
+    font-weight: 800;
+    background: #d4af37;
+    color: #0b1320;
+    padding: 1px 5px;
+    border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  }
+
+  .admin-prod-card-main-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .admin-prod-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+    flex-wrap: wrap;
+  }
+
+  .admin-prod-card-code {
+    background: rgba(255, 255, 255, 0.08);
+    color: #cbd5e1;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 5px;
+    letter-spacing: 0.3px;
+  }
+
+  .admin-prod-card-title {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #f8fafc;
+    margin: 0 0 6px 0;
+    line-height: 1.35;
+    word-break: break-word;
+  }
+
+  .admin-prod-card-price-row {
+    display: flex;
+    align-items: baseline;
+    gap: 5px;
+  }
+
+  .card-price-label {
+    font-size: 0.75rem;
+    color: #94a3b8;
+  }
+
+  .card-price-value {
+    font-size: 0.92rem;
+    font-weight: 750;
+    color: #10b981;
+  }
+
+  .admin-prod-card-desc {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    font-size: 0.8rem;
+    color: #94a3b8;
+    line-height: 1.42;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .admin-prod-card-actions {
+    display: grid;
+    grid-template-columns: 1.15fr 1fr 1fr;
+    gap: 8px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .card-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    font-weight: 650;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+  }
+
+  .card-action-btn:active {
+    transform: scale(0.96);
+  }
+
+  .card-action-article {
+    background: rgba(56, 189, 248, 0.12);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    color: #38bdf8;
+  }
+
+  .card-action-article:active {
+    background: rgba(56, 189, 248, 0.25);
+  }
+
+  .card-action-edit {
+    background: rgba(212, 175, 55, 0.12);
+    border: 1px solid rgba(212, 175, 55, 0.35);
+    color: #f5bd20;
+  }
+
+  .card-action-edit:active {
+    background: rgba(212, 175, 55, 0.25);
+  }
+
+  .card-action-delete {
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #f87171;
+  }
+
+  .card-action-delete:active {
+    background: rgba(239, 68, 68, 0.25);
+  }
+
+  .admin-prod-card-empty {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: #94a3b8;
+    font-size: 0.88rem;
+    background: rgba(15, 23, 42, 0.6);
+    border-radius: 12px;
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+  }
+
+  /* Thay thế bảng cuộn ngang danh sách báo giá bằng thẻ Card trên điện thoại */
+  .contact-scroll-hint {
+    display: none !important;
+  }
+
+  .contact-desktop-table {
+    display: none !important;
+  }
+
+  .admin-mobile-contact-cards {
+    display: flex !important;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px 10px 18px 10px;
+  }
+
+  .admin-contact-card-item {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.75) 0%, rgba(15, 23, 42, 0.95) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    padding: 13px 14px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+  }
+
+  .admin-contact-card-item:active {
+    border-color: rgba(212, 175, 55, 0.45);
+  }
+
+  .admin-contact-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  }
+
+  .contact-card-customer-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .contact-card-name {
+    font-size: 0.95rem;
+    font-weight: 750;
+    color: #f8fafc;
+    line-height: 1.3;
+    word-break: break-word;
+  }
+
+  .contact-card-time {
+    font-size: 0.7rem;
+    color: #94a3b8;
+    line-height: 1.2;
+  }
+
+  .admin-contact-card-phone-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    background: rgba(212, 175, 55, 0.08);
+    border: 1px solid rgba(212, 175, 55, 0.25);
+    padding: 7px 12px;
+    border-radius: 9px;
+  }
+
+  .contact-phone-display {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .contact-phone-display .phone-icon {
+    color: #f5bd20;
+    flex-shrink: 0;
+  }
+
+  .contact-phone-link {
+    color: #f5bd20;
+    font-size: 0.92rem;
+    font-weight: 750;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-quick-call {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #ffffff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 11px;
+    border-radius: 6px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35);
+    transition: transform 0.2s ease;
+  }
+
+  .btn-quick-call:active {
+    transform: scale(0.95);
+  }
+
+  .admin-contact-card-category-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    font-size: 0.8rem;
+  }
+
+  .admin-contact-card-category-row .contact-label {
+    color: #94a3b8;
     font-size: 0.78rem;
   }
 
+  .admin-contact-card-details {
+    background: rgba(15, 23, 42, 0.6);
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-size: 0.8rem;
+    color: #cbd5e1;
+    line-height: 1.45;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .admin-contact-card-details .detail-line {
+    margin-bottom: 3px;
+    word-break: break-word;
+  }
+
+  .admin-contact-card-details .detail-line:last-child {
+    margin-bottom: 0;
+  }
+
+  .admin-contact-card-details.empty-note {
+    color: #64748b;
+    font-style: italic;
+    font-size: 0.76rem;
+  }
+
+  .admin-contact-card-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .card-contact-btn {
+    flex: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 650;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+  }
+
+  .card-contact-btn:active {
+    transform: scale(0.96);
+  }
+
+  .btn-mark-contacted {
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    color: #10b981;
+  }
+
+  .btn-mark-contacted:active {
+    background: rgba(16, 185, 129, 0.28);
+  }
+
+  .btn-delete-contact {
+    background: rgba(239, 68, 68, 0.12);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    color: #f87171;
+  }
+
+  .btn-delete-contact:active {
+    background: rgba(239, 68, 68, 0.25);
+  }
+
+  .admin-contact-card-empty {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: #94a3b8;
+    font-size: 0.88rem;
+    background: rgba(15, 23, 42, 0.6);
+    border-radius: 12px;
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+  }
+
+  /* Xóa huy hiệu trạng thái Atlas Live trên điện thoại theo yêu cầu */
   .topbar-status {
-    padding: 4px 8px;
+    display: none !important;
   }
 
   .refresh-btn-text {
@@ -1092,23 +1598,28 @@ body.admin-mode {
 
   /* Symmetrical Stats Grid on Phones: 1 Hero Card + 4 Paired Cards */
   .admin-stats-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 10px !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 8px !important;
     margin-bottom: 1.25rem !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
   }
 
   .admin-stats-grid .admin-stat-card:first-child {
     grid-column: span 2 !important;
     background: linear-gradient(135deg, rgba(16, 185, 129, 0.18) 0%, rgba(30, 41, 59, 0.85) 100%) !important;
     border: 1px solid rgba(16, 185, 129, 0.38) !important;
-    padding: 14px 14px !important;
+    padding: 12px 14px !important;
   }
 
   .admin-stat-card {
-    padding: 12px 10px !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+    padding: 10px 8px !important;
     gap: 8px !important;
     border-radius: 12px !important;
     background: rgba(30, 41, 59, 0.7) !important;
+    overflow: hidden !important;
   }
 
   .admin-stat-card:hover {
@@ -1116,29 +1627,57 @@ body.admin-mode {
   }
 
   .stat-icon {
-    width: 38px !important;
-    height: 38px !important;
-    border-radius: 10px !important;
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 9px !important;
     flex-shrink: 0;
   }
 
   .stat-icon svg {
-    width: 18px !important;
-    height: 18px !important;
+    width: 17px !important;
+    height: 17px !important;
+  }
+
+  .stat-info {
+    min-width: 0 !important;
+    flex: 1 !important;
+    overflow: hidden !important;
   }
 
   .stat-info h4 {
-    font-size: 0.72rem !important;
+    font-size: 0.74rem !important;
     line-height: 1.25 !important;
     margin-bottom: 2px !important;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: normal !important;
+    word-break: break-word !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
   }
 
   .stat-info p {
-    font-size: 1.2rem !important;
-    line-height: 1.1;
+    font-size: 1.15rem !important;
+    line-height: 1.15 !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: baseline !important;
+    gap: 3px !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+  }
+
+  .stat-info p span {
+    font-size: 0.7rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .mobile-stat-label {
+    display: inline !important;
+  }
+
+  .desktop-stat-label {
+    display: none !important;
   }
 
   /* Responsive Form Grids in Modals */
@@ -1224,16 +1763,15 @@ body.admin-mode {
     font-weight: 700;
   }
 
-  /* Horizontal Swipeable Contact Filter Chips */
+  /* Contact Filter Chips trên Điện thoại (gọn gàng, không bị tràn hay cắt nút) */
   .contact-filter-chips {
     display: flex !important;
-    gap: 8px !important;
-    overflow-x: auto !important;
-    flex-wrap: nowrap !important;
-    padding-bottom: 6px !important;
-    margin-bottom: 1rem !important;
-    -webkit-overflow-scrolling: touch !important;
-    scrollbar-width: none !important;
+    gap: 6px !important;
+    flex-wrap: wrap !important;
+    padding: 0.75rem 1rem 0.5rem 1rem !important;
+    margin-bottom: 0 !important;
+    overflow-x: visible !important;
+    box-sizing: border-box !important;
   }
 
   .contact-filter-chips::-webkit-scrollbar {
@@ -1243,13 +1781,14 @@ body.admin-mode {
   .contact-filter-chips .chip-btn {
     flex-shrink: 0 !important;
     white-space: nowrap !important;
-    padding: 6px 14px !important;
-    font-size: 0.8rem !important;
+    padding: 6px 11px !important;
+    font-size: 0.78rem !important;
+    border-radius: 18px !important;
   }
 
   /* Toast Notification on Mobile */
   .admin-toast-message {
-    top: 14px !important;
+    top: 68px !important;
     right: 14px !important;
     left: 14px !important;
     padding: 11px 16px !important;
@@ -1286,6 +1825,18 @@ body.admin-mode {
     background: rgba(239, 68, 68, 0.15) !important;
     border: 1px solid rgba(239, 68, 68, 0.3) !important;
     color: #fca5a5 !important;
+  }
+
+  @media (max-width: 380px) {
+    .admin-sidebar {
+      width: 275px;
+      max-width: 90vw;
+    }
+    .admin-nav-item {
+      font-size: 0.8rem;
+      padding: 9px 10px;
+      gap: 8px;
+    }
   }
 }
 
@@ -1467,7 +2018,7 @@ body.admin-mode {
   gap: 10px;
   flex-wrap: wrap;
   margin-bottom: 1.2rem;
-  padding: 4px 0;
+  padding: 0.75rem 1.5rem;
 }
 
 .contact-filter-chips .chip-btn {
@@ -1526,15 +2077,17 @@ body.admin-mode {
     padding: 11px !important;
   }
   .contact-filter-chips {
-    overflow-x: auto !important;
-    flex-wrap: nowrap !important;
-    padding-bottom: 6px !important;
+    display: flex !important;
+    gap: 6px !important;
+    flex-wrap: wrap !important;
+    padding: 0.65rem 0.85rem 0.4rem 0.85rem !important;
+    overflow-x: visible !important;
   }
   .contact-filter-chips .chip-btn {
     flex-shrink: 0 !important;
     white-space: nowrap !important;
-    padding: 6px 13px !important;
-    font-size: 0.78rem !important;
+    padding: 5px 10px !important;
+    font-size: 0.75rem !important;
   }
 }
 

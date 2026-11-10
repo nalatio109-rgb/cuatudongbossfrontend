@@ -29,7 +29,7 @@ function ScrollToTop() {
   return null;
 }
 
-// Protected Route for Admin
+// Protected Route for Admin - STRICTLY for admin@boss.vn
 function AdminRoute({ children }) {
   const { currentUser, isAdmin } = useAuth();
 
@@ -37,7 +37,8 @@ function AdminRoute({ children }) {
     return <Navigate to="/login?redirect=/admin" replace />;
   }
 
-  if (!isAdmin) {
+  // Phân quyền tuyệt đối: Chỉ có admin@boss.vn mới được phép truy cập
+  if (!isAdmin || currentUser.email?.toLowerCase().trim() !== "admin@boss.vn") {
     return <Navigate to="/" replace />;
   }
 

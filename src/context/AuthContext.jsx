@@ -6,7 +6,15 @@ export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(() => {
     try {
       const saved = localStorage.getItem("boss_auth_user");
-      return saved ? JSON.parse(saved) : null;
+      if (!saved) return null;
+      const parsed = JSON.parse(saved);
+      if (parsed && parsed.email) {
+        return {
+          ...parsed,
+          role: parsed.email.toLowerCase().trim() === "admin@boss.vn" ? "admin" : "user"
+        };
+      }
+      return parsed;
     } catch {
       return null;
     }
@@ -57,9 +65,14 @@ export function AuthProvider({ children }) {
       const data = await res.json();
 
       if (res.ok && data.success) {
-        setAuthData(data.data);
+        // Enforce strict authorization: Only admin@boss.vn can be admin
+        const safeUser = {
+          ...data.data,
+          role: cleanEmail === "admin@boss.vn" ? "admin" : "user"
+        };
+        setAuthData(safeUser);
         setLoading(false);
-        return { success: true, user: data.data };
+        return { success: true, user: safeUser };
       } else if (res.status === 400 || res.status === 401) {
         // Known auth failure from API
         setLoading(false);
@@ -132,9 +145,13 @@ export function AuthProvider({ children }) {
       const data = await res.json();
 
       if (res.ok && data.success) {
-        setAuthData(data.data);
+        const safeUser = {
+          ...data.data,
+          role: cleanEmail === "admin@boss.vn" ? "admin" : "user"
+        };
+        setAuthData(safeUser);
         setLoading(false);
-        return { success: true, user: data.data };
+        return { success: true, user: safeUser };
       } else if (res.status === 400) {
         setLoading(false);
         return { success: false, message: data.message || "Email này đã được sử dụng" };
@@ -181,7 +198,12 @@ export function AuthProvider({ children }) {
     setAuthData(null);
   };
 
-  const isAdmin = Boolean(currentUser && currentUser.role === "admin");
+  // Strict Authorization: ONLY admin@boss.vn is allowed to access the admin portal
+  const isAdmin = Boolean(
+    currentUser &&
+    currentUser.email &&
+    currentUser.email.toLowerCase().trim() === "admin@boss.vn"
+  );
 
   return (
     <AuthContext.Provider

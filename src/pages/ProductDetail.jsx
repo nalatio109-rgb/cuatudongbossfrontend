@@ -23,9 +23,11 @@ import {
 import { getProductExtendedDetails } from "../data/productDetailsData";
 import { DEFAULT_PRODUCT_ARTICLES } from "../data/defaultProductArticles";
 import { getProductSlug } from "../utils/slug.js";
+import { useAuth } from "../context/AuthContext";
 import "./ProductDetail.css";
 
 export default function ProductDetail() {
+  const { currentUser } = useAuth();
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -42,13 +44,24 @@ export default function ProductDetail() {
   // Quote Request Modal State
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
   const [quoteFormData, setQuoteFormData] = useState({
-    fullName: "",
-    phone: "",
+    fullName: currentUser?.fullName || "",
+    phone: currentUser?.phone || "",
     dimensions: "",
     address: "",
     note: ""
   });
   const [quoteSubmitted, setQuoteSubmitted] = useState(false);
+
+  // Auto pre-fill if user logs in or is already authenticated
+  useEffect(() => {
+    if (currentUser) {
+      setQuoteFormData((prev) => ({
+        ...prev,
+        fullName: prev.fullName || currentUser.fullName || "",
+        phone: prev.phone || currentUser.phone || ""
+      }));
+    }
+  }, [currentUser]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -228,7 +241,13 @@ export default function ProductDetail() {
     setTimeout(() => {
       setIsQuoteModalOpen(false);
       setQuoteSubmitted(false);
-      setQuoteFormData({ fullName: "", phone: "", dimensions: "", address: "", note: "" });
+      setQuoteFormData({
+        fullName: currentUser?.fullName || "",
+        phone: currentUser?.phone || "",
+        dimensions: "",
+        address: "",
+        note: ""
+      });
     }, 2500);
   };
 

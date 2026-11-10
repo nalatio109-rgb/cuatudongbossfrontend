@@ -316,32 +316,263 @@
   margin: 2rem 0;
 }
 
-/* Mobile typography & layout */
+/* --------------------------------------------------------------------------
+   4. NEWS DETAIL PAGE (DESKTOP - GIỮ NGUYÊN 100%)
+   -------------------------------------------------------------------------- */
+.news-detail-main {
+  padding: 60px 0;
+}
+
+.news-detail-container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 20px;
+  color: #019444;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: color 0.25s ease, transform 0.25s ease;
+}
+
+.back-link:hover {
+  color: #043c23;
+  transform: translateX(-3px);
+}
+
+.news-detail-title {
+  font-size: 2rem;
+  color: #1e293b;
+  margin-bottom: 15px;
+  font-weight: 850;
+  line-height: 1.35;
+}
+
+.news-detail-meta {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  color: #666666;
+  margin-bottom: 30px;
+  font-size: 0.9rem;
+}
+
+.news-detail-meta .news-date {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.news-detail-image {
+  margin-bottom: 30px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.news-detail-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.news-detail-content {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  color: #444444;
+}
+
+.news-detail-content h2,
+.news-detail-content h3 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #043c23;
+  margin: 2rem 0 0.8rem;
+  line-height: 1.4;
+}
+
+.news-detail-content p {
+  margin-bottom: 1.25rem;
+}
+
+.news-detail-content ul,
+.news-detail-content ol {
+  margin-bottom: 1.25rem;
+  padding-left: 1.5rem;
+}
+
+.news-detail-content li {
+  margin-bottom: 0.5rem;
+}
+
+.news-detail-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 1.5rem 0;
+}
+
+/* --------------------------------------------------------------------------
+   5. MOBILE TYPOGRAPHY & LAYOUT - TINH CHỈNH DỄ NHÌN, VỪA VẶN MÀN HÌNH ĐIỆN THOẠI
+   -------------------------------------------------------------------------- */
 @media (max-width: 768px) {
+  /* 1. Header Banner */
+  .news-top-banner {
+    min-height: 150px;
+    padding: 2.2rem 1rem;
+  }
+  .news-banner-text h1 {
+    font-size: 1.45rem;
+    letter-spacing: 0.2px;
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+  .news-banner-text p {
+    font-size: 0.84rem;
+    line-height: 1.5;
+  }
+
+  /* 2. Breadcrumb */
+  .news-breadcrumb {
+    padding: 9px 0;
+    font-size: 0.8rem;
+  }
+  .news-breadcrumb .current-page {
+    max-width: 160px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    vertical-align: bottom;
+  }
+
+  /* 3. News List Page */
+  .site293-main-content.section-space {
+    padding: 1.8rem 0 3rem;
+  }
+  .news-title-box {
+    margin-bottom: 1.4rem;
+  }
+  .news-title-box h2 {
+    font-size: 1.3rem;
+    letter-spacing: 0.2px;
+    margin-bottom: 6px;
+  }
+  .title-underline {
+    width: 65px;
+    height: 3px;
+  }
   .news-page-grid {
     gap: 1.2rem;
   }
   .news-img-wrap {
-    height: 180px;
-  }
-  .news-card-content {
-    padding: 1rem 0.9rem;
-  }
-  .news-card-title a {
-    font-size: 0.98rem;
-    line-height: 1.35;
-  }
-  .news-card-summary {
-    font-size: 0.82rem;
-    line-height: 1.5;
-    margin-bottom: 0.9rem;
-    -webkit-line-clamp: 2;
+    height: 185px;
   }
   .news-date-badge {
-    font-size: 0.7rem;
-    padding: 3px 9px;
+    font-size: 0.72rem;
+    padding: 4px 10px;
+  }
+  .news-card-content {
+    padding: 1.1rem 1rem;
+  }
+  .news-card-title a {
+    font-size: 1.02rem;
+    font-weight: 750;
+    line-height: 1.4;
+    color: #043c23;
+  }
+  .news-card-summary {
+    font-size: 0.88rem;
+    line-height: 1.55;
+    color: #475569;
+    margin-bottom: 1rem;
+    -webkit-line-clamp: 3;
   }
   .btn-news-readmore {
+    font-size: 0.88rem;
+    font-weight: 750;
+    color: #043c23;
+  }
+
+  /* 4. News Detail Mobile Typography */
+  .news-detail-main {
+    padding: 24px 0 45px !important;
+  }
+  .back-link {
+    font-size: 0.86rem;
+    margin-bottom: 14px;
+    gap: 4px;
+  }
+  .news-detail-title {
+    font-size: 1.35rem;
+    font-weight: 850;
+    line-height: 1.4;
+    color: #0f172a;
+    margin-bottom: 10px;
+    letter-spacing: -0.2px;
+  }
+  .news-detail-meta {
     font-size: 0.82rem;
+    margin-bottom: 16px;
+    gap: 10px;
+  }
+  .news-detail-image {
+    margin-bottom: 20px;
+    border-radius: 10px;
+  }
+  .news-detail-content {
+    font-size: 0.98rem;
+    line-height: 1.72;
+    color: #334155;
+  }
+  .news-detail-content h2,
+  .news-detail-content h3 {
+    font-size: 1.15rem;
+    font-weight: 800;
+    margin: 1.4rem 0 0.5rem;
+    line-height: 1.45;
+    color: #043c23;
+  }
+  .news-detail-content p {
+    margin-bottom: 1rem;
+    font-size: 0.98rem;
+    line-height: 1.72;
+  }
+  .news-detail-content ul,
+  .news-detail-content ol {
+    padding-left: 1.2rem;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.65;
+  }
+  .news-detail-content li {
+    margin-bottom: 0.4rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .news-banner-text h1 {
+    font-size: 1.25rem;
+  }
+  .news-title-box h2 {
+    font-size: 1.18rem;
+  }
+  .news-detail-title {
+    font-size: 1.22rem;
+  }
+  .news-card-title a {
+    font-size: 0.96rem;
+  }
+  .news-card-summary {
+    font-size: 0.85rem;
+  }
+  .news-detail-content,
+  .news-detail-content p {
+    font-size: 0.94rem;
   }
 }

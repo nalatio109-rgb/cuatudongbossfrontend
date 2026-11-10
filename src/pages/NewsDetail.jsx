@@ -141,28 +141,28 @@ const NewsDetail = () => {
       </div>
 
       {/* 3. MAIN CONTENT */}
-      <main className="site293-main-content section-space" style={{ padding: '60px 0' }}>
-        <div className="container" style={{ maxWidth: '800px', margin: '0 auto' }}>
+      <main className="site293-main-content section-space news-detail-main">
+        <div className="container news-detail-container">
           <RevealOnScroll animation="fade-up">
-            <Link to="/tin-tuc" className="back-link" style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', marginBottom: '20px', color: '#019444', textDecoration: 'none', fontWeight: '500' }}>
+            <Link to="/tin-tuc" className="back-link">
               <ArrowLeft size={16} /> Quay lại tin tức
             </Link>
             
-            <h1 className="news-detail-title" style={{ fontSize: '2rem', color: '#333', marginBottom: '15px' }}>{newsItem.title}</h1>
+            <h1 className="news-detail-title">{newsItem.title}</h1>
             
-            <div className="news-detail-meta" style={{ display: 'flex', alignItems: 'center', gap: '15px', color: '#666', marginBottom: '30px', fontSize: '0.9rem' }}>
-              <span className="news-date" style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+            <div className="news-detail-meta">
+              <span className="news-date">
                 <Calendar size={14} /> {newsItem.date || new Date(newsItem.createdAt).toLocaleDateString('vi-VN')}
               </span>
             </div>
 
             {newsItem.image && (
-              <div className="news-detail-image" style={{ marginBottom: '30px', borderRadius: '12px', overflow: 'hidden', boxShadow: '0 4px 15px rgba(0,0,0,0.1)' }}>
-                <img src={newsItem.image} alt={newsItem.title} style={{ width: '100%', height: 'auto', display: 'block' }} />
+              <div className="news-detail-image">
+                <img src={newsItem.image} alt={newsItem.title} />
               </div>
             )}
 
-            <div className="news-detail-content" style={{ fontSize: '1.1rem', lineHeight: '1.8', color: '#444' }}>
+            <div className="news-detail-content">
               {/* If content is HTML, use dangerouslySetInnerHTML, otherwise just display it */}
               <div dangerouslySetInnerHTML={{ __html: newsItem.content }} />
             </div>

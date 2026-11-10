@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { DEFAULT_PRICE_QUOTES } from "../data/defaultPriceQuotes";
 import { getProductSlug } from "../utils/slug.js";
+import { useAuth } from "../context/AuthContext";
 import "./ProductPricing.css";
 
 // Fallback products dictionary if not yet in state/DB
@@ -354,6 +355,7 @@ const GERMAN_DOOR_ADDONS = [
 ];
 
 export default function ProductPricing() {
+  const { currentUser } = useAuth();
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -435,10 +437,10 @@ export default function ProductPricing() {
     };
   }, [product, id]);
 
-  // Quote Form State
+  // Quote Form State - Pre-filled if user is logged in
   const [formData, setFormData] = useState({
-    fullName: "",
-    phone: "",
+    fullName: currentUser?.fullName || "",
+    phone: currentUser?.phone || "",
     dimensions: "",
     quantity: "1 bộ",
     address: "",
@@ -446,6 +448,17 @@ export default function ProductPricing() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitResult, setSubmitResult] = useState(null); // { success: true/false, message: "" }
+
+  // Auto pre-fill if currentUser becomes available
+  useEffect(() => {
+    if (currentUser) {
+      setFormData((prev) => ({
+        ...prev,
+        fullName: prev.fullName || currentUser.fullName || "",
+        phone: prev.phone || currentUser.phone || ""
+      }));
+    }
+  }, [currentUser]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -566,8 +579,8 @@ export default function ProductPricing() {
       setSubmitResult({ success, message });
       if (success) {
         setFormData({
-          fullName: "",
-          phone: "",
+          fullName: currentUser?.fullName || "",
+          phone: currentUser?.phone || "",
           dimensions: "",
           quantity: "1 bộ",
           address: "",

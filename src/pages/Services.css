@@ -696,126 +696,183 @@
 }
 
 @media (max-width: 768px) {
+  /* 1. Header Banner */
   .site293-top-banner {
     min-height: auto;
     padding: 2.2rem 1rem;
   }
   .banner-text-box h1 {
-    font-size: 1.5rem;
+    font-size: 1.45rem;
     line-height: 1.3;
-    margin-bottom: 8px;
+    font-weight: 850;
+    margin-bottom: 6px;
+    letter-spacing: 0.2px;
   }
   .banner-sub-desc {
-    font-size: 0.88rem;
-    line-height: 1.55;
+    font-size: 0.85rem;
+    line-height: 1.5;
     margin-bottom: 8px;
+    color: #f1f5f9;
   }
   .banner-trust-line {
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     line-height: 1.45;
+    color: #f5bd20;
+  }
+
+  /* 2. Breadcrumb & Section Title */
+  .site293-breadcrumb {
+    padding: 9px 0;
+    font-size: 0.8rem;
+  }
+  .site293-title-box {
+    margin-bottom: 1.4rem;
   }
   .site293-title-box h2 {
     font-size: 1.3rem;
+    font-weight: 850;
+    margin-bottom: 6px;
+    letter-spacing: 0.2px;
+  }
+  .title-underline {
+    width: 65px;
+    height: 3px;
+  }
+
+  /* 3. Services List Cards */
+  .site293-news-grid {
+    gap: 1.2rem;
   }
   .img-article-wrap {
-    height: 180px;
+    height: 185px;
+  }
+  .sp-date {
+    font-size: 0.72rem;
+    padding: 4px 10px;
   }
   .nd-article {
     padding: 1.1rem 1rem;
   }
   .title-article button {
-    font-size: 0.96rem;
-    font-weight: 800;
-    line-height: 1.38;
+    font-size: 1.02rem;
+    font-weight: 750;
+    line-height: 1.4;
+    color: #043c23;
   }
   .body-content {
-    font-size: 0.84rem;
+    font-size: 0.88rem;
     line-height: 1.55;
     color: #475569;
+    margin-bottom: 1rem;
   }
   .btn-readmore-293 {
-    font-size: 0.82rem;
-    padding: 6px 14px;
+    font-size: 0.88rem;
+    font-weight: 750;
+    color: #043c23;
+    padding: 4px 0;
   }
 
-  /* --- CÂN CHỈNH FORM ĐẶT LỊCH TRÊN ĐIỆN THOẠI (KHÔNG QUÁ TO, KHÔNG QUÁ NHỎ) --- */
+  /* 4. Booking Form Section - Tinh Chỉnh Font Vừa Vặn, Dễ Nhìn, Đều Đẹp */
   .site293-booking-section {
-    padding: 2.5rem 0;
+    padding: 2.2rem 0;
   }
   .site293-form-card {
-    padding: 1.6rem 1.15rem;
-    border-radius: 14px;
+    padding: 1.5rem 1.1rem;
+    border-radius: 16px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
   }
   .form-card-title span {
-    font-size: 0.78rem;
-    font-weight: 700;
+    font-size: 0.75rem;
+    font-weight: 750;
     letter-spacing: 0.5px;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     color: #043c23;
   }
   .form-card-title h3 {
-    font-size: 1.18rem;
-    font-weight: 800;
+    font-size: 1.15rem;
+    font-weight: 850;
     color: #0f172a;
-    line-height: 1.4;
-    margin: 0 0 1.25rem 0;
+    line-height: 1.35;
+    margin: 0 0 1.2rem 0;
   }
   .site293-real-form .form-group-item {
-    margin-bottom: 1rem;
+    margin-bottom: 12px;
   }
   .site293-real-form label {
-    font-size: 0.84rem;
-    font-weight: 700;
-    color: #1e293b;
-    margin-bottom: 5px;
+    font-size: 11.5px !important;
+    font-weight: 750 !important;
+    color: #004d32;
+    margin-bottom: 3px;
+    display: block;
   }
   .site293-real-form input,
   .site293-real-form select,
   .site293-real-form textarea {
     width: 100%;
-    padding: 11px 14px;
-    font-size: 15px;
-    border-radius: 8px;
-    border: 1.5px solid #cbd5e1;
+    padding: 9.5px 12px !important;
+    font-size: 13px !important;
+    border-radius: 9px !important;
+    border: 1.5px solid #d4e2db !important;
     background: #ffffff;
     line-height: 1.4;
+    color: #1e293b;
+    box-sizing: border-box;
+  }
+  .site293-real-form input::placeholder,
+  .site293-real-form textarea::placeholder {
+    font-size: 12px !important;
+    color: #94a3b8 !important;
+  }
+  .site293-real-form select {
+    font-size: 12.5px !important;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
   }
   .site293-real-form textarea {
-    rows: 3;
-    min-height: 75px;
+    min-height: 75px !important;
+    line-height: 1.45;
   }
   .btn-brand-red {
     width: 100%;
-    padding: 12px 20px;
-    font-size: 0.9rem;
-    font-weight: 700;
+    padding: 12px 20px !important;
+    font-size: 13px !important;
+    font-weight: 800;
     border-radius: 25px;
     justify-content: center;
   }
 
-  /* MODAL CHI TIẾT TRÊN ĐIỆN THOẠI */
+  /* 5. Modal Chi Tiết Dịch Vụ */
   .site293-modal-card {
-    padding: 1.3rem 1.1rem;
-    border-radius: 14px;
+    padding: 1.4rem 1.1rem;
+    border-radius: 16px;
     max-height: 90vh;
   }
   .modal-header h2 {
-    font-size: 1.15rem;
+    font-size: 1.2rem;
+    font-weight: 850;
     line-height: 1.35;
+    color: #043c23;
+  }
+  .modal-date {
+    font-size: 0.76rem;
+    color: #64748b;
   }
   .modal-img-wrap {
     height: 180px;
     margin-bottom: 1rem;
   }
   .modal-desc {
-    font-size: 0.88rem;
+    font-size: 0.92rem;
+    font-weight: 700;
     line-height: 1.55;
     margin-bottom: 0.8rem;
+    color: #0f172a;
   }
   .modal-detail-content {
-    font-size: 0.84rem;
-    line-height: 1.6;
+    font-size: 0.88rem;
+    line-height: 1.65;
+    color: #334155;
   }
   .modal-footer {
     flex-direction: column;
@@ -826,13 +883,17 @@
   .btn-modal-call {
     width: 100%;
     justify-content: center;
-    font-size: 0.86rem;
-    padding: 10px 16px;
+    font-size: 0.88rem;
+    font-weight: 800;
+    padding: 11px 16px;
+    border-radius: 25px;
   }
   .btn-modal-close {
     width: 100%;
     text-align: center;
-    padding: 9px 16px;
+    padding: 10px 16px;
+    font-size: 0.86rem;
+    border-radius: 20px;
   }
 }
 
@@ -844,17 +905,20 @@
 
 @media (max-width: 480px) {
   .banner-text-box h1 {
-    font-size: 1.38rem;
+    font-size: 1.35rem;
   }
   .banner-sub-desc {
-    font-size: 0.84rem;
+    font-size: 0.82rem;
+  }
+  .site293-title-box h2 {
+    font-size: 1.2rem;
   }
   .form-card-title h3 {
-    font-size: 1.1rem;
+    font-size: 1.08rem;
     line-height: 1.38;
   }
   .site293-form-card {
-    padding: 1.4rem 1rem;
+    padding: 1.3rem 0.95rem;
   }
 }
 

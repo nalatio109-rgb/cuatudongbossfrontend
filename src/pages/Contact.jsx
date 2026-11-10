@@ -1,17 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Phone, MapPin, Mail, Clock, Send, CheckCircle2, MessageSquare } from 'lucide-react';
 import RevealOnScroll from '../components/RevealOnScroll';
+import { useAuth } from '../context/AuthContext';
 import './Contact.css';
 
 const Contact = () => {
+  const { currentUser } = useAuth();
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    fullName: "",
-    phone: "",
+    fullName: currentUser?.fullName || "",
+    phone: currentUser?.phone || "",
     productCategory: "Cửa cuốn khe thoáng / tấm liền BossDoor",
     message: ""
   });
+
+  // Tự động điền thông tin khi khách hàng đăng nhập tài khoản
+  useEffect(() => {
+    if (currentUser) {
+      setFormData((prev) => ({
+        ...prev,
+        fullName: prev.fullName || currentUser.fullName || "",
+        phone: prev.phone || currentUser.phone || ""
+      }));
+    }
+  }, [currentUser]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -35,8 +48,8 @@ const Contact = () => {
       if (resData.success) {
         setSubmitted(true);
         setFormData({
-          fullName: "",
-          phone: "",
+          fullName: currentUser?.fullName || "",
+          phone: currentUser?.phone || "",
           productCategory: "Cửa cuốn khe thoáng / tấm liền BossDoor",
           message: ""
         });
@@ -73,14 +86,23 @@ const Contact = () => {
           <div className="contact-cards-grid">
             <RevealOnScroll animation="fade-up" delay={0}>
               <div className="contact-info-card highlight-card">
-                <div className="info-icon-box gold">
-                  <Phone size={28} />
+                <div className="card-top-identity">
+                  <div className="info-icon-box gold">
+                    <Phone size={24} />
+                  </div>
+                  <div className="card-identity-text">
+                    <h3>HOTLINE / ZALO</h3>
+                    <p className="info-highlight">0904.678.323</p>
+                    <p className="info-sub">
+                      <span className="desktop-contact-text">Hỗ trợ tư vấn & báo giá nhanh 24/7</span>
+                      <span className="mobile-contact-text">Tư vấn & báo giá nhanh 24/7</span>
+                    </p>
+                  </div>
                 </div>
-                <h3>HOTLINE / ZALO</h3>
-                <p className="info-highlight">0904.678.323</p>
-                <p className="info-sub">Hỗ trợ tư vấn & báo giá nhanh 24/7</p>
                 <a href="tel:0904678323" className="btn-contact-action gold-btn">
-                  <Phone size={16} /> Gọi ngay 0904.678.323
+                  <Phone size={14} /> 
+                  <span className="desktop-contact-text">Gọi ngay 0904.678.323</span>
+                  <span className="mobile-contact-text">Gọi ngay</span>
                 </a>
               </div>
             </RevealOnScroll>
@@ -88,13 +110,23 @@ const Contact = () => {
             <RevealOnScroll animation="fade-up" delay={150}>
               <div className="contact-info-card">
                 <div className="info-icon-box green">
-                  <MapPin size={28} />
+                  <MapPin size={24} />
                 </div>
                 <h3>TRỤ SỞ CHÍNH</h3>
-                <p className="info-text">647 Ngô Quyền, Sơn Trà, Đà Nẵng</p>
-                <p className="info-sub">Địa chỉ văn phòng làm việc & tiếp nhận dự án</p>
+                <p className="info-text">
+                  <span className="desktop-contact-text">647 Ngô Quyền, Sơn Trà, Đà Nẵng</span>
+                  <span className="mobile-contact-text">
+                    647 Ngô Quyền, Sơn Trà<br />
+                    <span className="nowrap-text">Đà Nẵng</span>
+                  </span>
+                </p>
+                <p className="info-sub">
+                  <span className="desktop-contact-text">Địa chỉ văn phòng làm việc & tiếp nhận dự án</span>
+                  <span className="mobile-contact-text">VP làm việc & dự án</span>
+                </p>
                 <a href="https://maps.google.com/?q=647+Ngô+Quyền+Sơn+Trà+Đà+Nẵng" target="_blank" rel="noreferrer" className="btn-contact-action outline-btn">
-                  Xem bản đồ Google Maps
+                  <span className="desktop-contact-text">Xem bản đồ Google Maps</span>
+                  <span className="mobile-contact-text">Xem bản đồ</span>
                 </a>
               </div>
             </RevealOnScroll>
@@ -102,13 +134,26 @@ const Contact = () => {
             <RevealOnScroll animation="fade-up" delay={300}>
               <div className="contact-info-card">
                 <div className="info-icon-box green">
-                  <MapPin size={28} />
+                  <MapPin size={24} />
                 </div>
-                <h3>SHOWROOM TRƯNG BÀY</h3>
-                <p className="info-text">267 Tô Hiệu, Hòa Khánh, Đà Nẵng</p>
-                <p className="info-sub">Địa điểm trưng bày trải nghiệm mẫu cửa thực tế</p>
+                <h3>
+                  <span className="desktop-contact-text">SHOWROOM TRƯNG BÀY</span>
+                  <span className="mobile-contact-text">SHOWROOM TRƯNG BÀY</span>
+                </h3>
+                <p className="info-text">
+                  <span className="desktop-contact-text">267 Tô Hiệu, Hòa Khánh, Đà Nẵng</span>
+                  <span className="mobile-contact-text">
+                    267 Tô Hiệu, Hòa Khánh<br />
+                    <span className="nowrap-text">Đà Nẵng</span>
+                  </span>
+                </p>
+                <p className="info-sub">
+                  <span className="desktop-contact-text">Địa điểm trưng bày trải nghiệm mẫu cửa thực tế</span>
+                  <span className="mobile-contact-text">Trải nghiệm mẫu cửa</span>
+                </p>
                 <a href="https://maps.google.com/?q=267+Tô+Hiệu+Hòa+Khánh+Đà+Nẵng" target="_blank" rel="noreferrer" className="btn-contact-action outline-btn">
-                  Xem bản đồ Google Maps
+                  <span className="desktop-contact-text">Xem bản đồ Google Maps</span>
+                  <span className="mobile-contact-text">Xem bản đồ</span>
                 </a>
               </div>
             </RevealOnScroll>
@@ -118,10 +163,11 @@ const Contact = () => {
 
       {/* 3. CONTACT FORM & MAP SECTION */}
       <section className="contact-form-section">
-        <div className="container contact-grid-2col">
-          <RevealOnScroll animation="fade-right" className="contact-form-box">
-            <h2>GỬI YÊU CẦU BÁO GIÁ</h2>
-            <p>Để lại thông tin, đội ngũ kỹ sư của BOSS sẽ liên hệ tư vấn và gửi báo giá chi tiết cho bạn.</p>
+        <div className="container">
+          <div className="contact-grid-2col">
+            <RevealOnScroll animation="fade-right" className="contact-form-box">
+              <h2>GỬI YÊU CẦU BÁO GIÁ</h2>
+              <p>Để lại thông tin, đội ngũ kỹ sư của BOSS sẽ liên hệ tư vấn và gửi báo giá chi tiết cho bạn.</p>
 
             {submitted ? (
               <div className="form-success-msg">
@@ -200,7 +246,8 @@ const Contact = () => {
             </div>
           </RevealOnScroll>
         </div>
-      </section>
+      </div>
+    </section>
     </div>
   );
 };

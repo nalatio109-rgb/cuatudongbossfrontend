@@ -48,10 +48,12 @@ export default function Auth() {
   // If already logged in, redirect appropriately
   useEffect(() => {
     if (currentUser) {
-      if (currentUser.role === "admin") {
+      const isRealAdmin = currentUser.email?.toLowerCase().trim() === "admin@boss.vn";
+      if (isRealAdmin) {
         navigate(redirectTarget || "/admin", { replace: true });
       } else {
-        navigate(redirectTarget || "/", { replace: true });
+        const safeTarget = redirectTarget && !redirectTarget.startsWith("/admin") ? redirectTarget : "/";
+        navigate(safeTarget, { replace: true });
       }
     }
   }, [currentUser, navigate, redirectTarget]);
@@ -81,10 +83,12 @@ export default function Auth() {
       if (result.success) {
         setSuccessMessage("Đăng nhập thành công! Đang chuyển hướng...");
         setTimeout(() => {
-          if (result.user.role === "admin") {
+          const isRealAdmin = result.user?.email?.toLowerCase().trim() === "admin@boss.vn";
+          if (isRealAdmin) {
             navigate("/admin", { replace: true });
           } else {
-            navigate("/", { replace: true });
+            const safeTarget = redirectTarget && !redirectTarget.startsWith("/admin") ? redirectTarget : "/";
+            navigate(safeTarget, { replace: true });
           }
         }, 500);
       } else {
@@ -119,9 +123,10 @@ export default function Auth() {
       const result = await register(regName, regEmail, regPassword, regPhone);
 
       if (result.success) {
-        setSuccessMessage("Đăng ký thành công! Đang chuyển hướng về Trang Chủ...");
+        setSuccessMessage("Đăng ký thành công! Đang chuyển hướng...");
         setTimeout(() => {
-          navigate("/", { replace: true });
+          const safeTarget = redirectTarget && !redirectTarget.startsWith("/admin") ? redirectTarget : "/";
+          navigate(safeTarget, { replace: true });
         }, 600);
       } else {
         setErrorMessage(result.message || "Đăng ký không thành công!");

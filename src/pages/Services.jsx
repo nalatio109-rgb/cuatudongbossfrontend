@@ -7,6 +7,7 @@ import {
 import './Services.css';
 import RevealOnScroll from '../components/RevealOnScroll';
 import { DEFAULT_SERVICES } from '../data/defaultServices';
+import { useAuth } from '../context/AuthContext';
 
 const formatImgSrc = (src) => {
   if (!src) return '/service_repair_247.png';
@@ -21,17 +22,29 @@ const formatImgSrc = (src) => {
 };
 
 const Services = () => {
+  const { currentUser } = useAuth();
   const [servicesData, setServicesData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedService, setSelectedService] = useState(null);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
+    name: currentUser?.fullName || '',
+    phone: currentUser?.phone || '',
     district: 'Quận Hải Châu',
     service: 'Sửa chữa cửa cuốn 24/24',
     note: ''
   });
+
+  // Tự động điền thông tin khách hàng nếu đã đăng nhập
+  useEffect(() => {
+    if (currentUser) {
+      setFormData((prev) => ({
+        ...prev,
+        name: prev.name || currentUser.fullName || '',
+        phone: prev.phone || currentUser.phone || ''
+      }));
+    }
+  }, [currentUser]);
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -255,7 +268,19 @@ const Services = () => {
                 <CheckCircle2 size={56} className="text-emerald" style={{ margin: '0 auto 1rem' }} />
                 <h3>GỬI YÊU CẦU THÀNH CÔNG!</h3>
                 <p>Kỹ thuật viên BOSS Đà Nẵng sẽ liên hệ lại cho bạn ngay lập tức.</p>
-                <button className="btn-brand-red" onClick={() => setFormSubmitted(false)}>
+                <button 
+                  className="btn-brand-red" 
+                  onClick={() => {
+                    setFormData({
+                      name: currentUser?.fullName || '',
+                      phone: currentUser?.phone || '',
+                      district: 'Quận Hải Châu',
+                      service: 'Sửa chữa cửa cuốn 24/24',
+                      note: ''
+                    });
+                    setFormSubmitted(false);
+                  }}
+                >
                   GỬI YÊU CẦU KHÁC
                 </button>
               </div>

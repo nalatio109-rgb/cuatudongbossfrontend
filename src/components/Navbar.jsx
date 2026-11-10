@@ -76,7 +76,7 @@ export default function Navbar() {
   const lastActiveCatRef = useRef(FLYOUT_PRODUCT_NAV_DATA[0]);
   const location = useLocation();
 
-  const { currentUser, logout } = useAuth();
+  const { currentUser, logout, isAdmin } = useAuth();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userDropdownRef = useRef(null);
 
@@ -515,7 +515,7 @@ export default function Navbar() {
                   </div>
                 </div>
 
-                {currentUser.role === "admin" && (
+                {isAdmin && (
                   <Link 
                     to="/admin" 
                     onClick={() => setMenu(false)} 
@@ -567,7 +567,7 @@ export default function Navbar() {
                   {currentUser.fullName ? currentUser.fullName[0].toUpperCase() : "U"}
                 </span>
                 <span className="user-short-name">{currentUser.fullName}</span>
-                {currentUser.role === "admin" && (
+                {isAdmin && (
                   <>
                     <span className="admin-chip">ADMIN</span>
                     <span className="admin-status-dot" title="Quản trị viên"></span>
@@ -593,14 +593,14 @@ export default function Navbar() {
                           <span>{currentUser.email}</span>
                         </div>
                       </div>
-                      <span className={`user-role-badge ${currentUser.role}`}>
-                        {currentUser.role === "admin" ? "🛡️ Quản trị viên" : "👤 Thành viên"}
+                      <span className={`user-role-badge ${isAdmin ? "admin" : "user"}`}>
+                        {isAdmin ? "🛡️ Quản trị viên" : "👤 Thành viên"}
                       </span>
                     </div>
 
                     <div className="floating-divider"></div>
 
-                    {currentUser.role === "admin" && (
+                    {isAdmin && (
                       <Link 
                         to="/admin" 
                         className="floating-menu-link admin"
