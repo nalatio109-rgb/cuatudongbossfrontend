@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import CategorySeoContent from "../components/CategorySeoContent";
 import { getProductSlug } from "../utils/slug.js";
+import { matchKeywords, extractSearchableText } from "../utils/searchHelper";
 import "./ProductsPage.css";
 
 export default function ProductsPage() {
@@ -347,13 +348,48 @@ export default function ProductsPage() {
 
   const productList = dbProducts.length > 0 ? dbProducts : products;
 
-  const filteredProducts = productList.filter((item) => {
-    const matchesCategory = activeCategory === "all" || item.category === activeCategory;
-    const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.code.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
+  const productSearchFields = [
+    "title",
+    "code",
+    "description",
+    "category",
+    "categoryName",
+    "specs",
+    "badge",
+    "price",
+    "businessStatus",
+    "details"
+  ];
+
+  const filteredProducts = (() => {
+    const hasSearch = Boolean(searchQuery && searchQuery.trim());
+    if (!hasSearch) {
+      return activeCategory === "all"
+        ? productList
+        : productList.filter((item) => item.category === activeCategory);
+    }
+
+    // Khi có từ khóa tìm kiếm:
+    // 1. Lọc trong danh mục đang chọn trước
+    const categoryFiltered = activeCategory === "all"
+      ? productList
+      : productList.filter((item) => item.category === activeCategory);
+
+    const matchesInCat = categoryFiltered.filter((item) => {
+      const text = extractSearchableText(item, productSearchFields);
+      return matchKeywords(text, searchQuery);
+    });
+
+    if (matchesInCat.length > 0 || activeCategory === "all") {
+      return matchesInCat;
+    }
+
+    // 2. Tự động tìm kiếm trên toàn bộ sản phẩm nếu danh mục hiện tại không có, đảm bảo không bỏ sót sản phẩm nào
+    return productList.filter((item) => {
+      const text = extractSearchableText(item, productSearchFields);
+      return matchKeywords(text, searchQuery);
+    });
+  })();
 
   useEffect(() => {
     const observer = new IntersectionObserver((entries) => {

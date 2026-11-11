@@ -12,8 +12,10 @@ import {
   PhoneCall,
   Sparkles,
   Layers,
-  ArrowUpRight
+  ArrowUpRight,
+  Award
 } from "lucide-react";
+import { matchKeywords, extractSearchableText } from "../utils/searchHelper";
 import "./Pricing.css";
 
 // Comprehensive catalog data for Boss Đà Nẵng pricing hub
@@ -273,15 +275,46 @@ export default function Pricing() {
     }
   };
 
-  const filteredProducts = productsList.filter((prod) => {
-    const matchCat = activeCategory === "all" || prod.category === activeCategory;
-    const matchQuery =
-      searchQuery === "" ||
-      prod.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (prod.code && prod.code.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (prod.description && prod.description.toLowerCase().includes(searchQuery.toLowerCase()));
-    return matchCat && matchQuery;
-  });
+  const pricingSearchFields = [
+    "title",
+    "code",
+    "category",
+    "description",
+    "specs",
+    "badge",
+    "price",
+    "businessStatus"
+  ];
+
+  const filteredProducts = (() => {
+    const hasSearch = Boolean(searchQuery && searchQuery.trim());
+    if (!hasSearch) {
+      return activeCategory === "all"
+        ? productsList
+        : productsList.filter((p) => p.category === activeCategory);
+    }
+
+    // Khi có từ khóa tìm kiếm:
+    // 1. Khớp trong danh mục hiện tại trước
+    const categoryFiltered = activeCategory === "all"
+      ? productsList
+      : productsList.filter((p) => p.category === activeCategory);
+
+    const matchesInCat = categoryFiltered.filter((prod) => {
+      const text = extractSearchableText(prod, pricingSearchFields);
+      return matchKeywords(text, searchQuery);
+    });
+
+    if (matchesInCat.length > 0 || activeCategory === "all") {
+      return matchesInCat;
+    }
+
+    // 2. Tìm kiếm trên toàn bộ catalog nếu danh mục hiện tại không có, tránh tình trạng bị chặn kết quả
+    return productsList.filter((prod) => {
+      const text = extractSearchableText(prod, pricingSearchFields);
+      return matchKeywords(text, searchQuery);
+    });
+  })();
 
   // Scroll reveal observer: elements start appearing only when scrolled into view
   useEffect(() => {
@@ -320,9 +353,34 @@ export default function Pricing() {
               <Sparkles size={14} /> BẢNG BÁO GIÁ NIÊM YẾT CHÍNH HÃNG 2026
             </span>
             <h1>BẢNG GIÁ SẢN PHẨM</h1>
-            <p>
+            
+            {/* Desktop Description (Giữ nguyên 100% cho máy tính) */}
+            <p className="hero-desc-desktop">
               Tra cứu đơn giá minh bạch, thông số kỹ thuật và chính sách bảo hành của từng dòng sản phẩm cửa cuốn, cửa kéo và cổng tự động tại Boss Đà Nẵng.
             </p>
+
+            {/* Mobile View (Gọn gàng, thanh cam kết 3 cột viền kim sang trọng) */}
+            <div className="hero-mobile-summary">
+              <p className="hero-desc-mobile">
+                Báo giá niêm yết trực tiếp từ nhà máy Boss Đà Nẵng
+              </p>
+              <div className="pricing-hero-strip">
+                <div className="hero-strip-col">
+                  <ShieldCheck size={18} />
+                  <span>Giá tại xưởng</span>
+                </div>
+                <div className="strip-sep" />
+                <div className="hero-strip-col">
+                  <CheckCircle2 size={18} />
+                  <span>Khảo sát 0đ</span>
+                </div>
+                <div className="strip-sep" />
+                <div className="hero-strip-col">
+                  <Award size={18} />
+                  <span>Bảo hành chính hãng</span>
+                </div>
+              </div>
+            </div>
 
             {/* Search Box */}
             <div className="pricing-search-wrapper">

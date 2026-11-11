@@ -930,23 +930,115 @@
   }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 768px) {
+  /* 1. HERO BANNER REFINEMENT FOR MOBILE */
+  .products-hero-banner {
+    padding: 42px 16px 30px;
+  }
+  .banner-badge {
+    font-size: 9.5px;
+    padding: 4px 13px;
+    margin-bottom: 12px;
+    gap: 6px;
+    letter-spacing: 0.5px;
+  }
+  .banner-badge svg {
+    width: 13px;
+    height: 13px;
+  }
+  .hero-banner-content h1 {
+    font-size: 1.55rem;
+    font-weight: 850;
+    margin-bottom: 10px;
+    line-height: 1.25;
+    letter-spacing: -0.3px;
+  }
+  .hero-banner-content p {
+    font-size: 0.85rem;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.88);
+    margin: 0 auto 20px;
+    max-width: 95%;
+  }
+  .search-filter-box {
+    max-width: 100%;
+  }
+  .search-input-wrapper {
+    padding: 4px 14px;
+    border-radius: 30px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  }
+  .search-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+  }
+  .search-input-wrapper input {
+    font-size: 12.5px;
+    padding: 8px 0;
+  }
+  .search-input-wrapper input::placeholder {
+    font-size: 12px;
+  }
+
+  /* 2. CATALOG SECTION */
+  .products-catalog-section {
+    padding: 24px 0 45px;
+  }
+  .catalog-category-bar {
+    margin-bottom: 16px;
+    gap: 10px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .category-pills {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    width: 100%;
+    padding-bottom: 6px;
+    gap: 7px;
+    -webkit-overflow-scrolling: touch;
+  }
+  .category-pills::-webkit-scrollbar {
+    display: none;
+  }
+  .pill-btn {
+    padding: 7px 14px;
+    font-size: 10.5px;
+    font-weight: 750;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    letter-spacing: 0.3px;
+  }
+  .results-count {
+    font-size: 11.5px;
+    color: #64748b;
+    font-weight: 500;
+  }
+
+  /* 3. PRODUCT CARDS */
   .products-page-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    gap: 10px;
+    margin-bottom: 30px;
+  }
+  .product-page-card {
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
   }
   .card-image-wrap {
     height: auto;
     aspect-ratio: 1 / 1;
   }
   .card-details {
-    padding: 12px 8px;
+    padding: 10px 8px;
     align-items: center;
     text-align: center;
   }
   .card-header-icon {
     justify-content: center;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
   }
   .icon-box,
   .card-desc,
@@ -957,7 +1049,7 @@
     display: none;
   }
   .card-header-icon h3 {
-    font-size: 12.5px;
+    font-size: 12px;
     font-weight: 750;
     line-height: 1.35;
     margin: 0;
@@ -967,47 +1059,101 @@
     overflow: hidden;
   }
   .product-price {
-    font-size: 13.5px;
+    font-size: 12.5px;
     font-weight: 850;
-    margin: 4px 0 6px;
+    margin: 3px 0 6px;
   }
   .card-footer-actions {
     justify-content: center;
     flex-direction: column;
     width: 100%;
-    gap: 6px;
-    margin-top: 6px;
+    gap: 5px;
+    margin-top: 4px;
   }
   .btn-detail-view,
   .btn-quick-call {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 750;
-    padding: 7px 10px;
-    min-height: 34px;
+    padding: 6px 8px;
+    min-height: 30px;
     justify-content: center;
-    border-radius: 8px;
+    border-radius: 7px;
   }
+
+  /* 4. GUARANTEE BAR */
   .catalog-guarantee-bar {
     grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    margin: 10px 0 22px;
   }
-  .category-pills {
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    width: 100%;
-    padding-bottom: 8px;
-    -webkit-overflow-scrolling: touch;
+  .guarantee-item {
+    gap: 10px;
   }
-  .category-pills::-webkit-scrollbar {
-    display: none;
+  .guarantee-item h4 {
+    font-size: 12px;
+    font-weight: 800;
+    margin-bottom: 1px;
   }
-  .pill-btn {
-    white-space: nowrap;
-    flex-shrink: 0;
+  .guarantee-item p {
+    font-size: 10.5px;
+    line-height: 1.35;
   }
+
+  /* 5. CTA SECTION */
+  .products-cta-section {
+    padding: 36px 16px;
+  }
+  .cta-box-inner h2 {
+    font-size: 1.35rem;
+    font-weight: 850;
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+  .cta-box-inner p {
+    font-size: 0.84rem;
+    margin-bottom: 18px;
+    line-height: 1.5;
+  }
+  .cta-buttons {
+    gap: 10px;
+  }
+  .btn-cta-call,
+  .btn-cta-quote {
+    padding: 10px 20px;
+    font-size: 12px;
+    font-weight: 800;
+    border-radius: 25px;
+    flex: 1;
+    justify-content: center;
+    max-width: 220px;
+  }
+
+  /* 6. MODAL */
   .modal-right-info {
     padding: 20px 18px 24px;
   }
   .products-page-modal-card {
     max-height: 94vh;
+  }
+}
+
+@media (max-width: 400px) {
+  .hero-banner-content h1 {
+    font-size: 1.38rem;
+  }
+  .hero-banner-content p {
+    font-size: 0.8rem;
+  }
+  .card-header-icon h3 {
+    font-size: 11.5px;
+  }
+  .product-price {
+    font-size: 12px;
+  }
+  .pill-btn {
+    padding: 6px 12px;
+    font-size: 10px;
   }
 }

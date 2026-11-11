@@ -122,13 +122,38 @@ const Services = () => {
         <div className="banner-overlay"></div>
         <div className="container relative-z">
           <RevealOnScroll animation="fade-down" className="banner-text-box">
-            <h1>DỊCH VỤ BOSS ĐÀ NẴNG</h1>
-            <p className="banner-sub-desc">
-              Hệ thống phân phối, thi công & sửa chữa cửa cuốn, cửa kéo, cổng tự động chuyên nghiệp 24/7
-            </p>
-            <p className="banner-trust-line">
-              ⭐ Cam kết uy tín & bảo hành chính hãng 5 – 10 năm • Động cơ mô tơ 1 đổi 1 • Cứu hộ kỹ thuật thần tốc 24/7
-            </p>
+            {/* Desktop Banner View (Giữ nguyên 100%) */}
+            <div className="desktop-svc-banner">
+              <h1>DỊCH VỤ BOSS ĐÀ NẴNG</h1>
+              <p className="banner-sub-desc">
+                Hệ thống phân phối, thi công & sửa chữa cửa cuốn, cửa kéo, cổng tự động chuyên nghiệp 24/7
+              </p>
+              <p className="banner-trust-line">
+                ⭐ Cam kết uy tín & bảo hành chính hãng 5 – 10 năm • Động cơ mô tơ 1 đổi 1 • Cứu hộ kỹ thuật thần tốc 24/7
+              </p>
+            </div>
+
+            {/* Mobile Banner View (Gọn gàng, ít chữ, có icon đẹp mắt) */}
+            <div className="mobile-svc-banner">
+              <h1>DỊCH VỤ BOSS ĐÀ NẴNG</h1>
+              <p className="mobile-sub-desc">
+                Thi công & sửa chữa cửa cuốn, cửa kéo chuyên nghiệp 24/7
+              </p>
+              <div className="mobile-svc-badges">
+                <div className="svc-badge-pill">
+                  <ShieldCheck size={14} />
+                  <span>Bảo hành 5 – 10 năm</span>
+                </div>
+                <div className="svc-badge-pill">
+                  <Clock size={14} />
+                  <span>Cứu hộ 24/7</span>
+                </div>
+                <div className="svc-badge-pill">
+                  <RotateCcw size={14} />
+                  <span>Mô tơ 1 đổi 1</span>
+                </div>
+              </div>
+            </div>
           </RevealOnScroll>
         </div>
       </div>

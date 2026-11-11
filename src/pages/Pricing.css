@@ -180,12 +180,18 @@
   color: #ffffff;
 }
 
-.pricing-hero-content p {
+.pricing-hero-content p,
+.hero-desc-desktop {
   font-size: 15px;
   color: rgba(255, 255, 255, 0.88);
   line-height: 1.6;
   max-width: 650px;
   margin: 0 auto 30px;
+  display: block;
+}
+
+.hero-mobile-summary {
+  display: none;
 }
 
 /* Search input */
@@ -986,53 +992,136 @@
 }
 
 @media (max-width: 768px) {
-  /* 1. HERO BANNER TRÊN DIỆN THOẠI - CỠ CHỮ TINH GỌN, CHUẨN ĐIỆN THOẠI */
+  /* 1. HERO BANNER TRÊN ĐIỆN THOẠI - CỠ CHỮ HÀI HÒA, RÕ RÀNG, CHUẨN THIẾT KẾ ĐIỆN THOẠI */
   .pricing-hero-banner {
-    padding: 30px 14px 22px;
+    padding: 42px 16px 28px;
   }
 
   .hero-subtag {
-    font-size: 9px;
-    padding: 4px 11px;
-    margin-bottom: 10px;
+    font-size: 9.5px;
+    padding: 4px 13px;
+    margin-bottom: 12px;
+    gap: 6px;
     letter-spacing: 0.5px;
   }
 
-  .pricing-hero-content h1 {
-    font-size: 19px;
-    font-weight: 800;
-    margin-bottom: 6px;
-    line-height: 1.3;
+  .hero-subtag svg {
+    width: 13px;
+    height: 13px;
   }
 
-  .pricing-hero-content p {
-    font-size: 12px;
-    line-height: 1.45;
+  .pricing-hero-content h1 {
+    font-size: 1.55rem;
+    font-weight: 850;
+    margin-bottom: 10px;
+    line-height: 1.25;
+    letter-spacing: -0.3px;
+  }
+
+  .hero-desc-desktop {
+    display: none !important;
+  }
+
+  .hero-mobile-summary {
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
     margin-bottom: 16px;
-    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .hero-desc-mobile {
+    font-size: 0.84rem !important;
+    line-height: 1.4 !important;
+    color: rgba(255, 255, 255, 0.9) !important;
+    margin: 0 0 10px 0 !important;
+    text-align: center;
+    font-weight: 500;
+    max-width: 320px;
+  }
+
+  /* Khung cam kết 3 cột ngang dạng kính mờ (Glassmorphism Trust Bar) */
+  .pricing-hero-strip {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    align-items: center;
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto;
+    background: rgba(0, 38, 22, 0.65);
+    border: 1px solid rgba(245, 189, 32, 0.35);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 8px 6px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
+  }
+
+  .hero-strip-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 3px;
+    padding: 0 4px;
+  }
+
+  .hero-strip-col svg {
+    color: #f5bd20;
+    width: 18px;
+    height: 18px;
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.3));
+    flex-shrink: 0;
+  }
+
+  .hero-strip-col span {
+    font-size: 11px;
+    font-weight: 750;
+    color: #ffffff;
+    line-height: 1.25;
+    text-align: center;
+  }
+
+  .strip-sep {
+    width: 1px;
+    height: 24px;
+    background: rgba(245, 189, 32, 0.3);
+    flex-shrink: 0;
   }
 
   .pricing-search-wrapper {
-    padding: 3px 12px;
-    border-radius: 25px;
+    padding: 4px 14px;
+    border-radius: 30px;
     max-width: 100%;
-  }
-
-  .pricing-search-wrapper input {
-    font-size: 16px; /* Ngăn chặn iOS Safari tự động phóng to màn hình khi gõ phím */
-    padding: 6px 0;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
   }
 
   .pricing-search-wrapper .search-icon {
-    width: 15px;
-    height: 15px;
+    width: 16px;
+    height: 16px;
     margin-right: 8px;
   }
 
-  /* 2. MAIN CONTAINER */
+  .pricing-search-wrapper input {
+    font-size: 12.5px;
+    padding: 7px 0;
+  }
+
+  .pricing-search-wrapper input::placeholder {
+    font-size: 12px;
+  }
+
+  .pricing-search-wrapper .clear-btn {
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+  }
+
+  /* 2. MAIN CONTAINER & DANH MỤC LỌC */
   .pricing-hub-container {
     padding: 0 12px;
-    margin-top: 16px;
+    margin-top: 18px;
   }
 
   /* Thanh tab danh mục dạng trượt ngang mượt mà (Mobile Touch Carousel) */
@@ -1041,9 +1130,9 @@
     flex-wrap: nowrap;
     overflow-x: auto;
     justify-content: flex-start;
-    gap: 6px;
+    gap: 7px;
     padding: 2px 2px 8px;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
   }
@@ -1055,99 +1144,118 @@
   .pricing-tab-btn {
     white-space: nowrap;
     flex-shrink: 0;
-    padding: 6px 13px;
-    font-size: 11px;
-    font-weight: 700;
+    padding: 7px 14px;
+    font-size: 10.5px;
+    font-weight: 750;
     border-radius: 20px;
+    letter-spacing: 0.3px;
   }
 
   /* Status Bar */
   .catalog-status-bar {
     flex-direction: column;
     align-items: flex-start;
-    gap: 4px;
-    padding: 8px 12px;
-    border-radius: 8px;
-    font-size: 11px;
-    margin-bottom: 14px;
+    gap: 6px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    margin-bottom: 16px;
   }
 
-  .catalog-status-bar .status-icon {
-    width: 14px;
-    height: 14px;
+  .status-bar-left {
+    font-size: 11.5px;
+    gap: 7px;
+  }
+
+  .status-bar-left .status-icon {
+    width: 15px;
+    height: 15px;
+  }
+
+  .catalog-status-bar strong {
+    font-weight: 800;
+    color: #004d32;
   }
 
   .live-pricing-note {
-    font-size: 10.5px;
-    line-height: 1.35;
+    font-size: 11px;
+    line-height: 1.4;
+    font-weight: 600;
   }
 
   /* 3. CARD SẢN PHẨM BẢNG GIÁ TRÊN MOBILE */
   .pricing-products-horizontal-list {
-    gap: 14px;
-    margin-bottom: 28px;
+    gap: 16px;
+    margin-bottom: 30px;
   }
 
   .pricing-horizontal-card {
     grid-template-columns: 1fr;
-    border-radius: 12px;
+    border-radius: 14px;
     border: 1px solid #e2e8f0;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    overflow: hidden;
   }
 
+  .card-thumb-column,
   .card-image-box {
-    height: 160px;
-    min-height: 160px;
+    height: 175px;
+    min-height: 175px;
   }
 
   .card-badge-pill {
-    top: 8px;
-    left: 8px;
-    font-size: 8.5px;
+    top: 10px;
+    left: 10px;
+    font-size: 9.5px;
     font-weight: 800;
-    padding: 2px 6px;
-    border-radius: 4px;
+    padding: 3px 8px;
+    border-radius: 5px;
+    letter-spacing: 0.4px;
   }
 
   .card-code-pill {
-    bottom: 8px;
-    left: 8px;
-    font-size: 9.5px;
+    bottom: 10px;
+    left: 10px;
+    font-size: 10px;
     font-weight: 800;
-    padding: 2px 7px;
-    border-radius: 4px;
+    padding: 3px 8px;
+    border-radius: 5px;
+    letter-spacing: 0.4px;
   }
 
-  /* Thông tin sản phẩm */
+  /* Cột thông tin sản phẩm */
   .card-info-column {
-    padding: 12px 12px 8px;
+    padding: 14px 14px 10px;
   }
 
   .card-meta-row {
-    gap: 6px;
-    margin-bottom: 6px;
+    gap: 8px;
+    margin-bottom: 8px;
   }
 
   .card-cat-badge {
-    font-size: 9px;
-    padding: 2px 6px;
-    border-radius: 4px;
+    font-size: 9.5px;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 5px;
+    letter-spacing: 0.3px;
   }
 
   .card-business-status {
-    font-size: 10px;
-    padding: 2px 7px;
+    font-size: 10.5px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 16px;
   }
 
   .status-pulse-dot {
-    width: 5px;
-    height: 5px;
+    width: 6px;
+    height: 6px;
   }
 
   .card-prod-title {
-    font-size: 14px;
-    font-weight: 700;
-    margin-bottom: 4px;
+    font-size: 15px;
+    font-weight: 800;
+    margin-bottom: 6px;
     line-height: 1.35;
   }
 
@@ -1156,181 +1264,260 @@
   }
 
   .card-prod-desc {
-    font-size: 11.5px;
-    line-height: 1.45;
-    margin-bottom: 8px;
-    color: #64748b;
+    font-size: 12px;
+    line-height: 1.5;
+    margin-bottom: 10px;
+    color: #475569;
     -webkit-line-clamp: 2;
   }
 
   .card-specs-list {
-    gap: 5px;
+    gap: 6px;
+    margin-bottom: 2px;
   }
 
   .spec-tag-item {
-    font-size: 10.5px;
-    padding: 2px 7px;
-    border-radius: 4px;
-    gap: 4px;
+    font-size: 11px;
+    font-weight: 550;
+    padding: 3px 8px;
+    border-radius: 5px;
+    gap: 5px;
+    color: #334155;
   }
 
   .spec-tag-item .spec-check-icon {
-    width: 11px;
-    height: 11px;
+    width: 12px;
+    height: 12px;
   }
 
   /* Khối giá & Nút bấm dưới card */
   .card-action-column {
     border-left: none;
     border-top: 1px solid #f1f5f9;
-    padding: 10px 12px 12px;
+    padding: 12px 14px 14px;
     background: #f8fafc;
-    gap: 8px;
+    gap: 10px;
   }
 
   .price-box-wrapper {
-    padding: 8px 10px;
-    border-radius: 7px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    text-align: center;
   }
 
   .price-title-caption {
-    font-size: 9.5px;
-    margin-bottom: 1px;
+    font-size: 10px;
+    font-weight: 750;
+    letter-spacing: 0.4px;
+    margin-bottom: 2px;
+    color: #64748b;
   }
 
   .price-main-highlight {
-    font-size: 15px;
-    font-weight: 800;
+    font-size: 17px;
+    font-weight: 900;
+    color: #e30613;
+    line-height: 1.25;
   }
 
   .price-subnote-text {
-    font-size: 9.5px;
-    margin-top: 1px;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: #059669;
+    margin-top: 2px;
   }
 
   .btn-open-pricing-detail {
-    padding: 9px 12px;
-    font-size: 11.5px;
-    font-weight: 700;
-    border-radius: 7px;
-    gap: 6px;
+    padding: 10px 14px;
+    font-size: 12.5px;
+    font-weight: 750;
+    border-radius: 8px;
+    gap: 7px;
   }
 
   .btn-open-pricing-detail svg {
-    width: 14px;
-    height: 14px;
+    width: 15px;
+    height: 15px;
   }
 
   .quick-call-link {
-    font-size: 11px;
-    padding: 2px;
-    gap: 4px;
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 3px;
+    gap: 5px;
+    color: #475569;
   }
 
   .quick-call-link svg {
-    width: 12px;
-    height: 12px;
+    width: 13px;
+    height: 13px;
+  }
+
+  /* Empty Search State */
+  .empty-search-state {
+    padding: 40px 16px;
+    border-radius: 12px;
+    margin-bottom: 28px;
+  }
+
+  .empty-search-state .empty-icon {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 10px;
+  }
+
+  .empty-search-state h3 {
+    font-size: 15px;
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+
+  .empty-search-state p {
+    font-size: 12px;
+    line-height: 1.45;
+    margin-bottom: 16px;
+  }
+
+  .btn-reset-filter {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 9px 18px;
+    border-radius: 8px;
   }
 
   /* 4. FAST CTA BANNER */
   .pricing-fast-cta {
-    padding: 18px 14px;
-    border-radius: 14px;
-    margin-bottom: 20px;
+    padding: 22px 16px;
+    border-radius: 16px;
+    margin-bottom: 22px;
   }
 
   .cta-inner {
     flex-direction: column;
     align-items: stretch;
-    gap: 12px;
+    gap: 14px;
   }
 
   .cta-left h3 {
-    font-size: 15px;
-    font-weight: 800;
-    margin-bottom: 4px;
+    font-size: 16px;
+    font-weight: 850;
+    margin-bottom: 6px;
     line-height: 1.35;
+    color: #f5bd20;
   }
 
   .cta-left p {
-    font-size: 11.5px;
-    line-height: 1.45;
+    font-size: 12px;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.9);
   }
 
   .cta-right {
     flex-direction: column;
     width: 100%;
-    gap: 8px;
+    gap: 9px;
   }
 
   .btn-cta-hotline,
   .btn-cta-contact {
     justify-content: center;
     width: 100%;
-    padding: 10px 14px;
-    font-size: 12px;
-    font-weight: 700;
-    border-radius: 7px;
-    gap: 6px;
+    padding: 11px 16px;
+    font-size: 12.5px;
+    font-weight: 750;
+    border-radius: 8px;
+    gap: 7px;
   }
 
   .btn-cta-hotline svg {
-    width: 15px;
-    height: 15px;
+    width: 16px;
+    height: 16px;
   }
 
   /* 5. GUARANTEE BAR DẠNG LƯỚI 2x2 TINH GỌN */
   .pricing-hub-guarantee {
     grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-    padding: 12px 10px;
-    border-radius: 12px;
+    gap: 10px;
+    padding: 14px 12px;
+    border-radius: 14px;
   }
 
   .pricing-hub-guarantee .g-item {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    padding: 8px 4px;
+    padding: 10px 6px;
     gap: 6px;
     background: #f8fafc;
-    border-radius: 8px;
+    border-radius: 10px;
     border: 1px solid #f1f5f9;
   }
 
   .pricing-hub-guarantee .g-icon {
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
   }
 
   .pricing-hub-guarantee h4 {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 800;
     margin-bottom: 2px;
     line-height: 1.3;
+    color: #0f172a;
   }
 
   .pricing-hub-guarantee p {
-    font-size: 9.5px;
-    line-height: 1.3;
+    font-size: 10px;
+    line-height: 1.35;
+    color: #64748b;
   }
 }
 
 @media (max-width: 480px) {
   .pricing-hero-content h1 {
-    font-size: 18px;
+    font-size: 1.42rem;
   }
 
+  .hero-desc-mobile {
+    font-size: 0.82rem !important;
+    max-width: 290px;
+    margin-bottom: 8px !important;
+  }
+
+  .pricing-hero-strip {
+    max-width: 330px;
+    padding: 7px 4px;
+    margin-bottom: 14px;
+  }
+
+  .hero-strip-col svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .hero-strip-col span {
+    font-size: 10px;
+  }
+
+  .strip-sep {
+    height: 20px;
+  }
+
+  .card-thumb-column,
   .card-image-box {
-    height: 150px;
-    min-height: 150px;
+    height: 160px;
+    min-height: 160px;
   }
 
   .card-prod-title {
-    font-size: 13.5px;
+    font-size: 14.5px;
   }
 
   .price-main-highlight {
-    font-size: 14.5px;
+    font-size: 16px;
+  }
+
+  .btn-open-pricing-detail {
+    font-size: 12px;
   }
 }
