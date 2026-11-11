@@ -294,12 +294,12 @@
   .rolling-title__word--cuatudong {
     font-family: "Be Vietnam Pro", "Montserrat", -apple-system, BlinkMacSystemFont, sans-serif !important;
     font-size: clamp(40px, 11vw, 50px) !important;
-    font-weight: 700 !important;
+    font-weight: 900 !important;
     text-transform: uppercase !important;
-    line-height: 1.25 !important;
-    letter-spacing: 0.8px !important;
+    line-height: 1.2 !important;
+    letter-spacing: 1px !important;
     margin: 0 !important;
-    padding: 8px 4px 5px 4px !important;
+    padding: 6px 4px 4px 4px !important;
     overflow: visible !important;
     text-align: center !important;
     display: block !important;
@@ -313,20 +313,20 @@
     background: linear-gradient(
       180deg,
       #ffffff 0%,
-      #fffbe0 18%,
-      #ffd83b 48%,
-      #f5b014 75%,
-      #c78100 100%
+      #fff499 15%,
+      #ffd524 42%,
+      #f5a700 72%,
+      #bd6800 100%
     ) !important;
     background-size: 100% 100% !important;
     -webkit-background-clip: text !important;
     background-clip: text !important;
     -webkit-text-fill-color: transparent !important;
-    /* Đổ bóng tự nhiên, mềm mại, thanh thoát, không còn viền đen thô ráp */
+    /* Đổ bóng tự nhiên, sắc nét, chiều sâu 3D (không bị quầng outer glow mờ vàng) */
     filter: 
-      drop-shadow(0 2px 5px rgba(0, 0, 0, 0.7))
-      drop-shadow(0 5px 15px rgba(0, 0, 0, 0.5))
-      drop-shadow(0 0 18px rgba(245, 189, 32, 0.35)) !important;
+      drop-shadow(0 1px 1px rgba(0, 0, 0, 0.95))
+      drop-shadow(0 2px 4px rgba(0, 0, 0, 0.9))
+      drop-shadow(0 4px 12px rgba(0, 0, 0, 0.8)) !important;
   }
 
   .rolling-title__word--cuakeo::before,
@@ -346,7 +346,7 @@
 
   .rolling-title__footer {
     width: 100%;
-    margin-top: 14px !important;
+    margin-top: 22px !important;
     justify-content: center;
     flex-direction: column;
     align-items: center;
@@ -407,10 +407,11 @@
   .rolling-title__word--cuakeo,
   .rolling-title__word--cuatudong {
     font-size: clamp(36px, 10vw, 44px) !important;
-    line-height: 1.25 !important;
+    font-weight: 900 !important;
+    line-height: 1.2 !important;
     letter-spacing: 0.8px !important;
     margin: 0 !important;
-    padding: 7px 3px 4px 3px !important;
+    padding: 6px 3px 3px 3px !important;
     overflow: visible !important;
   }
 
@@ -438,11 +439,16 @@
   .rolling-title__word--cuakeo,
   .rolling-title__word--cuatudong {
     font-size: clamp(30px, 8.8vw, 35px) !important;
-    line-height: 1.25 !important;
-    letter-spacing: 0.1px !important;
+    font-weight: 900 !important;
+    line-height: 1.2 !important;
+    letter-spacing: 0.2px !important;
     margin: 0 !important;
-    padding: 6px 2px 3px 2px !important;
+    padding: 5px 2px 2px 2px !important;
     overflow: visible !important;
+  }
+
+  .rolling-title__footer {
+    margin-top: 16px !important;
   }
 
   .rolling-title__tagline {
