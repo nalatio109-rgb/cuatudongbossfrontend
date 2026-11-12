@@ -486,6 +486,14 @@ export default function Navbar() {
           </NavLink>
 
           <NavLink 
+            to="/cong-trinh" 
+            onClick={() => setMenu(false)} 
+            className={({ isActive }) => (isActive ? "nav-link-item active" : "nav-link-item")}
+          >
+            <span>CÔNG TRÌNH</span>
+          </NavLink>
+
+          <NavLink 
             to="/tin-tuc" 
             onClick={() => setMenu(false)} 
             className={({ isActive }) => (isActive ? "nav-link-item active" : "nav-link-item")}

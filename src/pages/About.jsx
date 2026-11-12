@@ -12,7 +12,10 @@ import {
   ArrowRight, 
   Play, 
   Phone,
-  X
+  X,
+  CalendarCheck,
+  BadgeCheck,
+  Settings
 } from 'lucide-react';
 import './About.css';
 import RevealOnScroll from '../components/RevealOnScroll';
@@ -22,6 +25,62 @@ import Workflow from '../components/Workflow';
 const About = () => {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
   const videoSrc = "/BOSS%20YOUTUBE.mp4";
+
+  const renderKpiCards = () => (
+    <>
+      <RevealOnScroll animation="zoom-in" delay={100} className="exact-kpi-card">
+        <div className="exact-kpi-icon">
+          <Users size={22} />
+        </div>
+        <div className="exact-kpi-number">
+          <AnimatedCounter end={10000} suffix="+" />
+        </div>
+        <div className="exact-kpi-text">
+          <strong>KHÁCH HÀNG</strong>
+          <span>Đã phục vụ</span>
+        </div>
+      </RevealOnScroll>
+
+      <RevealOnScroll animation="zoom-in" delay={200} className="exact-kpi-card">
+        <div className="exact-kpi-icon">
+          <CalendarCheck size={22} />
+        </div>
+        <div className="exact-kpi-number">
+          <AnimatedCounter end={10} suffix="+" />
+        </div>
+        <div className="exact-kpi-text">
+          <strong>NĂM</strong>
+          <span>Kinh nghiệm</span>
+        </div>
+      </RevealOnScroll>
+
+      <RevealOnScroll animation="zoom-in" delay={300} className="exact-kpi-card">
+        <div className="exact-kpi-icon">
+          <BadgeCheck size={22} />
+        </div>
+        <div className="exact-kpi-number">
+          <AnimatedCounter end={100} suffix="%" />
+        </div>
+        <div className="exact-kpi-text">
+          <strong>SẢN PHẨM</strong>
+          <span>Chính hãng</span>
+        </div>
+      </RevealOnScroll>
+
+      <RevealOnScroll animation="zoom-in" delay={400} className="exact-kpi-card">
+        <div className="exact-kpi-icon">
+          <Settings size={22} />
+        </div>
+        <div className="exact-kpi-number">
+          <AnimatedCounter end={24} suffix="/7" />
+        </div>
+        <div className="exact-kpi-text">
+          <strong>HỖ TRỢ</strong>
+          <span>Bảo hành tận tâm</span>
+        </div>
+      </RevealOnScroll>
+    </>
+  );
   return (
     <div className="about-page-exact">
       {/* 1. HERO BANNER */}
@@ -31,7 +90,8 @@ const About = () => {
         <div className="exact-hero-glow-2"></div>
 
         <div className="exact-hero-bg">
-          <img src="/hero_building.png" alt="Tòa nhà BOSS Đà Nẵng" />
+          <img className="about-desktop-hero-img" src="/hero_building.png" alt="Tòa nhà BOSS Đà Nẵng" />
+          <img className="about-mobile-hero-img" src="/about_team.jpg" alt="Showroom & Đội ngũ BOSS Đà Nẵng" />
         </div>
 
         <div className="exact-hero-right-slogan">
@@ -98,51 +158,13 @@ const About = () => {
                 </span>
               </p>
 
-              {/* 4 KPI Stats Cards */}
-              <div className="exact-kpi-cards">
-                <RevealOnScroll animation="zoom-in" delay={100} className="exact-kpi-card">
-                  <div className="exact-kpi-icon">
-                    <ShieldCheck size={22} />
-                  </div>
-                  <div className="exact-kpi-number">
-                    <AnimatedCounter end={5000} prefix="+" />
-                  </div>
-                  <div className="exact-kpi-text">Công trình đã thi công</div>
-                </RevealOnScroll>
-
-                <RevealOnScroll animation="zoom-in" delay={200} className="exact-kpi-card">
-                  <div className="exact-kpi-icon">
-                    <Users size={22} />
-                  </div>
-                  <div className="exact-kpi-number">
-                    <AnimatedCounter end={10} prefix="+" suffix=" năm" />
-                  </div>
-                  <div className="exact-kpi-text">Kinh nghiệm trong ngành</div>
-                </RevealOnScroll>
-
-                <RevealOnScroll animation="zoom-in" delay={300} className="exact-kpi-card">
-                  <div className="exact-kpi-icon">
-                    <Star size={22} />
-                  </div>
-                  <div className="exact-kpi-number">
-                    <AnimatedCounter end={100} suffix="%" />
-                  </div>
-                  <div className="exact-kpi-text">Khách hàng hài lòng</div>
-                </RevealOnScroll>
-
-                <RevealOnScroll animation="zoom-in" delay={400} className="exact-kpi-card">
-                  <div className="exact-kpi-icon">
-                    <Headphones size={22} />
-                  </div>
-                  <div className="exact-kpi-number">
-                    <AnimatedCounter end={24} suffix="/7" />
-                  </div>
-                  <div className="exact-kpi-text">Hỗ trợ khách hàng</div>
-                </RevealOnScroll>
+              {/* 4 KPI Stats Cards (Desktop) */}
+              <div className="exact-kpi-cards about-desktop-kpi">
+                {renderKpiCards()}
               </div>
             </RevealOnScroll>
 
-            {/* Right Media */}
+            {/* Right Media (Ảnh 1) */}
             <RevealOnScroll animation="fade-right" delay={200} className="exact-intro-right-media">
               <div className="exact-media-backdrop-glow"></div>
               <div className="exact-door-main-img">
@@ -171,6 +193,11 @@ const About = () => {
                 <div className="exact-handwriting-flourish"></div>
               </div>
             </RevealOnScroll>
+
+            {/* 4 KPI Stats Cards (Mobile - Đặt bên dưới Video theo yêu cầu: Video ở trên 4 KPI) */}
+            <div className="exact-kpi-cards about-mobile-kpi">
+              {renderKpiCards()}
+            </div>
           </div>
         </div>
       </section>
@@ -179,20 +206,22 @@ const About = () => {
       <section className="exact-journey-section">
         <div className="exact-container">
           <div className="exact-journey-grid">
-            {/* Left Photo with Green Badge */}
-            <RevealOnScroll animation="fade-left" className="exact-factory-wrapper">
-              <div className="exact-factory-img">
-                <img src="/factory_worker.png" alt="Nhà xưởng sản xuất BOSS Đà Nẵng" />
-              </div>
-              <div className="exact-factory-badge">
-                <span>Từ tâm huyết đến chất lượng</span>
-              </div>
-            </RevealOnScroll>
+            {/* Left Photo with Green Badge (Desktop) */}
+            <div className="about-desktop-factory">
+              <RevealOnScroll animation="fade-left" className="exact-factory-wrapper">
+                <div className="exact-factory-img">
+                  <img src="/about_meeting.jpg" alt="Đội ngũ BOSS Đà Nẵng họp triển khai kế hoạch" />
+                </div>
+                <div className="exact-factory-badge">
+                  <span>Từ tâm huyết đến chất lượng</span>
+                </div>
+              </RevealOnScroll>
+            </div>
 
             {/* Right Content */}
             <RevealOnScroll animation="fade-right" delay={150} className="exact-journey-right">
               <div className="journey-sub">HÀNH TRÌNH PHÁT TRIỂN</div>
-              <h2>TỪ ĐAM MÊ ĐẾN GIÁ TRỊ BỀN VỮNG</h2>
+              <h2>Từ đam mê đến giá trị bền vững</h2>
 
               <p>
                 <span className="about-desktop-text">
@@ -202,6 +231,18 @@ const About = () => {
                   Không ngừng đổi mới công nghệ và nâng cao chất lượng dịch vụ để mang đến sản phẩm an toàn, bền bỉ nhất.
                 </span>
               </p>
+
+              {/* Photo with Green Badge (Mobile - Đặt dưới Tiêu đề & Giới thiệu) */}
+              <div className="about-mobile-factory">
+                <RevealOnScroll animation="fade-up" className="exact-factory-wrapper">
+                  <div className="exact-factory-img">
+                    <img src="/about_meeting.jpg" alt="Đội ngũ BOSS Đà Nẵng họp triển khai kế hoạch" />
+                  </div>
+                  <div className="exact-factory-badge">
+                    <span>Từ tâm huyết đến chất lượng</span>
+                  </div>
+                </RevealOnScroll>
+              </div>
 
               {/* Timeline */}
               <div className="exact-timeline-row">
@@ -251,18 +292,27 @@ const About = () => {
       {/* 4. GIÁ TRỊ CỐT LÕI */}
       <section className="exact-values-section">
         <div className="exact-container">
-          <RevealOnScroll animation="fade-up" className="exact-values-header">
-            <div className="sub">GIÁ TRỊ CỐT LÕI</div>
-            <h2>Vì một không gian sống tốt hơn</h2>
-            <p>
-              <span className="about-desktop-text">
-                BOSS Đà Nẵng luôn nỗ lực mang đến những sản phẩm và dịch vụ tốt nhất, đồng hành cùng khách hàng kiến tạo không gian sống hiện đại, tiện nghi và bền vững.
-              </span>
-              <span className="about-mobile-text">
-                Đồng hành kiến tạo không gian sống an toàn, hiện đại và bền vững.
-              </span>
-            </p>
-          </RevealOnScroll>
+          {/* Top Grid: Tiêu đề bên trái & Ảnh đội ngũ họp ở góc trên bên phải */}
+          <div className="exact-values-top-grid">
+            <RevealOnScroll animation="fade-up" className="exact-values-header">
+              <div className="sub">GIÁ TRỊ CỐT LÕI</div>
+              <h2>Vì một không gian sống tốt hơn</h2>
+              <p>
+                <span className="about-desktop-text">
+                  BOSS Đà Nẵng luôn nỗ lực mang đến những sản phẩm và dịch vụ tốt nhất, đồng hành cùng khách hàng kiến tạo không gian sống hiện đại, tiện nghi và bền vững.
+                </span>
+                <span className="about-mobile-text">
+                  Đồng hành kiến tạo không gian sống an toàn, hiện đại và bền vững.
+                </span>
+              </p>
+            </RevealOnScroll>
+
+            <RevealOnScroll animation="fade-left" delay={150} className="exact-values-top-img-wrapper">
+              <div className="exact-values-top-img">
+                <img src="/about_technician_install.jpg" alt="Kỹ thuật viên BOSS Đà Nẵng thi công lắp đặt cửa chuyên nghiệp" />
+              </div>
+            </RevealOnScroll>
+          </div>
 
           <div className="exact-values-bottom-grid">
             {/* 5 Circular Feature Items */}

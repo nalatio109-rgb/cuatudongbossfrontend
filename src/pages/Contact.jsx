@@ -234,8 +234,8 @@ const Contact = () => {
             <h2>BẢN ĐỒ VỊ TRÍ</h2>
             <div className="map-wrapper">
               <iframe 
-                title="Bản đồ BOSS Đà Nẵng"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3833.8373449339396!2d108.23235!3d16.0734!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3142183e20000000%3A0x1!2zNjQ3IE5nw7QgUXV54buBbiwgU8ahbiBUcsOgLCDEkMOgIE7hurZuZw!5e0!3m2!1svi!2s!4v1700000000000!5m2!1svi!2s" 
+                title="Bản đồ Showroom BOSS Đà Nẵng - 267 Tô Hiệu"
+                src="https://maps.google.com/maps?q=267+T%C3%B4+Hi%E1%BB%87u,+H%C3%B2a+Kh%C3%A1nh,+%C4%90%C3%A0+N%E1%BA%B5ng&t=&z=16&ie=UTF8&iwloc=&output=embed" 
                 width="100%" 
                 height="100%" 
                 style={{ border: 0 }} 

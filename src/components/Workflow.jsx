@@ -1,38 +1,38 @@
 import React from "react";
-import { MessageSquare, ClipboardList, FileSignature, Settings, ShieldCheck, ArrowRight } from "lucide-react";
+import { Ruler, Sliders, HardHat, ShieldCheck, KeyRound, ArrowRight } from "lucide-react";
 import RevealOnScroll from "./RevealOnScroll";
 
 export default function Workflow() {
   const workflowSteps = [
     {
       step: "01",
-      icon: <MessageSquare size={26} />,
-      title: "TIẾP NHẬN YÊU CẦU",
-      desc: "Lắng nghe nhu cầu & tư vấn giải pháp tối ưu nhất",
+      icon: <Ruler size={26} />,
+      title: "KHẢO SÁT & ĐO ĐẠC",
+      desc: "Khảo sát vị trí, đo đạc thực tế miễn phí",
     },
     {
       step: "02",
-      icon: <ClipboardList size={26} />,
-      title: "KHẢO SÁT & BÁO GIÁ",
-      desc: "Khảo sát thực tế công trình & báo giá minh bạch",
+      icon: <Sliders size={26} />,
+      title: "TƯ VẤN CẤU HÌNH",
+      desc: "Tư vấn vật liệu & cấu hình tối ưu cho từng mặt bằng",
     },
     {
       step: "03",
-      icon: <FileSignature size={26} />,
-      title: "KÝ KẾT HỢP ĐỒNG",
-      desc: "Thống nhất phương án & tiến hành ký kết",
+      icon: <HardHat size={26} />,
+      title: "THI CÔNG TIẾN ĐỘ",
+      desc: "Thi công đúng tiến độ, đảm bảo an toàn công trình",
     },
     {
       step: "04",
-      icon: <Settings size={26} />,
-      title: "THI CÔNG LẮP ĐẶT",
-      desc: "Thi công nhanh chóng, chuẩn quy trình kỹ thuật",
+      icon: <ShieldCheck size={26} />,
+      title: "CHẠY THỬ & KIỂM TRA",
+      desc: "Kiểm tra nghiêm ngặt hệ thống cảm biến an toàn",
     },
     {
       step: "05",
-      icon: <ShieldCheck size={26} />,
-      title: "NGHIỆM THU & BẢO HÀNH",
-      desc: "Nghiệm thu bàn giao & bảo hành dài hạn 24/7",
+      icon: <KeyRound size={26} />,
+      title: "NGHIỆM THU & BÀN GIAO",
+      desc: "Nghiệm thu, bàn giao & hướng dẫn sử dụng chi tiết",
     },
   ];
 
@@ -42,12 +42,12 @@ export default function Workflow() {
         <RevealOnScroll animation="fade-up">
           <div className="workflow-header-center">
             <div className="section-subtitle">
-              <span>QUY TRÌNH LÀM VIỆC</span>
+              <span>QUY TRÌNH LẮP ĐẶT 5 BƯỚC</span>
               <div className="subtitle-line"></div>
             </div>
             <h2>
-              QUY TRÌNH PHỤC VỤ <br className="workflow-title-br" />
-              <span className="workflow-phrase-nowrap">CHUYÊN NGHIỆP</span>
+              AN TÂM TUYỆT ĐỐI <br className="workflow-title-br" />
+              <span className="workflow-phrase-nowrap">VỚI BOSS ĐÀ NẴNG</span>
             </h2>
           </div>
         </RevealOnScroll>

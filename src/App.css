@@ -2807,6 +2807,28 @@ textarea {
   overflow: hidden;
 }
 
+.btn-view-all-projects-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #07522f;
+  color: #ffffff !important;
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 8px 18px;
+  border-radius: 30px;
+  text-decoration: none;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 14px rgba(7, 82, 47, 0.2);
+}
+
+.btn-view-all-projects-link:hover {
+  background: #f5bd20;
+  color: #052e1e !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(245, 189, 32, 0.35);
+}
+
 .projects-marquee-wrapper {
   position: relative;
   width: 100%;
@@ -4364,8 +4386,8 @@ footer {
   /* 2. Full-Screen Cinematic Mobile Hero */
   .hero {
     height: auto !important;
-    min-height: calc(100vh - 85px) !important;
-    min-height: calc(100dvh - 85px) !important;
+    min-height: calc(100vh - 105px) !important;
+    min-height: calc(100dvh - 105px) !important;
     flex-direction: column;
     padding: calc(62px + 10px) 0 0 0 !important;
     background: #000;
@@ -4433,7 +4455,7 @@ footer {
     justify-content: center;
     padding: 0 !important;
     margin: auto 0 !important;
-    transform: translateY(-150px) !important;
+    transform: translateY(-140px) !important;
   }
 
   .hero-content {
@@ -4492,7 +4514,7 @@ footer {
     position: relative !important;
     bottom: auto !important;
     left: auto !important;
-    transform: translateY(-335px) !important;
+    transform: translateY(-315px) !important;
     width: min(100% - 50px, 315px) !important;
     margin: 0 auto -260px auto !important;
     z-index: 10;
@@ -4703,12 +4725,12 @@ footer {
 
   @media (max-width: 380px) {
     .hero {
-      min-height: calc(100vh - 75px) !important;
-      min-height: calc(100dvh - 75px) !important;
+      min-height: calc(100vh - 91px) !important;
+      min-height: calc(100dvh - 91px) !important;
     }
 
     .hero-left {
-      transform: translateY(-130px) !important;
+      transform: translateY(-122px) !important;
     }
 
     .hero-label {
@@ -4722,7 +4744,7 @@ footer {
       width: calc(100% - 32px) !important;
       max-width: 295px !important;
       margin: 0 auto -230px auto !important;
-      transform: translateY(-290px) !important;
+      transform: translateY(-274px) !important;
     }
 
     .stats {

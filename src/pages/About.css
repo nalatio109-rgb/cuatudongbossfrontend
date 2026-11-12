@@ -484,6 +484,26 @@
   line-height: 1.35;
 }
 
+.exact-kpi-text strong {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 850;
+  color: #0f172a;
+  letter-spacing: 0.3px;
+  transition: color 0.3s ease;
+}
+
+.exact-kpi-card:hover .exact-kpi-text strong {
+  color: #07522f;
+}
+
+.exact-kpi-text span {
+  display: block;
+  font-size: 0.72rem;
+  color: #64748b;
+  margin-top: 2px;
+}
+
 /* Right Media Layout */
 .exact-intro-right-media {
   position: relative;
@@ -724,6 +744,7 @@
   width: 100%;
   height: 420px;
   object-fit: cover;
+  object-position: center 35%;
   display: block;
   transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -787,6 +808,11 @@
   color: #07522f;
   line-height: 1.3;
   margin-bottom: 1.25rem;
+  text-transform: none;
+}
+
+.journey-break-word {
+  white-space: nowrap;
 }
 
 .exact-journey-right p {
@@ -917,6 +943,43 @@
   padding: 5.5rem 0;
   background-color: #ffffff;
   position: relative;
+}
+
+/* Top Grid: Tiêu đề bên trái & Ảnh góc trên bên phải */
+.exact-values-top-grid {
+  display: grid;
+  grid-template-columns: 1.25fr 0.75fr;
+  gap: 3.5rem;
+  align-items: center;
+  margin-bottom: 2.75rem;
+}
+
+.exact-values-top-grid .exact-values-header {
+  margin-bottom: 0;
+}
+
+.exact-values-top-img-wrapper {
+  position: relative;
+}
+
+.exact-values-top-img {
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f1f5f9;
+}
+
+.exact-values-top-img img {
+  width: 100%;
+  height: 230px;
+  object-fit: cover;
+  object-position: center 38%;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.exact-values-top-img-wrapper:hover .exact-values-top-img img {
+  transform: scale(1.04);
 }
 
 .exact-values-header {
@@ -1251,6 +1314,33 @@
   display: none !important;
 }
 
+/* Responsive hero background switches between Desktop & Mobile */
+.about-desktop-hero-img {
+  display: block;
+}
+
+.about-mobile-hero-img {
+  display: none !important;
+}
+
+/* Responsive KPI cards placement between Desktop & Mobile */
+.about-desktop-kpi {
+  display: grid;
+}
+
+.about-mobile-kpi {
+  display: none !important;
+}
+
+/* Responsive Factory Photo placement between Desktop & Mobile */
+.about-desktop-factory {
+  display: block;
+}
+
+.about-mobile-factory {
+  display: none !important;
+}
+
 /* ==========================================================================
    RESPONSIVE STYLES
    ========================================================================== */
@@ -1259,6 +1349,7 @@
   .exact-hero-grid,
   .exact-intro-grid,
   .exact-journey-grid,
+  .exact-values-top-grid,
   .exact-values-bottom-grid,
   .exact-cta-box {
     grid-template-columns: 1fr;
@@ -1268,6 +1359,7 @@
   .exact-hero-grid>*,
   .exact-intro-grid>*,
   .exact-journey-grid>*,
+  .exact-values-top-grid>*,
   .exact-values-bottom-grid>*,
   .exact-cta-box>* {
     min-width: 0;
@@ -1289,6 +1381,14 @@
 }
 
 @media (max-width: 768px) {
+  .exact-hero-section {
+    padding: 3.75rem 0 3.25rem !important;
+    min-height: 320px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+  }
+
   .about-desktop-text {
     display: none !important;
   }
@@ -1297,15 +1397,177 @@
     display: inline !important;
   }
 
+  /* Ảnh nền Hero: Trên mobile hiển thị ảnh showroom & đội ngũ sau lưng chữ */
+  .about-desktop-hero-img {
+    display: none !important;
+  }
+
+  .exact-hero-bg .about-mobile-hero-img {
+    display: block !important;
+    width: 130% !important;
+    max-width: none !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: 25% 42% !important;
+    transform: translateX(45px) !important;
+    animation: none !important;
+  }
+
+  .exact-hero-bg {
+    width: 100% !important;
+    height: 100% !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    opacity: 1 !important;
+    z-index: 1 !important;
+  }
+
+  .exact-hero-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      rgba(2, 35, 19, 0.95) 0%,
+      rgba(2, 35, 19, 0.88) 40%,
+      rgba(3, 40, 22, 0.55) 65%,
+      rgba(2, 28, 15, 0.15) 100%
+    );
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .exact-hero-bg img {
+    mask-image: none !important;
+    -webkit-mask-image: none !important;
+  }
+
+  /* Bố cục dồn chữ về phía bên trái */
+  .exact-hero-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+  }
+
+  .exact-hero-left {
+    max-width: 72% !important;
+    width: 72% !important;
+    text-align: left !important;
+    margin-left: 0 !important;
+    margin-right: auto !important;
+  }
+
+  /* Chữ Hero nhỏ gọn, ngắt dòng gọn gàng và dồn về phía bên trái trên Mobile */
+  .exact-hero-subtitle {
+    font-size: 0.68rem;
+    letter-spacing: 1.2px;
+    padding: 3px 9px;
+    margin-bottom: 0.5rem;
+    align-self: flex-start;
+  }
+
+  .exact-hero-title {
+    font-size: clamp(1.05rem, 4.2vw, 1.25rem);
+    line-height: 1.32;
+    margin-bottom: 0.95rem;
+    text-align: left !important;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+  }
+
+  .exact-hero-title br {
+    display: block !important;
+  }
+
+  .exact-hero-title .gold-cursive {
+    font-size: clamp(1.05rem, 4.2vw, 1.25rem);
+    display: block;
+    margin-top: 2px;
+  }
+
+  .exact-hero-desc {
+    display: none !important;
+  }
+
+  .exact-btn-yellow {
+    font-size: 0.76rem;
+    padding: 7px 16px;
+    border-radius: 20px;
+    gap: 6px;
+    align-self: flex-start;
+  }
+
+  .exact-btn-yellow svg {
+    width: 14px;
+    height: 14px;
+  }
+
   /* Ẩn slogan trôi nổi trên mobile để đỡ rối mắt */
   .exact-hero-right-slogan {
     display: none !important;
   }
 
-  /* Bố cục 2 trên 2 dưới cho 4 ô KPI trên thiết bị di động */
+  /* Di chuyển khối Video lên trên 1 tí trên mobile */
+  .exact-intro-right-media {
+    margin-top: -1.25rem !important;
+  }
+
+  /* Hiển thị KPI bên dưới Video trên Mobile, tạo khoảng cách rộng rãi thoáng đãng */
+  .about-desktop-kpi {
+    display: none !important;
+  }
+
+  .exact-kpi-cards.about-mobile-kpi {
+    display: grid !important;
+    margin: 1.75rem auto 1.25rem auto !important;
+  }
+
+  /* Canh chỉnh chữ viết tay 'Chất lượng là cam kết!' thoáng đãng, không bị chật chội */
+  .exact-handwriting-callout {
+    bottom: -44px;
+    right: 14px;
+    transform: scale(0.88);
+  }
+
+  /* Hiển thị ảnh Hành trình phát triển bên dưới Tiêu đề trên Mobile */
+  .about-desktop-factory {
+    display: none !important;
+  }
+
+  .about-mobile-factory {
+    display: block !important;
+    margin: 1.25rem 0 2.25rem 0 !important;
+    width: 100%;
+  }
+
+  /* Bố cục 2 trên 2 dưới thu nhỏ gọn cho 4 ô KPI trên thiết bị di động - Căn giữa, giãn cách thoáng hơn */
   .exact-kpi-cards {
-    grid-template-columns: repeat(2, 1fr);
-    max-width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 150px));
+    gap: 0.75rem;
+    max-width: 325px;
+    margin: 0 auto 1.25rem auto !important;
+    justify-content: center !important;
+  }
+
+  .exact-kpi-card {
+    padding: 0.65rem 0.4rem;
+    border-radius: 11px;
+  }
+
+  .exact-kpi-icon {
+    width: 26px;
+    height: 26px;
+    margin: 0 auto 2px;
+  }
+
+  .exact-kpi-icon svg {
+    width: 13px;
+    height: 13px;
+  }
+
+  .exact-kpi-number {
+    font-size: 0.92rem;
   }
 }
 
@@ -1317,8 +1579,12 @@
   }
 
   .exact-hero-section {
-    padding: 2.5rem 0 2rem;
-    border-radius: 0 0 18px 18px;
+    padding: 3.5rem 0 3rem !important;
+    min-height: 310px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    border-radius: 0 0 20px 20px;
   }
 
   .exact-hero-right-slogan {
@@ -1327,55 +1593,69 @@
     right: 1rem;
   }
 
+  .exact-hero-left {
+    max-width: 68% !important;
+    width: 68% !important;
+    text-align: left !important;
+    margin-left: 0 !important;
+    margin-right: auto !important;
+  }
+
   .exact-hero-subtitle {
-    font-size: 0.74rem;
-    letter-spacing: 1.5px;
-    padding: 4px 10px;
-    margin-bottom: 0.65rem;
+    font-size: 0.62rem;
+    letter-spacing: 1px;
+    padding: 2px 8px;
+    margin-bottom: 0.4rem;
+    align-self: flex-start;
   }
 
   .hero-live-dot {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
   }
 
   .exact-hero-bg {
-    opacity: 0.18;
+    opacity: 1 !important;
   }
 
   .exact-hero-bg img {
-    mask-image: linear-gradient(to top, transparent 0%, black 80%);
-    -webkit-mask-image: linear-gradient(to top, transparent 0%, black 80%);
+    mask-image: none !important;
+    -webkit-mask-image: none !important;
   }
 
   .exact-hero-title {
-    font-size: clamp(1.35rem, 5.5vw, 1.55rem);
-    line-height: 1.35;
+    font-size: clamp(0.92rem, 3.8vw, 1.12rem);
+    line-height: 1.28;
     margin-bottom: 0.85rem;
+    text-align: left !important;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
   }
 
   .exact-hero-title br {
-    display: none;
+    display: block !important;
   }
 
   .exact-hero-title .gold-cursive {
-    font-size: clamp(1.35rem, 5.5vw, 1.55rem);
+    font-size: clamp(0.92rem, 3.8vw, 1.12rem);
     display: block;
-    margin-top: 3px;
+    margin-top: 2px;
   }
 
   .exact-hero-desc {
-    font-size: 0.85rem;
-    line-height: 1.6;
-    color: rgba(255, 255, 255, 0.88);
-    margin-bottom: 1.25rem;
+    display: none !important;
   }
 
   .exact-btn-yellow {
-    font-size: 0.86rem;
-    padding: 10px 20px;
-    border-radius: 25px;
-    gap: 8px;
+    font-size: 0.72rem;
+    padding: 6px 14px;
+    border-radius: 18px;
+    gap: 5px;
+    align-self: flex-start;
+  }
+
+  .exact-btn-yellow svg {
+    width: 13px;
+    height: 13px;
   }
 
   /* Section Headings & Subtitles */
@@ -1421,14 +1701,40 @@
     margin-bottom: 0.95rem;
   }
 
-  /* Bố cục 2 trên 2 dưới cho 4 ô KPI trên điện thoại */
+  /* Di chuyển khối Video lên trên 1 tí trên mobile */
+  .exact-intro-right-media {
+    margin-top: -1.5rem !important;
+  }
+
+  /* Bố cục 2 trên 2 dưới thu nhỏ gọn cho 4 ô KPI trên điện thoại - Căn giữa, giãn cách thoáng hơn */
+  .about-desktop-kpi {
+    display: none !important;
+  }
+
+  .exact-kpi-cards.about-mobile-kpi {
+    display: grid !important;
+    margin: 1.75rem auto 1rem auto !important;
+  }
+
+  /* Hiển thị ảnh Hành trình phát triển bên dưới Tiêu đề trên Mobile */
+  .about-desktop-factory {
+    display: none !important;
+  }
+
+  .about-mobile-factory {
+    display: block !important;
+    margin: 1.15rem 0 2.25rem 0 !important;
+    width: 100%;
+  }
+
   .exact-kpi-cards {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 142px));
     gap: 0.75rem;
     width: 100%;
-    max-width: 100%;
-    margin: 0 0 1.5rem 0;
+    max-width: 310px;
+    margin: 0 auto 1rem auto !important;
+    justify-content: center !important;
     padding: 0;
     overflow: visible;
   }
@@ -1440,11 +1746,11 @@
   .exact-kpi-card {
     min-width: 0;
     width: 100%;
-    padding: 0.95rem 0.5rem;
+    padding: 0.6rem 0.35rem;
     background: #ffffff;
-    border: 1px solid #f1f5f9;
-    border-radius: 12px;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+    border: 1px solid #e2e8f0;
+    border-radius: 11px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -1452,25 +1758,36 @@
   }
 
   .exact-kpi-icon {
-    width: 38px;
-    height: 38px;
-    margin: 0 auto 6px;
+    width: 24px;
+    height: 24px;
+    margin: 0 auto 2px;
   }
 
   .exact-kpi-icon svg {
-    width: 18px;
-    height: 18px;
+    width: 12px;
+    height: 12px;
   }
 
   .exact-kpi-number {
-    font-size: 1.22rem;
-    line-height: 1.15;
+    font-size: 0.88rem;
+    line-height: 1.1;
   }
 
   .exact-kpi-text {
-    font-size: 0.72rem;
-    line-height: 1.3;
-    margin-top: 3px;
+    font-size: 0.58rem;
+    line-height: 1.2;
+    margin-top: 1px;
+  }
+
+  .exact-kpi-text strong {
+    font-size: 0.58rem;
+    letter-spacing: 0.1px;
+  }
+
+  .exact-kpi-text span {
+    font-size: 0.50rem;
+    margin-top: 1px;
+    color: #64748b;
   }
 
   /* Fix Video Badge so it doesn't overflow */
@@ -1501,10 +1818,10 @@
     font-size: 0.68rem;
   }
 
-  /* Adjust handwriting callout */
+  /* Adjust handwriting callout - cách xa video và thoáng đãng */
   .exact-handwriting-callout {
-    bottom: -32px;
-    right: 0;
+    bottom: -44px;
+    right: 12px;
     transform: scale(0.85);
   }
 
@@ -1571,8 +1888,19 @@
   }
 
   /* Values Section Grid */
-  .exact-values-header {
+  .exact-values-top-grid {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
     margin-bottom: 1.75rem;
+  }
+
+  .exact-values-top-img img {
+    height: 190px;
+    border-radius: 16px;
+  }
+
+  .exact-values-header {
+    margin-bottom: 0;
   }
 
   .exact-values-icons-row {

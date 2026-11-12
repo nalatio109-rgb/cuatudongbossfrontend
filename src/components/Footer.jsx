@@ -93,6 +93,7 @@ export default function Footer() {
             <a href="/san-pham">Sản phẩm</a>
             <a href="/bang-gia">Bảng giá</a>
             <a href="/dich-vu">Dịch vụ</a>
+            <a href="/cong-trinh">Công trình thực tế</a>
             <a href="/tin-tuc">Tin tức</a>
             <a href="/lien-he">Liên hệ</a>
           </div>
@@ -126,7 +127,7 @@ export default function Footer() {
                 <MapPin size={16} />
               </div>
               <div className="contact-item-info">
-                <strong>Địa chỉ xưởng:</strong>
+                <strong>Địa chỉ:</strong>
                 <span>647 Ngô Quyền, Sơn Trà, Đà Nẵng</span>
               </div>
             </div>

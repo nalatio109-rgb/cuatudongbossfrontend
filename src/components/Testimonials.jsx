@@ -535,66 +535,6 @@ export default function Testimonials() {
             </div>
           </RevealOnScroll>
         </div>
-
-        {/* Customer selection list */}
-        <RevealOnScroll
-          animation="fade-up"
-          delay={150}
-          className="testimonials-list-section"
-        >
-          <div className="list-heading">
-            <div>
-              <span className="list-eyebrow">KHÁCH HÀNG TIÊU BIỂU</span>
-              <h3>Lắng nghe những chia sẻ khác</h3>
-            </div>
-
-            <div className="list-header-right">
-              <button
-                type="button"
-                className="btn-write-review-outline"
-                onClick={handleOpenReview}
-              >
-                <PenLine size={13} /> Gửi đánh giá của bạn
-              </button>
-              <span className="list-count">
-                {String(reviews.length).padStart(2, "0")} ĐÁNH GIÁ
-              </span>
-            </div>
-          </div>
-
-          <div className="mini-reviews-row">
-            {reviews.map((r, i) => (
-              <button
-                type="button"
-                key={r.id}
-                className={`mini-review-card ${i === current ? "active" : ""}`}
-                onClick={() => goTo(i)}
-                aria-pressed={i === current}
-                aria-label={`Xem đánh giá của ${r.name}`}
-              >
-                <div
-                  className="mini-avatar"
-                  style={{ background: r.color || "#07522f" }}
-                >
-                  {r.avatar}
-                </div>
-
-                <div className="mini-meta">
-                  <strong>{r.name}</strong>
-                  <span>{r.role}</span>
-                </div>
-
-                {r.mediaUrl && (
-                  <span className="mini-media-dot" title="Có đính kèm hình ảnh/video">
-                    {r.mediaType === "video" ? <VideoIcon size={10} /> : <ImageIcon size={10} />}
-                  </span>
-                )}
-
-                <ChevronRight className="mini-arrow" size={15} />
-              </button>
-            ))}
-          </div>
-        </RevealOnScroll>
       </div>
 
       {/* MODAL 1: FORM VIẾT ĐÁNH GIÁ (CHỈ DÀNH CHO KHÁCH HÀNG ĐÃ ĐĂNG NHẬP) */}
