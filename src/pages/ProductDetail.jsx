@@ -266,6 +266,71 @@ export default function ProductDetail() {
     }
   };
 
+  // Chuyển tiêu đề sang dạng chữ thường thanh lịch cho mobile (giữ nguyên desktop)
+  const toNormalCase = (str) => {
+    if (!str) return "";
+    const trimmed = str.trim();
+    const knownMap = {
+      "CỬA CUỐN KHE THOÁNG ĐỨC BOSSDOOR BD-900": "Cửa cuốn khe thoáng Đức BossDoor BD-900",
+      "CỬA CUỐN KHE THOÁNG ĐỨC BOSSDOOR": "Cửa cuốn khe thoáng Đức BossDoor",
+      "CỬA CUỐN ĐÀI LOAN GIÁ RẺ DL-75": "Cửa cuốn Đài Loan giá rẻ DL-75",
+      "CỬA CUỐN BOSSDOOR ECO BEC.5810": "Cửa cuốn Bossdoor ECO BEC.5810"
+    };
+    if (knownMap[trimmed]) return knownMap[trimmed];
+
+    if (trimmed === trimmed.toUpperCase()) {
+      const words = trimmed.toLowerCase().split(/\s+/);
+      return words
+        .map((w, idx) => {
+          if (/^[a-z]+-?\d+/i.test(w) || /^(vip|eco|ups|co|cq)$/i.test(w)) {
+            return w.toUpperCase();
+          }
+          if (w === "đức") return "Đức";
+          if (w === "bossdoor") return "BossDoor";
+          if (w === "boss") return "Boss";
+          if (w === "đài" || w === "loan") return w.charAt(0).toUpperCase() + w.slice(1);
+          return idx === 0 ? w.charAt(0).toUpperCase() + w.slice(1) : w;
+        })
+        .join(" ");
+    }
+    return str;
+  };
+
+  // Tách tiêu đề thành 2 dòng chuẩn chỉnh như ảnh:
+  // Dòng 1: Cửa cuốn khe thoáng Đức
+  // Dòng 2: BossDoor (bên trái) + [MÃ SP: BD-900] (bên phải)
+  const parseTitleForDisplay = (rawTitle, code) => {
+    const normal = toNormalCase(rawTitle);
+    if (!normal) return { main: "", sub: "" };
+
+    // Bỏ mã sản phẩm ở đuôi tiêu đề nếu đã có (để tránh lặp lại vì đã có thẻ Mã SP riêng)
+    let clean = normal;
+    if (code) {
+      const codeRegex = new RegExp(`\\s*${code}\\s*$`, "i");
+      clean = clean.replace(codeRegex, "").trim();
+    }
+
+    // Tách theo các thương hiệu / dòng sản phẩm ở cuối (như BossDoor, LUXURY, ECO, VIP)
+    const match = clean.match(/^(.*?)\s+(BossDoor|Bossdoor|LUXURY|ECO|VIP|CHLB Đức)$/i);
+    if (match) {
+      return {
+        main: match[1].trim(),
+        sub: match[2].trim()
+      };
+    }
+
+    // Nếu tiêu đề dài có từ 4 từ trở lên, tách từ cuối cùng xuống dòng 2
+    const words = clean.split(" ");
+    if (words.length >= 4) {
+      return {
+        main: words.slice(0, -1).join(" "),
+        sub: words.slice(-1).join(" ")
+      };
+    }
+
+    return { main: clean, sub: "" };
+  };
+
   // Fallback article content generator if not yet created in admin
   const defaultArticleContent = useMemo(() => {
     if (productArticle?.content) return productArticle.content;
@@ -359,7 +424,9 @@ export default function ProductDetail() {
             {getCategoryName(extendedDetails.category)}
           </Link>
           <span className="crumb-sep">/</span>
-          <span className="crumb-active">{extendedDetails.title}</span>
+          <span className="crumb-active">
+            {toNormalCase(extendedDetails.title)}
+          </span>
         </div>
       </nav>
 
@@ -404,55 +471,29 @@ export default function ProductDetail() {
                 ))}
               </div>
             )}
-
-            {/* Banner đại lý chính hãng bên dưới ảnh */}
-            <div className="authorized-dealer-banner">
-              <div className="dealer-brand">
-                <span className="brand-badge-boss">BOSS</span>
-                <span className="brand-subtext">ĐÀ NẴNG</span>
-              </div>
-              <div className="dealer-info">
-                <strong>CÔNG TY TNHH MTV TM &amp; DV BOSS ĐÀ NẴNG</strong>
-                <span>MST: 0401872174 • Khảo sát &amp; Lắp đặt trọn gói</span>
-              </div>
-              <a href="tel:0904678323" className="dealer-hotline-pill">
-                <PhoneCall size={14} /> 0904.678.323
-              </a>
-            </div>
           </div>
 
           {/* CỘT PHẢI: THÔNG TIN TỔNG QUAN, BẢNG TÓM TẮT & CÁC NÚT HÀNH ĐỘNG */}
           <div className="hero-summary-column">
-            {/* Meta rating & Trạng thái */}
-            <div className="summary-top-meta">
-              <div className="rating-stars-badge">
-                <div className="stars-row">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} size={14} className="star-fill" />
-                  ))}
+            {/* Wrapper tiêu đề & Mã sản phẩm chuẩn chỉnh theo ảnh */}
+            {(() => {
+              const parsed = parseTitleForDisplay(extendedDetails.title, extendedDetails.code);
+              return (
+                <div className="product-title-header-wrapper">
+                  <h1 className="product-main-h1">
+                    <span className="product-title-line-main">{parsed.main}</span>
+                    <span className="product-title-line-sub">
+                      <span className="product-title-brand">{parsed.sub}</span>
+                      {extendedDetails.code && (
+                        <span className="meta-tag-code">
+                          MÃ SP: <strong>{extendedDetails.code}</strong>
+                        </span>
+                      )}
+                    </span>
+                  </h1>
                 </div>
-                <span className="rating-score">5.0</span>
-                <span className="review-count">({extendedDetails.reviewCount || 38} đánh giá đã xác thực)</span>
-              </div>
-
-              <div className="business-status-pill">
-                <span className="pulse-dot"></span>
-                <span>{extendedDetails.businessStatus || "Sẵn hàng tại Đà Nẵng • Khảo sát 24h"}</span>
-              </div>
-            </div>
-
-            {/* Tiêu đề sản phẩm H1 */}
-            <h1 className="product-main-h1">{extendedDetails.title}</h1>
-
-            {/* Mã sản phẩm & Danh mục */}
-            <div className="code-category-row">
-              <span className="meta-tag-code">
-                MÃ SP: <strong>{extendedDetails.code}</strong>
-              </span>
-              <span className="meta-tag-cat">
-                DANH MỤC: <strong>{getCategoryName(extendedDetails.category)}</strong>
-              </span>
-            </div>
+              );
+            })()}
 
             {/* Hộp giá bán nổi bật */}
             <div className="product-pricing-box">
@@ -491,69 +532,35 @@ export default function ProductDetail() {
               </p>
             )}
 
-            {/* NHÓM NÚT HÀNH ĐỘNG MUA HÀNG & BÁO GIÁ */}
-            <div className="product-action-buttons-group">
-              {/* Nút 1: Yêu cầu báo giá */}
-              <button
-                type="button"
-                className="btn-action-primary btn-quote-now"
-                onClick={() => setIsQuoteModalOpen(true)}
-              >
-                <ShoppingBag size={18} />
-                <span>YÊU CẦU BÁO GIÁ NHANH</span>
-              </button>
-
-              {/* Nút 2: Xem bảng giá chi tiết */}
-              <button
-                type="button"
-                className="btn-action-secondary btn-pricing-sheet"
-                onClick={() => {
-                  const { icon, ...serializableProduct } = extendedDetails;
-                  navigate(extendedDetails.pricingUrl || `/bang-gia/${extendedDetails.code}`, {
-                    state: { product: serializableProduct }
-                  });
-                }}
-              >
-                <Tag size={18} />
-                <span>XEM BẢNG GIÁ CHI TIẾT</span>
-                <ArrowRight size={16} />
-              </button>
-
-              {/* Nhóm gọi điện & Zalo */}
-              <div className="contact-quick-buttons-row">
-                <a href="tel:0904678323" className="btn-call-hotline">
-                  <PhoneCall size={16} />
-                  <span>Gọi 0904.678.323</span>
-                </a>
-                <a
-                  href="https://zalo.me/0904678323"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn-chat-zalo"
-                >
-                  <MessageCircle size={16} />
-                  <span>Chat Zalo tư vấn</span>
-                </a>
-              </div>
-            </div>
-
             {/* CAM KẾT CHÍNH HÃNG 4 ĐIỂM */}
             <div className="quick-guarantee-grid">
-              <div className="qg-item">
-                <ShieldCheck size={18} className="qg-icon" />
-                <span>Chính hãng 100% C/O, C/Q</span>
+              <div className="qg-item qg-item-shield">
+                <div className="qg-icon-badge badge-green">
+                  <ShieldCheck size={18} className="qg-icon" />
+                </div>
+                <span className="qg-text qg-desktop-text">Chính hãng 100% C/O, C/Q</span>
+                <span className="qg-text qg-mobile-text">Chính hãng 100%</span>
               </div>
-              <div className="qg-item">
-                <Clock size={18} className="qg-icon" />
-                <span>Lắp đặt nhanh trong 24h</span>
+              <div className="qg-item qg-item-speed">
+                <div className="qg-icon-badge badge-amber">
+                  <Clock size={18} className="qg-icon" />
+                </div>
+                <span className="qg-text qg-desktop-text">Lắp đặt nhanh trong 24h</span>
+                <span className="qg-text qg-mobile-text">Lắp đặt nhanh 24h</span>
               </div>
-              <div className="qg-item">
-                <CheckCircle2 size={18} className="qg-icon" />
-                <span>Bảo hành tận nơi 5 - 10 năm</span>
+              <div className="qg-item qg-item-warranty">
+                <div className="qg-icon-badge badge-blue">
+                  <CheckCircle2 size={18} className="qg-icon" />
+                </div>
+                <span className="qg-text qg-desktop-text">Bảo hành tận nơi 5 - 10 năm</span>
+                <span className="qg-text qg-mobile-text">Bảo hành 5 - 10 năm</span>
               </div>
-              <div className="qg-item">
-                <HeadphonesIcon size={18} className="qg-icon" />
-                <span>Tư vấn đo đạc miễn phí</span>
+              <div className="qg-item qg-item-support">
+                <div className="qg-icon-badge badge-purple">
+                  <HeadphonesIcon size={18} className="qg-icon" />
+                </div>
+                <span className="qg-text qg-desktop-text">Tư vấn đo đạc miễn phí</span>
+                <span className="qg-text qg-mobile-text">Tư vấn miễn phí</span>
               </div>
             </div>
           </div>
@@ -565,19 +572,15 @@ export default function ProductDetail() {
         {/* ========================================================= */}
         <section className="product-article-continuous-card">
           <div className="article-continuous-header">
-            <span className="article-header-tag">
-              <Sparkles size={14} /> CHI TIẾT SẢN PHẨM &amp; THÔNG SỐ KỸ THUẬT
-            </span>
+            <div className="article-header-tag">
+              <span className="tag-sparkle-circle">
+                <Sparkles size={17} />
+              </span>
+              <span className="tag-main-text">CHI TIẾT SẢN PHẨM &amp; THÔNG SỐ KỸ THUẬT</span>
+            </div>
             <h2 className="article-main-title">
               {productArticle?.seo?.title || `Bài viết giới thiệu chi tiết ${extendedDetails.title}`}
             </h2>
-            <div className="article-meta-subline">
-              <span>Được biên tập &amp; kiểm định bởi kỹ sư Boss Đà Nẵng</span>
-              <span className="sep-dot">•</span>
-              <span>Cập nhật mới nhất 2026</span>
-              <span className="sep-dot">•</span>
-              <span>Hình ảnh công trình thực tế</span>
-            </div>
           </div>
 
           {/* DÒNG NỘI DUNG BÀI VIẾT HIỂN THỊ LIÊN TỤC TRÊN CÙNG MỘT TRANG */}

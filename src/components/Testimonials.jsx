@@ -23,11 +23,28 @@ import RevealOnScroll from "./RevealOnScroll";
 import { useAuth } from "../context/AuthContext";
 import "./Testimonials.css";
 
+const formatReviewDate = (val) => {
+  if (!val) return "";
+  try {
+    if (typeof val === "string" && /^\d{1,2}\/\d{1,2}\/\d{4}$/.test(val.trim())) {
+      return val.trim();
+    }
+    const d = new Date(val);
+    if (!isNaN(d.getTime())) {
+      const day = String(d.getDate()).padStart(2, "0");
+      const month = String(d.getMonth() + 1).padStart(2, "0");
+      const year = d.getFullYear();
+      return `${day}/${month}/${year}`;
+    }
+  } catch (_) {}
+  return String(val);
+};
+
 const DEFAULT_REVIEWS = [
   {
     id: 1,
     name: "Anh Nguyễn Văn Hùng",
-    role: "Chủ căn hộ, Quận Hải Châu",
+    role: "",
     avatar: "H",
     rating: 5,
     text: "Lắp cửa cuốn cho garage nhà mình, nhân viên tư vấn rất nhiệt tình và chuyên nghiệp. Thi công nhanh gọn chỉ trong 1 buổi sáng. Cửa vận hành êm, đẹp hơn mình tưởng. Rất hài lòng!",
@@ -35,21 +52,23 @@ const DEFAULT_REVIEWS = [
     mediaType: "image",
     mediaUrl: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80",
     verified: true,
+    createdAt: "2026-11-10",
   },
   {
     id: 2,
     name: "Chị Trần Thị Lan",
-    role: "Chủ tiệm, Quận Thanh Khê",
+    role: "",
     avatar: "L",
     rating: 5,
     text: "Mình đã lắp cửa kéo inox cho shop thời trang. Chất lượng vượt kỳ vọng, inox sáng bóng, kéo rất nhẹ. Khách vào hay khen cửa đẹp. Boss Đà Nẵng làm việc uy tín, bảo hành chu đáo.",
     color: "#b45309",
     verified: true,
+    createdAt: "2026-11-09",
   },
   {
     id: 3,
     name: "Anh Lê Minh Tú",
-    role: "Kiến trúc sư, Quận Sơn Trà",
+    role: "",
     avatar: "T",
     rating: 5,
     text: "Tôi giới thiệu Boss Đà Nẵng cho nhiều dự án rồi. Họ có đủ loại cửa từ phổ thông đến cao cấp, báo giá minh bạch, không phát sinh. Đặc biệt đội thi công làm đúng bản vẽ kỹ thuật.",
@@ -57,26 +76,29 @@ const DEFAULT_REVIEWS = [
     mediaType: "image",
     mediaUrl: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=600&q=80",
     verified: true,
+    createdAt: "2026-11-08",
   },
   {
     id: 4,
     name: "Chị Phạm Thu Hà",
-    role: "Chủ văn phòng, Quận Ngũ Hành Sơn",
+    role: "",
     avatar: "H",
     rating: 5,
     text: "Lắp cửa trượt tự động cho công ty, cảm biến rất nhạy và êm ái. Nhân viên kỹ thuật hướng dẫn sử dụng tận tình. Sau 6 tháng dùng vẫn hoạt động tốt. Sẽ tiếp tục ủng hộ Boss!",
     color: "#7c3aed",
     verified: true,
+    createdAt: "2026-11-07",
   },
   {
     id: 5,
     name: "Anh Đặng Quốc Bảo",
-    role: "Chủ nhà hàng, Quận Cẩm Lệ",
+    role: "",
     avatar: "B",
     rating: 5,
     text: "Boss tư vấn lắp barrier tự động cho bãi xe nhà hàng. Hệ thống chạy ổn định, dùng thẻ từ rất tiện. Giá cả cạnh tranh so với thị trường. Nhân viên phản hồi nhanh khi cần hỗ trợ.",
     color: "#0e7490",
     verified: true,
+    createdAt: "2026-11-06",
   },
 ];
 
@@ -91,15 +113,69 @@ export default function Testimonials() {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
+          const cleaned = parsed.map((item) => ({ ...item, role: "" }));
+          try {
+            localStorage.setItem("boss_customer_reviews", JSON.stringify(cleaned));
+          } catch (_) { }
+          return cleaned;
         }
       }
-    } catch (_) {}
+    } catch (_) { }
     return DEFAULT_REVIEWS;
   });
 
   const [current, setCurrent] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
+
+  // Tính toán điểm số trung bình và số lượng đánh giá thực tế từ dữ liệu
+  const totalReviews = reviews.length;
+  const avgRating = totalReviews > 0
+    ? (reviews.reduce((acc, r) => acc + (Number(r.rating) || 5), 0) / totalReviews).toFixed(1)
+    : "5.0";
+
+  const renderRealisticStars = (score) => {
+    const numericScore = parseFloat(score) || 5;
+    return (
+      <div className="rating-stars" title={`${numericScore} / 5 sao`} aria-label={`${numericScore} trên 5 sao`}>
+        {[0, 1, 2, 3, 4].map((index) => {
+          const fillAmount = Math.max(0, Math.min(1, numericScore - index));
+          return (
+            <div
+              key={index}
+              style={{
+                position: "relative",
+                display: "inline-block",
+                width: 15,
+                height: 15,
+                flexShrink: 0,
+              }}
+            >
+              <Star
+                size={15}
+                color="#cbd5e1"
+                fill="#e2e8f0"
+                style={{ position: "absolute", top: 0, left: 0 }}
+              />
+              {fillAmount > 0 && (
+                <div
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: `${fillAmount * 100}%`,
+                    overflow: "hidden",
+                    height: "100%",
+                  }}
+                >
+                  <Star size={15} color="#f5bd20" fill="#f5bd20" />
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
 
   // Nạp danh sách đánh giá từ MongoDB backend API
   useEffect(() => {
@@ -112,13 +188,14 @@ export default function Testimonials() {
           const normalized = json.data.map((item) => ({
             ...item,
             id: item._id || item.id,
+            role: "",
           }));
           setReviews(normalized);
           try {
             localStorage.setItem("boss_customer_reviews", JSON.stringify(normalized));
-          } catch (_) {}
+          } catch (_) { }
         }
-      } catch (_) {}
+      } catch (_) { }
     };
     fetchReviews();
   }, []);
@@ -261,7 +338,7 @@ export default function Testimonials() {
       id: Date.now(),
       name: userName,
       email: currentUser.email,
-      role: role.trim() || "Khách hàng đã trải nghiệm",
+      role: role.trim() || "",
       avatar: initial,
       rating: rating,
       text: reviewText.trim(),
@@ -276,7 +353,7 @@ export default function Testimonials() {
     setReviews(updated);
     try {
       localStorage.setItem("boss_customer_reviews", JSON.stringify(updated));
-    } catch (_) {}
+    } catch (_) { }
 
     // Gửi đánh giá lên MongoDB backend
     try {
@@ -298,8 +375,8 @@ export default function Testimonials() {
             );
           }
         })
-        .catch(() => {});
-    } catch (_) {}
+        .catch(() => { });
+    } catch (_) { }
 
     setCurrent(0);
     setIsAnimating(true);
@@ -337,11 +414,6 @@ export default function Testimonials() {
           <h2 className="testimonials-title">
             NIỀM TIN TỪ <span>TRẢI NGHIỆM THỰC TẾ</span>
           </h2>
-
-          <p className="testimonials-desc">
-            Sự hài lòng của khách hàng là động lực để Boss Đà Nẵng
-            không ngừng nâng cao chất lượng sản phẩm và dịch vụ.
-          </p>
         </RevealOnScroll>
 
         {/* Main two-column layout */}
@@ -365,18 +437,16 @@ export default function Testimonials() {
                 giải pháp phù hợp và sự đồng hành lâu dài trong từng công trình.
               </p>
 
-              <div className="rating-overview">
-                <div className="rating-number">4.9</div>
+              <div
+                className="rating-overview"
+                title={`Đánh giá trung bình ${avgRating}/5 từ ${totalReviews} nhận xét thực tế`}
+              >
+                <div className="rating-number">{avgRating}</div>
 
                 <div className="rating-overview-info">
-                  <div className="rating-stars">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} size={15} fill="#f5bd20" color="#f5bd20" />
-                    ))}
-                  </div>
-
-                  <strong>Đánh giá tích cực</strong>
-                  <span>Từ 10,000+ lượt đánh giá</span>
+                  {renderRealisticStars(avgRating)}
+                  <strong>Đánh giá thực tế</strong>
+                  <span>Dựa trên {totalReviews} nhận xét khách hàng</span>
                 </div>
               </div>
 
@@ -431,9 +501,8 @@ export default function Testimonials() {
 
                 <div
                   key={review.id}
-                  className={`feature-review-content ${
-                    isAnimating ? "review-animate" : ""
-                  }`}
+                  className={`feature-review-content ${isAnimating ? "review-animate" : ""
+                    }`}
                 >
                   <div className="feature-stars">
                     {[...Array(review.rating || 5)].map((_, i) => (
@@ -487,15 +556,11 @@ export default function Testimonials() {
                     <div className="feature-reviewer-info">
                       <div className="reviewer-name-row">
                         <strong>{review.name}</strong>
-                        {review.verified && (
-                          <span className="reviewer-verified-tag" title="Khách hàng đã xác thực">
-                            <BadgeCheck size={14} /> Đã xác thực
-                          </span>
-                        )}
                       </div>
-                      <span>{review.role}</span>
                       {review.createdAt && (
-                        <span className="review-date-text">Đăng ngày: {review.createdAt}</span>
+                        <span className="review-date-text">
+                          {formatReviewDate(review.createdAt)}
+                        </span>
                       )}
                     </div>
 
@@ -589,9 +654,8 @@ export default function Testimonials() {
                         <button
                           type="button"
                           key={s}
-                          className={`star-select-btn ${
-                            (hoverRating || rating) >= s ? "filled" : ""
-                          }`}
+                          className={`star-select-btn ${(hoverRating || rating) >= s ? "filled" : ""
+                            }`}
                           onMouseEnter={() => setHoverRating(s)}
                           onMouseLeave={() => setHoverRating(0)}
                           onClick={() => setRating(s)}
@@ -636,7 +700,7 @@ export default function Testimonials() {
                   {/* THÊM HÌNH ẢNH HOẶC VIDEO THỰC TẾ (NẾU CÓ) */}
                   <div className="form-group-review">
                     <label>Đính kèm hình ảnh hoặc video thực tế (nếu có)</label>
-                    
+
                     {/* File previews if attached */}
                     {mediaUrl ? (
                       <div className="attached-media-preview">

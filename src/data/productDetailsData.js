@@ -519,7 +519,7 @@ export const EXTENDED_PRODUCT_MAP = {
       "cua-cuon-bd-900",
       "cua-cuon-duc-bd-900"
     ],
-    title: "CỬA CUỐN KHE THOÁNG ĐỨC BOSSDOOR BD-900",
+    title: "Cửa cuốn khe thoáng Đức BossDoor BD-900",
     category: "cuacuon",
     price: "1.450.000đ/m²",
     rating: 5.0,

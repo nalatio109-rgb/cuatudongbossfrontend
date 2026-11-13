@@ -71,7 +71,7 @@ export default function ProductsPage() {
       id: 2,
       category: "cuacuon",
       image: "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=800&q=80",
-      title: "CỬA CUỐN KHE THOÁNG ĐỨC BOSSDOOR BD-900",
+      title: "Cửa cuốn khe thoáng Đức BossDoor BD-900",
       code: "BD-900",
       description: "Thân cửa hợp kim nhôm 6063-T5 cao cấp, sơn tĩnh điện CHLB Đức bảo hành 10 năm.",
       details: "Dòng cửa cuốn cao cấp thế hệ mới BossDoor tích hợp công nghệ chống sao chép mã khoá, cảm biến tự dừng khi gặp vật cản và điều khiển qua Smartphone từ xa.",

@@ -323,13 +323,6 @@ export default function Projects() {
                 </div>
                 <h2>NHỮNG CÔNG TRÌNH ĐÃ THỰC HIỆN</h2>
               </div>
-
-              <div className="section-title-right">
-                <Link to="/cong-trinh" className="btn-view-all-projects-link">
-                  <span>Xem tất cả công trình</span>
-                  <ArrowRight size={16} />
-                </Link>
-              </div>
             </div>
           </RevealOnScroll>
         </div>
@@ -363,6 +356,16 @@ export default function Projects() {
             ))}
           </div>
         </RevealOnScroll>
+
+        {/* Nút Xem tất cả công trình chuyển xuống phía dưới màn hình chạy */}
+        <div className="container">
+          <div className="projects-bottom-action">
+            <Link to="/cong-trinh" className="btn-view-all-projects-link">
+              <span>Xem tất cả công trình</span>
+              <ArrowRight size={16} />
+            </Link>
+          </div>
+        </div>
       </section>
 
       {/* ================= MODAL XEM BÀI VIẾT & HÌNH ẢNH CÔNG TRÌNH THỰC TẾ ================= */}

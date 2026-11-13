@@ -36,7 +36,7 @@ const FALLBACK_PRODUCTS = [
     id: 1,
     code: "BD-900",
     category: "cuacuon",
-    title: "CỬA CUỐN KHE THOÁNG ĐỨC BOSSDOOR",
+    title: "Cửa cuốn khe thoáng Đức BossDoor",
     image: "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=800&q=80",
     price: "1.450.000đ/m2",
     badge: "BÁN CHẠY",

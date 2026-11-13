@@ -2807,6 +2807,31 @@ textarea {
   overflow: hidden;
 }
 
+.projects-section .section-header-flex {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+.projects-section .section-title-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.projects-section .section-subtitle {
+  justify-content: center;
+}
+
+.projects-bottom-action {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 32px;
+}
+
 .btn-view-all-projects-link {
   display: inline-flex;
   align-items: center;
@@ -5038,12 +5063,14 @@ footer {
   }
 
   .section-title-left h2,
-  .products-section .section-title-left h2 {
+  .products-section .section-title-left h2,
+  .projects-section .section-title-left h2 {
     font-size: 19px !important;
     font-weight: 850 !important;
-    letter-spacing: -0.3px;
+    letter-spacing: -0.3px !important;
     margin-bottom: 4px;
     line-height: 1.35;
+    text-wrap: balance;
   }
 
   .section-subtitle,
@@ -5071,6 +5098,11 @@ footer {
     font-weight: 700;
   }
 
+  .projects-bottom-action {
+    margin-top: 20px;
+    margin-bottom: 5px;
+  }
+
   .product-category-tabs {
     gap: 6px;
     margin-bottom: 18px;
@@ -5093,11 +5125,14 @@ footer {
     height: auto;
     flex-direction: column-reverse;
     border-radius: 14px;
+    position: relative;
+    display: flex;
   }
 
   .new-product-img {
     width: 100%;
     height: 140px;
+    position: relative;
   }
 
   .new-product-img::before {
@@ -5108,6 +5143,11 @@ footer {
     padding: 12px 10px;
     align-items: center;
     text-align: center;
+    position: static;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: space-between;
   }
 
   .product-icon-badge,
@@ -5119,16 +5159,29 @@ footer {
     font-size: 13px;
     font-weight: 800;
     line-height: 1.35;
-    margin-bottom: 4px;
+    margin-bottom: 6px;
     margin-top: 0;
     color: #043c23;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    min-height: calc(1.35em * 2);
   }
 
   .product-desc {
     font-size: 11px;
     line-height: 1.45;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
     color: #4a5c53;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+    height: calc(1.45em * 2);
+    flex-grow: 1;
   }
 
   .btn-explore {
@@ -5137,6 +5190,7 @@ footer {
     font-size: 11px;
     font-weight: 800;
     letter-spacing: 0.2px;
+    margin-top: auto;
   }
 
   .badge-new {
@@ -5144,7 +5198,7 @@ footer {
     left: 8px;
     font-size: 10px;
     font-weight: 800;
-    padding: 2px 7px;
+    padding: 2.5px 8px;
     border-radius: 8px;
     z-index: 10;
   }
