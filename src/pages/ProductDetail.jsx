@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useLocation, useNavigate, Link, useParams } from "react-router-dom";
 import {
   ArrowLeft,
@@ -63,11 +63,26 @@ export default function ProductDetail() {
     }
   }, [currentUser]);
 
+  // Reset and update product on route change or when navigation state changes
   useEffect(() => {
     window.scrollTo(0, 0);
     setSelectedImageIndex(0);
     setQuoteSubmitted(false);
-  }, [id]);
+
+    if (location.state?.product) {
+      setProduct(location.state.product);
+    } else if (id && allProducts.length > 0) {
+      const match = allProducts.find(
+        (p) =>
+          String(p.id) === String(id) ||
+          p.code?.toLowerCase() === id.toLowerCase() ||
+          getProductSlug(p) === id
+      );
+      if (match) {
+        setProduct(match);
+      }
+    }
+  }, [id, location.key, location.state]);
 
   // Load product from API if not passed via location state
   useEffect(() => {
@@ -85,16 +100,18 @@ export default function ProductDetail() {
       }
 
       // 2. Fetch all products for related products section
-      fetch(`${import.meta.env.VITE_API_URL}/api/products`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.success && data.data) {
-            setAllProducts(data.data);
-          }
-        })
-        .catch((err) => console.log("All products fetch error:", err));
+      if (allProducts.length === 0) {
+        fetch(`${import.meta.env.VITE_API_URL}/api/products`)
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.success && data.data) {
+              setAllProducts(data.data);
+            }
+          })
+          .catch((err) => console.log("All products fetch error:", err));
+      }
     }
-  }, [id, product]);
+  }, [id, product, allProducts.length]);
 
   // Combine product with extended technical and commercial details
   const extendedDetails = useMemo(() => {
@@ -230,6 +247,88 @@ export default function ProductDetail() {
       .filter((p) => p.code !== currentCode)
       .slice(0, 4);
   }, [allProducts, extendedDetails]);
+
+  // Mobile Marquee pause state on touch/hover
+  const [isRelMarqueePaused, setIsRelMarqueePaused] = useState(false);
+  const marqueeTimerRef = useRef(null);
+
+  const handleMarqueeTouchStart = () => {
+    setIsRelMarqueePaused(true);
+    if (marqueeTimerRef.current) clearTimeout(marqueeTimerRef.current);
+  };
+
+  const handleMarqueeTouchEnd = () => {
+    if (marqueeTimerRef.current) clearTimeout(marqueeTimerRef.current);
+    marqueeTimerRef.current = setTimeout(() => {
+      setIsRelMarqueePaused(false);
+    }, 2000);
+  };
+
+  const renderRelatedCard = (relProd, keyPrefix = "") => {
+    const slug = getProductSlug(relProd);
+    const detailUrl = `/san-pham/${slug}`;
+
+    const handleSelectProduct = () => {
+      window.scrollTo(0, 0);
+      setProduct(relProd);
+      setSelectedImageIndex(0);
+    };
+
+    return (
+      <div key={`${keyPrefix}-${relProd.code || relProd.id}`} className="related-product-card">
+        <Link
+          to={detailUrl}
+          state={{ product: relProd }}
+          className="rel-card-image"
+          onClick={handleSelectProduct}
+        >
+          <img src={relProd.image} alt={relProd.title} loading="lazy" />
+          <span className="rel-code-pill">MÃ: {relProd.code}</span>
+        </Link>
+        <div className="rel-card-body">
+          <h3 className="rel-title">
+            <Link
+              to={detailUrl}
+              state={{ product: relProd }}
+              onClick={handleSelectProduct}
+            >
+              {relProd.title}
+            </Link>
+          </h3>
+          <div className="rel-price-row">
+            <span className="rel-price-num">
+              {relProd.price && relProd.price !== "Liên hệ"
+                ? relProd.price
+                : "Liên hệ báo giá"}
+            </span>
+          </div>
+          <div className="rel-action-buttons">
+            <Link
+              to={detailUrl}
+              state={{ product: relProd }}
+              className="btn-rel-view-detail"
+              onClick={handleSelectProduct}
+            >
+              Xem chi tiết
+            </Link>
+            <button
+              type="button"
+              className="btn-rel-pricing"
+              onClick={() => {
+                const { icon, ...serializableProduct } = relProd;
+                navigate(`/bang-gia/${relProd.code || relProd.id}`, {
+                  state: { product: serializableProduct }
+                });
+              }}
+              title="Xem bảng giá sản phẩm này"
+            >
+              <Tag size={14} />
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   const handleQuoteSubmit = (e) => {
     e.preventDefault();
@@ -452,7 +551,7 @@ export default function ProductDetail() {
                 </span>
               )}
               <span className="badge-tag-floating warranty-tag">
-                <ShieldCheck size={13} /> BẢO HÀNH 5 NĂM
+                <ShieldCheck size={13} /> BẢO HÀNH 10 NĂM
               </span>
             </div>
 
@@ -598,10 +697,23 @@ export default function ProductDetail() {
             <span className="callout-pill-tag">
               <Tag size={14} /> BẢNG BÁO GIÁ KỸ THUẬT CHÍNH THỨC
             </span>
-            <h3>Bảng báo giá chi tiết theo kích thước cho {extendedDetails.title}</h3>
-            <p>
+            <h3 className="callout-heading">
+              <span className="callout-title-desktop">Bảng báo giá chi tiết theo kích thước cho {extendedDetails.title}</span>
+              <span className="callout-title-mobile">Bảng giá chi tiết theo diện tích (m²)</span>
+            </h3>
+            <p className="callout-desc-desktop">
               Tra cứu đơn giá minh bạch theo diện tích công trình (trên 8m², từ 6m² đến 8m², từ 4m² đến 6m²), tùy chọn nâng cấp Ray Inox đặc và chi phí vận chuyển lắp đặt trọn gói.
             </p>
+            <div className="callout-mobile-features">
+              <div className="cm-feat-item">
+                <CheckCircle2 size={14} className="cm-feat-icon" />
+                <span>Báo giá theo m² chuẩn xưởng</span>
+              </div>
+              <div className="cm-feat-item">
+                <CheckCircle2 size={14} className="cm-feat-icon" />
+                <span>Khảo sát đo đạc 0đ tận nơi</span>
+              </div>
+            </div>
           </div>
           <div className="pricing-callout-right">
             <button
@@ -614,9 +726,10 @@ export default function ProductDetail() {
                 });
               }}
             >
-              <Tag size={18} />
-              <span>XEM BẢNG BÁO GIÁ KỸ THUẬT</span>
-              <ArrowRight size={18} />
+              <Tag size={16} />
+              <span className="btn-text-desktop">XEM BẢNG BÁO GIÁ KỸ THUẬT</span>
+              <span className="btn-text-mobile">Xem bảng giá chi tiết</span>
+              <ArrowRight size={16} />
             </button>
           </div>
         </section>
@@ -628,7 +741,8 @@ export default function ProductDetail() {
           <section className="product-faq-accordion-section">
             <div className="faq-section-header">
               <span className="sub-badge">GIẢI ĐÁP THẮC MẮC</span>
-              <h2>Câu hỏi thường gặp về {extendedDetails.title}</h2>
+              <h2 className="faq-heading-desktop">Câu hỏi thường gặp về {extendedDetails.title}</h2>
+              <h2 className="faq-heading-mobile">Câu hỏi thường gặp {extendedDetails.code ? `(${extendedDetails.code})` : ''}</h2>
               <p>Tổng hợp những giải đáp hữu ích nhất từ đội ngũ kỹ sư Boss Đà Nẵng</p>
             </div>
 
@@ -671,62 +785,34 @@ export default function ProductDetail() {
             <div className="related-section-header">
               <div>
                 <span className="sub-badge">GỢI Ý THÊM</span>
-                <h2>Sản phẩm liên quan cùng danh mục</h2>
+                <h2 className="related-h2-desktop">Sản phẩm liên quan cùng danh mục</h2>
+                <h2 className="related-h2-mobile">Sản phẩm liên quan</h2>
               </div>
               <Link to="/san-pham" className="view-all-link">
-                <span>Xem toàn bộ danh mục</span>
-                <ArrowRight size={15} />
+                <span className="view-all-text-desktop">Xem toàn bộ danh mục</span>
+                <span className="view-all-text-mobile">Xem tất cả</span>
+                <ArrowRight size={14} />
               </Link>
             </div>
 
-            <div className="related-products-grid">
-              {relatedProducts.map((relProd) => (
-                <div key={relProd.code || relProd.id} className="related-product-card">
-                  <div className="rel-card-image">
-                    <img src={relProd.image} alt={relProd.title} loading="lazy" />
-                    <span className="rel-code-pill">MÃ: {relProd.code}</span>
-                  </div>
-                  <div className="rel-card-body">
-                    <h3 className="rel-title">
-                      <Link
-                        to={`/san-pham/${getProductSlug(relProd)}`}
-                        state={{ product: relProd }}
-                      >
-                        {relProd.title}
-                      </Link>
-                    </h3>
-                    <div className="rel-price-row">
-                      <span className="rel-price-num">
-                        {relProd.price && relProd.price !== "Liên hệ"
-                          ? relProd.price
-                          : "Liên hệ báo giá"}
-                      </span>
-                    </div>
-                    <div className="rel-action-buttons">
-                      <Link
-                        to={`/san-pham/${getProductSlug(relProd)}`}
-                        state={{ product: relProd }}
-                        className="btn-rel-view-detail"
-                      >
-                        Xem chi tiết
-                      </Link>
-                      <button
-                        type="button"
-                        className="btn-rel-pricing"
-                        onClick={() => {
-                          const { icon, ...serializableProduct } = relProd;
-                          navigate(`/bang-gia/${relProd.code || relProd.id}`, {
-                            state: { product: serializableProduct }
-                          });
-                        }}
-                        title="Xem bảng giá sản phẩm này"
-                      >
-                        <Tag size={14} />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
+            {/* Desktop: Lưới 4 cột cố định như ban đầu */}
+            <div className="related-products-desktop-grid related-products-grid">
+              {relatedProducts.map((relProd) => renderRelatedCard(relProd, "desk"))}
+            </div>
+
+            {/* Mobile: Marquee chạy ngang mượt mà liên tục như Dự án tiêu biểu */}
+            <div className="related-products-mobile-marquee-wrapper">
+              <div
+                className={`related-products-mobile-marquee-track ${isRelMarqueePaused ? "paused" : ""}`}
+                onTouchStart={handleMarqueeTouchStart}
+                onTouchEnd={handleMarqueeTouchEnd}
+                onMouseEnter={() => setIsRelMarqueePaused(true)}
+                onMouseLeave={() => setIsRelMarqueePaused(false)}
+              >
+                {[...relatedProducts, ...relatedProducts].map((relProd, idx) =>
+                  renderRelatedCard(relProd, `mob-${idx}`)
+                )}
+              </div>
             </div>
           </section>
         )}
@@ -737,14 +823,19 @@ export default function ProductDetail() {
         <section className="final-consultation-cta-banner">
           <div className="cta-banner-content">
             <span className="cta-highlight-badge">TƯ VẤN CÔNG TRÌNH MIỄN PHÍ</span>
-            <h2>Bạn đang tìm giải pháp phù hợp cho công trình của mình?</h2>
-            <p>
+            <h2 className="cta-title-desktop">Bạn đang tìm giải pháp phù hợp cho công trình của mình?</h2>
+            <h2 className="cta-title-mobile">Bạn đang tìm giải pháp phù hợp cho công trình?</h2>
+            <p className="cta-desc-desktop">
               Kỹ sư chuyên môn của Boss Đà Nẵng luôn sẵn sàng đến tận chân công trình khảo sát đo đạc thực tế, tư vấn quy cách kỹ thuật và gửi dự toán chính xác hoàn toàn <strong>MIỄN PHÍ</strong> trong vòng 24h.
+            </p>
+            <p className="cta-desc-mobile">
+              Kỹ sư Boss Đà Nẵng khảo sát đo đạc thực tế & gửi dự toán chính xác hoàn toàn <strong>MIỄN PHÍ</strong> trong vòng 24h.
             </p>
             <div className="cta-action-buttons-row">
               <a href="tel:0904678323" className="cta-btn-phone">
                 <PhoneCall size={18} />
-                <span>GỌI NGAY: 0904.678.323</span>
+                <span className="cta-btn-text-desktop">GỌI NGAY: 0904.678.323</span>
+                <span className="cta-btn-text-mobile">Gọi ngay</span>
               </a>
               <a
                 href="https://zalo.me/0904678323"
@@ -753,7 +844,8 @@ export default function ProductDetail() {
                 className="cta-btn-zalo"
               >
                 <MessageCircle size={18} />
-                <span>CHAT ZALO TƯ VẤN</span>
+                <span className="cta-btn-text-desktop">CHAT ZALO TƯ VẤN</span>
+                <span className="cta-btn-text-mobile">Chat Zalo</span>
               </a>
               <button
                 type="button"
@@ -761,7 +853,8 @@ export default function ProductDetail() {
                 onClick={() => setIsQuoteModalOpen(true)}
               >
                 <Send size={18} />
-                <span>NHẬN DỰ TOÁN BÁO GIÁ</span>
+                <span className="cta-btn-text-desktop">NHẬN DỰ TOÁN BÁO GIÁ</span>
+                <span className="cta-btn-text-mobile">Báo giá</span>
               </button>
             </div>
           </div>

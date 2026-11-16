@@ -18,7 +18,7 @@ const OVERVIEW_6_PRODUCTS = [
     title: "CỬA CUỐN",
     description: "Vận hành bền bỉ, an toàn tuyệt đối",
     details: "Hệ thống cửa cuốn công nghệ Đức, thân cửa hợp kim nhôm cao cấp 6063-T5, tích hợp công biến đảo chiều thông minh khi gặp vật cản.",
-    specs: ["Hợp kim nhôm cao cấp", "Độ dày: 1.2 - 2.4 mm", "Tích hợp cảm biến an toàn", "Bảo hành 5 năm"],
+    specs: ["Hợp kim nhôm cao cấp", "Độ dày: 1.2 - 2.4 mm", "Tích hợp cảm biến an toàn", "Bảo hành 10 năm"],
     icon: <Home size={24} />,
     badge: "MỚI",
     isNew: true
@@ -113,7 +113,7 @@ const CATALOG_PRODUCTS = [
     title: "CỬA CUỐN KHE THOÁNG\nECO BEC.5810",
     description: "Cửa cuốn Bossdoor ECO nan nhôm sơn tĩnh điện Đức, giảm chấn 2 chiều siêu êm.",
     details: "Cửa cuốn Bossdoor ECO BEC.5810 nan nhôm 6063-T5 cao cấp sơn tĩnh điện AkzoNobel CHLB Đức, tích hợp gioăng giảm chấn 2 chiều triệt tiêu rung chấn.",
-    specs: ["Hợp kim nhôm 6063-T5 siêu bền", "Sơn AkzoNobel Đức bảo hành 10 năm", "Giảm chấn 2 chiều siêu êm", "Bảo hành 5 năm"],
+    specs: ["Hợp kim nhôm 6063-T5 siêu bền", "Sơn AkzoNobel Đức bảo hành 10 năm", "Giảm chấn 2 chiều siêu êm", "Bảo hành 10 năm"],
     icon: <AlignJustify size={24} />,
     badge: "MỚI",
     isNew: true
@@ -238,7 +238,7 @@ const CATALOG_PRODUCTS = [
     title: "CỬA KÉO CÔNG NGHỆ\nĐỨC SR1 AKZONOBEL",
     description: "U dày 1.3 mm sơn tĩnh điện AKZO NOBEL, máng đúc bi treo siêu êm, nhíp đặc lập là kiên cố.",
     details: "Cửa kéo công nghệ Đức SR1 là sản phẩm cao cấp với độ dày U 1.3 mm sơn AkzoNobel CHLB Đức, máng đúc hợp kim, bi treo bạc đạn chịu lực kéo nhẹ tênh.",
-    specs: ["Độ dày U: 1.3 mm chuẩn kỹ thuật", "Sơn AkzoNobel CHLB Đức", "Máng đúc bi treo siêu êm", "Bảo hành 5 năm"],
+    specs: ["Độ dày U: 1.3 mm chuẩn kỹ thuật", "Sơn AkzoNobel CHLB Đức", "Máng đúc bi treo siêu êm", "Bảo hành 10 năm"],
     icon: <Star size={24} />,
     badge: "BÁN CHẠY NHẤT",
     isNew: true
@@ -251,7 +251,7 @@ const CATALOG_PRODUCTS = [
     title: "CỬA KÉO CÔNG NGHỆ\nĐỨC SR2 TIÊU CHUẨN",
     description: "U dày 1.1 mm sơn tĩnh điện AKZO NOBEL, máng đúc bi treo, nhíp đặc lập là, giá thành kinh tế.",
     details: "Cửa kéo công nghệ Đức SR2 độ dày 1.1 mm chuẩn mực cho nhà phố, vận hành nhẹ nhàng, chống rỉ sét hoàn hảo.",
-    specs: ["Độ dày U: 1.1 mm", "Sơn AkzoNobel Đức", "Máng đúc bi treo", "Bảo hành 5 năm"],
+    specs: ["Độ dày U: 1.1 mm", "Sơn AkzoNobel Đức", "Máng đúc bi treo", "Bảo hành 10 năm"],
     icon: <Columns size={24} />,
     badge: "PHỔ THÔNG",
     isNew: false
@@ -277,7 +277,7 @@ const CATALOG_PRODUCTS = [
     title: "CỬA KÉO CÔNG NGHỆ\nĐỨC VIP U DÀY 1.5MM",
     description: "U dày 1.5 mm sơn tĩnh điện AKZO NOBEL, máng đúc bi treo chịu lực lớn, bảo vệ an ninh tuyệt đối.",
     details: "Phiên bản đỉnh cao cửa kéo công nghệ Đức VIP U dày 1.5 mm chống trộm cắt phá cho biệt thự, ngân hàng.",
-    specs: ["Độ dày U: 1.5 mm siêu dày", "Sơn AkzoNobel Đức", "Máng đúc bi treo siêu tải", "Bảo hành 5 năm"],
+    specs: ["Độ dày U: 1.5 mm siêu dày", "Sơn AkzoNobel Đức", "Máng đúc bi treo siêu tải", "Bảo hành 10 năm"],
     icon: <ShieldCheck size={24} />,
     badge: "VIP SIÊU DÀY",
     isNew: true
@@ -333,7 +333,7 @@ const CATALOG_PRODUCTS = [
     title: "CỔNG TỰ ĐỘNG ÂM SÀN\nITALIA IP67 KHÁNG NƯỚC",
     description: "Mô-tơ âm sàn chống nước ngập IP67, điều khiển Smartphone cho Biệt thự & Villa.",
     details: "Hệ thống cổng mở xoay âm sàn nhập khẩu Ý 100%, động cơ đúc nguyên khối chống ngập nước tiêu chuẩn IP67, chịu tải nặng tới 800kg/cánh.",
-    specs: ["Tiêu chuẩn chống nước IP67 Ý", "Tải trọng: 800kg / cánh", "Góc mở: 110° - 180°", "Bảo hành 5 năm"],
+    specs: ["Tiêu chuẩn chống nước IP67 Ý", "Tải trọng: 800kg / cánh", "Góc mở: 110° - 180°", "Bảo hành 10 năm"],
     icon: <Columns size={24} />,
     badge: "VIP ITALIA",
     isNew: true

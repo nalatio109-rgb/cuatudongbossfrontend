@@ -62,7 +62,7 @@ export default function ProductsPage() {
       code: "BEC.5810",
       description: "Cửa cuốn Bossdoor ECO BEC.5810 cân bằng chất lượng, thẩm mỹ hiện đại và chi phí đầu tư hợp lý.",
       details: "Cửa cuốn Bossdoor ECO BEC.5810 nan nhôm 6063-T5 cao cấp sơn tĩnh điện AkzoNobel CHLB Đức, tích hợp gioăng giảm chấn 2 chiều siêu êm.",
-      specs: ["Hợp kim nhôm 6063-T5 siêu bền", "Sơn AkzoNobel Đức bảo hành 10 năm", "Giảm chấn 2 chiều siêu êm", "Bảo hành 5 năm"],
+      specs: ["Hợp kim nhôm 6063-T5 siêu bền", "Sơn AkzoNobel Đức bảo hành 10 năm", "Giảm chấn 2 chiều siêu êm", "Bảo hành 10 năm"],
       price: "1.500.000đ/m²",
       badge: "HOT NHẤT",
       icon: <Home size={22} />
@@ -188,7 +188,7 @@ export default function ProductsPage() {
       code: "CK-SR1",
       description: "U dày 1.3 mm sơn tĩnh điện AKZO NOBEL, máng đúc bi treo siêu êm, nhíp đặc lập là kiên cố.",
       details: "Cửa kéo công nghệ Đức SR1 là sản phẩm cao cấp với độ dày U 1.3 mm sơn AkzoNobel CHLB Đức, máng đúc hợp kim, bi treo bạc đạn chịu lực an toàn.",
-      specs: ["Độ dày U: 1.3 mm chuẩn kỹ thuật", "Sơn AkzoNobel CHLB Đức", "Máng đúc bi treo siêu êm", "Bảo hành 5 năm"],
+      specs: ["Độ dày U: 1.3 mm chuẩn kỹ thuật", "Sơn AkzoNobel CHLB Đức", "Máng đúc bi treo siêu êm", "Bảo hành 10 năm"],
       price: "1.120.000đ/m²",
       badge: "BÁN CHẠY NHẤT",
       icon: <Star size={22} />
@@ -201,7 +201,7 @@ export default function ProductsPage() {
       code: "CK-SR2",
       description: "U dày 1.1 mm sơn tĩnh điện AKZO NOBEL, máng đúc bi treo, nhíp đặc lập là, giá thành kinh tế.",
       details: "Cửa kéo công nghệ Đức SR2 độ dày 1.1 mm chuẩn mực cho nhà phố, vận hành nhẹ nhàng, chống rỉ sét hoàn hảo.",
-      specs: ["Độ dày U: 1.1 mm", "Sơn AkzoNobel Đức", "Máng đúc bi treo", "Bảo hành 5 năm"],
+      specs: ["Độ dày U: 1.1 mm", "Sơn AkzoNobel Đức", "Máng đúc bi treo", "Bảo hành 10 năm"],
       price: "1.030.000đ/m²",
       badge: "PHỔ THÔNG",
       icon: <Columns size={22} />
@@ -227,7 +227,7 @@ export default function ProductsPage() {
       code: "VIP",
       description: "U dày 1.5 mm sơn tĩnh điện AKZO NOBEL, máng đúc bi treo chịu lực lớn, bảo vệ an ninh tuyệt đối.",
       details: "Phiên bản đỉnh cao cửa kéo công nghệ Đức VIP U dày 1.5 mm chống trộm cắt phá cho biệt thự, ngân hàng.",
-      specs: ["Độ dày U: 1.5 mm siêu dày", "Sơn AkzoNobel Đức", "Máng đúc bi treo siêu tải", "Bảo hành 5 năm"],
+      specs: ["Độ dày U: 1.5 mm siêu dày", "Sơn AkzoNobel Đức", "Máng đúc bi treo siêu tải", "Bảo hành 10 năm"],
       price: "1.180.000đ/m²",
       badge: "VIP SIÊU DÀY",
       icon: <Star size={22} />
@@ -252,7 +252,7 @@ export default function ProductsPage() {
       code: "CK-DE",
       description: "Thanh U hợp kim nhôm sơn tĩnh điện CHLB Đức, kiểu dáng hiện đại bền đẹp 15 năm.",
       details: "Cửa kéo CN Đức cao cấp sản xuất từ hợp kim nhôm sơn tĩnh điện ngoài trời AkzoNobel, không han gỉ, vận hành êm nhẹ gấp 3 lần cửa sắt thông thường.",
-      specs: ["Hợp kim nhôm Đức siêu nhẹ", "Sơn AkzoNobel bền màu 15 năm", "Nhíp lá nhôm đúc định hình", "Bảo hành 5 năm"],
+      specs: ["Hợp kim nhôm Đức siêu nhẹ", "Sơn AkzoNobel bền màu 15 năm", "Nhíp lá nhôm đúc định hình", "Bảo hành 10 năm"],
       badge: "CAO CẤP",
       icon: <Star size={22} />
     },
@@ -290,7 +290,7 @@ export default function ProductsPage() {
       code: "IT-GHOST",
       description: "Mô-tơ âm sàn chống nước IP67, điều khiển Smartphone cho Biệt thự & Villa.",
       details: "Hệ thống cổng mở xoay âm sàn nhập khẩu Ý 100%, động cơ đúc nguyên khối chống ngập nước tiêu chuẩn IP67, chịu tải nặng tới 800kg/cánh.",
-      specs: ["Tiêu chuẩn chống nước IP67 Ý", "Tải trọng: 800kg / cánh", "Góc mở: 110° - 180°", "Bảo hành 5 năm"],
+      specs: ["Tiêu chuẩn chống nước IP67 Ý", "Tải trọng: 800kg / cánh", "Góc mở: 110° - 180°", "Bảo hành 10 năm"],
       badge: "VIP",
       icon: <Columns size={22} />
     },
@@ -326,7 +326,7 @@ export default function ProductsPage() {
       code: "KS-100",
       description: "Kính cường lực 10 - 12mm kết hợp phụ kiện bản lề sàn inox 304 CHLB Đức.",
       details: "Cửa kính thủy lực lề sàn đóng mở 2 chiều êm ái, định vị góc 90 độ, linh kiện bản lề thủy lực Häfele / VVF nhập khẩu Đức chống chảy dầu.",
-      specs: ["Kính cường lực 10 - 12mm an toàn", "Bản lề sàn Häfele / VVF Đức", "Phụ kiện Inox 304 mạ PVD", "Bảo hành 5 năm"],
+      specs: ["Kính cường lực 10 - 12mm an toàn", "Bản lề sàn Häfele / VVF Đức", "Phụ kiện Inox 304 mạ PVD", "Bảo hành 10 năm"],
       badge: "SANG TRỌNG",
       icon: <Columns size={22} />
     },
@@ -577,7 +577,7 @@ export default function ProductsPage() {
             <div className="guarantee-item">
               <CheckCircle2 size={32} className="g-icon gold" />
               <div>
-                <h4>BẢO HÀNH 5 NĂM</h4>
+                <h4>BẢO HÀNH 10 NĂM</h4>
                 <p>Bảo trì tận nơi, hỗ trợ kỹ thuật 24/7</p>
               </div>
             </div>

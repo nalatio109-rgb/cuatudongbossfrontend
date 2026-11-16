@@ -75,6 +75,8 @@ export default function App() {
         <Route path="/bang-gia" element={<Pricing />} />
         <Route path="/bang-gia/:id" element={<ProductPricing />} />
         <Route path="/bao-gia/:id" element={<ProductPricing />} />
+        <Route path="/bang-gia-cap-nhat-cua-keo-cong-nghe-duc-2026-tai-da-nang" element={<ProductPricing />} />
+        <Route path="/bang-gia-cap-nhat-cua-keo-cong-nghe-duc-2026-tai-da-nang.html" element={<ProductPricing />} />
         <Route path="/dich-vu" element={<Services />} />
         <Route path="/cong-trinh" element={<Projects />} />
         <Route path="/du-an" element={<Navigate to="/cong-trinh" replace />} />

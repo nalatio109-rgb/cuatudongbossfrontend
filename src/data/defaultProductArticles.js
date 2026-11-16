@@ -1,6 +1,120 @@
 // Default rich articles for Boss Đà Nẵng products (Frontend Fallback & Initial State)
 
 export const DEFAULT_PRODUCT_ARTICLES = [
+  // 0. BẢNG GIÁ CẬP NHẬT CỬA KÉO CÔNG NGHỆ ĐỨC 2026 TẠI ĐÀ NẴNG (MÃ CHÍNH: CK-DE)
+  {
+    productCode: "CK-DE",
+    productTitle: "Cửa kéo công nghệ Đức (CN Đức sơn tĩnh điện AkzoNobel)",
+    category: "cuakeo",
+    status: "published",
+    publishDate: "24/04/2026",
+    uploadedImages: [
+      "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80",
+      "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1000&q=80"
+    ],
+    seo: {
+      title: "Bảng Giá Cập Nhật Cửa Kéo Công Nghệ Đức 2026 Tại Đà Nẵng | BossDoor",
+      description: "Bảng giá cập nhật cửa kéo công nghệ Đức 2026 tại Đà Nẵng chính hãng BossDoor. Giá từ 980.000đ/m², U dày 0.9 - 1.5mm sơn AkzoNobel Đức, máng đúc bi treo siêu êm. Khảo sát 0đ tận nơi.",
+      focusKeyword: "Bảng giá cửa kéo công nghệ Đức 2026 tại Đà Nẵng",
+      secondaryKeywords: [
+        "bảng giá cửa kéo công nghệ đức",
+        "cửa kéo công nghệ đức 2026",
+        "cửa kéo đức đà nẵng",
+        "cửa kéo đức có lá",
+        "cửa kéo đức không lá",
+        "giá cửa kéo đà nẵng"
+      ],
+      slug: "bang-gia-cap-nhat-cua-keo-cong-nghe-duc-2026-tai-da-nang",
+      imageAlt: "Bảng giá cập nhật cửa kéo công nghệ Đức 2026 tại Đà Nẵng chính hãng BossDoor",
+      canonicalUrl: "https://bossdoordanang.com.vn/bang-gia-cap-nhat-cua-keo-cong-nghe-duc-2026-tai-da-nang.html"
+    },
+    introContent: `
+<p class="article-lead"><strong>Cửa kéo công nghệ Đức</strong> hiện đang là một trong những giải pháp bảo vệ an ninh và kiến tạo diện mạo sang trọng hàng đầu cho các công trình nhà phố, biệt thự, ki-ốt và cửa hàng tại Đà Nẵng cũng như toàn miền Trung. Được nghiên cứu và chế tạo theo quy chuẩn công nghệ tiên tiến của Cộng hòa Liên bang Đức, dòng sản phẩm này khắc phục triệt để các hạn chế rỉ sét, kẹt rít, phát ra tiếng ồn khó chịu của các loại cửa sắt kéo truyền thống.</p>
+
+<h2>1. Cửa kéo công nghệ Đức là gì? Phân loại cửa kéo Đức</h2>
+<p>Cửa kéo công nghệ Đức là dòng cửa xếp cao cấp sử dụng hệ thanh U cán từ thép hợp kim cường độ cao, bề mặt được xử lý photphat hóa chống ăn mòn và sơn phủ tĩnh điện ngoài trời công nghệ Đức. Cửa hoạt động theo cơ chế trượt treo với cụm bánh xe bi bạc đạn chạy trong máng đúc hợp kim, mang lại cảm giác đóng mở nhẹ tênh và êm ái tuyệt đối.</p>
+
+<p>Hiện nay tại BossDoor Đà Nẵng, cửa kéo công nghệ Đức được sản xuất với 2 phân loại chính phục vụ đa dạng nhu cầu của khách hàng:</p>
+<ul>
+  <li><strong>Cửa kéo công nghệ Đức không lá:</strong> Thiết kế không sử dụng lá chắn gió, giữ trọn hệ nan U và nhíp đặc đan chéo thanh lịch. Ưu điểm nổi bật là độ thông thoáng cực cao, lấy gió và ánh sáng tự nhiên tối đa, rất thích hợp làm lớp cửa an ninh bên ngoài cho cửa cuốn hoặc cửa kính bên trong.</li>
+  <li><strong>Cửa kéo công nghệ Đức có lá:</strong> Bổ sung các lá thép dập gân sóng sơn tĩnh điện đồng bộ phủ kín thân cửa. Dòng cửa này giúp che chắn bụi bặm, ngăn cản tầm nhìn từ bên ngoài và đảm bảo tính riêng tư, an toàn tuyệt đối cho không gian sinh hoạt của gia đình.</li>
+</ul>
+
+<div class="editor-callout-box">
+  <h4>💡 Điểm vượt trội về công nghệ sản xuất:</h4>
+  <p>Toàn bộ nan U và lá cửa được xử lý photphat hóa 7 bể trước khi phủ bột sơn tĩnh điện cao cấp của tập đoàn <strong>AkzoNobel (CHLB Đức)</strong> gia nhiệt cao tần, giúp màu sơn bền đẹp trên 15 năm, kháng muối mặn và chống rỉ sét tuyệt đối trong khí hậu miền biển Đà Nẵng.</p>
+</div>
+
+<figure class="editor-image-figure align-center" style="max-width: 90%;">
+  <img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1000&q=80" alt="Mẫu cửa kéo công nghệ Đức lắp đặt thực tế tại công trình Đà Nẵng" />
+  <figcaption>Hình 1: Mẫu cửa kéo công nghệ Đức hoàn thiện sang trọng, kiên cố tại công trình nhà phố Đà Nẵng</figcaption>
+</figure>
+
+<h2>2. Đặc điểm nổi bật và cấu tạo kỹ thuật cửa kéo công nghệ Đức</h2>
+<p>Sở dĩ cửa kéo công nghệ Đức BossDoor chiếm trọn niềm tin của hàng nghìn khách hàng tại Đà Nẵng là nhờ hệ thống kết cấu cơ khí chính xác đến từng chi tiết:</p>
+
+<h3>2.1. Thân cửa & Thanh U chịu lực (Độ dày 0.9 mm – 1.5 mm)</h3>
+<p>Thanh U được cán định hình từ thép hợp kim cường độ cao với các độ dày đa dạng: <strong>0.9 mm (SR3)</strong>, <strong>1.1 mm (SR2)</strong>, <strong>1.3 mm (SR1)</strong> và <strong>1.5 mm (VIP)</strong>. Các đường gân tăng cứng chạy dọc thân U giúp tăng khả năng chống uốn cong, chịu được sức gió bão giật mạnh và chống cạy phá ngoại lực.</p>
+
+<h3>2.2. Máng đúc hợp kim nguyên khối & Cụm bi treo bạc đạn siêu êm</h3>
+<p>Khác biệt hoàn toàn so với máng tôn uốn mỏng manh dễ kẹt rít, cửa kéo Đức BossDoor sử dụng <strong>máng đúc hợp kim nguyên khối</strong> dày dặn. Bánh xe bi treo bọc bạc đạn Inox cao cấp chạy êm ru trong lòng máng đúc, triệt tiêu 95% tiếng ồn khi vận hành. Phụ nữ hay người lớn tuổi đều có thể thao tác kéo mở nhẹ nhàng chỉ bằng một tay.</p>
+
+<figure class="editor-image-figure align-center" style="max-width: 85%;">
+  <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80" alt="Cụm máng đúc bi treo và hệ nhíp đặc lập là cửa kéo công nghệ Đức" />
+  <figcaption>Hình 2: Cận cảnh máng đúc hợp kim bi treo siêu êm và hệ nhíp đặc lập là kiên cố của cửa kéo Đức</figcaption>
+</figure>
+
+<h3>2.3. Nhíp đặc lập là & Bát khóa dày 6mm chống cưa cắt</h3>
+<ul>
+  <li><strong>Nhíp đặc lập là:</strong> Được dập từ thép tấm đặc cán dày, liên kết bằng đinh tán nở đầu chắc chắn, không bị rão lỏng hay vặn xoắn sau nhiều năm vận hành.</li>
+  <li><strong>Lá sơn tĩnh điện cao cấp:</strong> Màu sắc trang nhã, cách tân hiện đại như Ghi sáng, Vàng kem, Cà phê ánh kim, Xanh ngọc.</li>
+  <li><strong>Bát khóa an toàn dày 6 mm:</strong> Thép tôi nhiệt luyện chống cưa cắt, có thể kết hợp thêm bát khóa âm sàn hoặc trụ khóa chuyên dụng bảo vệ ngôi nhà tối đa.</li>
+</ul>
+`,
+    outroContent: `
+<h2>3. Chi phí thi công & các hạng mục phát sinh cần lưu ý</h2>
+<p>Khi dự toán chi phí lắp đặt hoàn thiện cửa kéo công nghệ Đức tại Đà Nẵng, quý khách cần lưu ý các yếu tố cấu thành giá thành:</p>
+<ul>
+  <li><strong>Chi phí khảo sát &amp; đo đạc:</strong> BossDoor Đà Nẵng hỗ trợ kỹ sư đến tận chân công trình đo đạc thực tế hoàn toàn <strong>0 đồng (Miễn phí 100%)</strong>.</li>
+  <li><strong>Chi phí nhân công lắp đặt &amp; vận chuyển:</strong> Tùy theo vị trí tầng lắp đặt và địa hình thi công, chi phí lắp ráp hoàn thiện trọn gói dao động từ <strong>10% – 20%</strong> giá trị thân cửa.</li>
+  <li><strong>Khung sắt gia cố thêm (nếu có):</strong> Với những ô chờ cửa chưa có đà bê tông chịu lực hoặc tường nghiêng, kỹ thuật sẽ tư vấn khung sắt hộp mạ kẽm gia cố an toàn và thẩm mỹ.</li>
+</ul>
+
+<div class="editor-callout-box">
+  <h4>⭐ Cam kết báo giá minh bạch từ BossDoor Đà Nẵng:</h4>
+  <p>Toàn bộ chi phí đều được kỹ sư thông báo chi tiết, rõ ràng trong bảng báo giá trước khi ký hợp đồng và sản xuất. <strong>Tuyệt đối không phát sinh bất kỳ phụ phí nào</strong> sau khi thi công và bàn giao nghiệm thu.</p>
+</div>
+
+<h2>4. Quy trình tư vấn, khảo sát &amp; lắp đặt tại BossDoor Đà Nẵng</h2>
+<p>Để đảm bảo mỗi bộ cửa vận hành hoàn hảo và chuẩn xác từng milimet, BossDoor áp dụng quy trình thi công chuyên nghiệp 6 bước:</p>
+<ol>
+  <li><strong>Tiếp nhận yêu cầu:</strong> Khách hàng liên hệ qua Hotline 0904.678.323 hoặc Zalo, cung cấp kích thước sơ bộ và mẫu mã mong muốn.</li>
+  <li><strong>Khảo sát thực tế trong 30 phút:</strong> Kỹ sư BossDoor đến trực tiếp công trình tại các quận Hải Châu, Thanh Khê, Sơn Trà, Ngũ Hành Sơn, Liên Chiểu, Cẩm Lệ, Hòa Vang để đo đạc và tư vấn giải pháp tối ưu.</li>
+  <li><strong>Lập dự toán chi tiết &amp; Ký hợp đồng:</strong> Báo giá chi tiết từng hạng mục rõ ràng, cam kết đúng tiến độ thi công.</li>
+  <li><strong>Sản xuất gia công tại xưởng:</strong> Cắt dập trên dây chuyền cơ khí chính xác, phun sơn tĩnh điện nhiệt luyện theo tiêu chuẩn Đức.</li>
+  <li><strong>Lắp đặt &amp; Nghiệm thu laser:</strong> Đội ngũ thợ tay nghề trên 8 năm kinh nghiệm lắp đặt hoàn thiện trong ngày, kiểm tra độ êm và cân bằng laser trước khi bàn giao.</li>
+  <li><strong>Kích hoạt bảo hành chính hãng:</strong> Cấp phiếu bảo hành chính hãng từ 5 – 10 năm, hỗ trợ bảo trì kỹ thuật tận nơi 24/7.</li>
+</ol>
+
+<figure class="editor-image-figure align-center" style="max-width: 90%;">
+  <img src="https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1000&q=80" alt="Đội ngũ kỹ thuật BossDoor thi công lắp đặt cửa kéo tại Đà Nẵng" />
+  <figcaption>Hình 3: Đội ngũ thợ kỹ thuật BossDoor Đà Nẵng thi công lắp đặt chuyên nghiệp, bàn giao đúng tiến độ</figcaption>
+</figure>
+`,
+    content: `
+<h2>1. Cửa kéo công nghệ Đức là gì? Phân loại cửa kéo Đức</h2>
+<p>Cửa kéo công nghệ Đức là dòng cửa xếp cao cấp sử dụng hệ thanh U cán từ thép hợp kim cường độ cao, bề mặt được xử lý photphat hóa chống ăn mòn và sơn phủ tĩnh điện ngoài trời công nghệ Đức. Cửa hoạt động theo cơ chế trượt treo với cụm bánh xe bi bạc đạn chạy trong máng đúc hợp kim, mang lại cảm giác đóng mở nhẹ tênh và êm ái tuyệt đối.</p>
+<h2>2. Đặc điểm nổi bật và cấu tạo kỹ thuật cửa kéo công nghệ Đức</h2>
+<p>Thanh U dày 0.9 - 1.5mm sơn AkzoNobel CHLB Đức, máng đúc bi treo siêu êm, nhíp đặc lập là kiên cố, bát khóa dày 6mm.</p>
+<h2>3. Bảng báo giá cập nhật cửa kéo công nghệ Đức 2026 tại Đà Nẵng</h2>
+<p>Chi tiết các mã sản phẩm SR3, SR2, SR1 và VIP phân tầng theo diện tích thi công.</p>
+<h2>4. Chi phí thi công & các hạng mục phát sinh cần lưu ý</h2>
+<p>Khảo sát 0đ, chi phí lắp đặt 10 - 20%, bảo hành chính hãng 5 - 10 năm tại Đà Nẵng.</p>
+<h2>5. Địa chỉ Showroom BossDoor Đà Nẵng</h2>
+<p>647 Ngô Quyền, Sơn Trà & 267 Tô Hiệu, Hòa Khánh, Hotline: 0904.678.323.</p>
+`
+  },
   // 1. CỬA KÉO CÔNG NGHỆ ĐỨC SR1
   {
     productCode: "CK-SR1",
@@ -14,7 +128,7 @@ export const DEFAULT_PRODUCT_ARTICLES = [
     ],
     seo: {
       title: "Cửa Kéo Công Nghệ Đức SR1 - Độ Dày U 1.3mm Sơn AkzoNobel | Boss Đà Nẵng",
-      description: "Cửa kéo công nghệ Đức SR1 U dày 1.3mm sơn AkzoNobel CHLB Đức, máng đúc bi treo siêu êm, nhíp đặc lập là. Khảo sát đo đạc 0đ tại Đà Nẵng, bảo hành 5 năm.",
+      description: "Cửa kéo công nghệ Đức SR1 U dày 1.3mm sơn AkzoNobel CHLB Đức, máng đúc bi treo siêu êm, nhíp đặc lập là. Khảo sát đo đạc 0đ tại Đà Nẵng, bảo hành 10 năm.",
       focusKeyword: "Cửa kéo công nghệ Đức SR1",
       secondaryKeywords: ["cửa kéo đức sr1", "cửa kéo u 1.3mm", "giá cửa kéo đức đà nẵng", "cửa kéo máng đúc bi treo"],
       slug: "cua-keo-cong-nghe-duc-sr1",
@@ -96,7 +210,7 @@ export const DEFAULT_PRODUCT_ARTICLES = [
     </tr>
     <tr>
       <td><strong>Thời gian bảo hành</strong></td>
-      <td>5 năm chính hãng tận nơi tại Đà Nẵng & Miền Trung</td>
+      <td>10 năm chính hãng tận nơi tại Đà Nẵng & Miền Trung</td>
     </tr>
   </tbody>
 </table>
@@ -132,7 +246,7 @@ export const DEFAULT_PRODUCT_ARTICLES = [
     ],
     seo: {
       title: "Cửa Kéo Công Nghệ Đức SR2 U Dày 1.1mm | Boss Đà Nẵng",
-      description: "Cửa kéo công nghệ Đức SR2 độ dày 1.1mm giá tốt tại Đà Nẵng. Sơn tĩnh điện AkzoNobel, máng đúc bi treo siêu êm, bảo hành 5 năm chính hãng.",
+      description: "Cửa kéo công nghệ Đức SR2 độ dày 1.1mm giá tốt tại Đà Nẵng. Sơn tĩnh điện AkzoNobel, máng đúc bi treo siêu êm, bảo hành 10 năm chính hãng.",
       focusKeyword: "Cửa kéo công nghệ Đức SR2",
       secondaryKeywords: ["cửa kéo sr2", "cửa kéo đức 1.1mm", "cửa kéo đà nẵng giá rẻ"],
       slug: "cua-keo-cong-nghe-duc-sr2",
@@ -183,7 +297,7 @@ export const DEFAULT_PRODUCT_ARTICLES = [
     </tr>
     <tr>
       <td><strong>Bảo hành</strong></td>
-      <td>5 năm chính hãng tận nơi</td>
+      <td>10 năm chính hãng tận nơi</td>
     </tr>
   </tbody>
 </table>
@@ -202,7 +316,7 @@ export const DEFAULT_PRODUCT_ARTICLES = [
     ],
     seo: {
       title: "Cửa Cuốn Bossdoor ECO BEC.5810 - Nan Nhôm 6063-T5 | Boss Đà Nẵng",
-      description: "Cửa cuốn khe thoáng Bossdoor ECO BEC.5810 hợp kim nhôm 6063-T5, sơn AkzoNobel Đức, giảm chấn 2 chiều siêu êm. Khảo sát 0đ tại Đà Nẵng, bảo hành 5 năm.",
+      description: "Cửa cuốn khe thoáng Bossdoor ECO BEC.5810 hợp kim nhôm 6063-T5, sơn AkzoNobel Đức, giảm chấn 2 chiều siêu êm. Khảo sát 0đ tại Đà Nẵng, bảo hành 10 năm.",
       focusKeyword: "Cửa cuốn Bossdoor ECO BEC.5810",
       secondaryKeywords: ["cửa cuốn bec.5810", "cửa cuốn bossdoor đà nẵng", "cửa cuốn khe thoáng đức"],
       slug: "cua-cuon-bossdoor-eco-bec-5810",
@@ -257,7 +371,7 @@ export const DEFAULT_PRODUCT_ARTICLES = [
     </tr>
     <tr>
       <td><strong>Bảo hành</strong></td>
-      <td>5 năm thân cửa & mô-tơ đồng bộ</td>
+      <td>10 năm thân cửa & mô-tơ đồng bộ</td>
     </tr>
   </tbody>
 </table>
@@ -308,7 +422,7 @@ export const DEFAULT_PRODUCT_ARTICLES = [
     ],
     seo: {
       title: "Cửa Kéo Công Nghệ Đức VIP U Dày 1.5mm Chống Cắt Phá | Boss Đà Nẵng",
-      description: "Cửa kéo công nghệ Đức VIP U dày 1.5mm sơn AkzoNobel, máng đúc bi treo siêu tải cho biệt thự, ngân hàng, tiệm vàng. Bảo hành 5 năm.",
+      description: "Cửa kéo công nghệ Đức VIP U dày 1.5mm sơn AkzoNobel, máng đúc bi treo siêu tải cho biệt thự, ngân hàng, tiệm vàng. Bảo hành 10 năm.",
       focusKeyword: "Cửa kéo công nghệ Đức VIP",
       secondaryKeywords: ["cửa kéo vip", "cửa kéo u 1.5mm", "cửa kéo chống trộm"],
       slug: "cua-keo-cong-nghe-duc-vip",
@@ -351,7 +465,7 @@ export const DEFAULT_PRODUCT_ARTICLES = [
     </tr>
     <tr>
       <td><strong>Bảo hành</strong></td>
-      <td>5 năm chính hãng tận nơi</td>
+      <td>10 năm chính hãng tận nơi</td>
     </tr>
   </tbody>
 </table>
@@ -429,7 +543,7 @@ export const DEFAULT_PRODUCT_ARTICLES = [
     </tr>
     <tr>
       <td><strong>Bảo hành chính hãng</strong></td>
-      <td>5 năm tận nơi tại chân công trình Đà Nẵng</td>
+      <td>10 năm tận nơi tại chân công trình Đà Nẵng</td>
     </tr>
   </tbody>
 </table>

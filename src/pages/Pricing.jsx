@@ -18,6 +18,36 @@ import {
 import { matchKeywords, extractSearchableText } from "../utils/searchHelper";
 import "./Pricing.css";
 
+// Bảng giá niêm yết theo khoảng (từ giá thấp nhất đến cao nhất) cho từng sản phẩm
+export const PRODUCT_PRICE_RANGES = {
+  "CK-DE": "980.000 - 1.230.000đ/m²",
+  "BEC.5810": "1.500.000 - 1.750.000đ/m²",
+  "DL-75": "420.000 - 550.000đ/m²",
+  "BD-LUX": "2.100.000 - 2.250.000đ/m²",
+  "BD-900": "1.450.000 - 1.850.000đ/m²",
+  "BD-L70": "980.000 - 1.350.000đ/m²",
+  "SN-100": "1.200.000 - 1.800.000đ/m²",
+  "CK-DL": "480.000 - 850.000đ/m²",
+  "CK-IX304": "1.850.000 - 2.600.000đ/m²",
+  "MT-500": "3.500.000 - 7.500.000đ/bộ",
+  "UPS-800": "2.800.000 - 4.500.000đ/bộ",
+  "WF-APP": "1.200.000 - 1.800.000đ/bộ",
+  "IT-GHOST": "32.000.000 - 45.000.000đ/bộ",
+  "NAB-150": "18.500.000 - 28.000.000đ/bộ",
+  "SR1": "1.120.000 - 1.170.000đ/m²",
+  "SR2": "1.030.000 - 1.080.000đ/m²",
+  "SR3": "980.000 - 1.030.000đ/m²",
+  "VIP": "1.180.000 - 1.230.000đ/m²"
+};
+
+export const getProductPriceRange = (product) => {
+  if (!product) return "Liên hệ để nhận báo giá";
+  if (product.code && PRODUCT_PRICE_RANGES[product.code]) {
+    return PRODUCT_PRICE_RANGES[product.code];
+  }
+  return product.price && product.price !== "Liên hệ" ? product.price : "Liên hệ để nhận báo giá";
+};
+
 // Comprehensive catalog data for Boss Đà Nẵng pricing hub
 const PRICING_CATALOG = [
   // 1. CỬA KÉO CÔNG NGHỆ ĐỨC (Mẫu bảng báo giá kỹ thuật SR3, SR2, SR1, VIP)
@@ -27,11 +57,11 @@ const PRICING_CATALOG = [
     category: "cuakeo",
     title: "CỬA KÉO CÔNG NGHỆ ĐỨC BOSSDOOR (SR3, SR2, SR1, VIP)",
     image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
-    price: "Từ 980.000đ/m²",
+    price: "980.000 - 1.230.000đ/m²",
     badge: "BÁN CHẠY NHẤT",
     businessStatus: "Đang kinh doanh • Sẵn hàng tại Đà Nẵng",
     description: "Thân cửa kéo U dày từ 0.9mm - 1.5mm sơn tĩnh điện AkzoNobel công nghệ Đức, máng đúc bi treo siêu êm, nhíp đặc lập là gia cố chắc chắn chống xô lệch.",
-    specs: ["U dày 0.9mm - 1.5mm sơn AkzoNobel", "Máng đúc bi treo chịu lực siêu êm", "Nhíp đặc lập là gia cố an toàn", "Bảo hành chính hãng 5 năm"]
+    specs: ["U dày 0.9mm - 1.5mm sơn AkzoNobel", "Máng đúc bi treo chịu lực siêu êm", "Nhíp đặc lập là gia cố an toàn", "Bảo hành chính hãng 10 năm"]
   },
 
   // 2. CỬA CUỐN KHE THOÁNG ECO BEC.5810
@@ -41,11 +71,11 @@ const PRICING_CATALOG = [
     category: "cuacuon",
     title: "CỬA CUỐN KHE THOÁNG BOSSDOOR ECO BEC.5810",
     image: "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=800&q=80",
-    price: "1.500.000đ/m²",
+    price: "1.500.000 - 1.750.000đ/m²",
     badge: "HOT",
     businessStatus: "Đang kinh doanh • Sẵn hàng tại kho Đà Nẵng",
     description: "Cửa cuốn Bossdoor ECO BEC.5810 là giải pháp tối ưu cho những ai đang tìm kiếm sự cân bằng giữa chất lượng cao, thẩm mỹ hiện đại và chi phí đầu tư hợp lý.",
-    specs: ["Hợp kim nhôm 6063-T5 cao cấp", "Sơn tĩnh điện chống muối mặn", "Bảo hành thân cửa 5 năm"]
+    specs: ["Hợp kim nhôm 6063-T5 cao cấp", "Sơn tĩnh điện chống muối mặn", "Bảo hành thân cửa 10 năm"]
   },
 
   // 3. CỬA CUỐN ĐÀI LOAN GIÁ RẺ DL-75
@@ -55,7 +85,7 @@ const PRICING_CATALOG = [
     category: "cuacuon",
     title: "CỬA CUỐN ĐÀI LOAN BẢN 7.5CM GIÁ RẺ",
     image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80",
-    price: "420.000đ/m²",
+    price: "420.000 - 550.000đ/m²",
     badge: "TIẾT KIỆM",
     businessStatus: "Đang kinh doanh • Thi công nhanh trong 24h",
     description: "Thép mạ màu Đài Loan độ bền cao, giải pháp tối ưu chi phí cho nhà xưởng, ki-ốt, cửa hàng kinh doanh và gara gia đình.",
@@ -69,7 +99,7 @@ const PRICING_CATALOG = [
     category: "cuacuon",
     title: "CỬA CUỐN SIÊU SANG THẾ HỆ MỚI BOSSDOOR LUXURY",
     image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=800&q=80",
-    price: "2.100.000đ/m²",
+    price: "2.100.000 - 2.250.000đ/m²",
     badge: "LUXURY",
     businessStatus: "Đang kinh doanh • Sản xuất theo kích thước",
     description: "Phiên bản đỉnh cao của BossDoor với thiết kế nan chèn cao su giảm chấn 2 chiều, sơn bột tĩnh điện AkzoNobel Đức gia nhiệt cao cấp, tích hợp điều khiển thông minh qua Smartphone.",
@@ -83,11 +113,11 @@ const PRICING_CATALOG = [
     category: "cuacuon",
     title: "Cửa cuốn khe thoáng Đức BossDoor BD-900",
     image: "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=800&q=80",
-    price: "1.450.000đ/m²",
+    price: "1.450.000 - 1.850.000đ/m²",
     badge: "BÁN CHẠY",
     businessStatus: "Đang kinh doanh • Sẵn hàng tại Đà Nẵng",
     description: "Thân cửa hợp kim nhôm 6063-T5 cao cấp, thiết kế nan kép chống bão, sơn tĩnh điện CHLB Đức bảo hành 10 năm không phai màu.",
-    specs: ["Hợp kim nhôm 6063-T5 siêu bền", "Độ dày nan: 1.4 - 2.2 mm", "Bảo hành mô-tơ 5 năm"]
+    specs: ["Hợp kim nhôm 6063-T5 siêu bền", "Độ dày nan: 1.4 - 2.2 mm", "Bảo hành mô-tơ 10 năm"]
   },
 
   // 6. CỬA CUỐN TẤM LIỀN ÚC BD-L70
@@ -97,7 +127,7 @@ const PRICING_CATALOG = [
     category: "cuacuon",
     title: "CỬA CUỐN TẤM LIỀN CÔNG NGHỆ ÚC SIÊU ÊM",
     image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
-    price: "980.000đ/m²",
+    price: "980.000 - 1.350.000đ/m²",
     badge: "MỚI",
     businessStatus: "Đang kinh doanh • Sẵn hàng tại Đà Nẵng",
     description: "Đóng mở êm ái không tiếng ồn nhờ dây polyguide giảm chấn, hợp kim thép mạ Colorbond Úc chống ăn mòn muối biển vượt trội.",
@@ -111,7 +141,7 @@ const PRICING_CATALOG = [
     category: "cuacuon",
     title: "CỬA CUỐN SONG NGANG - MẮC VÕNG INOX / SƠN TĨNH ĐIỆN",
     image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80",
-    price: "1.200.000đ/m²",
+    price: "1.200.000 - 1.800.000đ/m²",
     badge: "HOT",
     businessStatus: "Đang kinh doanh • Sẵn hàng thi công",
     description: "Thông thoáng tối đa, góc quan sát rộng cho TTTM, ngân hàng, gara ô tô. Vật liệu Inox 304 hoặc sắt sơn tĩnh điện cao cấp.",
@@ -125,7 +155,7 @@ const PRICING_CATALOG = [
     category: "cuakeo",
     title: "CỬA KÉO ĐÀI LOAN CÓ LÁ / KHÔNG LÁ",
     image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
-    price: "480.000đ/m²",
+    price: "480.000 - 850.000đ/m²",
     badge: "KINH TẾ",
     businessStatus: "Đang kinh doanh • Sản xuất nhanh 24h",
     description: "Thân cửa thép mạ màu Đài Loan, nhíp dập hoa văn sang trọng, bạc đạn bạc inox giúp kéo nhẹ êm không tốn sức.",
@@ -139,7 +169,7 @@ const PRICING_CATALOG = [
     category: "cuakeo",
     title: "CỬA KÉO 100% INOX 304 CAO CẤP CHỐNG RỈ SÉT",
     image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80",
-    price: "1.850.000đ/m²",
+    price: "1.850.000 - 2.600.000đ/m²",
     badge: "SIÊU BỀN",
     businessStatus: "Đang kinh doanh • Gia công theo quy cách",
     description: "100% Inox 304 sáng bóng không rỉ sét trước gió biển miền Trung, chịu lực va đập tối đa cho nhà mặt phố, biệt thự & ngân hàng.",
@@ -153,11 +183,11 @@ const PRICING_CATALOG = [
     category: "phukien",
     title: "MÔ TƠ CỬA CUỐN NHẬP KHẨU ĐỒNG BỘ ĐÀI LOAN / ĐỨC",
     image: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80",
-    price: "3.500.000đ/bộ",
+    price: "3.500.000 - 7.500.000đ/bộ",
     badge: "CHÍNH HÃNG",
     businessStatus: "Đang kinh doanh • Sẵn hàng tại kho Đà Nẵng",
     description: "Động cơ dây đồng 100%, sức kéo mạnh mẽ từ 300kg - 1000kg, tích hợp phanh đĩa kép an toàn và bộ tự ngắt khi quá nhiệt.",
-    specs: ["Lõi đồng 100% nguyên chất", "Sức kéo: 300kg - 1000kg", "Bảo hành 5 năm 1 đổi 1"]
+    specs: ["Lõi đồng 100% nguyên chất", "Sức kéo: 300kg - 1000kg", "Bảo hành 10 năm 1 đổi 1"]
   },
 
   // 11. BÌNH LƯU ĐIỆN CỬA CUỐN UPS-800
@@ -167,7 +197,7 @@ const PRICING_CATALOG = [
     category: "phukien",
     title: "BÌNH LƯU ĐIỆN CỬA CUỐN (UPS DỰ PHÒNG 48H - 72H)",
     image: "https://images.unsplash.com/photo-1544724569-5f546fd6f2b5?auto=format&fit=crop&w=800&q=80",
-    price: "2.800.000đ/bộ",
+    price: "2.800.000 - 4.500.000đ/bộ",
     badge: "TIÊU CHUẨN",
     businessStatus: "Đang kinh doanh • Sẵn hàng tại Đà Nẵng",
     description: "Bộ lưu điện dự phòng thông minh bảo đảm cửa cuốn luôn đóng mở bình thường trong 48h - 72h khi xảy ra cúp điện lưới.",
@@ -181,7 +211,7 @@ const PRICING_CATALOG = [
     category: "phukien",
     title: "BỘ ĐIỀU KHIỂN CỬA CUỐN QUA ĐIỆN THOẠI (SMART WIFI / 4G)",
     image: "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=800&q=80",
-    price: "1.200.000đ/bộ",
+    price: "1.200.000 - 1.800.000đ/bộ",
     badge: "SMART",
     businessStatus: "Đang kinh doanh • Lắp đặt nhanh 30 phút",
     description: "Đóng mở cửa cuốn từ xa mọi lúc mọi nơi qua Smartphone, cảnh báo trạng thái cửa tức thì khi có người cạy phá hoặc mở cửa.",
@@ -195,11 +225,11 @@ const PRICING_CATALOG = [
     category: "cuatudong",
     title: "MÔ TƠ CỔNG TỰ ĐỘNG ÂM SÀN / TAY CO ITALIA",
     image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
-    price: "32.000.000đ/bộ",
+    price: "32.000.000 - 45.000.000đ/bộ",
     badge: "VIP",
     businessStatus: "Đang kinh doanh • Khảo sát & lên phương án miễn phí",
     description: "Mô-tơ âm sàn chống nước tiêu chuẩn IP67 nhập khẩu Ý, chịu tải trọng lớn, điều khiển qua Smartphone cho Biệt thự & Villa cao cấp.",
-    specs: ["Tiêu chuẩn chống ngập IP67 Ý", "Tải trọng: 800kg / cánh", "Bảo hành 5 năm"]
+    specs: ["Tiêu chuẩn chống ngập IP67 Ý", "Tải trọng: 800kg / cánh", "Bảo hành 10 năm"]
   },
 
   // 14. CỬA TRƯỢT TỰ ĐỘNG NAB-150
@@ -209,13 +239,20 @@ const PRICING_CATALOG = [
     category: "cuatudong",
     title: "CỬA KÍNH TRƯỢT TỰ ĐỘNG KABA / NABCO NHẬT BẢN",
     image: "https://images.unsplash.com/photo-1511818966892-d7d671e672a2?auto=format&fit=crop&w=800&q=80",
-    price: "18.500.000đ/bộ",
+    price: "18.500.000 - 28.000.000đ/bộ",
     badge: "HOT",
     businessStatus: "Đang kinh doanh • Sẵn hàng thi công",
     description: "Mắt thần cảm biến radar vi sóng siêu nhạy, động cơ DC Brushless vận hành siêu êm cho TTTM, sảnh khách sạn và bệnh viện.",
     specs: ["Động cơ DC Brushless Nhật Bản", "Tải trọng: 150kg x 2 cánh", "Bảo hành 3 năm"]
   }
 ];
+
+const sanitizeSpec = (text) => {
+  if (typeof text !== "string") return text;
+  let s = text.replace(/110\s*năm/gi, "15 năm");
+  s = s.replace(/(?<!\d)5\s*năm/gi, "10 năm");
+  return s;
+};
 
 export default function Pricing() {
   const navigate = useNavigate();
@@ -238,9 +275,15 @@ export default function Pricing() {
             resData.data.forEach((p) => {
               if (p.code) {
                 const existing = map.get(p.code);
+                const sanitizedSpecs = Array.isArray(p.specs)
+                  ? p.specs.map(sanitizeSpec)
+                  : p.specs;
+                const priceRange = PRODUCT_PRICE_RANGES[p.code] || existing?.price || p.price;
                 map.set(p.code, {
                   ...existing,
                   ...p,
+                  price: priceRange,
+                  specs: sanitizedSpecs || existing?.specs,
                   businessStatus: existing?.businessStatus || "Đang kinh doanh • Sẵn hàng tại Đà Nẵng"
                 });
               }
@@ -259,6 +302,39 @@ export default function Pricing() {
     { id: "phukien", label: "PHỤ KIỆN & MÔ TƠ" },
     { id: "cuatudong", label: "CỔNG & CỬA TỰ ĐỘNG" }
   ];
+
+  // Lọc lấy 2 thông số cốt lõi đắt giá nhất để hiển thị gọn gàng trên mobile ("hiện những cái cần hiện"):
+  // 1. Đặc tính vật liệu / công nghệ nổi bật nhất
+  // 2. Chế độ bảo hành chính hãng (10 năm)
+  const getEssentialSpecs = (specs) => {
+    if (!specs || !Array.isArray(specs) || specs.length === 0) return [];
+    const cleaned = specs.map(sanitizeSpec);
+
+    const warranty = cleaned.find((s) => typeof s === "string" && s.toLowerCase().includes("bảo hành"));
+    const highlight = cleaned.find(
+      (s) =>
+        typeof s === "string" &&
+        !s.toLowerCase().includes("bảo hành") &&
+        (s.toLowerCase().includes("sơn") ||
+          s.toLowerCase().includes("nhôm") ||
+          s.toLowerCase().includes("inox") ||
+          s.toLowerCase().includes("lõi đồng") ||
+          s.toLowerCase().includes("u dày") ||
+          s.toLowerCase().includes("tôn") ||
+          s.toLowerCase().includes("tiêu chuẩn"))
+    );
+
+    const results = [];
+    if (highlight) results.push(highlight);
+    if (warranty && !results.includes(warranty)) results.push(warranty);
+
+    for (const s of cleaned) {
+      if (results.length >= 2) break;
+      if (!results.includes(s)) results.push(s);
+    }
+
+    return results;
+  };
 
   const getCategoryName = (cat) => {
     switch (cat) {
@@ -450,12 +526,6 @@ export default function Pricing() {
               <div className="card-info-column">
                 <div className="card-meta-row">
                   <span className="card-cat-badge">{getCategoryName(prod.category)}</span>
-                  <div className="card-business-status">
-                    <span className="status-pulse-dot"></span>
-                    <span className="status-text-label">
-                      {prod.businessStatus || "Đang kinh doanh • Sẵn hàng tại Đà Nẵng"}
-                    </span>
-                  </div>
                 </div>
 
                 <h3 className="card-prod-title">
@@ -471,14 +541,30 @@ export default function Pricing() {
                 <p className="card-prod-desc">{prod.description}</p>
 
                 {prod.specs && prod.specs.length > 0 && (
-                  <div className="card-specs-list">
-                    {prod.specs.map((sp, idx) => (
-                      <span key={idx} className="spec-tag-item">
-                        <Check size={13} className="spec-check-icon" />
-                        <span>{sp}</span>
-                      </span>
-                    ))}
-                  </div>
+                  <>
+                    {/* Desktop: Giữ nguyên 100% hiển thị đầy đủ thông số */}
+                    <div className="card-specs-list desktop-only-specs">
+                      {prod.specs.map((sp, idx) => {
+                        const displaySp = sanitizeSpec(sp);
+                        return (
+                          <span key={idx} className="spec-tag-item">
+                            <Check size={12} className="spec-check-icon" />
+                            <span>{displaySp}</span>
+                          </span>
+                        );
+                      })}
+                    </div>
+
+                    {/* Mobile: Chỉ hiện 2 thông số cốt lõi nhất ("những cái cần hiện") dạng thanh ngang full-width, không bao giờ bị cắt chữ */}
+                    <div className="card-specs-list mobile-only-specs">
+                      {getEssentialSpecs(prod.specs).map((sp, idx) => (
+                        <div key={idx} className="spec-tag-item">
+                          <Check size={13} className="spec-check-icon" />
+                          <span>{sp}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </>
                 )}
               </div>
 
@@ -487,7 +573,7 @@ export default function Pricing() {
                 <div className="price-box-wrapper">
                   <span className="price-title-caption">Giá niêm yết tham khảo:</span>
                   <div className="price-main-highlight">
-                    {prod.price && prod.price !== "Liên hệ" ? prod.price : "Liên hệ để nhận báo giá"}
+                    {getProductPriceRange(prod)}
                   </div>
                   <span className="price-subnote-text">
                     Khảo sát &amp; đo đạc miễn phí
@@ -559,7 +645,7 @@ export default function Pricing() {
           <div className="g-item">
             <CheckCircle2 size={32} className="g-icon gold" />
             <div>
-              <h4>BẢO HÀNH 5 NĂM</h4>
+              <h4>BẢO HÀNH 10 NĂM</h4>
               <p>Bảo trì tận nơi, hỗ trợ kỹ thuật 24/7</p>
             </div>
           </div>

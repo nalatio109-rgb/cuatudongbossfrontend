@@ -29,7 +29,7 @@ export const EXTENDED_PRODUCT_MAP = {
       { label: "Độ dày U", value: "1.3 mm sơn tĩnh điện AKZO NOBEL" },
       { label: "Chi tiết kỹ thuật", value: "Máng đúc, bi treo chịu lực, nhíp đặc lập là, lá sơn tĩnh điện, máng mạ kẽm" },
       { label: "Màu sắc", value: "Ghi sáng, vàng kem, cà phê, xanh" },
-      { label: "Bảo hành", value: "5 năm chính hãng Boss Đà Nẵng" }
+      { label: "Bảo hành", value: "10 năm chính hãng Boss Đà Nẵng" }
     ],
     sectionA: {
       intro: "Cửa kéo công nghệ Đức SR1 là sản phẩm cửa kéo cao cấp, được thiết kế và sản xuất dựa trên dây chuyền công nghệ hiện đại của Đức, mang đến sự bền bỉ, an toàn và tính thẩm mỹ vượt trội cho mọi công trình. Với chất liệu tuyển chọn và thiết kế tinh tế, SR1 là sự lựa chọn hoàn hảo cho khách hàng yêu cầu tiêu chuẩn cao về chất lượng và tuổi thọ sử dụng.",
@@ -79,7 +79,7 @@ export const EXTENDED_PRODUCT_MAP = {
         { label: "Lá cửa", value: "Lá tôn mạ kẽm sơn tĩnh điện đồng màu" },
         { label: "Kích thước sản xuất", value: "Thiết kế & gia công theo kích thước thực tế công trình" },
         { label: "Đơn vị tính", value: "m² (Mét vuông)" },
-        { label: "Thời gian bảo hành", value: "5 năm chính hãng tận nơi tại Đà Nẵng & Miền Trung" }
+        { label: "Thời gian bảo hành", value: "10 năm chính hãng tận nơi tại Đà Nẵng & Miền Trung" }
       ]
     },
     sectionD: [
@@ -136,7 +136,7 @@ export const EXTENDED_PRODUCT_MAP = {
         "Khảo sát & đo đạc miễn phí: Kỹ sư Boss Đà Nẵng đến tận chân công trình đo đạc và tư vấn phương án trong vòng 24h.",
         "Sản xuất nhanh: Thời gian gia công chuẩn xác chỉ từ 1 - 2 ngày làm việc.",
         "Lắp đặt chuẩn kỹ thuật: Đội thợ tay nghề cao, căn chỉnh ray và máng thăng bằng bằng tia laser.",
-        "Bảo hành 5 năm: Cam kết bảo trì, hỗ trợ kỹ thuật tận nơi 24/7 tại Đà Nẵng và các tỉnh lân cận."
+        "Bảo hành 10 năm: Cam kết bảo trì, hỗ trợ kỹ thuật tận nơi 24/7 tại Đà Nẵng và các tỉnh lân cận."
       ]
     },
     faq: [
@@ -158,7 +158,7 @@ export const EXTENDED_PRODUCT_MAP = {
       },
       {
         q: "Chính sách bảo hành tại Đà Nẵng ra sao?",
-        a: "Sản phẩm được bảo hành chính hãng 5 năm cho thân cửa và màu sơn tĩnh điện. Khi có yêu cầu hỗ trợ, kỹ thuật viên sẽ có mặt xử lý trong vòng 2 - 4 giờ làm việc."
+        a: "Sản phẩm được bảo hành chính hãng 10 năm cho thân cửa và màu sơn tĩnh điện. Khi có yêu cầu hỗ trợ, kỹ thuật viên sẽ có mặt xử lý trong vòng 2 - 4 giờ làm việc."
       }
     ],
     pricingUrl: "/bang-gia/CK-DE"
@@ -188,7 +188,7 @@ export const EXTENDED_PRODUCT_MAP = {
       { label: "Độ dày U", value: "1.1 mm sơn tĩnh điện AKZO NOBEL" },
       { label: "Chi tiết kỹ thuật", value: "Máng đúc, bi treo, nhíp đặc lập là, lá sơn tĩnh điện" },
       { label: "Màu sắc", value: "Ghi sáng, vàng kem, cà phê, xanh" },
-      { label: "Bảo hành", value: "5 năm chính hãng" }
+      { label: "Bảo hành", value: "10 năm chính hãng" }
     ],
     sectionA: {
       intro: "Cửa kéo công nghệ Đức SR2 với thanh U dày 1.1 mm là sự cân bằng tuyệt vời giữa chi phí đầu tư kinh tế và độ bền vững kỹ thuật. Đây là dòng sản phẩm được các gia đình tại Đà Nẵng lựa chọn nhiều nhất cho nhà phố và nhà cấp 4 hiện đại.",
@@ -234,7 +234,7 @@ export const EXTENDED_PRODUCT_MAP = {
         { label: "Sơn phủ", value: "Sơn tĩnh điện AkzoNobel Đức" },
         { label: "Màu sắc", value: "Ghi sáng, Vàng kem, Cà phê, Xanh" },
         { label: "Cơ cấu", value: "Máng đúc, bi treo chịu lực" },
-        { label: "Bảo hành", value: "5 năm chính hãng" }
+        { label: "Bảo hành", value: "10 năm chính hãng" }
       ]
     },
     sectionD: [
@@ -256,7 +256,7 @@ export const EXTENDED_PRODUCT_MAP = {
     },
     sectionG: {
       warrantyTitle: "Chính sách bảo hành",
-      policies: ["Bảo hành chính hãng 5 năm", "Khảo sát đo đạc miễn phí trong ngày."]
+      policies: ["Bảo hành chính hãng 10 năm", "Khảo sát đo đạc miễn phí trong ngày."]
     },
     faq: [
       { q: "Cửa SR2 có bền không?", a: "Với độ dày 1.1 mm sơn AkzoNobel và máng đúc, cửa SR2 có tuổi thọ trên 15 năm mà không lo gỉ sét hay kẹt bi." }
@@ -353,13 +353,13 @@ export const EXTENDED_PRODUCT_MAP = {
       { label: "Độ dày U", value: "1.5 mm sơn tĩnh điện AKZO NOBEL" },
       { label: "Chi tiết kỹ thuật", value: "Máng đúc, bi treo chịu lực lớn, nhíp đặc lập là, lá sơn tĩnh điện" },
       { label: "Màu sắc", value: "Ghi sáng, vàng kem, cà phê, xanh" },
-      { label: "Bảo hành", value: "5 năm chính hãng" }
+      { label: "Bảo hành", value: "10 năm chính hãng" }
     ],
     sectionA: {
       intro: "Cửa kéo công nghệ Đức VIP là phiên bản đỉnh cao với độ dày thanh U lên tới 1.5 mm, đem lại sự kiên cố vững chắc nhất thị trường. Đây là dòng cửa đặc biệt dành cho biệt thự, tiệm vàng, ngân hàng và các công trình đòi hỏi mức độ an ninh tối đa.",
       origin: "Dây chuyền công nghệ CHLB Đức, phủ sơn tĩnh điện AkzoNobel cao cấp.",
       purpose: "Bảo vệ an ninh tuyệt đối cho các công trình trọng điểm.",
-      highlights: ["Độ dày đỉnh cao 1.5 mm", "Chống cạy phá tuyệt đối", "Bảo hành 5 năm tận nơi"]
+      highlights: ["Độ dày đỉnh cao 1.5 mm", "Chống cạy phá tuyệt đối", "Bảo hành 10 năm tận nơi"]
     },
     sectionB: {
       title: "Cấu tạo siêu dày của dòng VIP",
@@ -374,7 +374,7 @@ export const EXTENDED_PRODUCT_MAP = {
         { label: "Độ dày U", value: "1.5 mm (Dày nhất thị trường)" },
         { label: "Chất liệu", value: "Thép hợp kim chịu lực cao" },
         { label: "Sơn", value: "AkzoNobel CHLB Đức" },
-        { label: "Bảo hành", value: "5 năm" }
+        { label: "Bảo hành", value: "10 năm" }
       ]
     },
     sectionD: [
@@ -391,7 +391,7 @@ export const EXTENDED_PRODUCT_MAP = {
     },
     sectionG: {
       warrantyTitle: "Chính sách",
-      policies: ["Bảo hành chính hãng 5 năm tận chân công trình."]
+      policies: ["Bảo hành chính hãng 10 năm tận chân công trình."]
     },
     faq: [{ q: "Cửa VIP có nặng không?", a: "Mặc dù U dày 1.5 mm nhưng nhờ cụm máng đúc bi treo Inox cao cấp nên lực đẩy kéo vẫn rất êm ái nhẹ nhàng." }],
     pricingUrl: "/bang-gia/CK-DE"
@@ -421,7 +421,7 @@ export const EXTENDED_PRODUCT_MAP = {
       { label: "Chất liệu", value: "Hợp kim nhôm 6063-T5 cao cấp chuẩn quốc tế" },
       { label: "Lớp sơn", value: "Sơn tĩnh điện AkzoNobel CHLB Đức chống muối mặn" },
       { label: "Đặc tính", value: "Khe thoáng điều hòa ánh sáng, gioăng nỉ giảm chấn triệt tiêu tiếng ồn" },
-      { label: "Bảo hành", value: "5 năm thân cửa & mô-tơ chính hãng" }
+      { label: "Bảo hành", value: "10 năm thân cửa & mô-tơ chính hãng" }
     ],
     sectionA: {
       intro: "Cửa cuốn Bossdoor ECO BEC.5810 là giải pháp tối ưu cho những ai đang tìm kiếm sự cân bằng hoàn hảo giữa chất lượng nhôm cao cấp, vẻ đẹp hiện đại và chi phí đầu tư hợp lý. Sản phẩm sở hữu thiết kế nan kép tinh tế, lỗ thoáng thoáng khí khoa học và khả năng vận hành êm ái bậc nhất.",
@@ -469,7 +469,7 @@ export const EXTENDED_PRODUCT_MAP = {
         { label: "Kích thước tối đa", value: "Rộng 6.5m x Cao 5.5m (Diện tích tối đa 35m²)" },
         { label: "Tốc độ đóng mở", value: "15 - 20 cm/giây" },
         { label: "Hệ thống an toàn", value: "Đảo chiều khi gặp vật cản, cảm biến hồng ngoại, còi báo động" },
-        { label: "Thời gian bảo hành", value: "5 năm cho thân nan, 5 năm cho mô-tơ đồng bộ" }
+        { label: "Thời gian bảo hành", value: "10 năm cho thân nan, 5 năm cho mô-tơ đồng bộ" }
       ]
     },
     sectionD: [
@@ -493,7 +493,7 @@ export const EXTENDED_PRODUCT_MAP = {
     sectionG: {
       warrantyTitle: "Chính sách bảo hành và lắp đặt BossDoor",
       policies: [
-        "Bảo hành 5 năm thân cửa nhôm và màu sơn.",
+        "Bảo hành 10 năm thân cửa nhôm và màu sơn.",
         "Khảo sát thực tế tại công trình Đà Nẵng miễn phí trong vòng 24h.",
         "Bảo trì định kỳ và hỗ trợ kỹ thuật tận nơi 24/7."
       ]
@@ -539,7 +539,7 @@ export const EXTENDED_PRODUCT_MAP = {
       { label: "Độ dày nan", value: "1.4 mm - 2.2 mm (Gân tăng cứng kép)" },
       { label: "Công nghệ sơn", value: "Sơn tĩnh điện AkzoNobel Đức bảo hành 10 năm" },
       { label: "Màu sắc", value: "Ghi sáng, Cà phê ánh kim, Vàng kem cát" },
-      { label: "Bảo hành", value: "5 năm chính hãng Boss Đà Nẵng" }
+      { label: "Bảo hành", value: "10 năm chính hãng Boss Đà Nẵng" }
     ],
     sectionA: {
       intro: "Cửa cuốn khe thoáng Đức BossDoor BD-900 là sản phẩm cửa cuốn cao cấp thế hệ mới, được thiết kế và sản xuất theo tiêu chuẩn kỹ thuật CHLB Đức, mang lại sự vững chắc chống gió bão, vận hành êm ái và tính thẩm mỹ thanh lịch hàng đầu tại Đà Nẵng.",
@@ -579,13 +579,13 @@ export const EXTENDED_PRODUCT_MAP = {
         { label: "Công nghệ sơn", value: "Sơn tĩnh điện AkzoNobel CHLB Đức" },
         { label: "Màu sắc", value: "Ghi sáng, Cà phê ánh kim, Vàng kem cát" },
         { label: "Hệ thống an toàn", value: "Cảm biến hồng ngoại tự đảo chiều, còi báo động" },
-        { label: "Bảo hành", value: "5 năm chính hãng" }
+        { label: "Bảo hành", value: "10 năm chính hãng" }
       ]
     },
     sectionD: [
       { title: "Chống bão cấp 12", desc: "Nan dày 1.4 - 2.2mm cứng cáp.", icon: "Shield" },
       { title: "Vận hành siêu êm", desc: "Gioăng giảm chấn 2 chiều.", icon: "VolumeX" },
-      { title: "Bảo hành 5 năm", desc: "Hỗ trợ kỹ thuật 24/7 tận chân công trình.", icon: "Check" }
+      { title: "Bảo hành 10 năm", desc: "Hỗ trợ kỹ thuật 24/7 tận chân công trình.", icon: "Check" }
     ],
     sectionE: [
       { name: "Nhà phố & Biệt thự", desc: "Sang trọng, hiện đại, tăng tính thẩm mỹ." },
@@ -597,7 +597,7 @@ export const EXTENDED_PRODUCT_MAP = {
     },
     sectionG: {
       warrantyTitle: "Chính sách bảo hành",
-      policies: ["Bảo hành nan nhôm và màu sơn 5 năm.", "Khảo sát và đo đạc miễn phí trong 24h tại Đà Nẵng."]
+      policies: ["Bảo hành nan nhôm và màu sơn 10 năm.", "Khảo sát và đo đạc miễn phí trong 24h tại Đà Nẵng."]
     },
     faq: [
       { q: "Cửa cuốn BD-900 có ồn không?", a: "Nhờ hệ giảm chấn 2 chiều, BD-900 đóng mở rất êm ái, giảm đến 90% tiếng ồn so với cửa cuốn thông thường." },
@@ -804,7 +804,7 @@ export function getProductExtendedDetails(product) {
         { label: "Mã sản phẩm", value: product.code || "TIÊU CHUẨN" },
         { label: "Tên dòng sản phẩm", value: product.title },
         { label: "Đặc điểm nổi bật", value: product.description || "Chính hãng Boss Đà Nẵng" },
-        { label: "Bảo hành", value: "2 - 5 năm chính hãng" }
+        { label: "Bảo hành", value: "2 - 10 năm chính hãng" }
       ],
       sectionA: {
         intro: product.details || product.description || template.sectionA.intro,

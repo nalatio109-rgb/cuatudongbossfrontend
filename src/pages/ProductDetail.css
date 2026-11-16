@@ -1473,6 +1473,12 @@
   box-shadow: 0 8px 20px rgba(245, 189, 32, 0.5);
 }
 
+.callout-title-mobile,
+.callout-mobile-features,
+.btn-text-mobile {
+  display: none;
+}
+
 /* ========================================================= */
 /* 4. CÂU HỎI THƯỜNG GẶP (FAQ ACCORDION) */
 /* ========================================================= */
@@ -1488,6 +1494,23 @@
   text-align: center;
   max-width: 650px;
   margin: 0 auto 30px;
+}
+
+.sub-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #004d32;
+  background: #e6f4ea;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 8px;
+}
+
+.faq-heading-mobile {
+  display: none;
 }
 
 .faq-section-header h2 {
@@ -1608,6 +1631,12 @@
   margin: 0;
 }
 
+.related-h2-mobile,
+.view-all-text-mobile,
+.related-products-mobile-marquee-wrapper {
+  display: none;
+}
+
 .view-all-link {
   display: inline-flex;
   align-items: center;
@@ -1622,6 +1651,7 @@
   text-decoration: underline;
 }
 
+.related-products-desktop-grid,
 .related-products-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -1651,6 +1681,7 @@
   aspect-ratio: 4 / 3;
   background: #f1f5f9;
   overflow: hidden;
+  display: block;
 }
 
 .rel-card-image img {
@@ -1784,14 +1815,22 @@
   margin-bottom: 14px;
 }
 
-.cta-banner-content h2 {
+.cta-banner-content h2,
+.cta-title-desktop {
   font-size: clamp(22px, 3.5vw, 32px);
   font-weight: 900;
   margin: 0 0 14px;
   line-height: 1.3;
 }
 
-.cta-banner-content p {
+.cta-title-mobile,
+.cta-desc-mobile,
+.cta-btn-text-mobile {
+  display: none;
+}
+
+.cta-banner-content p,
+.cta-desc-desktop {
   font-size: 15px;
   color: rgba(255, 255, 255, 0.88);
   line-height: 1.6;
@@ -2274,28 +2313,426 @@
     letter-spacing: -0.1px !important;
   }
 
+  /* Banner tư vấn công trình cuối trang trên mobile: Gọn gàng, dễ nhìn */
+  .final-consultation-cta-banner {
+    padding: 24px 16px !important;
+    border-radius: 16px !important;
+    margin-bottom: 24px !important;
+    box-shadow: 0 6px 20px rgba(0, 43, 28, 0.25) !important;
+  }
+
+  .cta-banner-content {
+    max-width: 100% !important;
+  }
+
+  .cta-highlight-badge {
+    font-size: 10px !important;
+    font-weight: 800 !important;
+    letter-spacing: 0.4px !important;
+    padding: 4px 12px !important;
+    margin-bottom: 10px !important;
+    white-space: nowrap !important;
+    display: inline-block !important;
+  }
+
+  .cta-title-desktop,
+  .cta-desc-desktop {
+    display: none !important;
+  }
+
+  .cta-title-mobile {
+    display: block !important;
+    font-size: 17px !important;
+    font-weight: 800 !important;
+    line-height: 1.35 !important;
+    color: #ffffff !important;
+    margin: 0 0 8px !important;
+  }
+
+  .cta-desc-mobile {
+    display: block !important;
+    font-size: 13px !important;
+    line-height: 1.5 !important;
+    color: rgba(255, 255, 255, 0.88) !important;
+    margin: 0 auto 16px !important;
+    max-width: 100% !important;
+  }
+
+  .cta-btn-text-desktop {
+    display: none !important;
+  }
+
+  .cta-btn-text-mobile {
+    display: inline !important;
+  }
+
+  /* 3 nút liên hệ dàn thành 1 hàng ngang trên mobile */
   .cta-action-buttons-row {
-    flex-direction: column;
-    width: 100%;
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 8px !important;
+    width: 100% !important;
   }
 
   .cta-btn-phone,
   .cta-btn-zalo,
   .cta-btn-form {
-    width: 100%;
-    justify-content: center;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 11px 4px !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    border-radius: 10px !important;
+    white-space: nowrap !important;
+    gap: 5px !important;
+    letter-spacing: 0px !important;
+  }
+
+  .cta-btn-phone svg,
+  .cta-btn-zalo svg,
+  .cta-btn-form svg {
+    width: 15px !important;
+    height: 15px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .cta-btn-phone:hover,
+  .cta-btn-zalo:hover,
+  .cta-btn-form:hover {
+    transform: none !important;
   }
 
   .faq-answer-pane {
     padding-left: 20px;
   }
+
+  /* Banner báo giá kỹ thuật trên mobile: Gọn gàng, dễ hiểu, dễ nhìn */
+  .dedicated-pricing-callout-card {
+    padding: 18px 16px !important;
+    border-radius: 14px !important;
+    gap: 12px !important;
+    margin-bottom: 24px !important;
+    background: linear-gradient(135deg, #013824 0%, #004d32 100%) !important;
+    border: 1px solid rgba(245, 189, 32, 0.35) !important;
+    box-shadow: 0 6px 20px rgba(0, 77, 50, 0.22) !important;
+  }
+
+  .callout-pill-tag {
+    font-size: 10px !important;
+    font-weight: 800 !important;
+    padding: 3px 9px !important;
+    margin-bottom: 8px !important;
+    letter-spacing: 0.3px !important;
+  }
+
+  .callout-title-desktop,
+  .callout-desc-desktop,
+  .btn-text-desktop {
+    display: none !important;
+  }
+
+  .callout-title-mobile {
+    display: block !important;
+    font-size: 15.5px !important;
+    font-weight: 800 !important;
+    line-height: 1.35 !important;
+    color: #ffffff !important;
+    margin: 0 !important;
+  }
+
+  .pricing-callout-left {
+    width: 100% !important;
+  }
+
+  .callout-mobile-features {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+    margin: 8px 0 2px !important;
+    background: rgba(0, 0, 0, 0.15) !important;
+    padding: 8px 12px !important;
+    border-radius: 8px !important;
+    border-left: 3px solid #f5bd20 !important;
+  }
+
+  .cm-feat-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 7px !important;
+    font-size: 12.5px !important;
+    font-weight: 500 !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    line-height: 1.3 !important;
+  }
+
+  .cm-feat-icon {
+    color: #f5bd20 !important;
+    flex-shrink: 0 !important;
+  }
+
+  .pricing-callout-right {
+    width: 100% !important;
+    margin-top: 4px !important;
+  }
+
+  .btn-callout-view-pricing {
+    width: 100% !important;
+    padding: 12px 16px !important;
+    font-size: 13.5px !important;
+    font-weight: 800 !important;
+    border-radius: 10px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    box-shadow: 0 4px 14px rgba(245, 189, 32, 0.45) !important;
+  }
+
+  .btn-text-mobile {
+    display: inline !important;
+  }
+
+  /* FAQ Accordion trên mobile: Bỏ khung viền nổi, phẳng trên nền trắng, tinh gọn, dễ đọc */
+  .product-faq-accordion-section {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    margin-bottom: 28px !important;
+  }
+
+  .sub-badge {
+    font-size: 10px !important;
+    padding: 3px 9px !important;
+    margin-bottom: 6px !important;
+  }
+
+  .faq-section-header {
+    margin-bottom: 14px !important;
+  }
+
+  .faq-heading-desktop {
+    display: none !important;
+  }
+
+  .faq-heading-mobile {
+    display: block !important;
+    font-size: 16px !important;
+    font-weight: 800 !important;
+    line-height: 1.35 !important;
+    color: #0f172a !important;
+    margin: 0 0 4px !important;
+  }
+
+  .faq-section-header p {
+    font-size: 12px !important;
+    line-height: 1.4 !important;
+    color: #64748b !important;
+  }
+
+  .faq-accordion-list {
+    gap: 8px !important;
+  }
+
+  .faq-accordion-item {
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 10px !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+  }
+
+  .faq-accordion-item:hover {
+    transform: none !important;
+  }
+
+  .faq-accordion-item.open {
+    border-color: #004d32 !important;
+    box-shadow: 0 2px 8px rgba(0, 77, 50, 0.08) !important;
+  }
+
+  .faq-question-button {
+    padding: 12px 14px !important;
+    gap: 10px !important;
+  }
+
+  .q-icon-wrap {
+    width: 24px !important;
+    height: 24px !important;
+    border-radius: 6px !important;
+  }
+
+  .q-icon-wrap svg {
+    width: 13px !important;
+    height: 13px !important;
+  }
+
+  .q-text {
+    font-size: 13.5px !important;
+    font-weight: 700 !important;
+    line-height: 1.35 !important;
+    color: #0f172a !important;
+  }
+
+  .chevron-toggle {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  .faq-answer-pane {
+    padding: 0 14px 14px 48px !important;
+    background: #fafdfb !important;
+  }
+
+  .faq-answer-pane p {
+    font-size: 12.5px !important;
+    line-height: 1.6 !important;
+    color: #475569 !important;
+  }
+
+  /* Section Sản phẩm liên quan trên mobile: Gọn gàng, chuẩn TMĐT 2 cột */
+  .related-section-header {
+    align-items: center !important;
+    margin-bottom: 14px !important;
+    gap: 8px !important;
+  }
+
+  .related-h2-desktop,
+  .view-all-text-desktop {
+    display: none !important;
+  }
+
+  .related-h2-mobile {
+    display: block !important;
+    font-size: 16px !important;
+    font-weight: 800 !important;
+    line-height: 1.3 !important;
+    color: #0f172a !important;
+    margin: 0 !important;
+  }
+
+  .view-all-link {
+    font-size: 12.5px !important;
+    font-weight: 700 !important;
+    color: #004d32 !important;
+    white-space: nowrap !important;
+    gap: 4px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .view-all-text-mobile {
+    display: inline !important;
+  }
+
+  /* Section Sản phẩm liên quan trên mobile: Marquee chạy ngang mượt mà như Dự án tiêu biểu */
+  .related-products-desktop-grid {
+    display: none !important;
+  }
+
+  .related-products-mobile-marquee-wrapper {
+    display: block !important;
+    position: relative !important;
+    width: 100% !important;
+    overflow: hidden !important;
+    padding: 6px 0 14px !important;
+    mask-image: linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%) !important;
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%) !important;
+  }
+
+  .related-products-mobile-marquee-track {
+    display: flex !important;
+    gap: 12px !important;
+    width: max-content !important;
+    animation: relatedProductMarqueeScroll 20s linear infinite !important;
+    will-change: transform !important;
+  }
+
+  .related-products-mobile-marquee-track:hover,
+  .related-products-mobile-marquee-track:active,
+  .related-products-mobile-marquee-track.paused {
+    animation-play-state: paused !important;
+  }
+
+  @keyframes relatedProductMarqueeScroll {
+    0% {
+      transform: translate3d(0, 0, 0);
+    }
+    100% {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+
+  .related-products-mobile-marquee-track .related-product-card {
+    flex-shrink: 0 !important;
+    width: 175px !important;
+    border-radius: 12px !important;
+    background: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .related-product-card:hover {
+    transform: none !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
+  }
+
+  .rel-code-pill {
+    font-size: 9px !important;
+    padding: 2px 5px !important;
+    bottom: 5px !important;
+    left: 5px !important;
+  }
+
+  .rel-card-body {
+    padding: 10px 8px !important;
+  }
+
+  .rel-title {
+    font-size: 12.5px !important;
+    font-weight: 700 !important;
+    line-height: 1.35 !important;
+    min-height: 34px !important;
+    margin: 0 0 6px !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+  }
+
+  .rel-price-row {
+    margin-bottom: 8px !important;
+  }
+
+  .rel-price-num {
+    font-size: 13.5px !important;
+  }
+
+  .rel-action-buttons {
+    gap: 6px !important;
+  }
+
+  .btn-rel-view-detail {
+    font-size: 11px !important;
+    padding: 6px 4px !important;
+    border-radius: 6px !important;
+  }
+
+  .btn-rel-pricing {
+    padding: 6px 8px !important;
+    border-radius: 6px !important;
+  }
+
+  .btn-rel-pricing svg {
+    width: 13px !important;
+    height: 13px !important;
+  }
 }
 
 @media (max-width: 540px) {
-  .related-products-grid {
-    grid-template-columns: 1fr;
-  }
-
   .advantages-card-grid {
     grid-template-columns: 1fr;
   }
@@ -2306,6 +2743,25 @@
 }
 
 @media (max-width: 360px) {
+  .cta-action-buttons-row {
+    gap: 5px !important;
+  }
+
+  .cta-btn-phone,
+  .cta-btn-zalo,
+  .cta-btn-form {
+    padding: 10px 2px !important;
+    font-size: 11px !important;
+    gap: 3px !important;
+  }
+
+  .cta-btn-phone svg,
+  .cta-btn-zalo svg,
+  .cta-btn-form svg {
+    width: 13px !important;
+    height: 13px !important;
+  }
+
   .article-header-tag {
     padding: 9px 5px !important;
     gap: 4px !important;

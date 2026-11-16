@@ -90,11 +90,11 @@ export const DEFAULT_PRICE_QUOTES = [
       }
     ],
     policies: {
-      included: "Đã bao gồm: Thân cửa hoàn chỉnh theo quy cách, lá chắn, máng đúc, bi treo bạc đạn chịu lực, sơn tĩnh điện AkzoNobel CHLB Đức, công khảo sát đo đạc thực tế tại công trình.",
-      excluded: "Bên cạnh giá sản phẩm, tổng chi phí còn bao gồm các hạng mục như vận chuyển, lắp đặt,... thường dao động khoảng 10 – 20% giá trị cửa.",
-      conditionNote: "Đơn giá áp dụng cho kích thước cửa tiêu chuẩn. Khách hàng hoàn toàn có thể yên tâm bởi BossDoor Đà Nẵng luôn mang đến mức giá cạnh tranh, minh bạch. Giúp khách hàng dễ dàng cân đối giữa chất lượng sản phẩm và ngân sách đầu tư.",
-      warrantyNote: "Thân cửa bảo hành chính hãng từ 5 đến 10 năm theo tiêu chuẩn nhà máy BossDoor. Bảo trì kỹ thuật tận nơi tại Đà Nẵng.",
-      commitmentNote: "BossDoor Đà Nẵng cam kết 100% linh kiện chính hãng, minh bạch giá cả, xuất hóa đơn VAT đầy đủ, không phát sinh chi phí ngoài hợp đồng."
+      included: "Thân cửa hoàn chỉnh theo quy cách, sơn AkzoNobel Đức, khảo sát đo đạc 0đ tận nơi.",
+      excluded: "Vận chuyển, nhân công lắp đặt (khoảng 10 – 20%), thuế VAT 10% (nếu có).",
+      conditionNote: "Chi phí có thể thay đổi tùy kích thước và mặt bằng thi công thực tế.",
+      warrantyNote: "Bảo hành chính hãng 5 – 10 năm. Cam kết 100% vật tư chính hãng, không phát sinh chi phí ngoài hợp đồng.",
+      commitmentNote: ""
     }
   },
 

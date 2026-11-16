@@ -555,15 +555,23 @@
   gap: 8px;
 }
 
+.card-specs-list.desktop-only-specs {
+  display: flex !important;
+}
+
+.card-specs-list.mobile-only-specs {
+  display: none !important;
+}
+
 .spec-tag-item {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   background: #f8fafc;
   border: 1px solid #e2e8f0;
   border-radius: 6px;
-  padding: 4px 10px;
-  font-size: 12px;
+  padding: 3px 8px;
+  font-size: 11px;
   color: #334155;
   font-weight: 500;
   transition: all 0.2s ease;
@@ -1271,23 +1279,49 @@
     -webkit-line-clamp: 2;
   }
 
-  .card-specs-list {
+  /* Bố cục thông số kỹ thuật tinh gọn trên mobile ("hiện những cái cần hiện"):
+     Chỉ hiển thị 2 thông số cốt lõi nhất, thanh ngang full-width, không cắt chữ */
+  .desktop-only-specs {
+    display: none !important;
+  }
+
+  .mobile-only-specs {
+    display: flex !important;
+    flex-direction: column;
     gap: 6px;
-    margin-bottom: 2px;
+    margin-top: 6px;
+    margin-bottom: 12px;
+    width: 100%;
   }
 
-  .spec-tag-item {
+  .mobile-only-specs .spec-tag-item {
     font-size: 11px;
-    font-weight: 550;
-    padding: 3px 8px;
-    border-radius: 5px;
-    gap: 5px;
-    color: #334155;
+    font-weight: 500;
+    line-height: 1.35;
+    padding: 5px 8px;
+    border-radius: 6px;
+    gap: 6px;
+    color: #1e293b;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    width: 100%;
   }
 
-  .spec-tag-item .spec-check-icon {
+  .mobile-only-specs .spec-tag-item .spec-check-icon {
     width: 12px;
     height: 12px;
+    color: #059669;
+    flex-shrink: 0;
+  }
+
+  .mobile-only-specs .spec-tag-item span {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    display: block;
   }
 
   /* Khối giá & Nút bấm dưới card */
