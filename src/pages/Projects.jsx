@@ -295,6 +295,7 @@ export default function Projects() {
     <div className="projects-page-container">
       {/* 1. HERO HEADER */}
       <section className="projects-hero-banner">
+        <div className="projects-hero-overlay"></div>
         <div className="projects-hero-glow-1"></div>
         <div className="projects-hero-glow-2"></div>
         <div className="container projects-hero-content">
@@ -309,8 +310,7 @@ export default function Projects() {
           </h1>
 
           <p className="projects-main-subtitle">
-            Minh chứng chất lượng vượt trội qua hơn <strong>2.000+ công trình</strong> cửa cuốn, cửa kéo, 
-            cổng tự động đã thi công hoàn thiện tại Đà Nẵng và các tỉnh miền Trung.
+            Hơn <strong>2.000+ công trình</strong> cửa cuốn, cửa kéo đã thi công hoàn thiện tại Đà Nẵng & miền Trung.
           </p>
 
           {/* KPI Mini Bar */}

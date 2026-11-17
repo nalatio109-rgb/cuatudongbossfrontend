@@ -6,6 +6,8 @@ import {
   Home, AlignJustify, ArrowRightLeft, Columns, Eye, X, Check, Filter, Sparkles, PhoneCall, Tag
 } from "lucide-react";
 import CategorySeoContent from "../components/CategorySeoContent";
+import { DEFAULT_PRODUCT_ARTICLES } from "../data/defaultProductArticles";
+import { getProductCardDescription } from "../utils/productDescriptionHelper";
 import { getProductSlug } from "../utils/slug.js";
 import { matchKeywords, extractSearchableText } from "../utils/searchHelper";
 import "./ProductsPage.css";
@@ -60,7 +62,7 @@ export default function ProductsPage() {
       image: "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=800&q=80",
       title: "CỬA CUỐN KHE THOÁNG ECO BEC.5810",
       code: "BEC.5810",
-      description: "Cửa cuốn Bossdoor ECO BEC.5810 cân bằng chất lượng, thẩm mỹ hiện đại và chi phí đầu tư hợp lý.",
+      description: "Cửa cuốn Bossdoor ECO BEC.5810 là sản phẩm cửa cuốn khe thoáng thế hệ mới mang thương hiệu BossDoor danh tiếng. Được sản xuất từ hợp kim nhôm 6063-T5 chuẩn hàng không, BEC.5810 là sự kết hợp xuất sắc giữa độ cứng cáp chống bão, thiết kế nan sang trọng và công nghệ giảm chấn 2 chiều vận hành êm ái hàng đầu.",
       details: "Cửa cuốn Bossdoor ECO BEC.5810 nan nhôm 6063-T5 cao cấp sơn tĩnh điện AkzoNobel CHLB Đức, tích hợp gioăng giảm chấn 2 chiều siêu êm.",
       specs: ["Hợp kim nhôm 6063-T5 siêu bền", "Sơn AkzoNobel Đức bảo hành 10 năm", "Giảm chấn 2 chiều siêu êm", "Bảo hành 10 năm"],
       price: "1.500.000đ/m²",
@@ -439,8 +441,13 @@ export default function ProductsPage() {
             <Sparkles size={16} /> DẢI SẢN PHẨM CHÍNH HÃNG 100%
           </div>
           <h1>DANH MỤC <span className="text-gold">SẢN PHẨM</span></h1>
-          <p>
-            Cung cấp giải pháp Cửa Cuốn – Cửa Tự Động – Barrier & Cổng – Nhôm Kính Cao Cấp chuẩn Châu Âu cho mọi kiến trúc Việt.
+          <p className="hero-banner-desc">
+            <span className="desc-desktop">
+              Cung cấp giải pháp Cửa Cuốn – Cửa Tự Động – Barrier & Cổng – Nhôm Kính Cao Cấp chuẩn Châu Âu cho mọi kiến trúc Việt.
+            </span>
+            <span className="desc-mobile">
+              Cửa cuốn, cửa kéo & cổng tự động chính hãng chuẩn Châu Âu.
+            </span>
           </p>
 
           {/* Search Box inside Hero */}
@@ -516,7 +523,7 @@ export default function ProductsPage() {
                       <h3>{product.title}</h3>
                     </div>
                     {product.price && <div className="product-price">{product.price}</div>}
-                    <p className="card-desc">{product.description}</p>
+                    <p className="card-desc">{getProductCardDescription(product)}</p>
 
                     <div className="card-specs-mini">
                       {product.specs.slice(0, 2).map((s, idx) => (

@@ -39,10 +39,47 @@ import {
   Plus,
   Sparkles,
   ChevronDown,
-  ArrowLeft
+  ChevronUp,
+  ArrowLeft,
+  Package,
+  Loader2
 } from "lucide-react";
 import { DEFAULT_PRODUCT_ARTICLES } from "../data/defaultProductArticles";
+import { extractArticleFirstParagraph } from "../utils/productDescriptionHelper";
 import "./AdminProductArticleEditor.css";
+
+const SUBCATEGORIES = {
+  cuacuon: [
+    "Cửa cuốn khe thoáng Đức",
+    "Cửa cuốn Đài Loan",
+    "Cửa cuốn tấm liền Úc",
+    "Cửa cuốn song ngang - mắc võng",
+    "Cửa cuốn cao cấp"
+  ],
+  phukien: [
+    "Mô tơ cửa cuốn",
+    "Bình lưu điện cửa cuốn",
+    "Bộ điều khiển qua điện thoại",
+    "Tay điều khiển, hộp điều khiển"
+  ],
+  cuakeo: [
+    "Cửa kéo CN Đức",
+    "Cửa kéo Đài Loan",
+    "Cửa kéo không lá",
+    "Cửa kéo Inox"
+  ],
+  cuatudong: [
+    "Cổng tự động",
+    "Cửa tự động",
+    "Mái hiên, rèm che tự động",
+    "Cửa kính lề sàn"
+  ],
+  nhomkinh: [
+    "Cửa nhôm Xingfa",
+    "Vách kính cường lực",
+    "Cửa kính thủy lực"
+  ]
+};
 
 // Available product catalog options for admin to select and edit
 const PRODUCT_OPTIONS = [
@@ -68,7 +105,8 @@ export default function AdminProductArticleEditor({
   showToast, 
   initialProductCode, 
   onBackToProducts, 
-  dbProducts = [] 
+  dbProducts = [],
+  onSelectProduct
 }) {
   const [selectedProductCode, setSelectedProductCode] = useState(initialProductCode || "CK-SR1");
   const [articlesList, setArticlesList] = useState([]);
@@ -204,6 +242,9 @@ export default function AdminProductArticleEditor({
     }
 
     setSelectedProductCode(code);
+    if (onSelectProduct) {
+      onSelectProduct(code);
+    }
     const existing = articlesList.find((a) => a.productCode.toUpperCase() === code.toUpperCase());
 
     if (existing) {
@@ -601,6 +642,25 @@ export default function AdminProductArticleEditor({
       setActiveArticle(payload);
       setSaveStatus({ success: true, message });
       if (showToast) showToast(message);
+
+      // 3. Tự động đồng bộ đoạn văn mở đầu bài viết vào mô tả sản phẩm (MongoDB)
+      const excerpt = extractArticleFirstParagraph(finalContent);
+      if (excerpt && dbProducts && dbProducts.length > 0 && import.meta.env.VITE_API_URL) {
+        const prod = dbProducts.find(
+          (p) => p.code?.toUpperCase() === payload.productCode?.toUpperCase()
+        );
+        if (prod && prod._id) {
+          try {
+            await fetch(`${import.meta.env.VITE_API_URL}/api/products/${prod._id}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ ...prod, description: excerpt })
+            });
+          } catch (apiErr) {
+            console.warn("Could not sync product description to DB:", apiErr);
+          }
+        }
+      }
     } catch (err) {
       console.error("Save article error:", err);
       // Fallback local save

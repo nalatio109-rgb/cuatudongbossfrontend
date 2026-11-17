@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 import { getProductSlug } from "../utils/slug.js";
+import { getProductCardDescription } from "../utils/productDescriptionHelper";
 
 // =========================================================================
 // 1. KHI BẤM "TẤT CẢ": CHỈ HIỂN THỊ ĐÚNG 6 SẢN PHẨM / GIẢI PHÁP ĐẠI DIỆN ("6 CÁI NỚ")
@@ -111,7 +112,7 @@ const CATALOG_PRODUCTS = [
     code: "BEC.5810",
     image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80",
     title: "CỬA CUỐN KHE THOÁNG\nECO BEC.5810",
-    description: "Cửa cuốn Bossdoor ECO nan nhôm sơn tĩnh điện Đức, giảm chấn 2 chiều siêu êm.",
+    description: "Cửa cuốn Bossdoor ECO BEC.5810 là sản phẩm cửa cuốn khe thoáng thế hệ mới mang thương hiệu BossDoor danh tiếng. Được sản xuất từ hợp kim nhôm 6063-T5 chuẩn hàng không, BEC.5810 là sự kết hợp xuất sắc giữa độ cứng cáp chống bão, thiết kế nan sang trọng và công nghệ giảm chấn 2 chiều vận hành êm ái hàng đầu.",
     details: "Cửa cuốn Bossdoor ECO BEC.5810 nan nhôm 6063-T5 cao cấp sơn tĩnh điện AkzoNobel CHLB Đức, tích hợp gioăng giảm chấn 2 chiều triệt tiêu rung chấn.",
     specs: ["Hợp kim nhôm 6063-T5 siêu bền", "Sơn AkzoNobel Đức bảo hành 10 năm", "Giảm chấn 2 chiều siêu êm", "Bảo hành 10 năm"],
     icon: <AlignJustify size={24} />,
@@ -605,7 +606,7 @@ export default function Products() {
                   ) : null}
                   <h3 dangerouslySetInnerHTML={{ __html: product.title.replace(/\n/g, '<br/>') }}></h3>
                   <div className="title-underline"></div>
-                  <p className="product-desc">{product.description}</p>
+                  <p className="product-desc">{getProductCardDescription(product)}</p>
                   <button
                     type="button"
                     className="btn-explore"

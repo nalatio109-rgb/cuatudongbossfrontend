@@ -205,9 +205,10 @@ export default function ProductDetail() {
     }
   }, [extendedDetails, productArticle]);
 
-  // Related products (same category, excluding current product)
+  // Related products (same category prioritized, excluding current product)
   const relatedProducts = useMemo(() => {
     const currentCode = extendedDetails?.code;
+    const currentCat = extendedDetails?.category;
     const pool = allProducts.length > 0 ? allProducts : [
       {
         id: 101,
@@ -243,12 +244,25 @@ export default function ProductDetail() {
       }
     ];
 
-    return pool
-      .filter((p) => p.code !== currentCode)
-      .slice(0, 4);
+    const filtered = pool.filter((p) => p.code !== currentCode);
+    const sameCat = filtered.filter((p) => p.category === currentCat);
+    const otherCat = filtered.filter((p) => p.category !== currentCat);
+    const combined = [...sameCat, ...otherCat];
+    return combined.slice(0, 10);
   }, [allProducts, extendedDetails]);
 
-  // Mobile Marquee pause state on touch/hover
+  // Seamless infinite marquee loop items (minimum 16 cards total, 2 identical halves)
+  const marqueeRelatedItems = useMemo(() => {
+    if (!relatedProducts || relatedProducts.length === 0) return [];
+    let base = [...relatedProducts];
+    while (base.length < 8) {
+      base = [...base, ...relatedProducts];
+    }
+    // Duplicate exactly once for 50% / 50% seamless loop
+    return [...base, ...base];
+  }, [relatedProducts]);
+
+  // Marquee pause state on touch/hover
   const [isRelMarqueePaused, setIsRelMarqueePaused] = useState(false);
   const marqueeTimerRef = useRef(null);
 
@@ -795,22 +809,17 @@ export default function ProductDetail() {
               </Link>
             </div>
 
-            {/* Desktop: Lưới 4 cột cố định như ban đầu */}
-            <div className="related-products-desktop-grid related-products-grid">
-              {relatedProducts.map((relProd) => renderRelatedCard(relProd, "desk"))}
-            </div>
-
-            {/* Mobile: Marquee chạy ngang mượt mà liên tục như Dự án tiêu biểu */}
-            <div className="related-products-mobile-marquee-wrapper">
+            {/* Marquee chạy chuyển động mượt mà liên tục từ bên trái qua phải */}
+            <div className="related-products-marquee-wrapper">
               <div
-                className={`related-products-mobile-marquee-track ${isRelMarqueePaused ? "paused" : ""}`}
+                className={`related-products-marquee-track ${isRelMarqueePaused ? "paused" : ""}`}
                 onTouchStart={handleMarqueeTouchStart}
                 onTouchEnd={handleMarqueeTouchEnd}
                 onMouseEnter={() => setIsRelMarqueePaused(true)}
                 onMouseLeave={() => setIsRelMarqueePaused(false)}
               >
-                {[...relatedProducts, ...relatedProducts].map((relProd, idx) =>
-                  renderRelatedCard(relProd, `mob-${idx}`)
+                {marqueeRelatedItems.map((relProd, idx) =>
+                  renderRelatedCard(relProd, `rel-${idx}`)
                 )}
               </div>
             </div>

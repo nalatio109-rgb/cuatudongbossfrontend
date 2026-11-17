@@ -27,332 +27,9 @@ import {
 import { DEFAULT_PRICE_QUOTES } from "../data/defaultPriceQuotes";
 import { DEFAULT_PRODUCT_ARTICLES } from "../data/defaultProductArticles";
 import { getProductSlug } from "../utils/slug.js";
+import { getProductCardDescription } from "../utils/productDescriptionHelper";
 import { useAuth } from "../context/AuthContext";
 import "./ProductPricing.css";
-
-// Fallback products dictionary if not yet in state/DB
-const FALLBACK_PRODUCTS = [
-  {
-    id: 1,
-    code: "BD-900",
-    category: "cuacuon",
-    title: "Cửa cuốn khe thoáng Đức BossDoor",
-    image: "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=800&q=80",
-    price: "1.450.000đ/m2",
-    badge: "BÁN CHẠY",
-    description: "Thân cửa hợp kim nhôm 6063-T5 cao cấp, sơn tĩnh điện CHLB Đức bảo hành 10 năm.",
-    details: "Dòng cửa cuốn cao cấp thế hệ mới BossDoor tích hợp công nghệ chống sao chép mã khoá, cảm biến tự dừng khi gặp vật cản và điều khiển qua Smartphone từ xa.",
-    specs: ["Hợp kim nhôm 6063-T5 siêu bền", "Độ dày nan: 1.4 - 2.2 mm", "Cảm biến hồng ngoại an toàn", "Bảo hành mô-tơ 10 năm"]
-  },
-  {
-    id: 2,
-    code: "DL-75",
-    category: "cuacuon",
-    title: "CỬA CUỐN ĐÀI LOAN GIÁ RẺ",
-    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80",
-    price: "420.000đ/m2",
-    badge: "TIẾT KIỆM",
-    description: "Thép mạ màu Đài Loan độ bền cao, giải pháp tối ưu chi phí cho nhà xưởng & cửa hàng.",
-    details: "Cửa cuốn công nghệ Đài Loan chất liệu tôn mạ màu nhập khẩu, chống rỉ sét tốt, vận hành bằng lò xo trợ lực hoặc mô tơ điện kéo êm ái.",
-    specs: ["Tôn mạ màu Đài Loan 0.6 - 1.2mm", "Chống ăn mòn thời tiết", "Kéo tay hoặc chạy mô tơ", "Bảo hành 2 năm"]
-  },
-  {
-    id: 3,
-    code: "BD-L70",
-    category: "cuacuon",
-    title: "CỬA CUỐN TẤM LIỀN ÚC SIÊU ÊM",
-    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
-    price: "980.000đ/m2",
-    badge: "MỚI",
-    description: "Đóng mở êm ái không tiếng ồn, hợp kim thép Colorbond Úc chống ăn mòn.",
-    details: "Cửa cuốn tấm liền bằng thép hợp kim mạ nhôm kẽm Colorbond của Úc, tích hợp dây cao su polyguide giảm chấn giúp vận hành cực kỳ êm ái.",
-    specs: ["Thép mạ kẽm Colorbond Úc", "Tích hợp chốt ly khai thoát hiểm", "Tốc độ đóng mở 15-20 cm/s", "Bảo hành 3 năm"]
-  },
-  {
-    id: 4,
-    code: "SN-100",
-    category: "cuacuon",
-    title: "CỬA CUỐN SONG NGANG - MẮC VÕNG INOX / SƠN TĨNH ĐIỆN",
-    image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80",
-    price: "1.200.000đ/m2",
-    badge: "HOT",
-    description: "Thông thoáng tối đa, góc quan sát rộng cho TTTM, ngân hàng, gara.",
-    details: "Cửa cuốn song ngang mắc võng chất liệu Inox 304 hoặc sắt sơn tĩnh điện cao cấp, đảm bảo an toàn tuyệt đối mà vẫn giữ không gian thông thoáng.",
-    specs: ["Inox 304 / Sắt sơn tĩnh điện", "Ống phi 19 - 22mm dày 1.0 - 1.2mm", "Tầm nhìn thông thoáng 90%", "Bảo hành 3 năm"]
-  },
-  {
-    id: 5,
-    code: "BD-LUX",
-    category: "cuacuon",
-    title: "CỬA CUỐN CAO CẤP THẾ HỆ MỚI BOSSDOOR",
-    image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=800&q=80",
-    price: "2.100.000đ/m2",
-    badge: "LUXURY",
-    description: "Dòng cửa cuốn siêu sang tích hợp AI, sơn tĩnh điện AkzoNobel CHLB Đức.",
-    details: "Phiên bản đỉnh cao của BossDoor với thiết kế nan chèn cao su giảm chấn 2 chiều, sơn bột tĩnh điện AkzoNobel Đức gia nhiệt cao cấp.",
-    specs: ["Hợp kim nhôm hàng không 6063-T6", "Sơn AkzoNobel Đức bảo hành 10 năm", "Kết nối Smarthome thông minh", "Bảo hành 10 năm"]
-  },
-  {
-    id: 6,
-    code: "BEC.5810",
-    category: "cuacuon",
-    title: "Cửa cuốn Bossdoor ECO BEC.5810",
-    image: "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=800&q=80",
-    price: "1.500.000đ/m2",
-    badge: "HOT",
-    description: "Cửa cuốn Bossdoor ECO BEC.5810 là giải pháp tối ưu cho những ai đang tìm kiếm sự cân bằng giữa chất lượng và chi phí.",
-    details: "Nan cửa nhôm hợp kim 6063-T5 cao cấp sơn phủ tĩnh điện ngoài trời, vận hành êm ái chống ồn và chịu gió bão tốt.",
-    specs: ["Hợp kim nhôm 6063-T5", "Bảo hành 10 năm", "Sơn tĩnh điện chống muối mặn"]
-  },
-  {
-    id: 7,
-    code: "MT-500",
-    category: "phukien",
-    title: "MÔ TƠ CỬA CUỐN NHẬP KHẨU ĐÀI LOAN / ĐỨC",
-    image: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80",
-    price: "3.500.000đ/bộ",
-    badge: "CHÍNH HÃNG",
-    description: "Động cơ dây đồng 100%, sức kéo mạnh mẽ 300kg - 1000kg, chống hành trình tràn.",
-    details: "Mô tơ cửa cuốn chính hãng tích hợp rơ-le nhiệt tự ngắt khi quá tải, phanh đĩa kép an toàn và bộ tự dừng khi gặp chướng ngại vật.",
-    specs: ["Lõi đồng 100% nguyên chất", "Sức kéo: 300kg - 1000kg", "Tích hợp đảo chiều an toàn", "Bảo hành 10 năm 1 đổi 1"]
-  },
-  {
-    id: 8,
-    code: "UPS-800",
-    category: "phukien",
-    title: "BÌNH LƯU ĐIỆN CỬA CUỐN (UPS DỰ PHÒNG)",
-    image: "https://images.unsplash.com/photo-1544724569-5f546fd6f2b5?auto=format&fit=crop&w=800&q=80",
-    price: "2.800.000đ/bộ",
-    badge: "NỔI BẬT",
-    description: "Lưu điện dự phòng thông minh 48h - 72h khi xảy ra cúp điện lưới.",
-    details: "Bộ lưu điện UPS chuyên dụng cho cửa cuốn sử dụng ắc quy khô tích điện công nghệ Gel, mạch sạc tự động bảo vệ bình không bị chai.",
-    specs: ["Thời gian chờ: 48 - 72 giờ", "Công suất: 800W - 1500W", "Tự động chuyển nguồn khi cúp điện", "Bảo hành 2 năm"]
-  },
-  {
-    id: 9,
-    code: "CK-DL",
-    category: "cuakeo",
-    title: "CỬA KÉO ĐÀI LOAN CÓ LÁ / KHÔNG LÁ",
-    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
-    price: "480.000đ/m2",
-    badge: "BÁN CHẠY",
-    description: "Thân cửa thép mạ màu Đài Loan, nhíp keo hoa văn sang trọng, kéo nhẹ êm.",
-    details: "Cửa kéo Đài Loan chất liệu tôn mạ màu nhập khẩu, nhíp ép thủy lực chắc chắn, bạc đạn bạc inox giúp đóng mở siêu nhẹ nhàng.",
-    specs: ["Độ dày U: 0.6mm - 1.4mm", "Nhíp sơn tĩnh điện hoa văn", "Bạc đạn inox chống kẹt", "Bảo hành 2 năm"]
-  },
-  {
-    id: 10,
-    code: "CK-IX304",
-    category: "cuakeo",
-    title: "CỬA KÉO INOX 304 CAO CẤP",
-    image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80",
-    price: "1.850.000đ/m2",
-    badge: "SIÊU BỀN",
-    description: "100% Inox 304 sáng bóng không rỉ sét, chịu lực tối đa cho mặt phố & biệt thự.",
-    details: "Dòng cửa kéo cao cấp bằng Inox 304 nguyên chất chống ăn mòn hóa chất và nước biển, cực kỳ thích hợp cho thời tiết ven biển Đà Nẵng.",
-    specs: ["100% Inox 304 chuẩn", "Thanh U dày 1.0 - 1.5mm", "Không gỉ sét dưới mọi thời tiết", "Bảo hành 10 năm"]
-  },
-  {
-    id: 11,
-    code: "IT-GHOST",
-    category: "cuatudong",
-    title: "CỔNG TỰ ĐỘNG ÂM SÀN / TAY CO ITALIA",
-    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
-    price: "32.000.000đ/bộ",
-    badge: "VIP",
-    description: "Mô-tơ âm sàn chống nước IP67, điều khiển Smartphone cho Biệt thự & Villa.",
-    details: "Hệ thống cổng mở xoay âm sàn nhập khẩu Ý 100%, động cơ đúc nguyên khối chống ngập nước tiêu chuẩn IP67, chịu tải nặng tới 800kg/cánh.",
-    specs: ["Tiêu chuẩn chống nước IP67 Ý", "Tải trọng: 800kg / cánh", "Góc mở: 110° - 180°", "Bảo hành 10 năm"]
-  },
-  {
-    id: 12,
-    code: "NAB-150",
-    category: "cuatudong",
-    title: "CỬA TRƯỢT TỰ ĐỘNG KABA / NABCO NHẬT BẢN",
-    image: "https://images.unsplash.com/photo-1511818966892-d7d671e672a2?auto=format&fit=crop&w=800&q=80",
-    price: "18.500.000đ/bộ",
-    badge: "HOT",
-    description: "Mắt thần cảm biến radar vi sóng siêu nhạy, vận hành êm ái cho TTTM, sảnh lớn.",
-    details: "Cửa kính trượt tự động cao cấp nhập khẩu Nhật Bản / Thụy Sĩ. Động cơ DC không chổi than êm ái, hoạt động liên tục với tuổi thọ > 2.000.000 lần đóng mở.",
-    specs: ["Động cơ DC Brushless 120W", "Tải trọng: 150kg x 2 cánh", "Cảm biến an toàn chống kẹp người", "Bảo hành 3 năm"]
-  },
-  {
-    id: 13,
-    code: "CK-DE",
-    category: "cuakeo",
-    title: "CỬA KÉO CÔNG NGHỆ ĐỨC (CN ĐỨC SƠN TĨNH ĐIỆN AKZONOBEL)",
-    image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=800&q=80",
-    price: "980.000 - 1.230.000đ/m²",
-    badge: "CAO CẤP",
-    description: "Thanh U dày 0.9 - 1.5mm sơn tĩnh điện AKZO NOBEL CHLB Đức, máng đúc bi treo, nhíp đặc lập là.",
-    details: "Dòng cửa kéo công nghệ Đức thế hệ mới với thanh U dày 0.9 - 1.5mm sơn phủ AkzoNobel cao cấp, máng đúc bi treo siêu êm, nhíp đặc lập là chắc chắn, chống rỉ sét tuyệt đối trong khí hậu miền biển Đà Nẵng.",
-    specs: ["Sơn tĩnh điện AkzoNobel CHLB Đức", "Máng đúc bi treo siêu êm", "Nhíp đặc lập là chịu lực", "Bảo hành 10 năm"]
-  },
-  {
-    id: 14,
-    code: "SR3",
-    category: "cuakeo",
-    title: "CỬA KÉO CÔNG NGHỆ ĐỨC SR3 (U DÀY 0.9 MM)",
-    image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=800&q=80",
-    price: "980.000đ/m2",
-    badge: "TIẾT KIỆM",
-    description: "U dày 0.9 mm sơn tĩnh điện AKZO NOBEL công nghệ Đức, máng đúc bi treo, nhíp đặc lập là.",
-    details: "Dòng cửa kéo công nghệ Đức kinh tế SR3 thích hợp cho nhà phố, cửa hàng với độ bền cao và chi phí tối ưu.",
-    specs: ["U dày 0.9mm chuẩn", "Sơn AkzoNobel Đức", "Máng đúc bi treo", "Bảo hành 3 năm"]
-  },
-  {
-    id: 15,
-    code: "SR2",
-    category: "cuakeo",
-    title: "CỬA KÉO CÔNG NGHỆ ĐỨC SR2 (U DÀY 1.1 MM)",
-    image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=800&q=80",
-    price: "1.030.000đ/m2",
-    badge: "BÁN CHẠY",
-    description: "U dày 1.1 mm sơn tĩnh điện AKZO NOBEL công nghệ Đức, máng đúc bi treo, nhíp đặc lập là.",
-    details: "Dòng cửa kéo công nghệ Đức SR2 bán chạy nhất với độ dày 1.1mm cứng cáp, vận hành êm ái.",
-    specs: ["U dày 1.1mm", "Sơn AkzoNobel Đức", "Máng đúc bi treo", "Bảo hành 10 năm"]
-  },
-  {
-    id: 16,
-    code: "SR1",
-    category: "cuakeo",
-    title: "CỬA KÉO CÔNG NGHỆ ĐỨC SR1 (U DÀY 1.3 MM)",
-    image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=800&q=80",
-    price: "1.120.000đ/m2",
-    badge: "CAO CẤP",
-    description: "U dày 1.3 mm sơn tĩnh điện AKZO NOBEL công nghệ Đức, máng đúc bi treo, nhíp đặc lập là.",
-    details: "Phiên bản cao cấp SR1 độ dày 1.3mm chống trộm vượt trội, sơn ngoài trời bền màu 15 năm.",
-    specs: ["U dày 1.3mm chịu lực", "Sơn AkzoNobel Đức", "Máng đúc bi treo", "Bảo hành 10 năm"]
-  },
-  {
-    id: 17,
-    code: "VIP",
-    category: "cuakeo",
-    title: "CỬA KÉO CÔNG NGHỆ ĐỨC VIP (U DÀY 1.5 MM)",
-    image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=800&q=80",
-    price: "1.180.000đ/m2",
-    badge: "VIP",
-    description: "U dày 1.5 mm sơn tĩnh điện AKZO NOBEL công nghệ Đức, máng đúc bi treo, nhíp đặc lập là.",
-    details: "Dòng cửa kéo đỉnh cao VIP dày 1.5mm siêu bền bỉ, nhíp đặc lập là đúc dày, bảo vệ an toàn tối đa.",
-    specs: ["U dày 1.5mm dày nhất", "Sơn AkzoNobel Đức", "Máng đúc bi treo cao cấp", "Bảo hành 10 năm"]
-  }
-];
-
-// Tiered Price Dataset for German Folding Doors (Cửa kéo công nghệ Đức 2026 tại Đà Nẵng)
-const GERMAN_FOLDING_DOOR_TIERS = [
-  {
-    stt: 1,
-    code: "SR3",
-    name: "Thân cửa kéo SR3",
-    specs: [
-      "U dày 0.9 mm sơn tĩnh điện AKZO NOBEL công nghệ Đức",
-      "Máng đúc, bi treo chịu lực siêu êm",
-      "Nhíp đặc lập là gia cố chắc chắn",
-      "Lá sơn tĩnh điện chống trầy xước"
-    ],
-    unit: "m2",
-    colors: [
-      { name: "Ghi sáng", hex: "#94a3b8" },
-      { name: "Vàng kem", hex: "#fde047" },
-      { name: "Cà phê", hex: "#78350f" },
-      { name: "Xanh", hex: "#166534" }
-    ],
-    priceOver8: "980.000đ",
-    price6to8: "1.010.000đ",
-    price4to6: "1.030.000đ",
-    badge: "TIẾT KIỆM"
-  },
-  {
-    stt: 2,
-    code: "SR2",
-    name: "Thân cửa kéo SR2",
-    specs: [
-      "U dày 1.1 mm sơn tĩnh điện AKZO NOBEL công nghệ Đức",
-      "Máng đúc, bi treo chịu lực siêu êm",
-      "Nhíp đặc lập là gia cố chắc chắn",
-      "Lá sơn tĩnh điện chống trầy xước"
-    ],
-    unit: "m2",
-    colors: [
-      { name: "Ghi sáng", hex: "#94a3b8" },
-      { name: "Vàng kem", hex: "#fde047" },
-      { name: "Cà phê", hex: "#78350f" },
-      { name: "Xanh", hex: "#166534" }
-    ],
-    priceOver8: "1.030.000đ",
-    price6to8: "1.060.000đ",
-    price4to6: "1.080.000đ",
-    badge: "BÁN CHẠY"
-  },
-  {
-    stt: 3,
-    code: "SR1",
-    name: "Thân cửa kéo SR1",
-    specs: [
-      "U dày 1.3 mm sơn tĩnh điện AKZO NOBEL công nghệ Đức",
-      "Máng đúc, bi treo chịu lực siêu êm",
-      "Nhíp đặc lập là gia cố chắc chắn",
-      "Lá sơn tĩnh điện chống trầy xước"
-    ],
-    unit: "m2",
-    colors: [
-      { name: "Ghi sáng", hex: "#94a3b8" },
-      { name: "Vàng kem", hex: "#fde047" },
-      { name: "Cà phê", hex: "#78350f" },
-      { name: "Xanh", hex: "#166534" }
-    ],
-    priceOver8: "1.120.000đ",
-    price6to8: "1.150.000đ",
-    price4to6: "1.170.000đ",
-    badge: "CAO CẤP"
-  },
-  {
-    stt: 4,
-    code: "VIP",
-    name: "Thân cửa kéo VIP",
-    specs: [
-      "U dày 1.5 mm sơn tĩnh điện AKZO NOBEL công nghệ Đức",
-      "Máng đúc, bi treo chịu lực siêu êm",
-      "Nhíp đặc lập là gia cố chắc chắn",
-      "Lá sơn tĩnh điện chống trầy xước"
-    ],
-    unit: "m2",
-    colors: [
-      { name: "Ghi sáng", hex: "#94a3b8" },
-      { name: "Vàng kem", hex: "#fde047" },
-      { name: "Cà phê", hex: "#78350f" },
-      { name: "Xanh", hex: "#166534" }
-    ],
-    priceOver8: "1.180.000đ",
-    price6to8: "1.210.000đ",
-    price4to6: "1.230.000đ",
-    badge: "VIP ĐẶC BIỆT"
-  }
-];
-
-// Add-ons / Lựa chọn thêm
-const GERMAN_DOOR_ADDONS = [
-  {
-    category: "1. Ray Inox đặc chìm (Âm sàn)",
-    items: [
-      { name: "Ray Inox đặc 201 chìm", price: "+ 280.000 đ/md", unit: "mét dài (md)" },
-      { name: "Ray Inox đặc 304 chìm", price: "+ 350.000 đ/md", unit: "mét dài (md)" }
-    ]
-  },
-  {
-    category: "2. Ray Inox đặc nổi",
-    items: [
-      { name: "Ray Inox đặc 201 nổi", price: "+ 330.000 đ/md", unit: "mét dài (md)" },
-      { name: "Ray Inox đặc 304 nổi", price: "+ 400.000 đ/md", unit: "mét dài (md)" }
-    ]
-  },
-  {
-    category: "3. Trụ khóa an toàn",
-    items: [
-      { name: "Trụ khóa cửa 1 cánh chuyên dụng", price: "+ 50.000 đ/m dài", unit: "m dài" }
-    ]
-  }
-];
 
 const sanitizeSpec = (text) => {
   if (typeof text !== "string") return text;
@@ -520,20 +197,27 @@ export default function ProductPricing() {
     path.includes("cua-keo-cong-nghe-duc");
   const effectiveId = id || (isDirectGermanDoorUrl ? "CK-DE" : "CK-DE");
 
-  const [product, setProduct] = useState(() => {
-    if (location.state?.product) return location.state.product;
-    const searchKey = String(effectiveId || "").toLowerCase().trim();
-    const fallback = FALLBACK_PRODUCTS.find(
-      (p) =>
-        String(p.id) === searchKey ||
-        p.code.toLowerCase() === searchKey ||
-        (searchKey.includes("cua-keo") && p.code === "CK-DE") ||
-        (searchKey.includes("bang-gia-cap-nhat") && p.code === "CK-DE")
-    ) || (isDirectGermanDoorUrl || !id ? FALLBACK_PRODUCTS.find((p) => p.code === "CK-DE") : null);
-    return fallback || null;
-  });
+  const [product, setProduct] = useState(() => location.state?.product || null);
+  const [loading, setLoading] = useState(!location.state?.product);
+  const [allProducts, setAllProducts] = useState([]);
 
-  const [loading, setLoading] = useState(false);
+  // Fetch all products dynamically from DB
+  useEffect(() => {
+    let isMounted = true;
+    if (import.meta.env.VITE_API_URL) {
+      fetch(`${import.meta.env.VITE_API_URL}/api/products`)
+        .then((res) => res.json())
+        .then((resData) => {
+          if (resData.success && Array.isArray(resData.data) && isMounted) {
+            setAllProducts(resData.data);
+          }
+        })
+        .catch((err) => console.log("Failed to load products list:", err.message));
+    }
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const [priceQuote, setPriceQuote] = useState(() => {
     return DEFAULT_PRICE_QUOTES.find(
@@ -692,29 +376,27 @@ export default function ProductPricing() {
     window.scrollTo(0, 0);
   }, [id]);
 
-  // Lookup product by ID or Code if not passed via location state
+  // Lookup product by ID, Code or Slug dynamically if not passed via location state
   useEffect(() => {
-    if (product) return;
-
     let isMounted = true;
+    const searchKey = String(effectiveId || "").toLowerCase().trim();
+
+    // If product is already loaded and matches current route, no need to lookup
+    if (
+      product &&
+      (String(product.id) === searchKey ||
+        (product.code && product.code.toLowerCase() === searchKey) ||
+        String(product._id || "") === searchKey ||
+        getProductSlug(product).toLowerCase() === searchKey)
+    ) {
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
 
     const lookupProduct = async () => {
-      // 1. Check fallback list first
-      const searchKey = String(effectiveId || "").toLowerCase().trim();
-      let foundInFallback = FALLBACK_PRODUCTS.find(
-        (p) =>
-          String(p.id) === searchKey ||
-          p.code.toLowerCase() === searchKey ||
-          (searchKey.includes("cua-keo") && p.code === "CK-DE") ||
-          (searchKey.includes("bang-gia-cap-nhat") && p.code === "CK-DE")
-      );
-
-      if (!foundInFallback && (isDirectGermanDoorUrl || !id)) {
-        foundInFallback = FALLBACK_PRODUCTS.find((p) => p.code === "CK-DE");
-      }
-
-      // 2. Try fetching from backend API
+      // 1. Try fetching directly by effectiveId from backend API
       if (import.meta.env.VITE_API_URL && effectiveId) {
         try {
           const res = await fetch(`${import.meta.env.VITE_API_URL}/api/products/${effectiveId}`);
@@ -732,17 +414,57 @@ export default function ProductPricing() {
             return;
           }
         } catch (err) {
-          console.log("Could not fetch product detail from API, using local match:", err.message);
+          console.log("Could not fetch product detail directly from API:", err.message);
         }
       }
 
-      if (foundInFallback && isMounted) {
-        const fallbackObj = { ...foundInFallback };
-        if (fallbackObj.code && PRODUCT_PRICE_RANGES[fallbackObj.code]) {
-          fallbackObj.price = PRODUCT_PRICE_RANGES[fallbackObj.code];
+      // 2. Search in allProducts list or fetch all products
+      let list = allProducts;
+      if (!list || list.length === 0) {
+        if (import.meta.env.VITE_API_URL) {
+          try {
+            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/products`);
+            const resJson = await res.json();
+            if (resJson.success && Array.isArray(resJson.data)) {
+              list = resJson.data;
+              if (isMounted) setAllProducts(list);
+            }
+          } catch (e) {}
         }
-        setProduct(fallbackObj);
       }
+
+      if (Array.isArray(list) && list.length > 0) {
+        let matched = list.find((p) => {
+          const pCode = (p.code || "").toLowerCase();
+          const pId = String(p.id || p._id || "").toLowerCase();
+          const pSlug = getProductSlug(p).toLowerCase();
+          return (
+            pCode === searchKey ||
+            pId === searchKey ||
+            pSlug === searchKey ||
+            (searchKey.includes("cua-keo") && pCode.includes("ck")) ||
+            (searchKey.includes("bang-gia-cap-nhat") && pCode.includes("ck"))
+          );
+        });
+
+        if (!matched && (isDirectGermanDoorUrl || !id)) {
+          matched = list.find((p) => (p.code || "").toUpperCase() === "CK-DE") || list.find((p) => p.category === "cuakeo");
+        }
+
+        if (matched && isMounted) {
+          const matchedObj = { ...matched };
+          if (Array.isArray(matchedObj.specs)) {
+            matchedObj.specs = matchedObj.specs.map(sanitizeSpec);
+          }
+          if (matchedObj.code && PRODUCT_PRICE_RANGES[matchedObj.code]) {
+            matchedObj.price = PRODUCT_PRICE_RANGES[matchedObj.code];
+          }
+          setProduct(matchedObj);
+          setLoading(false);
+          return;
+        }
+      }
+
       if (isMounted) setLoading(false);
     };
 
@@ -751,7 +473,7 @@ export default function ProductPricing() {
     return () => {
       isMounted = false;
     };
-  }, [id, effectiveId, product, isDirectGermanDoorUrl]);
+  }, [id, effectiveId, isDirectGermanDoorUrl, allProducts]);
 
   // Dynamic SEO meta updates
   useEffect(() => {
@@ -915,161 +637,46 @@ export default function ProductPricing() {
           price4to6: t.price
         }));
 
-  // Danh sách các bài viết bảng giá liên quan của các dòng cửa khác (chuẩn định dạng Horizontal Card như Pricing.jsx)
+  // Danh sách các bài viết bảng giá liên quan của các dòng cửa khác (lấy động 100% từ allProducts trong DB)
   const relatedPriceQuotes = useMemo(() => {
     const currentCode = (product?.code || "CK-DE").toUpperCase();
     const currentCategory = product?.category || "cuakeo";
-
-    const allQuotes = [
-      {
-        code: "CK-DE",
-        title: "CỬA KÉO CÔNG NGHỆ ĐỨC (CN ĐỨC SƠN TĨNH ĐIỆN)",
-        category: "cuakeo",
-        categoryName: "CỬA KÉO",
-        price: "980.000 - 1.230.000đ/m²",
-        badge: "CAO CẤP",
-        image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
-        description: "Thanh U hợp kim nhôm sơn tĩnh điện CHLB Đức, kiểu dáng hiện đại bền đẹp 15 năm.",
-        specs: [
-          "Hợp kim nhôm Đức siêu nhẹ",
-          "Sơn AkzoNobel bền màu 15 năm",
-          "Nhíp lá nhôm đúc định hình",
-          "Bảo hành 10 năm"
-        ],
-        path: "/bang-gia-cap-nhat-cua-keo-cong-nghe-duc-2026-tai-da-nang"
-      },
-      {
-        code: "CK-SR1",
-        title: "CỬA KÉO CÔNG NGHỆ ĐỨC SR1 (U DÀY 1.3 MM)",
-        category: "cuakeo",
-        categoryName: "CỬA KÉO",
-        price: "1.120.000 - 1.170.000đ/m²",
-        badge: "BÁN CHẠY",
-        image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
-        description: "Thanh U dập dày 1.3mm sơn tĩnh điện AkzoNobel CHLB Đức, máng đúc bi treo siêu êm, nhíp đặc lập là kiên cố.",
-        specs: [
-          "Thanh U dập dày 1.3mm",
-          "Sơn AkzoNobel bền màu 15 năm",
-          "Máng đúc bi treo Inox siêu êm",
-          "Bảo hành chính hãng 10 năm"
-        ],
-        path: "/bang-gia/cua-keo-cong-nghe-duc-sr1"
-      },
-      {
-        code: "CK-SR2",
-        title: "CỬA KÉO CÔNG NGHỆ ĐỨC SR2 (U DÀY 1.1 MM)",
-        category: "cuakeo",
-        categoryName: "CỬA KÉO",
-        price: "1.030.000 - 1.080.000đ/m²",
-        badge: "PHỔ BIẾN",
-        image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=800&q=80",
-        description: "Thân cửa dày 1.1mm cứng vững, vận hành êm nhẹ, là lựa chọn số 1 cho nhà phố và cửa hàng mặt tiền tại Đà Nẵng.",
-        specs: [
-          "U dày 1.1mm chịu gió bão",
-          "Sơn AkzoNobel kháng muối mặn",
-          "Nhíp đặc lập là chống cạy",
-          "Bảo hành chính hãng 10 năm"
-        ],
-        path: "/bang-gia/cua-keo-cong-nghe-duc-sr2"
-      },
-      {
-        code: "VIP",
-        title: "CỬA KÉO CÔNG NGHỆ ĐỨC VIP (U DÀY 1.5 MM)",
-        category: "cuakeo",
-        categoryName: "CỬA KÉO",
-        price: "1.180.000 - 1.230.000đ/m²",
-        badge: "CAO CẤP",
-        image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80",
-        description: "Phiên bản đỉnh cao bảo vệ an ninh tuyệt đối với thanh U siêu dày 1.5mm, bát khóa đúc chống cắt chống xà beng.",
-        specs: [
-          "U dày 1.5mm chống cắt phá",
-          "Sơn bột tĩnh điện Đức 15 năm",
-          "Máng đúc bi bạc đạn chịu tải",
-          "Bảo hành chính hãng 10 năm"
-        ],
-        path: "/bang-gia/cua-keo-cong-nghe-duc-vip"
-      },
-      {
-        code: "BEC.5810",
-        title: "CỬA CUỐN KHE THOÁNG BOSSDOOR ECO BEC.5810",
-        category: "cuacuon",
-        categoryName: "CỬA CUỐN",
-        price: "1.500.000 - 1.750.000đ/m²",
-        badge: "HOT",
-        image: "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=800&q=80",
-        description: "Nan cửa nhôm hợp kim 6063-T5 cao cấp sơn phủ tĩnh điện ngoài trời, vận hành êm ái chống ồn và chịu gió bão tốt.",
-        specs: [
-          "Hợp kim nhôm 6063-T5 cao cấp",
-          "Sơn tĩnh điện chống muối mặn",
-          "Cảm biến tự dừng an toàn",
-          "Bảo hành thân cửa 10 năm"
-        ],
-        path: "/bang-gia/cua-cuon-bossdoor-eco-bec-5810"
-      },
-      {
-        code: "BD-900",
-        title: "CỬA CUỐN KHE THOÁNG ĐỨC BOSSDOOR BD-900",
-        category: "cuacuon",
-        categoryName: "CỬA CUỐN",
-        price: "1.450.000 - 1.850.000đ/m²",
-        badge: "BÁN CHẠY",
-        image: "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=800&q=80",
-        description: "Thân cửa hợp kim nhôm 6063-T5 cao cấp, thiết kế nan kép chống bão, sơn tĩnh điện CHLB Đức bảo hành 10 năm không phai màu.",
-        specs: [
-          "Hợp kim nhôm 6063-T5 siêu bền",
-          "Độ dày nan: 1.4 - 2.2 mm",
-          "Mã khóa chống sao chép ARC",
-          "Bảo hành mô-tơ 10 năm"
-        ],
-        path: "/bang-gia/BD-900"
-      },
-      {
-        code: "DL-75",
-        title: "CỬA CUỐN ĐÀI LOAN BẢN 7.5CM GIÁ RẺ",
-        category: "cuacuon",
-        categoryName: "CỬA CUỐN",
-        price: "420.000 - 550.000đ/m²",
-        badge: "TIẾT KIỆM",
-        image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80",
-        description: "Thép mạ màu Đài Loan độ bền cao, giải pháp tối ưu chi phí cho nhà xưởng, ki-ốt, cửa hàng kinh doanh và gara gia đình.",
-        specs: [
-          "Tôn mạ màu Đài Loan 0.6 - 1.2mm",
-          "Chống ăn mòn thời tiết miền Trung",
-          "Kéo tay hoặc mô tơ tự động",
-          "Bảo hành chính hãng 2 năm"
-        ],
-        path: "/bang-gia/cua-cuon-dai-loan-gia-re-dl-75"
-      },
-      {
-        code: "BD-LUX",
-        title: "CỬA CUỐN SIÊU SANG THẾ HỆ MỚI BOSSDOOR LUXURY",
-        category: "cuacuon",
-        categoryName: "CỬA CUỐN",
-        price: "2.100.000 - 2.250.000đ/m²",
-        badge: "LUXURY",
-        image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=800&q=80",
-        description: "Phiên bản đỉnh cao của BossDoor với thiết kế nan chèn cao su giảm chấn 2 chiều, sơn bột tĩnh điện AkzoNobel Đức gia nhiệt cao cấp.",
-        specs: [
-          "Hợp kim nhôm hàng không 6063-T6",
-          "Sơn AkzoNobel Đức 10 năm",
-          "Giảm chấn 2 chiều siêu êm",
-          "Tích hợp điều khiển Smartphone"
-        ],
-        path: "/bang-gia/BD-LUX"
-      }
-    ];
-
     const currentKey = String(effectiveId || product?.code || "").toUpperCase();
     const isCurrentGermanQuote = currentCode === "CK-DE" || isDirectGermanDoorUrl || currentKey.includes("CK-DE") || currentKey.includes("BANG-GIA-CAP-NHAT");
 
-    const filtered = allQuotes.filter((q) => {
+    const dynamicQuotes = (allProducts || []).map((p) => {
+      const pCode = (p.code || "").toUpperCase();
+      const catName = p.category === "cuacuon" ? "CỬA CUỐN" : p.category === "cuakeo" ? "CỬA KÉO" : p.category === "cuatudong" ? "CỬA TỰ ĐỘNG" : "PHỤ KIỆN";
+      const slug = getProductSlug(p);
+      const quotePath = pCode === "CK-DE"
+        ? "/bang-gia-cap-nhat-cua-keo-cong-nghe-duc-2026-tai-da-nang"
+        : `/bang-gia/${slug}`;
+      const desc = getProductCardDescription(p);
+      const price = PRODUCT_PRICE_RANGES[pCode] || p.price || "Liên hệ";
+      const specs = Array.isArray(p.specs) ? p.specs.map(sanitizeSpec) : [];
+
+      return {
+        code: pCode,
+        title: (p.title || p.name || "").toUpperCase(),
+        category: p.category || "cuacuon",
+        categoryName: catName,
+        price,
+        badge: p.badge || (p.category === "cuakeo" ? "BÁN CHẠY" : "CHÍNH HÃNG"),
+        image: p.image || (Array.isArray(p.images) && p.images[0]) || "",
+        description: desc,
+        specs: specs.length > 0 ? specs : ["Bảo hành chính hãng 10 năm"],
+        path: quotePath
+      };
+    });
+
+    const filtered = dynamicQuotes.filter((q) => {
       if (isCurrentGermanQuote) {
         return q.code !== "CK-DE";
       }
       return q.code !== currentCode && !currentKey.includes(q.code);
     });
 
-    // Prioritize same category first
+    // Ưu tiên sản phẩm cùng danh mục lên trước
     filtered.sort((a, b) => {
       if (a.category === currentCategory && b.category !== currentCategory) return -1;
       if (a.category !== currentCategory && b.category === currentCategory) return 1;
@@ -1077,7 +684,7 @@ export default function ProductPricing() {
     });
 
     return filtered.slice(0, 4);
-  }, [product, effectiveId, isDirectGermanDoorUrl]);
+  }, [allProducts, product, effectiveId, isDirectGermanDoorUrl]);
 
   return (
     <div className="product-pricing-page">

@@ -1632,8 +1632,7 @@
 }
 
 .related-h2-mobile,
-.view-all-text-mobile,
-.related-products-mobile-marquee-wrapper {
+.view-all-text-mobile {
   display: none;
 }
 
@@ -1645,17 +1644,82 @@
   font-size: 13.5px;
   font-weight: 700;
   text-decoration: none;
+  transition: all 0.25s ease;
 }
 
 .view-all-link:hover {
   text-decoration: underline;
+  transform: translateX(3px);
+}
+
+/* Marquee Wrapper & Track chuyển động từ bên trái qua phải */
+.related-products-marquee-wrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  padding: 12px 0 24px;
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 3%,
+    black 97%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 3%,
+    black 97%,
+    transparent 100%
+  );
+}
+
+.related-products-marquee-track {
+  display: flex;
+  gap: 20px;
+  width: max-content;
+  animation: relatedProductMarqueeLeftToRight 32s linear infinite;
+  will-change: transform;
+}
+
+.related-products-marquee-track:hover,
+.related-products-marquee-track:active,
+.related-products-marquee-track.paused {
+  animation-play-state: paused !important;
+}
+
+/* Hiệu ứng chuyển động mượt mà liên tục từ bên trái qua phải */
+@keyframes relatedProductMarqueeLeftToRight {
+  0% {
+    transform: translate3d(-50%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0%, 0, 0);
+  }
+}
+
+.related-products-marquee-track .related-product-card {
+  width: 280px;
+  flex-shrink: 0;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.related-products-marquee-track .related-product-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  border-color: #004d32;
+  box-shadow: 0 16px 36px rgba(0, 77, 50, 0.12);
 }
 
 .related-products-desktop-grid,
 .related-products-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  display: none;
 }
 
 .related-product-card {
@@ -2627,55 +2691,23 @@
     display: inline !important;
   }
 
-  /* Section Sản phẩm liên quan trên mobile: Marquee chạy ngang mượt mà như Dự án tiêu biểu */
-  .related-products-desktop-grid {
-    display: none !important;
+  /* Section Sản phẩm liên quan trên mobile: Marquee mượt mà từ bên trái qua */
+  .related-products-marquee-wrapper {
+    padding: 6px 0 16px !important;
   }
 
-  .related-products-mobile-marquee-wrapper {
-    display: block !important;
-    position: relative !important;
-    width: 100% !important;
-    overflow: hidden !important;
-    padding: 6px 0 14px !important;
-    mask-image: linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%) !important;
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%) !important;
-  }
-
-  .related-products-mobile-marquee-track {
-    display: flex !important;
+  .related-products-marquee-track {
     gap: 12px !important;
-    width: max-content !important;
-    animation: relatedProductMarqueeScroll 20s linear infinite !important;
-    will-change: transform !important;
+    animation-duration: 22s !important;
   }
 
-  .related-products-mobile-marquee-track:hover,
-  .related-products-mobile-marquee-track:active,
-  .related-products-mobile-marquee-track.paused {
-    animation-play-state: paused !important;
-  }
-
-  @keyframes relatedProductMarqueeScroll {
-    0% {
-      transform: translate3d(0, 0, 0);
-    }
-    100% {
-      transform: translate3d(-50%, 0, 0);
-    }
-  }
-
-  .related-products-mobile-marquee-track .related-product-card {
-    flex-shrink: 0 !important;
+  .related-products-marquee-track .related-product-card {
     width: 175px !important;
     border-radius: 12px !important;
-    background: #ffffff !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
-    display: flex !important;
-    flex-direction: column !important;
   }
 
-  .related-product-card:hover {
+  .related-products-marquee-track .related-product-card:hover {
     transform: none !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
   }

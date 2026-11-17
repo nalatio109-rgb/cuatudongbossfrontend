@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import {
   Tag,
   Search,
@@ -64,21 +64,35 @@ const PRICING_CATALOG = [
     specs: ["U dày 0.9mm - 1.5mm sơn AkzoNobel", "Máng đúc bi treo chịu lực siêu êm", "Nhíp đặc lập là gia cố an toàn", "Bảo hành chính hãng 10 năm"]
   },
 
-  // 2. CỬA CUỐN KHE THOÁNG ECO BEC.5810
+  // 2. CỬA KÉO ĐÀI LOAN CK-DL
   {
-    id: 2,
-    code: "BEC.5810",
-    category: "cuacuon",
-    title: "CỬA CUỐN KHE THOÁNG BOSSDOOR ECO BEC.5810",
-    image: "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=800&q=80",
-    price: "1.500.000 - 1.750.000đ/m²",
-    badge: "HOT",
-    businessStatus: "Đang kinh doanh • Sẵn hàng tại kho Đà Nẵng",
-    description: "Cửa cuốn Bossdoor ECO BEC.5810 là giải pháp tối ưu cho những ai đang tìm kiếm sự cân bằng giữa chất lượng cao, thẩm mỹ hiện đại và chi phí đầu tư hợp lý.",
-    specs: ["Hợp kim nhôm 6063-T5 cao cấp", "Sơn tĩnh điện chống muối mặn", "Bảo hành thân cửa 10 năm"]
+    id: 8,
+    code: "CK-DL",
+    category: "cuakeo",
+    title: "CỬA KÉO ĐÀI LOAN CÓ LÁ / KHÔNG LÁ",
+    image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80",
+    price: "480.000 - 850.000đ/m²",
+    badge: "KINH TẾ",
+    businessStatus: "Đang kinh doanh • Sản xuất nhanh 24h",
+    description: "Thân cửa thép mạ màu Đài Loan, nhíp dập hoa văn sang trọng, bạc đạn bạc inox giúp kéo nhẹ êm không tốn sức.",
+    specs: ["Độ dày U: 0.6mm - 1.4mm", "Nhíp sơn tĩnh điện hoa văn", "Bạc đạn inox chống kẹt", "Bảo hành 2 năm"]
   },
 
-  // 3. CỬA CUỐN ĐÀI LOAN GIÁ RẺ DL-75
+  // 3. CỬA CUỐN TẤM LIỀN ÚC BD-L70
+  {
+    id: 6,
+    code: "BD-L70",
+    category: "cuacuon",
+    title: "CỬA CUỐN TẤM LIỀN CÔNG NGHỆ ÚC SIÊU ÊM",
+    image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80",
+    price: "980.000 - 1.350.000đ/m²",
+    badge: "MỚI",
+    businessStatus: "Đang kinh doanh • Sẵn hàng tại Đà Nẵng",
+    description: "Đóng mở êm ái không tiếng ồn nhờ dây polyguide giảm chấn, hợp kim thép mạ Colorbond Úc chống ăn mòn muối biển vượt trội.",
+    specs: ["Thép mạ kẽm Colorbond Úc", "Tích hợp chốt ly khai thoát hiểm", "Tốc độ đóng mở 15-20cm/s"]
+  },
+
+  // 4. CỬA CUỐN ĐÀI LOAN GIÁ RẺ DL-75
   {
     id: 3,
     code: "DL-75",
@@ -92,21 +106,21 @@ const PRICING_CATALOG = [
     specs: ["Tôn mạ màu Đài Loan 0.6 - 1.2mm", "Chống ăn mòn thời tiết miền Trung", "Kéo tay hoặc mô tơ", "Bảo hành 2 năm"]
   },
 
-  // 4. CỬA CUỐN CAO CẤP THẾ HỆ MỚI BD-LUX
+  // 5. CỬA CUỐN KHE THOÁNG ECO BEC.5810
   {
-    id: 4,
-    code: "BD-LUX",
+    id: 2,
+    code: "BEC.5810",
     category: "cuacuon",
-    title: "CỬA CUỐN SIÊU SANG THẾ HỆ MỚI BOSSDOOR LUXURY",
-    image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=800&q=80",
-    price: "2.100.000 - 2.250.000đ/m²",
-    badge: "LUXURY",
-    businessStatus: "Đang kinh doanh • Sản xuất theo kích thước",
-    description: "Phiên bản đỉnh cao của BossDoor với thiết kế nan chèn cao su giảm chấn 2 chiều, sơn bột tĩnh điện AkzoNobel Đức gia nhiệt cao cấp, tích hợp điều khiển thông minh qua Smartphone.",
-    specs: ["Hợp kim nhôm hàng không 6063-T6", "Sơn AkzoNobel Đức bảo hành 10 năm", "Giảm chấn 2 chiều siêu êm"]
+    title: "CỬA CUỐN KHE THOÁNG BOSSDOOR ECO BEC.5810",
+    image: "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=800&q=80",
+    price: "1.500.000 - 1.750.000đ/m²",
+    badge: "HOT",
+    businessStatus: "Đang kinh doanh • Sẵn hàng tại kho Đà Nẵng",
+    description: "Cửa cuốn Bossdoor ECO BEC.5810 là sản phẩm cửa cuốn khe thoáng thế hệ mới mang thương hiệu BossDoor danh tiếng. Được sản xuất từ hợp kim nhôm 6063-T5 chuẩn hàng không, BEC.5810 là sự kết hợp xuất sắc giữa độ cứng cáp chống bão, thiết kế nan sang trọng và công nghệ giảm chấn 2 chiều vận hành êm ái hàng đầu.",
+    specs: ["Hợp kim nhôm 6063-T5 cao cấp", "Sơn tĩnh điện chống muối mặn", "Bảo hành thân cửa 10 năm"]
   },
 
-  // 5. CỬA CUỐN KHE THOÁNG TRUYỀN THỐNG BD-900
+  // 6. CỬA CUỐN KHE THOÁNG TRUYỀN THỐNG BD-900
   {
     id: 5,
     code: "BD-900",
@@ -120,21 +134,21 @@ const PRICING_CATALOG = [
     specs: ["Hợp kim nhôm 6063-T5 siêu bền", "Độ dày nan: 1.4 - 2.2 mm", "Bảo hành mô-tơ 10 năm"]
   },
 
-  // 6. CỬA CUỐN TẤM LIỀN ÚC BD-L70
+  // 7. CỬA CUỐN CAO CẤP THẾ HỆ MỚI BD-LUX
   {
-    id: 6,
-    code: "BD-L70",
+    id: 4,
+    code: "BD-LUX",
     category: "cuacuon",
-    title: "CỬA CUỐN TẤM LIỀN CÔNG NGHỆ ÚC SIÊU ÊM",
-    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
-    price: "980.000 - 1.350.000đ/m²",
-    badge: "MỚI",
-    businessStatus: "Đang kinh doanh • Sẵn hàng tại Đà Nẵng",
-    description: "Đóng mở êm ái không tiếng ồn nhờ dây polyguide giảm chấn, hợp kim thép mạ Colorbond Úc chống ăn mòn muối biển vượt trội.",
-    specs: ["Thép mạ kẽm Colorbond Úc", "Tích hợp chốt ly khai thoát hiểm", "Tốc độ đóng mở 15-20cm/s"]
+    title: "CỬA CUỐN SIÊU SANG THẾ HỆ MỚI BOSSDOOR LUXURY",
+    image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=800&q=80",
+    price: "2.100.000 - 2.250.000đ/m²",
+    badge: "LUXURY",
+    businessStatus: "Đang kinh doanh • Sản xuất theo kích thước",
+    description: "Phiên bản đỉnh cao của BossDoor với thiết kế nan chèn cao su giảm chấn 2 chiều, sơn bột tĩnh điện AkzoNobel Đức gia nhiệt cao cấp, tích hợp điều khiển thông minh qua Smartphone.",
+    specs: ["Hợp kim nhôm hàng không 6063-T6", "Sơn AkzoNobel Đức bảo hành 10 năm", "Giảm chấn 2 chiều siêu êm"]
   },
 
-  // 7. CỬA CUỐN SONG NGANG - MẮC VÕNG SN-100
+  // 8. CỬA CUỐN SONG NGANG - MẮC VÕNG SN-100
   {
     id: 7,
     code: "SN-100",
@@ -146,20 +160,6 @@ const PRICING_CATALOG = [
     businessStatus: "Đang kinh doanh • Sẵn hàng thi công",
     description: "Thông thoáng tối đa, góc quan sát rộng cho TTTM, ngân hàng, gara ô tô. Vật liệu Inox 304 hoặc sắt sơn tĩnh điện cao cấp.",
     specs: ["Inox 304 / Sắt sơn tĩnh điện", "Ống phi 19 - 22mm dày 1.0 - 1.2mm", "Tầm nhìn thông thoáng 90%"]
-  },
-
-  // 8. CỬA KÉO ĐÀI LOAN CK-DL
-  {
-    id: 8,
-    code: "CK-DL",
-    category: "cuakeo",
-    title: "CỬA KÉO ĐÀI LOAN CÓ LÁ / KHÔNG LÁ",
-    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
-    price: "480.000 - 850.000đ/m²",
-    badge: "KINH TẾ",
-    businessStatus: "Đang kinh doanh • Sản xuất nhanh 24h",
-    description: "Thân cửa thép mạ màu Đài Loan, nhíp dập hoa văn sang trọng, bạc đạn bạc inox giúp kéo nhẹ êm không tốn sức.",
-    specs: ["Độ dày U: 0.6mm - 1.4mm", "Nhíp sơn tĩnh điện hoa văn", "Bạc đạn inox chống kẹt", "Bảo hành 2 năm"]
   },
 
   // 9. CỬA KÉO INOX 304 CK-IX304
@@ -254,11 +254,51 @@ const sanitizeSpec = (text) => {
   return s;
 };
 
+// Tiêu đề dạng bài viết hiển thị trên điện thoại (khớp 100% ảnh người dùng yêu cầu)
+export const getMobilePricingTitle = (prod) => {
+  if (!prod) return "Bảng giá sản phẩm";
+  const code = (prod.code || "").toUpperCase();
+  const titleMap = {
+    "CK-DE": "Bảng giá cập nhật cửa kéo công nghệ Đức 2026 tại Đà Nẵng",
+    "CK-DL": "Cập nhật giá cửa kéo Đài Loan tại Đà Nẵng mới 2026",
+    "BD-L70": "Bảng giá cửa cuốn tấm liền MaxDoor công nghệ Úc",
+    "DL-75": "Bảng giá cửa cuốn Đài Loan giá rẻ tại Đà Nẵng",
+    "BEC.5810": "Bảng giá cửa cuốn khe thoáng BossDoor ECO BEC.5810",
+    "BD-900": "Bảng giá cửa cuốn khe thoáng Đức BossDoor BD-900",
+    "BD-LUX": "Bảng giá cửa cuốn siêu sang thế hệ mới BossDoor Luxury",
+    "CK-IX304": "Bảng giá cửa kéo 100% Inox 304 chống rỉ sét tại Đà Nẵng",
+    "SN-100": "Bảng giá cửa cuốn song ngang - mắc võng Inox",
+    "MT-500": "Bảng giá mô tơ cửa cuốn chính hãng BossDoor",
+    "UPS-800": "Bảng giá bình lưu điện cửa cuốn BossDoor",
+    "WF-APP": "Bảng giá hộp điều khiển cửa cuốn qua Smartphone",
+    "IT-GHOST": "Bảng giá cổng tự động âm sàn Italia",
+    "NAB-150": "Bảng giá cổng trượt tự động Nabeco",
+    "SR1": "Bảng giá cửa kéo công nghệ Đức SR1",
+    "SR2": "Bảng giá cửa kéo công nghệ Đức SR2",
+    "SR3": "Bảng giá cửa kéo công nghệ Đức SR3",
+    "VIP": "Bảng giá cửa kéo công nghệ Đức VIP"
+  };
+  if (titleMap[code]) return titleMap[code];
+  if (prod.title?.toLowerCase().startsWith("bảng giá") || prod.title?.toLowerCase().startsWith("cập nhật giá")) return prod.title;
+  return `Bảng giá ${prod.title}`;
+};
+
 export default function Pricing() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const qParam = searchParams.get("q") || searchParams.get("search") || "";
   const [activeCategory, setActiveCategory] = useState("all");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(qParam);
   const [productsList, setProductsList] = useState(PRICING_CATALOG);
+
+  // Sync searchQuery when URL query parameter changes
+  useEffect(() => {
+    const q = searchParams.get("q") || searchParams.get("search") || "";
+    setSearchQuery(q);
+    if (q) {
+      setActiveCategory("all");
+    }
+  }, [searchParams]);
 
   // Sync with DB products if available
   useEffect(() => {
@@ -421,40 +461,35 @@ export default function Pricing() {
 
   return (
     <div className="pricing-hub-page">
-      {/* 1. HERO BANNER */}
+      {/* 1. HERO BANNER (Đồng bộ nhận diện thương hiệu với Dịch Vụ, Sản Phẩm, Tin Tức & Công Trình) */}
       <section className="pricing-hero-banner">
+        <div className="pricing-hero-overlay"></div>
         <div className="container">
           <div className="pricing-hero-content">
             <span className="hero-subtag">
-              <Sparkles size={14} /> BẢNG BÁO GIÁ NIÊM YẾT CHÍNH HÃNG 2026
+              <Sparkles size={14} /> BẢNG BÁO GIÁ NIÊM YẾT 2026
             </span>
-            <h1>BẢNG GIÁ SẢN PHẨM</h1>
+            <h1>
+              BẢNG GIÁ <span className="text-gold">SẢN PHẨM</span>
+            </h1>
             
-            {/* Desktop Description (Giữ nguyên 100% cho máy tính) */}
-            <p className="hero-desc-desktop">
+            <p className="hero-desc-text">
               Tra cứu đơn giá minh bạch, thông số kỹ thuật và chính sách bảo hành của từng dòng sản phẩm cửa cuốn, cửa kéo và cổng tự động tại Boss Đà Nẵng.
             </p>
 
-            {/* Mobile View (Gọn gàng, thanh cam kết 3 cột viền kim sang trọng) */}
-            <div className="hero-mobile-summary">
-              <p className="hero-desc-mobile">
-                Báo giá niêm yết trực tiếp từ nhà máy Boss Đà Nẵng
-              </p>
-              <div className="pricing-hero-strip">
-                <div className="hero-strip-col">
-                  <ShieldCheck size={18} />
-                  <span>Giá tại xưởng</span>
-                </div>
-                <div className="strip-sep" />
-                <div className="hero-strip-col">
-                  <CheckCircle2 size={18} />
-                  <span>Khảo sát 0đ</span>
-                </div>
-                <div className="strip-sep" />
-                <div className="hero-strip-col">
-                  <Award size={18} />
-                  <span>Bảo hành chính hãng</span>
-                </div>
+            {/* Trust Badges Row (Đồng bộ chuẩn giao diện như trang Dịch vụ & Sản phẩm) */}
+            <div className="pricing-trust-badges-row">
+              <div className="trust-badge-pill">
+                <ShieldCheck size={14} />
+                <span>Bảo hành 5 – 10 năm</span>
+              </div>
+              <div className="trust-badge-pill">
+                <CheckCircle2 size={14} />
+                <span>Khảo sát 0đ</span>
+              </div>
+              <div className="trust-badge-pill">
+                <Award size={14} />
+                <span>Giá tại xưởng</span>
               </div>
             </div>
 
@@ -512,6 +547,10 @@ export default function Pricing() {
             <article
               key={prod.id || prod._id || prod.code}
               className="pricing-horizontal-card"
+              onClick={() => {
+                const { icon, ...serializableProduct } = prod;
+                navigate(`/bang-gia/${prod.code || prod.id}`, { state: { product: serializableProduct } });
+              }}
             >
               {/* Cột 1: Ảnh sản phẩm (bên trái) */}
               <div className="card-thumb-column">
@@ -533,38 +572,27 @@ export default function Pricing() {
                     to={`/bang-gia/${prod.code || prod.id}`}
                     state={{ product: prod }}
                     className="title-link"
+                    onClick={(e) => e.stopPropagation()}
                   >
-                    {prod.title}
+                    <span className="desktop-prod-title">{prod.title}</span>
+                    <span className="mobile-prod-title">{getMobilePricingTitle(prod)}</span>
                   </Link>
                 </h3>
 
                 <p className="card-prod-desc">{prod.description}</p>
 
                 {prod.specs && prod.specs.length > 0 && (
-                  <>
-                    {/* Desktop: Giữ nguyên 100% hiển thị đầy đủ thông số */}
-                    <div className="card-specs-list desktop-only-specs">
-                      {prod.specs.map((sp, idx) => {
-                        const displaySp = sanitizeSpec(sp);
-                        return (
-                          <span key={idx} className="spec-tag-item">
-                            <Check size={12} className="spec-check-icon" />
-                            <span>{displaySp}</span>
-                          </span>
-                        );
-                      })}
-                    </div>
-
-                    {/* Mobile: Chỉ hiện 2 thông số cốt lõi nhất ("những cái cần hiện") dạng thanh ngang full-width, không bao giờ bị cắt chữ */}
-                    <div className="card-specs-list mobile-only-specs">
-                      {getEssentialSpecs(prod.specs).map((sp, idx) => (
-                        <div key={idx} className="spec-tag-item">
-                          <Check size={13} className="spec-check-icon" />
-                          <span>{sp}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </>
+                  <div className="card-specs-list desktop-only-specs">
+                    {prod.specs.map((sp, idx) => {
+                      const displaySp = sanitizeSpec(sp);
+                      return (
+                        <span key={idx} className="spec-tag-item">
+                          <Check size={12} className="spec-check-icon" />
+                          <span>{displaySp}</span>
+                        </span>
+                      );
+                    })}
+                  </div>
                 )}
               </div>
 

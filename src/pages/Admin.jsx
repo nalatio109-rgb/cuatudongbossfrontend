@@ -5,11 +5,13 @@ import {
   RefreshCw, X, Shield, Phone, ArrowLeft, LayoutDashboard, Database,
   Newspaper, Search, Eye, Tag, FileText, Check, Menu, LogOut, Sparkles, FileSpreadsheet, FileEdit,
   Wrench, Upload, Image as ImageIcon, ExternalLink, Filter, RotateCcw, Loader2,
-  Star, BadgeCheck, Video as VideoIcon, AlertCircle
+  Star, BadgeCheck, Video as VideoIcon, AlertCircle, Layers
 } from "lucide-react";
 import AdminCategorySeo from "../components/AdminCategorySeo";
 import AdminPriceQuote from "../components/AdminPriceQuote";
 import AdminProductArticleEditor from "../components/AdminProductArticleEditor";
+import AdminProductQuickInfoCard from "../components/AdminProductQuickInfoCard";
+import { getProductCardDescription } from "../utils/productDescriptionHelper";
 import { useAuth } from "../context/AuthContext";
 import { slugify } from "../utils/slug.js";
 import { matchKeywords, extractSearchableText } from "../utils/searchHelper";
@@ -162,6 +164,7 @@ export default function Admin() {
   const [showServiceModal, setShowServiceModal] = useState(false);
   const [editingService, setEditingService] = useState(null);
   const [isUploadingServiceImg, setIsUploadingServiceImg] = useState(false);
+  const [isUploadingProductImg, setIsUploadingProductImg] = useState(false);
 
   // Form states
   const initialProductState = {
@@ -311,7 +314,7 @@ export default function Admin() {
       }
     } catch (err) {
       console.error("Admin Fetch Error:", err);
-      showToast("❌ Lỗi khi kết nối MongoDB backend");
+      showToast("❌ Lỗi khi kết nối máy chủ");
     } finally {
       setLoading(false);
     }
@@ -356,7 +359,7 @@ export default function Admin() {
       const data = await res.json();
       if (data.success) {
         setContacts(contacts.filter(c => c._id !== id));
-        showToast("🗑️ Đã xóa yêu cầu tư vấn khỏi MongoDB");
+        showToast("🗑️ Đã xóa yêu cầu tư vấn thành công");
       }
     } catch (err) {
       console.error("Delete contact error:", err);
@@ -397,6 +400,10 @@ export default function Admin() {
         : productForm.specs;
 
       const payload = { ...productForm, specs: specsArray };
+      if (!payload.description || payload.description.includes("là giải pháp tối ưu cho những ai đang tìm kiếm")) {
+        const articleExcerpt = getProductCardDescription(productForm);
+        if (articleExcerpt) payload.description = articleExcerpt;
+      }
 
       let res, data;
       if (editingProduct) {
@@ -421,7 +428,7 @@ export default function Admin() {
         data = await res.json();
         if (data.success) {
           setProducts([data.data, ...products]);
-          showToast("🎉 Thêm sản phẩm mới vào MongoDB thành công!");
+          showToast("🎉 Thêm sản phẩm mới thành công!");
         }
       }
 
@@ -436,8 +443,46 @@ export default function Admin() {
     }
   };
 
+  const handleSaveProductFromEditor = async (payload) => {
+    try {
+      if (!payload.description || payload.description.includes("là giải pháp tối ưu cho những ai đang tìm kiếm")) {
+        const articleExcerpt = getProductCardDescription(payload);
+        if (articleExcerpt) payload.description = articleExcerpt;
+      }
+      let res, data;
+      if (payload._id) {
+        res = await fetch(`${import.meta.env.VITE_API_URL}/api/products/${payload._id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        data = await res.json();
+        if (data.success) {
+          setProducts(prev => prev.map(p => p._id === payload._id ? data.data : p));
+          showToast("✨ Đã cập nhật thông tin sản phẩm thành công!");
+        }
+      } else {
+        res = await fetch(`${import.meta.env.VITE_API_URL}/api/products`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        data = await res.json();
+        if (data.success) {
+          setProducts(prev => [data.data, ...prev]);
+          showToast("🎉 Thêm sản phẩm mới thành công!");
+        }
+      }
+      return data;
+    } catch (err) {
+      console.error("Save product from editor error:", err);
+      showToast("❌ Lỗi khi lưu thông tin sản phẩm");
+      throw err;
+    }
+  };
+
   const handleDeleteProduct = async (id) => {
-    if (!window.confirm("Bạn có chắc muốn xóa sản phẩm này khỏi MongoDB?")) return;
+    if (!window.confirm("Bạn có chắc muốn xóa sản phẩm này?")) return;
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/api/products/${id}`, { method: "DELETE" });
       const data = await res.json();
@@ -672,6 +717,63 @@ export default function Admin() {
       reader.readAsDataURL(file);
     } finally {
       setIsUploadingServiceImg(false);
+      e.target.value = "";
+    }
+  };
+
+  const handleUploadProductImage = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      showToast("⚠️ Vui lòng chọn tệp hình ảnh hợp lệ!");
+      return;
+    }
+
+    setIsUploadingProductImg(true);
+    try {
+      const backendBase = import.meta.env.VITE_API_URL || "";
+      const uploadEndpoint = backendBase ? `${backendBase}/api/upload` : "/api/upload";
+      const formData = new FormData();
+      formData.append("image", file);
+
+      try {
+        const res = await fetch(uploadEndpoint, {
+          method: "POST",
+          body: formData
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.url) {
+            const finalUrl = data.url.startsWith("http") || data.url.startsWith("data:")
+              ? data.url
+              : `${backendBase}${data.url}`;
+            setProductForm(prev => ({ ...prev, image: finalUrl }));
+            showToast("🎉 Tải ảnh sản phẩm từ thiết bị lên thành công!");
+            setIsUploadingProductImg(false);
+            return;
+          }
+        }
+      } catch (uploadErr) {
+        console.warn("Product upload backend failed, fallback to FileReader:", uploadErr);
+      }
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setProductForm(prev => ({ ...prev, image: event.target.result }));
+        showToast("✨ Đã tải ảnh từ thiết bị thành công!");
+        setIsUploadingProductImg(false);
+      };
+      reader.onerror = () => {
+        showToast("❌ Không thể đọc file ảnh từ thiết bị!");
+        setIsUploadingProductImg(false);
+      };
+      reader.readAsDataURL(file);
+    } catch (err) {
+      console.error("Product image upload error:", err);
+      showToast("❌ Lỗi khi chọn ảnh!");
+      setIsUploadingProductImg(false);
+    } finally {
       e.target.value = "";
     }
   };
@@ -937,7 +1039,7 @@ export default function Admin() {
           <div className="logo-badge">B</div>
           <div className="admin-logo-text">
             <h2>BOSS ADMIN</h2>
-            <span>MONGODB CONTROL</span>
+            <span>BẢNG ĐIỀU KHIỂN</span>
           </div>
           <button 
             type="button"
@@ -959,7 +1061,7 @@ export default function Admin() {
           </button>
 
           <button 
-            className={`admin-nav-item ${activeTab === "products" && productSubTab === "list" ? "active" : ""}`}
+            className={`admin-nav-item ${activeTab === "products" ? "active" : ""}`}
             onClick={() => { 
               setActiveTab("products"); 
               setProductSubTab("list");
@@ -1012,17 +1114,6 @@ export default function Admin() {
           >
             <FileSpreadsheet size={18} /> Quản Lý Bảng Báo Giá
           </button>
-
-          <button 
-            className={`admin-nav-item ${activeTab === "products" && productSubTab === "editor" ? "active" : ""}`}
-            onClick={() => { 
-              setActiveTab("products"); 
-              setProductSubTab("editor");
-              setMobileMenuOpen(false); 
-            }}
-          >
-            <FileEdit size={18} /> Soạn Bài Chi Tiết SP (Word)
-          </button>
         </div>
 
         <div className="sidebar-footer">
@@ -1057,8 +1148,8 @@ export default function Admin() {
             </button>
             <div className="topbar-status">
               <span className="status-dot"></span>
-              <span className="topbar-status-text">MongoDB Atlas Connected</span>
-              <span className="topbar-status-mobile-text">Atlas Live</span>
+              <span className="topbar-status-text">Hệ Thống Trực Tuyến</span>
+              <span className="topbar-status-mobile-text">Online</span>
             </div>
           </div>
 
@@ -1090,87 +1181,13 @@ export default function Admin() {
 
         {/* CONTENT BODY */}
         <div className="admin-content-body">
-          {/* MOBILE QUICK TABS BAR */}
-          <div className="admin-mobile-quick-tabs">
-            <button 
-              className={`mobile-quick-tab ${activeTab === "contacts" ? "active" : ""}`}
+          {/* STATS CARDS (DESKTOP: ALL 6 CARDS) */}
+          <div className="admin-stats-grid admin-stats-grid-desktop">
+            <div 
+              className={`admin-stat-card ${activeTab === "contacts" ? "active" : ""}`}
               onClick={() => setActiveTab("contacts")}
+              title="Xem danh sách yêu cầu báo giá"
             >
-              <Phone size={14} />
-              <span>Báo Giá</span>
-              {pendingContactsCount > 0 && <span className="tab-pill-count">{pendingContactsCount}</span>}
-            </button>
-
-            <button 
-              className={`mobile-quick-tab ${activeTab === "services" ? "active" : ""}`}
-              onClick={() => setActiveTab("services")}
-            >
-              <Wrench size={14} />
-              <span>Dịch Vụ</span>
-              {services.length > 0 && <span className="tab-pill-count">{services.length}</span>}
-            </button>
-
-            <button 
-              className={`mobile-quick-tab ${activeTab === "reviews" ? "active" : ""}`}
-              onClick={() => setActiveTab("reviews")}
-            >
-              <Star size={14} />
-              <span>Đánh Giá</span>
-              {reviews.length > 0 && <span className="tab-pill-count">{reviews.length}</span>}
-            </button>
-
-            <button 
-              className={`mobile-quick-tab ${activeTab === "products" && productSubTab === "list" ? "active" : ""}`}
-              onClick={() => { setActiveTab("products"); setProductSubTab("list"); }}
-            >
-              <Package size={14} />
-              <span>Sản Phẩm</span>
-            </button>
-
-            <button 
-              className={`mobile-quick-tab ${activeTab === "projects" ? "active" : ""}`}
-              onClick={() => setActiveTab("projects")}
-            >
-              <FolderKanban size={14} />
-              <span>Dự Án</span>
-            </button>
-
-            <button 
-              className={`mobile-quick-tab ${activeTab === "news" ? "active" : ""}`}
-              onClick={() => setActiveTab("news")}
-            >
-              <Newspaper size={14} />
-              <span>Tin Tức</span>
-            </button>
-
-            <button 
-              className={`mobile-quick-tab ${activeTab === "seo" ? "active" : ""}`}
-              onClick={() => setActiveTab("seo")}
-            >
-              <Sparkles size={14} />
-              <span>Bài Sale</span>
-            </button>
-
-            <button 
-              className={`mobile-quick-tab ${activeTab === "pricing" ? "active" : ""}`}
-              onClick={() => setActiveTab("pricing")}
-            >
-              <FileSpreadsheet size={14} />
-              <span>Bảng Giá KT</span>
-            </button>
-
-            <button 
-              className={`mobile-quick-tab ${activeTab === "products" && productSubTab === "editor" ? "active" : ""}`}
-              onClick={() => { setActiveTab("products"); setProductSubTab("editor"); }}
-            >
-              <FileEdit size={14} />
-              <span>Soạn Bài SP</span>
-            </button>
-          </div>
-
-          {/* STATS CARDS */}
-          <div className="admin-stats-grid">
-            <div className="admin-stat-card">
               <div className="stat-icon green">
                 <Phone size={24} />
               </div>
@@ -1183,7 +1200,11 @@ export default function Admin() {
               </div>
             </div>
 
-            <div className="admin-stat-card">
+            <div 
+              className={`admin-stat-card ${activeTab === "services" ? "active" : ""}`}
+              onClick={() => setActiveTab("services")}
+              title="Xem danh sách dịch vụ"
+            >
               <div className="stat-icon" style={{ background: "rgba(234, 179, 8, 0.15)", color: "#eab308" }}>
                 <Wrench size={24} />
               </div>
@@ -1202,7 +1223,11 @@ export default function Admin() {
               </div>
             </div>
 
-            <div className="admin-stat-card">
+            <div 
+              className={`admin-stat-card ${activeTab === "reviews" ? "active" : ""}`}
+              onClick={() => setActiveTab("reviews")}
+              title="Xem danh sách đánh giá khách hàng"
+            >
               <div className="stat-icon" style={{ background: "rgba(245, 189, 32, 0.18)", color: "#f5bd20" }}>
                 <Star size={24} />
               </div>
@@ -1220,8 +1245,12 @@ export default function Admin() {
               </div>
             </div>
 
-            <div className="admin-stat-card">
-              <div className="stat-icon">
+            <div 
+              className={`admin-stat-card ${activeTab === "products" ? "active" : ""}`}
+              onClick={() => { setActiveTab("products"); setProductSubTab("list"); }}
+              title="Xem danh sách sản phẩm"
+            >
+              <div className="stat-icon" style={{ background: "rgba(16, 185, 129, 0.15)", color: "#10b981" }}>
                 <Package size={24} />
               </div>
               <div className="stat-info">
@@ -1229,11 +1258,20 @@ export default function Admin() {
                   <span className="desktop-stat-label">Sản Phẩm Trong Database</span>
                   <span className="mobile-stat-label">Tổng Sản Phẩm</span>
                 </h4>
-                <p>{products.length}</p>
+                <p>
+                  {products.length}{" "}
+                  <span style={{ fontSize: "0.85rem", color: "#10b981" }}>
+                    ({products.length} có mặt)
+                  </span>
+                </p>
               </div>
             </div>
 
-            <div className="admin-stat-card">
+            <div 
+              className={`admin-stat-card ${activeTab === "projects" ? "active" : ""}`}
+              onClick={() => setActiveTab("projects")}
+              title="Xem danh sách dự án"
+            >
               <div className="stat-icon blue">
                 <FolderKanban size={24} />
               </div>
@@ -1243,7 +1281,11 @@ export default function Admin() {
               </div>
             </div>
 
-            <div className="admin-stat-card">
+            <div 
+              className={`admin-stat-card ${activeTab === "news" ? "active" : ""}`}
+              onClick={() => setActiveTab("news")}
+              title="Xem danh sách tin tức & bài viết"
+            >
               <div className="stat-icon" style={{ background: "rgba(168, 85, 247, 0.15)", color: "#a855f7" }}>
                 <Newspaper size={24} />
               </div>
@@ -1255,6 +1297,235 @@ export default function Admin() {
                 <p>{news.length}</p>
               </div>
             </div>
+          </div>
+
+          {/* MOBILE CONTEXTUAL STATS (<= 992px) */}
+          <div className="admin-mobile-stats-grid">
+            {activeTab === "products" ? (
+              <>
+                <div 
+                  className="admin-stat-card active"
+                  style={{ 
+                    background: "linear-gradient(135deg, rgba(16, 185, 129, 0.16) 0%, rgba(30, 41, 59, 0.85) 100%)", 
+                    border: "1px solid rgba(16, 185, 129, 0.38)" 
+                  }}
+                >
+                  <div className="stat-icon" style={{ background: "rgba(16, 185, 129, 0.2)", color: "#10b981" }}>
+                    <Package size={20} />
+                  </div>
+                  <div className="stat-info">
+                    <h4>Tổng Sản Phẩm</h4>
+                    <p>
+                      {products.length}{" "}
+                      <span style={{ fontSize: "0.78rem", color: "#10b981", fontWeight: 600 }}>
+                        ({products.length} có mặt)
+                      </span>
+                    </p>
+                  </div>
+                </div>
+
+                <div 
+                  className="admin-stat-card"
+                  style={{ 
+                    background: "linear-gradient(135deg, rgba(212, 175, 55, 0.14) 0%, rgba(30, 41, 59, 0.85) 100%)", 
+                    border: "1px solid rgba(212, 175, 55, 0.32)" 
+                  }}
+                >
+                  <div className="stat-icon" style={{ background: "rgba(212, 175, 55, 0.2)", color: "#f5bd20" }}>
+                    <Layers size={20} />
+                  </div>
+                  <div className="stat-info">
+                    <h4>Cửa Cuốn & Kéo</h4>
+                    <p>
+                      {products.filter(p => p.category === "cuacuon" || p.category === "cuakeo").length}{" "}
+                      <span style={{ fontSize: "0.78rem", color: "#f5bd20", fontWeight: 600 }}>
+                        ({products.filter(p => p.category === "phukien" || p.category === "cuatudong").length} PK/Cổng)
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              </>
+            ) : activeTab === "services" ? (
+              <>
+                <div 
+                  className="admin-stat-card active"
+                  style={{ 
+                    background: "linear-gradient(135deg, rgba(234, 179, 8, 0.15) 0%, rgba(30, 41, 59, 0.85) 100%)", 
+                    border: "1px solid rgba(234, 179, 8, 0.35)" 
+                  }}
+                >
+                  <div className="stat-icon" style={{ background: "rgba(234, 179, 8, 0.2)", color: "#eab308" }}>
+                    <Wrench size={20} />
+                  </div>
+                  <div className="stat-info">
+                    <h4>Dịch Vụ Cửa Cuốn</h4>
+                    <p>{services.length} <span style={{ fontSize: "0.78rem", color: "#eab308", fontWeight: 600 }}>({services.length} dịch vụ)</span></p>
+                  </div>
+                </div>
+
+                <div 
+                  className="admin-stat-card"
+                  onClick={() => setActiveTab("contacts")}
+                  style={{ 
+                    background: "linear-gradient(135deg, rgba(56, 189, 248, 0.14) 0%, rgba(30, 41, 59, 0.85) 100%)", 
+                    border: "1px solid rgba(56, 189, 248, 0.32)" 
+                  }}
+                >
+                  <div className="stat-icon" style={{ background: "rgba(56, 189, 248, 0.2)", color: "#38bdf8" }}>
+                    <Phone size={20} />
+                  </div>
+                  <div className="stat-info">
+                    <h4>Đơn Dịch Vụ</h4>
+                    <p>{serviceContactsCount} <span style={{ fontSize: "0.78rem", color: "#38bdf8", fontWeight: 600 }}>({serviceContactsCount} đơn)</span></p>
+                  </div>
+                </div>
+              </>
+            ) : activeTab === "reviews" ? (
+              <>
+                <div 
+                  className="admin-stat-card active"
+                  style={{ 
+                    background: "linear-gradient(135deg, rgba(245, 189, 32, 0.14) 0%, rgba(30, 41, 59, 0.85) 100%)", 
+                    border: "1px solid rgba(245, 189, 32, 0.35)" 
+                  }}
+                >
+                  <div className="stat-icon" style={{ background: "rgba(245, 189, 32, 0.2)", color: "#f5bd20" }}>
+                    <Star size={20} />
+                  </div>
+                  <div className="stat-info">
+                    <h4>Đánh Giá KH</h4>
+                    <p>{reviews.length} <span style={{ fontSize: "0.78rem", color: "#f5bd20", fontWeight: 600 }}>({reviews.length} đánh giá)</span></p>
+                  </div>
+                </div>
+
+                <div 
+                  className="admin-stat-card"
+                  style={{ 
+                    background: "linear-gradient(135deg, rgba(16, 185, 129, 0.16) 0%, rgba(30, 41, 59, 0.85) 100%)", 
+                    border: "1px solid rgba(16, 185, 129, 0.35)" 
+                  }}
+                >
+                  <div className="stat-icon" style={{ background: "rgba(16, 185, 129, 0.2)", color: "#10b981" }}>
+                    <BadgeCheck size={20} />
+                  </div>
+                  <div className="stat-info">
+                    <h4>Lượt 5 Sao</h4>
+                    <p>{reviews.filter(r => r.rating === 5).length} <span style={{ fontSize: "0.78rem", color: "#10b981", fontWeight: 600 }}>(5⭐ tuyệt đối)</span></p>
+                  </div>
+                </div>
+              </>
+            ) : activeTab === "projects" ? (
+              <>
+                <div 
+                  className="admin-stat-card active"
+                  style={{ 
+                    background: "linear-gradient(135deg, rgba(59, 130, 246, 0.16) 0%, rgba(30, 41, 59, 0.85) 100%)", 
+                    border: "1px solid rgba(59, 130, 246, 0.35)" 
+                  }}
+                >
+                  <div className="stat-icon blue">
+                    <FolderKanban size={20} />
+                  </div>
+                  <div className="stat-info">
+                    <h4>Dự Án Tiêu Biểu</h4>
+                    <p>{projects.length} <span style={{ fontSize: "0.78rem", color: "#3b82f6", fontWeight: 600 }}>({projects.length} dự án)</span></p>
+                  </div>
+                </div>
+
+                <div 
+                  className="admin-stat-card"
+                  onClick={() => setActiveTab("reviews")}
+                  style={{ 
+                    background: "linear-gradient(135deg, rgba(245, 189, 32, 0.14) 0%, rgba(30, 41, 59, 0.85) 100%)", 
+                    border: "1px solid rgba(245, 189, 32, 0.32)" 
+                  }}
+                >
+                  <div className="stat-icon" style={{ background: "rgba(245, 189, 32, 0.18)", color: "#f5bd20" }}>
+                    <Star size={20} />
+                  </div>
+                  <div className="stat-info">
+                    <h4>Đánh Giá KH</h4>
+                    <p>{reviews.length} <span style={{ fontSize: "0.78rem", color: "#f5bd20", fontWeight: 600 }}>({reviews.filter(r => r.rating === 5).length} lượt 5⭐)</span></p>
+                  </div>
+                </div>
+              </>
+            ) : activeTab === "news" ? (
+              <>
+                <div 
+                  className="admin-stat-card active"
+                  style={{ 
+                    background: "linear-gradient(135deg, rgba(168, 85, 247, 0.16) 0%, rgba(30, 41, 59, 0.85) 100%)", 
+                    border: "1px solid rgba(168, 85, 247, 0.35)" 
+                  }}
+                >
+                  <div className="stat-icon" style={{ background: "rgba(168, 85, 247, 0.2)", color: "#a855f7" }}>
+                    <Newspaper size={20} />
+                  </div>
+                  <div className="stat-info">
+                    <h4>Tin Tức & Bài Viết</h4>
+                    <p>{news.length} <span style={{ fontSize: "0.78rem", color: "#a855f7", fontWeight: 600 }}>({news.length} bài)</span></p>
+                  </div>
+                </div>
+
+                <div 
+                  className="admin-stat-card"
+                  style={{ 
+                    background: "linear-gradient(135deg, rgba(212, 175, 55, 0.14) 0%, rgba(30, 41, 59, 0.85) 100%)", 
+                    border: "1px solid rgba(212, 175, 55, 0.32)" 
+                  }}
+                >
+                  <div className="stat-icon" style={{ background: "rgba(212, 175, 55, 0.2)", color: "#d4af37" }}>
+                    <Tag size={20} />
+                  </div>
+                  <div className="stat-info">
+                    <h4>Tác Giả Viết Bài</h4>
+                    <p>BOSS <span style={{ fontSize: "0.78rem", color: "#d4af37", fontWeight: 600 }}>(Đà Nẵng)</span></p>
+                  </div>
+                </div>
+              </>
+            ) : (
+              /* DEFAULT (contacts, etc.) - KHỞI TẠO MÀN HÌNH ĐIỆN THOẠI */
+              <>
+                <div 
+                  className="admin-stat-card active"
+                  onClick={() => setActiveTab("contacts")}
+                  style={{ 
+                    background: "linear-gradient(135deg, rgba(16, 185, 129, 0.16) 0%, rgba(30, 41, 59, 0.85) 100%)", 
+                    border: "1px solid rgba(16, 185, 129, 0.35)" 
+                  }}
+                >
+                  <div className="stat-icon green">
+                    <Phone size={20} />
+                  </div>
+                  <div className="stat-info">
+                    <h4>Báo Giá Chờ Xử Lý</h4>
+                    <p>{pendingContactsCount} <span style={{ fontSize: "0.78rem", color: "#f59e0b", fontWeight: 600 }}>({contacts.length} tổng)</span></p>
+                  </div>
+                </div>
+
+                <div 
+                  className="admin-stat-card"
+                  onClick={() => setActiveTab("reviews")}
+                  style={{ 
+                    background: "linear-gradient(135deg, rgba(245, 189, 32, 0.14) 0%, rgba(30, 41, 59, 0.85) 100%)", 
+                    border: "1px solid rgba(245, 189, 32, 0.32)" 
+                  }}
+                >
+                  <div className="stat-icon" style={{ background: "rgba(245, 189, 32, 0.18)", color: "#f5bd20" }}>
+                    <Star size={20} />
+                  </div>
+                  <div className="stat-info">
+                    <h4>Đánh Giá KH</h4>
+                    <p>
+                      {reviews.length}{" "}
+                      <span style={{ fontSize: "0.78rem", color: "#f5bd20", fontWeight: 600 }}>
+                        ({reviews.filter(r => r.rating === 5).length} lượt 5⭐)
+                      </span>
+                    </p>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
 
           {/* TAB 1: CONTACTS */}
@@ -1507,7 +1778,7 @@ export default function Admin() {
                 </button>
               </div>
 
-              {/* PHÂN HỆ 1: BẢNG DANH MỤC SẢN PHẨM (MONGODB CRUD) */}
+              {/* PHÂN HỆ 1: BẢNG DANH MỤC SẢN PHẨM */}
               {productSubTab === "list" && (
                 <div className="admin-table-container">
                   <div className="table-action-header">
@@ -1672,12 +1943,25 @@ export default function Admin() {
 
               {/* PHÂN HỆ 2: TRÌNH SOẠN BÀI VIẾT CHI TIẾT & SEO (WYSIWYG WORD) */}
               {productSubTab === "editor" && (
-                <AdminProductArticleEditor 
-                  showToast={showToast} 
-                  initialProductCode={editingArticleCode}
-                  onBackToProducts={() => setProductSubTab("list")}
-                  dbProducts={products}
-                />
+                <div className="product-editor-subtab-layout">
+                  {/* KHUNG THÔNG TIN CƠ BẢN SẢN PHẨM (ẢNH 1 NẰM DƯỚI ẢNH 2, NGOÀI WORD) */}
+                  <AdminProductQuickInfoCard 
+                    currentProductCode={editingArticleCode || (products[0]?.code) || "BEC.5810"}
+                    onSelectProductCode={(code) => setEditingArticleCode(code)}
+                    dbProducts={products}
+                    onSaveProduct={handleSaveProductFromEditor}
+                    showToast={showToast}
+                  />
+
+                  {/* TRÌNH SOẠN BÀI VIẾT CHI TIẾT & SEO (WORD) */}
+                  <AdminProductArticleEditor 
+                    showToast={showToast} 
+                    initialProductCode={editingArticleCode || (products[0]?.code) || "BEC.5810"}
+                    onBackToProducts={() => setProductSubTab("list")}
+                    dbProducts={products}
+                    onSelectProduct={(code) => setEditingArticleCode(code)}
+                  />
+                </div>
               )}
             </div>
           )}
@@ -2258,15 +2542,25 @@ export default function Admin() {
 
           {/* 8. QUẢN LÝ BÀI VIẾT CHI TIẾT SẢN PHẨM (WYSIWYG WORD EDITOR) */}
           {activeTab === "article-editor" && (
-            <AdminProductArticleEditor 
-              showToast={showToast}
-              initialProductCode={editingArticleCode}
-              onBackToProducts={() => {
-                setActiveTab("products");
-                setProductSubTab("list");
-              }}
-              dbProducts={products}
-            />
+            <div className="product-editor-subtab-layout">
+              <AdminProductQuickInfoCard 
+                currentProductCode={editingArticleCode || (products[0]?.code) || "BEC.5810"}
+                onSelectProductCode={(code) => setEditingArticleCode(code)}
+                dbProducts={products}
+                onSaveProduct={handleSaveProductFromEditor}
+                showToast={showToast}
+              />
+              <AdminProductArticleEditor 
+                showToast={showToast}
+                initialProductCode={editingArticleCode || (products[0]?.code) || "BEC.5810"}
+                onBackToProducts={() => {
+                  setActiveTab("products");
+                  setProductSubTab("list");
+                }}
+                dbProducts={products}
+                onSelectProduct={(code) => setEditingArticleCode(code)}
+              />
+            </div>
           )}
         </div>
       </main>
@@ -2276,7 +2570,7 @@ export default function Admin() {
         <div className="admin-modal-overlay">
           <div className="admin-modal-card">
             <div className="modal-header">
-              <h3>{editingProduct ? "✏️ Chỉnh Sửa Sản Phẩm MongoDB" : "➕ Thêm Sản Phẩm Mới Vào MongoDB"}</h3>
+              <h3>{editingProduct ? "✏️ Chỉnh Sửa Sản Phẩm" : "➕ Thêm Sản Phẩm Mới"}</h3>
               <button style={{ background: "none", border: "none", color: "white", cursor: "pointer" }} onClick={() => setShowProductModal(false)}>
                 <X size={20} />
               </button>
@@ -2337,45 +2631,86 @@ export default function Admin() {
                 </div>
               </div>
 
-              <div className="admin-form-grid-2">
-                <div className="admin-form-group">
-                  <label>Giá tham khảo</label>
-                  <input 
-                    type="text" 
-                    value={productForm.price} 
-                    onChange={(e) => setProductForm({ ...productForm, price: e.target.value })} 
-                    placeholder="1.500.000đ/m2"
-                  />
-                </div>
-                <div className="admin-form-group">
-                  <label>Nhãn Nổi Bật (Badge)</label>
-                  <input 
-                    type="text" 
-                    value={productForm.badge} 
-                    onChange={(e) => setProductForm({ ...productForm, badge: e.target.value })} 
-                    placeholder="HOT / MỚI / CAO CẤP"
-                  />
-                </div>
-              </div>
-
               <div className="admin-form-group">
-                <label>URL Hình ảnh (Image Link) *</label>
+                <label>Giá tham khảo</label>
                 <input 
                   type="text" 
-                  value={productForm.image} 
-                  onChange={(e) => setProductForm({ ...productForm, image: e.target.value })} 
-                  required 
+                  value={productForm.price} 
+                  onChange={(e) => setProductForm({ ...productForm, price: e.target.value })} 
+                  placeholder="1.500.000đ/m2"
                 />
               </div>
 
               <div className="admin-form-group">
-                <label>Mô tả ngắn sản phẩm</label>
-                <textarea 
-                  rows="2" 
-                  value={productForm.description} 
-                  onChange={(e) => setProductForm({ ...productForm, description: e.target.value })}
-                  placeholder="Mô tả đặc điểm nổi bật..."
-                ></textarea>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+                  <label style={{ margin: 0 }}>URL Hình ảnh (Image Link) *</label>
+                  <span style={{ fontSize: "0.76rem", color: "#38bdf8" }}>Dán link hoặc chọn từ máy</span>
+                </div>
+                <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+                  <input 
+                    type="text" 
+                    value={productForm.image} 
+                    onChange={(e) => setProductForm({ ...productForm, image: e.target.value })} 
+                    required 
+                    placeholder="Nhập đường dẫn ảnh hoặc bấm nút bên cạnh..."
+                    style={{ flex: 1 }}
+                  />
+                  <label style={{ 
+                    display: "inline-flex", 
+                    alignItems: "center", 
+                    gap: "6px", 
+                    background: "linear-gradient(135deg, rgba(0, 77, 50, 0.95) 0%, rgba(5, 150, 105, 0.95) 100%)", 
+                    color: "white", 
+                    padding: "10px 16px", 
+                    borderRadius: "8px", 
+                    cursor: "pointer", 
+                    fontSize: "0.85rem",
+                    fontWeight: "600",
+                    whiteSpace: "nowrap",
+                    border: "1px solid rgba(16, 185, 129, 0.4)"
+                  }}>
+                    <Upload size={15} />
+                    {isUploadingProductImg ? "Đang tải..." : "Chọn ảnh từ máy"}
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      onChange={handleUploadProductImage} 
+                      disabled={isUploadingProductImg} 
+                      style={{ display: "none" }} 
+                    />
+                  </label>
+                </div>
+
+                {/* Preview Thumbnail */}
+                {productForm.image && (
+                  <div style={{ 
+                    marginTop: "8px", 
+                    display: "flex", 
+                    alignItems: "center", 
+                    gap: "12px",
+                    background: "rgba(0,0,0,0.3)",
+                    padding: "8px 12px",
+                    borderRadius: "8px",
+                    border: "1px dashed rgba(16, 185, 129, 0.35)"
+                  }}>
+                    <img 
+                      src={formatImgSrc(productForm.image)} 
+                      alt="Preview" 
+                      style={{ width: "60px", height: "50px", objectFit: "cover", borderRadius: "4px" }} 
+                      onError={(e) => { e.target.style.display = 'none'; }}
+                    />
+                    <span style={{ fontSize: "0.8rem", color: "#94a3b8", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>
+                      {productForm.image}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setProductForm({ ...productForm, image: "" })}
+                      style={{ background: "rgba(239, 68, 68, 0.15)", border: "1px solid rgba(239, 68, 68, 0.3)", color: "#f87171", padding: "4px 8px", borderRadius: "4px", fontSize: "0.75rem", cursor: "pointer" }}
+                    >
+                      Xóa
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div className="admin-form-group">
@@ -2410,7 +2745,7 @@ export default function Admin() {
                 <div className="modal-actions-right">
                   <button type="button" className="btn-cancel" onClick={() => setShowProductModal(false)}>Hủy</button>
                   <button type="submit" className="btn-save">
-                    {editingProduct ? "Cập Nhật Sản Phẩm" : "Lưu Vào MongoDB"}
+                    {editingProduct ? "Cập Nhật Sản Phẩm" : "Lưu Sản Phẩm"}
                   </button>
                 </div>
               </div>

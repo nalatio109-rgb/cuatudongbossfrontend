@@ -177,6 +177,14 @@ a {
   position: relative;
 }
 
+.mobile-drawer-header,
+.mobile-drawer-bottom-spacer,
+.pricing-nav-dropdown .mobile-expand-btn,
+.services-nav-dropdown .mobile-expand-btn,
+.mobile-pricing-accordion {
+  display: none !important;
+}
+
 .nav-sliding-pill {
   position: absolute;
   top: 4px;
@@ -4318,15 +4326,15 @@ footer {
   }
 
   .nav a {
-    height: 48px;
-    padding: 0 18px;
-    border-radius: 14px;
+    height: 40px;
+    padding: 0 15px;
+    border-radius: 20px;
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.08);
     color: #ffffff !important;
-    font-size: 14px;
-    font-weight: 700;
-    letter-spacing: 0.5px;
+    font-size: 13.5px;
+    font-weight: 600;
+    letter-spacing: 0.35px;
     justify-content: flex-start;
     transition: all 0.25s ease;
   }
@@ -4336,7 +4344,7 @@ footer {
     color: #f5bd20 !important;
     border-color: rgba(245, 189, 32, 0.5) !important;
     box-shadow: 0 4px 18px rgba(245, 189, 32, 0.25);
-    font-weight: 850;
+    font-weight: 700;
   }
 
   .nav-dropdown-wrapper {
@@ -5613,9 +5621,18 @@ footer {
   /* 1. Lớp phủ phía sau menu */
   .mobile-nav-backdrop {
     background: rgba(0, 10, 6, 0.68) !important;
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
-    transition: opacity 0.3s ease;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    animation: bossBackdropFade 0.45s ease both;
+  }
+
+  @keyframes bossBackdropFade {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 
   /* 2. Khung menu trượt */
@@ -5635,10 +5652,10 @@ footer {
     align-items: stretch;
     justify-content: flex-start;
 
-    gap: 10px;
+    gap: 7px;
 
     padding:
-      calc(env(safe-area-inset-top) + 88px) 16px calc(env(safe-area-inset-bottom) + 24px);
+      calc(env(safe-area-inset-top) + 16px) 16px calc(env(safe-area-inset-bottom) + 36px);
 
     background: linear-gradient(160deg,
         #032719 0%,
@@ -5657,17 +5674,61 @@ footer {
 
     z-index: 99999;
 
-    animation: bossDrawerIn 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation: bossDrawerIn 0.52s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
 
   .nav.open {
     display: flex;
   }
 
+  /* Header Logo & Close button trên đầu menu trượt mobile */
+  .mobile-drawer-header {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    padding: 0 4px 12px 4px !important;
+    margin-bottom: 6px !important;
+    border-bottom: 1px solid rgba(245, 189, 32, 0.25) !important;
+  }
+
+  .mobile-drawer-logo {
+    display: flex !important;
+    align-items: center !important;
+    text-decoration: none !important;
+  }
+
+  .mobile-drawer-logo-img {
+    height: 38px !important;
+    width: auto !important;
+    object-fit: contain !important;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.35)) !important;
+  }
+
+  .mobile-drawer-close-btn {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 10px !important;
+    background: rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    color: #f5bd20 !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+
+  .mobile-drawer-close-btn:active {
+    transform: scale(0.92) !important;
+    background: rgba(245, 189, 32, 0.2) !important;
+  }
+
   @keyframes bossDrawerIn {
     from {
-      opacity: 0;
-      transform: translateX(35px);
+      opacity: 0.2;
+      transform: translateX(100%);
     }
 
     to {
@@ -5678,27 +5739,28 @@ footer {
 
   /* 3. Các nút điều hướng */
   .nav>a,
-  .nav>.nav-dropdown-wrapper>a {
+  .nav>.nav-dropdown-wrapper>a,
+  .mobile-nav-prod-trigger-row>a {
     width: 100%;
-    min-height: 46px;
-    height: 46px;
+    min-height: 40px;
+    height: 40px;
 
     display: flex;
     align-items: center;
 
     box-sizing: border-box;
-    padding: 0 17px;
+    padding: 0 15px;
 
-    border-radius: 24px;
+    border-radius: 20px;
 
     background: rgba(255, 255, 255, 0.045);
     border: 1px solid rgba(255, 255, 255, 0.09);
 
     color: #f5f7f5 !important;
 
-    font-size: 15px;
-    font-weight: 750;
-    letter-spacing: 0.2px;
+    font-size: 13.5px;
+    font-weight: 600;
+    letter-spacing: 0.35px;
 
     text-decoration: none;
 
@@ -5713,13 +5775,15 @@ footer {
   }
 
   .nav>a:active,
-  .nav>.nav-dropdown-wrapper>a:active {
+  .nav>.nav-dropdown-wrapper>a:active,
+  .mobile-nav-prod-trigger-row>a:active {
     transform: scale(0.98);
   }
 
   /* 4. Mục menu đang được chọn */
   .nav>a.active,
-  .nav>.nav-dropdown-wrapper>a.active {
+  .nav>.nav-dropdown-wrapper>a.active,
+  .mobile-nav-prod-trigger-row>a.active {
     background: linear-gradient(110deg,
         rgba(245, 189, 32, 0.18),
         rgba(245, 189, 32, 0.045)) !important;
@@ -5732,7 +5796,7 @@ footer {
       0 4px 16px rgba(245, 189, 32, 0.09),
       inset 0 1px 0 rgba(255, 255, 255, 0.05);
 
-    font-weight: 850;
+    font-weight: 700;
   }
 
   /* 5. Nhóm Sản phẩm */
@@ -5770,9 +5834,9 @@ footer {
     right: 8px !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
-    width: 34px !important;
-    height: 34px !important;
-    border-radius: 11px !important;
+    width: 30px !important;
+    height: 30px !important;
+    border-radius: 9px !important;
     background: rgba(245, 189, 32, 0.14) !important;
     border: 1px solid rgba(245, 189, 32, 0.4) !important;
     color: #ffca35 !important;
@@ -5804,38 +5868,89 @@ footer {
     transform: rotate(180deg) !important;
   }
 
-  /* 6. Danh sách sản phẩm mở rộng chuẩn Danh Mục Thông Minh theo Hình 2 */
+  /* 6. Danh sách sản phẩm mở rộng chuẩn Danh Mục Thông Minh */
   .mobile-sub-accordion {
     width: 100% !important;
     margin-top: 0 !important;
-    padding: 0 12px !important;
-    border-radius: 16px !important;
-    background: rgba(0, 0, 0, 0.45) !important;
-    border: 1px solid transparent !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
     box-sizing: border-box !important;
     display: flex !important;
     flex-direction: column !important;
-    gap: 8px !important;
+    gap: 7px !important;
     max-height: 0 !important;
     overflow: hidden !important;
     opacity: 0 !important;
     visibility: hidden !important;
     pointer-events: none !important;
     transition: max-height 0.38s cubic-bezier(0.16, 1, 0.3, 1),
-      padding 0.3s ease,
       opacity 0.3s ease,
       margin 0.3s ease !important;
   }
 
   .mobile-sub-accordion.show {
     max-height: 3000px !important;
-    padding: 14px 12px !important;
-    margin-top: 10px !important;
+    padding: 4px 0 0 !important;
+    margin-top: 6px !important;
     opacity: 1 !important;
     visibility: visible !important;
     pointer-events: auto !important;
-    border-color: rgba(245, 189, 32, 0.25) !important;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3) !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  /* 6.1. Danh mục bảng giá & dịch vụ xổ xuống trên điện thoại khớp 100% ảnh tham chiếu */
+  .pricing-nav-dropdown .mobile-expand-btn,
+  .services-nav-dropdown .mobile-expand-btn {
+    display: flex !important;
+  }
+
+  .mobile-pricing-accordion {
+    background: rgba(1, 20, 13, 0.75) !important;
+    border: 1px solid rgba(245, 189, 32, 0.22) !important;
+    border-radius: 14px !important;
+  }
+
+  .mobile-pricing-accordion.show {
+    max-height: 800px !important;
+    padding: 4px 10px !important;
+    margin-top: 6px !important;
+    border-color: rgba(245, 189, 32, 0.3) !important;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35) !important;
+  }
+
+  .mobile-pricing-list {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+  }
+
+  .mobile-pricing-item-link {
+    display: flex !important;
+    align-items: center !important;
+    padding: 10px 8px !important;
+    font-size: 13.5px !important;
+    font-weight: 600 !important;
+    color: #f1f5f9 !important;
+    text-decoration: none !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    transition: all 0.2s ease !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+
+  .mobile-pricing-item-link:last-child {
+    border-bottom: none !important;
+  }
+
+  .mobile-pricing-item-link:active,
+  .mobile-pricing-item-link:hover {
+    color: #f5bd20 !important;
+    padding-left: 14px !important;
+    background: rgba(245, 189, 32, 0.08) !important;
+    border-radius: 6px !important;
   }
 
   .mobile-flyout-panel-title {
@@ -5865,12 +5980,10 @@ footer {
   .mobile-flyout-cat-item {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 10px 12px;
+    padding: 6px 8px 6px 10px;
     border-radius: 14px;
     background: rgba(255, 255, 255, 0.04);
     border: 1.2px solid rgba(245, 189, 32, 0.15);
-    cursor: pointer;
     transition: all 0.22s ease;
     user-select: none;
   }
@@ -5879,6 +5992,35 @@ footer {
   .mobile-flyout-cat-item.active {
     background: rgba(245, 189, 32, 0.1);
     border-color: rgba(245, 189, 32, 0.45);
+  }
+
+  .mobile-flyout-cat-main-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    min-width: 0;
+    text-decoration: none !important;
+    padding: 4px 0;
+  }
+
+  .mobile-cat-expand-btn {
+    background: transparent;
+    border: none;
+    padding: 10px 10px;
+    margin: -6px -4px -6px 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.4);
+    flex-shrink: 0;
+    border-radius: 8px;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+
+  .mobile-cat-expand-btn:active {
+    background: rgba(245, 189, 32, 0.15);
   }
 
   /* Mục Tất Cả Sản Phẩm nổi bật */
@@ -5917,9 +6059,9 @@ footer {
   }
 
   .mobile-flyout-cat-item .cat-icon-box {
-    width: 38px;
-    height: 38px;
-    border-radius: 10px;
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
     background: rgba(245, 189, 32, 0.12);
     border: 1px solid rgba(245, 189, 32, 0.3);
     color: #f5bd20;
@@ -5942,6 +6084,7 @@ footer {
     font-weight: 700;
     color: #ffffff;
     line-height: 1.2;
+    flex: 1;
   }
 
   .mobile-flyout-cat-item .cat-sub-text {
@@ -6019,34 +6162,26 @@ footer {
   .mobile-flyout-sub-link {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-    padding: 8px 10px !important;
+    padding: 8.5px 12px !important;
     border-radius: 8px;
     background: rgba(255, 255, 255, 0.03) !important;
-    border: 1px solid rgba(255, 255, 255, 0.05) !important;
-    color: rgba(255, 255, 255, 0.88) !important;
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
+    color: rgba(255, 255, 255, 0.92) !important;
     text-decoration: none;
     height: auto !important;
-    transition: background 0.2s ease;
+    transition: all 0.2s ease;
   }
 
   .mobile-flyout-sub-link:active {
-    background: rgba(255, 255, 255, 0.08) !important;
-  }
-
-  .mobile-sub-text-col {
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-    min-width: 0;
+    background: rgba(245, 189, 32, 0.12) !important;
+    color: #f5bd20 !important;
   }
 
   .mobile-sub-name {
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 600;
-    color: #ffffff;
-    line-height: 1.25;
+    color: inherit;
+    line-height: 1.35;
   }
 
   .mobile-sub-desc {
@@ -6176,24 +6311,24 @@ footer {
   /* 9. Nút trang quản trị */
   .mobile-btn-admin-portal {
     width: 100%;
-    min-height: 48px;
+    min-height: 42px;
     box-sizing: border-box;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    padding: 10px 12px;
+    padding: 9px 12px;
 
-    border-radius: 14px;
+    border-radius: 12px;
 
     background: rgba(255, 255, 255, 0.045);
     border: 1px solid rgba(255, 255, 255, 0.1);
 
     color: #ffffff !important;
 
-    font-size: 14px;
-    font-weight: 800 !important;
+    font-size: 13.5px;
+    font-weight: 750 !important;
 
     text-decoration: none;
 
@@ -6209,7 +6344,7 @@ footer {
   /* 10. Nút đăng xuất */
   .mobile-btn-logout {
     width: 100%;
-    min-height: 46px;
+    min-height: 42px;
     box-sizing: border-box;
 
     display: flex;
@@ -6217,17 +6352,17 @@ footer {
     justify-content: center;
     gap: 9px;
 
-    padding: 10px 12px;
+    padding: 9px 12px;
 
-    border-radius: 13px;
+    border-radius: 12px;
 
     background: rgba(226, 29, 43, 0.12);
     border: 1px solid rgba(226, 29, 43, 0.38);
 
     color: #ff9b9f;
 
-    font-size: 14px;
-    font-weight: 800;
+    font-size: 13.5px;
+    font-weight: 750;
 
     cursor: pointer;
     transition: all 0.25s ease;
@@ -6236,6 +6371,15 @@ footer {
   .mobile-btn-logout:active {
     background: rgba(226, 29, 43, 0.24);
     transform: scale(0.98);
+  }
+
+  /* Spacer chống bị cắt nội dung ở mép đáy màn hình điện thoại */
+  .mobile-drawer-bottom-spacer {
+    display: block !important;
+    width: 100% !important;
+    height: calc(env(safe-area-inset-bottom) + 50px) !important;
+    min-height: 50px !important;
+    flex-shrink: 0 !important;
   }
 }
 

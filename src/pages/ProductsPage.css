@@ -67,6 +67,14 @@
   margin: 0 auto 35px;
 }
 
+.hero-banner-desc .desc-desktop {
+  display: inline;
+}
+
+.hero-banner-desc .desc-mobile {
+  display: none;
+}
+
 /* Search Filter Box */
 .search-filter-box {
   max-width: 600px;
@@ -953,12 +961,18 @@
     line-height: 1.25;
     letter-spacing: -0.3px;
   }
+  .hero-banner-desc .desc-desktop {
+    display: none;
+  }
+  .hero-banner-desc .desc-mobile {
+    display: inline;
+  }
   .hero-banner-content p {
-    font-size: 0.85rem;
+    font-size: 0.88rem;
     line-height: 1.55;
     color: rgba(255, 255, 255, 0.88);
     margin: 0 auto 20px;
-    max-width: 95%;
+    max-width: 420px;
   }
   .search-filter-box {
     max-width: 100%;

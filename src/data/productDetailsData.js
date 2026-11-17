@@ -409,6 +409,7 @@ export const EXTENDED_PRODUCT_MAP = {
     reviewCount: 54,
     businessStatus: "Sẵn hàng tại kho Đà Nẵng • Thi công trong 24h",
     badge: "HOT NHẤT",
+    description: "Cửa cuốn Bossdoor ECO BEC.5810 là sản phẩm cửa cuốn khe thoáng thế hệ mới mang thương hiệu BossDoor danh tiếng. Được sản xuất từ hợp kim nhôm 6063-T5 chuẩn hàng không, BEC.5810 là sự kết hợp xuất sắc giữa độ cứng cáp chống bão, thiết kế nan sang trọng và công nghệ giảm chấn 2 chiều vận hành êm ái hàng đầu.",
     gallery: [
       "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=1000&q=80",
       "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1000&q=80",
@@ -424,7 +425,7 @@ export const EXTENDED_PRODUCT_MAP = {
       { label: "Bảo hành", value: "10 năm thân cửa & mô-tơ chính hãng" }
     ],
     sectionA: {
-      intro: "Cửa cuốn Bossdoor ECO BEC.5810 là giải pháp tối ưu cho những ai đang tìm kiếm sự cân bằng hoàn hảo giữa chất lượng nhôm cao cấp, vẻ đẹp hiện đại và chi phí đầu tư hợp lý. Sản phẩm sở hữu thiết kế nan kép tinh tế, lỗ thoáng thoáng khí khoa học và khả năng vận hành êm ái bậc nhất.",
+      intro: "Cửa cuốn Bossdoor ECO BEC.5810 là sản phẩm cửa cuốn khe thoáng thế hệ mới mang thương hiệu BossDoor danh tiếng. Được sản xuất từ hợp kim nhôm 6063-T5 chuẩn hàng không, BEC.5810 là sự kết hợp xuất sắc giữa độ cứng cáp chống bão, thiết kế nan sang trọng và công nghệ giảm chấn 2 chiều vận hành êm ái hàng đầu.",
       origin: "Sản xuất từ nhà máy BossDoor theo tiêu chuẩn công nghệ CHLB Đức, chứng nhận chất lượng ISO 9001:2015.",
       purpose: "Giải pháp cửa cuốn mặt tiền thông minh cho nhà phố, biệt thự liền kề, gara ô tô và showroom thương mại.",
       highlights: [
@@ -794,12 +795,16 @@ export function getProductExtendedDetails(product) {
       code: product.code || template.code,
       title: product.title || template.title,
       price: product.price || template.price,
-      gallery: [
-        product.image,
-        template.gallery[1] || product.image,
-        template.gallery[2] || product.image,
-        template.gallery[3] || product.image
-      ],
+      gallery: (Array.isArray(product.gallery) && product.gallery.length > 0)
+        ? product.gallery
+        : (Array.isArray(product.images) && product.images.length > 0)
+          ? product.images
+          : [
+              product.image,
+              template.gallery[1] || product.image,
+              template.gallery[2] || product.image,
+              template.gallery[3] || product.image
+            ],
       quickSpecs: [
         { label: "Mã sản phẩm", value: product.code || "TIÊU CHUẨN" },
         { label: "Tên dòng sản phẩm", value: product.title },
@@ -816,9 +821,16 @@ export function getProductExtendedDetails(product) {
     };
   }
 
+  const resolvedGallery = (Array.isArray(product.gallery) && product.gallery.length > 0)
+    ? product.gallery
+    : (Array.isArray(product.images) && product.images.length > 0)
+      ? product.images
+      : matched.gallery;
+
   return {
     ...matched,
     ...product,
+    gallery: resolvedGallery,
     slug: matched.slug || inputSlug,
     code: matched.code || product.code,
     title: product.title || matched.title,
