@@ -579,7 +579,7 @@ export default function ProductPricing() {
           name: "Khóa âm sàn chống cắt chuyên dụng",
           price: "350.000đ/bộ",
           warranty: "2 năm",
-          image: "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=600&q=80"
+          image: "/project_1.png"
         },
         {
           name: "Sơn AkzoNobel CHLB Đức ngoài trời",

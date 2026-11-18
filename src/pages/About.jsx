@@ -90,7 +90,7 @@ const About = () => {
         <div className="exact-hero-glow-2"></div>
 
         <div className="exact-hero-bg">
-          <img className="about-desktop-hero-img" src="/hero_building.png" alt="Tòa nhà BOSS Đà Nẵng" />
+          <img className="about-desktop-hero-img" src="/boss_team_hero.jpg" alt="Showroom & Đội ngũ BOSS Đà Nẵng" />
           <img className="about-mobile-hero-img" src="/about_team.jpg" alt="Showroom & Đội ngũ BOSS Đà Nẵng" />
         </div>
 

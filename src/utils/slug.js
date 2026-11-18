@@ -52,3 +52,20 @@ export function getNewsSlug(newsItem) {
   return String(newsItem._id || newsItem.id || "").toLowerCase();
 }
 
+/**
+ * Lấy slug chuẩn không dấu cho một bài viết công trình / dự án.
+ * Ví dụ: "Thi công cửa cuốn khe thoáng cho anh Đô - Lê Lai"
+ * -> "thi-cong-cua-cuon-khe-thoang-cho-anh-do-le-lai"
+ */
+export function getProjectSlug(project) {
+  if (!project) return "";
+  if (project.slug && typeof project.slug === "string" && project.slug.trim().length > 0) {
+    return project.slug.trim();
+  }
+  if (project.title && typeof project.title === "string") {
+    return slugify(project.title);
+  }
+  return String(project._id || project.id || "").toLowerCase();
+}
+
+

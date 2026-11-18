@@ -295,7 +295,7 @@ export default function AdminPriceQuote() {
       {/* HEADER */}
       <div className="quote-admin-header">
         <div>
-          <h2>Quản Lý Bảng Báo Giá Kỹ Thuật Từng Sản Phẩm</h2>
+          <h2>Quản Lý Báo Giá Kỹ Thuật Từng Sản Phẩm</h2>
           <p>
             Chỉnh sửa các cột STT, Mã SP, Diễn giải cấu tạo, ĐVT, Màu sắc, các mức giá theo diện tích (&gt;8m², 6-8m², 4-6m²), khu vực Lựa chọn thêm và ghi chú chính sách.
           </p>

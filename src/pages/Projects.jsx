@@ -25,6 +25,7 @@ import {
 import './Projects.css';
 import RevealOnScroll from '../components/RevealOnScroll';
 import AnimatedCounter from '../components/AnimatedCounter';
+import { getProjectSlug } from '../utils/slug';
 
 const formatImgSrc = (src) => {
   if (!src) return '/project_1.png';
@@ -38,227 +39,138 @@ const formatImgSrc = (src) => {
   return src;
 };
 
-// Danh sách công trình thực tế tiêu biểu của BOSS Đà Nẵng
-const SHOWCASE_PROJECTS = [
-  {
-    id: 'p1',
-    title: 'Hệ Thống Cửa Cuốn Song Ngang TTTM Lacoste / Aeon Mall',
-    category: 'Dự án TTTM & Showroom',
-    categoryKey: 'commercial',
-    image: '/about_construction.jpg',
-    location: 'Hải Châu, Đà Nẵng',
-    completedDate: '2024',
-    scale: '2 bộ cửa cuốn song ngang inox 304 khổ lớn 7.5m x 4.2m',
-    motor: 'Mô tơ tải trọng 1000kg chuyên dụng TTTM',
-    features: [
-      'Nan inox 304 không gỉ sét sáng bóng',
-      'Độ thông thoáng 85% trưng bày ngoài giờ',
-      'Hệ thống tự dừng khi gặp chướng ngại vật',
-      'Đạt chuẩn thẩm mỹ và an toàn PCCC TTTM'
-    ],
-    description: 'Thi công hoàn thiện hệ thống cửa cuốn lưới song ngang inox 304 cao cấp cho gian hàng thời trang tại trung tâm thương mại. Đảm bảo tầm nhìn thông thoáng cho sản phẩm trưng bày ngoài giờ làm việc kết hợp độ an toàn chống trộm tối đa, vận hành êm ái tiêu chuẩn quốc tế.'
-  },
-  {
-    id: 'p2',
-    title: 'Cửa Cuốn Khe Thoáng BossDoor Siêu Êm Biệt Thự Euro Village',
-    category: 'Cửa cuốn khe thoáng',
-    categoryKey: 'khe-thoang',
-    image: '/project_1.png',
-    location: 'Euro Village 1, Sơn Trà, Đà Nẵng',
-    completedDate: '2024',
-    scale: 'Bộ cửa rộng 5.2m x 3.6m hợp kim nhôm 6063-T6',
-    motor: 'Mô tơ YH Đài Loan 600kg lõi đồng 100%',
-    features: [
-      'Công nghệ AI chống xô chống kẹt tự dừng',
-      'Sơn tĩnh điện cao cấp AkzoNobel CHLB Đức',
-      'Điều khiển đóng mở qua Smartphone từ xa',
-      'Bình lưu điện thông minh UPS Boss dự phòng 72h'
-    ],
-    description: 'Lắp đặt cửa cuốn khe thoáng BossDoor tích hợp công nghệ AI chống xô tự dừng khi gặp vật cản, cảm biến báo khói, còi báo động chống cạy phá và bộ điều khiển thông minh qua Smartphone cho biệt thự cao cấp Euro Village Đà Nẵng.'
-  },
-  {
-    id: 'p3',
-    title: 'Cổng Mở Tự Động Âm Sàn Italia Biệt Thự Đảo Phúc Lộc Viên',
-    category: 'Cổng tự động',
-    categoryKey: 'cong-tu-dong',
-    image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80',
-    location: 'Phúc Lộc Viên, Sơn Trà, Đà Nẵng',
-    completedDate: '2023',
-    scale: 'Cổng sắt mỹ nghệ 2 cánh 900kg, motor âm sàn Italia',
-    motor: 'Motor âm sàn Ditec/Beninca chuẩn IP67 kháng nước',
-    features: [
-      'Kháng nước ngập tuyệt đối IP67 chống ngập mùa mưa',
-      'Góc mở rộng linh hoạt từ 110 đến 180 độ',
-      'Remote điều khiển mã nhảy Rolling Code chống sao chép',
-      'Tự ngắt an toàn khi có người hoặc vật cản ngang cổng'
-    ],
-    description: 'Hệ thống mô tơ âm sàn thủy lực Ditec/Beninca nhập khẩu nguyên chiếc từ Italia. Kháng nước ngập tuyệt đối mùa mưa lũ miền Trung, góc mở linh hoạt 110-180 độ, kết nối camera an ninh và nhận diện xe vào cổng.'
-  },
-  {
-    id: 'p4',
-    title: 'Cửa Cuốn Tấm Liền Thép Úc Siêu Êm Shophouse Nguyễn Văn Linh',
-    category: 'Cửa cuốn tấm liền',
-    categoryKey: 'tam-lien',
-    image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80',
-    location: 'Nguyễn Văn Linh, Hải Châu, Đà Nẵng',
-    completedDate: '2024',
-    scale: '3 bộ cửa cuốn tấm liền thép BlueScope Úc mặt tiền phố',
-    motor: 'Mô tơ trong trục DC 24V siêu an toàn',
-    features: [
-      'Thân cửa thép tấm liền BlueScope siêu bền',
-      'Dây polyguide giảm chấn triệt tiêu 99% tiếng ồn',
-      'Tốc độ mở nhanh gấp 3 lần cửa truyền thống',
-      'Chốt ly hợp cơ thoát hiểm bằng tay dễ dàng khi mất điện'
-    ],
-    description: 'Giải pháp bảo vệ cho dãy nhà phố kinh doanh shophouse trung tâm Đà Nẵng. Cửa vận hành siêu êm ái, tốc độ mở nhanh, tích hợp chốt ly hợp thoát hiểm khẩn cấp bằng tay chỉ mất 3 giây khi có sự cố hỏa hoạn.'
-  },
-  {
-    id: 'p5',
-    title: 'Cửa Kéo Công Nghệ Đức Sơn AkzoNobel Nhà Phố Hòa Xuân',
-    category: 'Cửa kéo & Inox',
-    categoryKey: 'cua-keo',
-    image: '/about_door_1.png',
-    location: 'Khu Đô Thị Sinh Thái Hòa Xuân, Cẩm Lệ, Đà Nẵng',
-    completedDate: '2024',
-    scale: 'Cửa kéo nhôm cao cấp không lá lấy sáng 95%, bề rộng 4.8m',
-    motor: 'Kéo tay bạc đạn đôi siêu nhẹ',
-    features: [
-      'Thanh U đúc dày 1.4mm nhôm 6063 bền bỉ',
-      'Bạc đạn đôi trượt nhẹ phụ nữ & người lớn tuổi đẩy êm',
-      'Sơn tĩnh điện AkzoNobel chống ăn mòn gió muối biển',
-      'Hệ nhíp đặc mạ kẽm không gỉ kết cấu chắc chắn'
-    ],
-    description: 'Gia công sản xuất và lắp đặt cửa kéo CN Đức thanh nhôm hợp kim bền bỉ, bạc đạn đôi vận hành êm nhẹ. Lớp sơn tĩnh điện bảo hành 10 năm không bong tróc trước thời tiết biển Đà Nẵng.'
-  },
-  {
-    id: 'p6',
-    title: 'Cửa Trượt Tự Động Mắt Thần Nabco Khách Sạn 4 Sao Mỹ Khê',
-    category: 'Cửa tự động',
-    categoryKey: 'cong-tu-dong',
-    image: 'https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=1200&q=80',
-    location: 'Võ Nguyên Giáp, Sơn Trà, Đà Nẵng',
-    completedDate: '2023',
-    scale: 'Cửa trượt 2 cánh kính cường lực 12mm Temper, ray nhôm 4.2m',
-    motor: 'Hệ điều khiển vi xử lý Nabco Made in Japan',
-    features: [
-      'Cảm biến mắt thần hồng ngoại nhạy bén 3 cấp độ',
-      'Cơ chế chống kẹt an toàn cho trẻ nhỏ và người già',
-      'Độ ồn khi trượt dưới 45dB cực kỳ êm ái',
-      'Kính cường lực 12mm viền inox bóng sang trọng'
-    ],
-    description: 'Hệ thống cửa tự động mắt thần hồng ngoại Nabco (Nhật Bản) cho sảnh đón khách sạn biển Mỹ Khê. Cảm biến nhận diện người từ xa nhạy bén, chống kẹt người qua lại an toàn tuyệt đối, độ ồn chuẩn khách sạn 4 sao.'
-  },
-  {
-    id: 'p7',
-    title: 'Cửa Cuốn Khe Thoáng Cách Âm 2 Lớp Biệt Thự FPT City',
-    category: 'Cửa cuốn khe thoáng',
-    categoryKey: 'khe-thoang',
-    image: '/hero_building.png',
-    location: 'Khu Đô Thị Công Nghệ FPT City, Ngũ Hành Sơn, Đà Nẵng',
-    completedDate: '2024',
-    scale: 'Bộ cửa cuốn khe thoáng siêu dày 1.6mm kích thước 5.8m x 4.0m',
-    motor: 'Mô tơ xích kéo ngoài YH lõi đồng Đài Loan',
-    features: [
-      'Nan nhôm 2 lớp cách âm, cách nhiệt hiệu quả',
-      'Hệ gioăng giảm chấn 2 chiều triệt tiêu rung lắc',
-      'Hệ thống lưu điện Boss Smart UPS lưu trữ 72h',
-      'Tự đảo chiều an toàn khi gặp chướng ngại vật'
-    ],
-    description: 'Công trình biệt thự cao cấp ven sông Cổ Cò. Nan nhôm 2 lớp cách âm cách nhiệt tốt, hệ gioăng giảm chấn 2 chiều triệt tiêu tiếng ồn khi đóng cửa. Hệ thống lưu điện Boss Smart UPS lưu trữ 72 giờ khi mất điện lưới.'
-  },
-  {
-    id: 'p8',
-    title: 'Cửa Kéo Inox 304 Cao Cấp Nhà Xưởng & Kho Vận KCN Hòa Khánh',
-    category: 'Cửa kéo & Inox',
-    categoryKey: 'cua-keo',
-    image: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1200&q=80',
-    location: 'KCN Hòa Khánh, Liên Chiểu, Đà Nẵng',
-    completedDate: '2023',
-    scale: 'Cửa kéo Inox SUS 304 toàn phần chiều ngang 8.5m x cao 4.5m',
-    motor: 'Kéo tay bánh xe inox chịu lực công nghiệp',
-    features: [
-      'Gia công 100% Inox SUS 304 sáng bóng không gỉ sét',
-      'Khung U đúc dày chịu lực gió bão miền Trung cấp 12',
-      'Hệ thống khóa âm sàn chống cắt trộm an toàn',
-      'Độ bền kết cấu trên 20 năm trong môi trường công nghiệp'
-    ],
-    description: 'Chế tác hoàn toàn từ Inox 304 chống ăn mòn hóa chất, không rỉ sét trong môi trường kho bãi sản xuất. Khung u và nhíp inox dày chịu lực gió bão miền Trung, khóa âm sàn chống cắt trộm an toàn.'
-  },
-  {
-    id: 'p9',
-    title: 'Cổng Mở Tự Động Cánh Tay Đòn Biệt Thự Sân Vườn Hội An',
-    category: 'Cổng tự động',
-    categoryKey: 'cong-tu-dong',
-    image: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1200&q=80',
-    location: 'Cẩm Châu, TP. Hội An, Quảng Nam',
-    completedDate: '2024',
-    scale: 'Cổng gỗ kết hợp khung thép mỹ thuật 2 cánh nặng 800kg',
-    motor: 'Motor tay đòn điện tử 24V DC Italia',
-    features: [
-      'Motor tay đòn cơ điện 24V vận hành êm và an toàn',
-      'Cơ chế tự khóa khi đóng kín không cần ổ khóa cơ',
-      'Mở cổng 1 cánh cho người đi bộ hoặc 2 cánh cho ô tô',
-      'Tích hợp điều khiển qua App điện thoại từ xa'
-    ],
-    description: 'Giải pháp cổng tự động tay đòn điện tử vận hành êm ái, cơ chế tự khóa khi cửa đóng kín không cần dùng thêm ổ khóa cơ. Kết nối bộ điều khiển qua App điện thoại mở cổng cho khách từ bất kỳ đâu.'
-  }
-];
-
-const FILTER_TABS = [
-  { key: 'all', label: 'Tất Cả Công Trình', icon: <Layers size={15} /> },
-  { key: 'khe-thoang', label: 'Cửa Cuốn Khe Thoáng', icon: <Award size={15} /> },
-  { key: 'tam-lien', label: 'Cửa Cuốn Tấm Liền', icon: <ShieldCheck size={15} /> },
-  { key: 'cong-tu-dong', label: 'Cổng Tự Động', icon: <Sparkles size={15} /> },
-  { key: 'cua-keo', label: 'Cửa Kéo & Inox', icon: <Ruler size={15} /> },
-  { key: 'commercial', label: 'Dự Án TTTM & Showroom', icon: <Building2 size={15} /> }
-];
-
 export default function Projects() {
-  const [projectsList, setProjectsList] = useState(SHOWCASE_PROJECTS);
+  const [projectsList, setProjectsList] = useState(() => {
+    try {
+      const saved = localStorage.getItem("boss_admin_projects");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (_) {}
+    return [];
+  });
+  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedProject, setSelectedProject] = useState(null);
+  const [activeModalImgIndex, setActiveModalImgIndex] = useState(0);
 
-  // Tải thêm dự án từ Backend API nếu Admin đã thêm dự án mới
+  // Tải danh sách công trình thực tế từ Backend API (Dữ liệu thật 100%)
   useEffect(() => {
     const fetchApiProjects = async () => {
+      setLoading(true);
       try {
         const apiUrl = import.meta.env.VITE_API_URL || '';
         const res = await fetch(`${apiUrl}/api/projects`);
         const data = await res.json();
-        if (data.success && Array.isArray(data.data) && data.data.length > 0) {
-          // Chuẩn hóa dữ liệu từ database
-          const mappedApi = data.data.map((item, idx) => ({
-            id: item._id || `api-${idx}`,
-            title: item.title,
-            category: item.category || 'Cửa cuốn',
-            categoryKey: (item.category && item.category.toLowerCase().includes('cổng'))
-              ? 'cong-tu-dong'
-              : (item.category && item.category.toLowerCase().includes('kéo'))
-              ? 'cua-keo'
-              : (item.category && item.category.toLowerCase().includes('tấm liền'))
-              ? 'tam-lien'
-              : (item.category && (item.category.toLowerCase().includes('thương mại') || item.category.toLowerCase().includes('tttm')))
-              ? 'commercial'
-              : 'khe-thoang',
-            image: formatImgSrc(item.image),
-            location: item.location || 'Đà Nẵng',
-            completedDate: item.completedDate || '2024',
-            scale: 'Thi công theo kích thước khảo sát thực tế',
-            motor: 'Đồng bộ linh kiện chính hãng',
-            features: [
-              'Vận hành êm ái, bền bỉ',
-              'Linh kiện nhập khẩu chính hãng',
-              'Bảo hành tận tâm 24/7'
-            ],
-            description: item.description || 'Công trình thi công lắp đặt hoàn thiện bởi đội ngũ kỹ thuật BOSS Đà Nẵng.'
-          }));
+        if (data.success && Array.isArray(data.data)) {
+          let localProjects = [];
+          try {
+            const localSaved = localStorage.getItem("boss_admin_projects");
+            if (localSaved) {
+              const parsed = JSON.parse(localSaved);
+              if (Array.isArray(parsed)) localProjects = parsed.filter(p => p && typeof p === 'object');
+            }
+          } catch (_) {}
 
-          // Gộp các công trình từ Admin lên đầu danh sách
-          setProjectsList([...mappedApi, ...SHOWCASE_PROJECTS]);
+          // Chuẩn hóa dữ liệu từ database thật, bảo toàn content đã viết
+          const mappedApi = data.data.filter(item => item && typeof item === 'object').map((item, idx) => {
+            const itemTitle = String(item.title || '').trim().toLowerCase();
+            const itemId = String(item._id || item.id || '').trim();
+
+            const localMatch = localProjects.find((lp) => {
+              if (!lp) return false;
+              const lpId = String(lp._id || lp.id || '').trim();
+              const lpTitle = String(lp.title || '').trim().toLowerCase();
+              if (itemId && lpId && itemId === lpId) return true;
+              if (itemTitle && lpTitle && itemTitle === lpTitle) return true;
+              return false;
+            });
+
+            const preservedContent = (typeof item.content === 'string' && item.content.trim())
+              ? item.content
+              : (localMatch && typeof localMatch.content === 'string' ? localMatch.content : '');
+
+            return {
+              id: item._id || `api-${idx}`,
+              _id: item._id,
+              title: item.title,
+              category: item.category || 'Công trình thực tế',
+              categoryKey: (item.category && item.category.toLowerCase().includes('cổng'))
+                ? 'cong-tu-dong'
+                : (item.category && item.category.toLowerCase().includes('kéo'))
+                ? 'cua-keo'
+                : (item.category && item.category.toLowerCase().includes('tấm liền'))
+                ? 'tam-lien'
+                : (item.category && (item.category.toLowerCase().includes('thương mại') || item.category.toLowerCase().includes('tttm')))
+                ? 'commercial'
+                : 'khe-thoang',
+              image: formatImgSrc(item.image),
+              images: Array.isArray(item.images) && item.images.length > 0
+                ? item.images.map(formatImgSrc)
+                : Array.isArray(item.gallery) && item.gallery.length > 0
+                  ? item.gallery.map(formatImgSrc)
+                  : [formatImgSrc(item.image)],
+              gallery: Array.isArray(item.gallery) && item.gallery.length > 0
+                ? item.gallery.map(formatImgSrc)
+                : Array.isArray(item.images) && item.images.length > 0
+                  ? item.images.map(formatImgSrc)
+                  : [formatImgSrc(item.image)],
+              location: item.location || 'Đà Nẵng',
+              completedDate: item.completedDate || (item.createdAt ? new Date(item.createdAt).getFullYear().toString() : '2024'),
+              scale: item.scale || 'Thi công theo kích thước khảo sát thực tế',
+              motor: item.motor || 'Đồng bộ linh kiện chính hãng',
+              features: item.features && Array.isArray(item.features) && item.features.length > 0
+                ? item.features
+                : [
+                    'Vận hành êm ái, bền bỉ',
+                    'Linh kiện nhập khẩu chính hãng',
+                    'Bảo hành tận tâm 24/7'
+                  ],
+              description: item.description || 'Công trình thi công lắp đặt hoàn thiện bởi đội ngũ kỹ thuật BOSS Đà Nẵng.',
+              content: preservedContent
+            };
+          });
+
+          // Bổ sung các công trình chỉ có ở local
+          localProjects.forEach((lp) => {
+            if (!lp) return;
+            const lpId = String(lp._id || lp.id || '').trim();
+            const lpTitle = String(lp.title || '').trim().toLowerCase();
+            const exists = mappedApi.some((p) => {
+              if (!p) return false;
+              const pId = String(p._id || p.id || '').trim();
+              const pTitle = String(p.title || '').trim().toLowerCase();
+              if (pId && lpId && pId === lpId) return true;
+              if (pTitle && lpTitle && pTitle === lpTitle) return true;
+              return false;
+            });
+            if (!exists) mappedApi.push(lp);
+          });
+
+          setProjectsList(mappedApi);
+          localStorage.setItem("boss_admin_projects", JSON.stringify(mappedApi));
+        } else {
+          const localSaved = localStorage.getItem("boss_admin_projects");
+          if (localSaved) {
+            try {
+              const parsed = JSON.parse(localSaved);
+              if (Array.isArray(parsed)) setProjectsList(parsed);
+            } catch (_) {}
+          }
         }
       } catch (err) {
-        console.warn('Projects API fetch error, fallback to showcase data:', err);
+        console.warn('Projects API fetch error, checking localStorage:', err);
+        const localSaved = localStorage.getItem("boss_admin_projects");
+        if (localSaved) {
+          try {
+            const parsed = JSON.parse(localSaved);
+            if (Array.isArray(parsed)) setProjectsList(parsed);
+          } catch (_) {}
+        }
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -283,6 +195,7 @@ export default function Projects() {
 
   const openModal = (proj) => {
     setSelectedProject(proj);
+    setActiveModalImgIndex(0);
     document.body.style.overflow = 'hidden';
   };
 
@@ -293,135 +206,67 @@ export default function Projects() {
 
   return (
     <div className="projects-page-container">
-      {/* 1. HERO HEADER */}
+      {/* 1. HERO HEADER (Đồng bộ nhận diện thương hiệu cao cấp chuẩn toàn website) */}
       <section className="projects-hero-banner">
         <div className="projects-hero-overlay"></div>
-        <div className="projects-hero-glow-1"></div>
-        <div className="projects-hero-glow-2"></div>
         <div className="container projects-hero-content">
-          <div className="projects-breadcrumb">
-            <Link to="/">Trang chủ</Link>
-            <ChevronRight size={14} />
-            <span>Công trình thực tế</span>
-          </div>
+          <span className="hero-subtag">
+            <Sparkles size={14} /> DỰ ÁN & CÔNG TRÌNH TIÊU BIỂU
+          </span>
 
           <h1 className="projects-main-title">
             CÔNG TRÌNH <span className="text-highlight">THỰC TẾ</span>
           </h1>
 
           <p className="projects-main-subtitle">
-            Hơn <strong>2.000+ công trình</strong> cửa cuốn, cửa kéo đã thi công hoàn thiện tại Đà Nẵng & miền Trung.
+            Hơn <strong>2.000+ công trình</strong> cửa cuốn, cửa kéo & cổng tự động cao cấp đã hoàn thiện bàn giao tại Đà Nẵng & miền Trung.
           </p>
 
-          {/* KPI Mini Bar */}
-          <div className="projects-kpi-bar">
-            <div className="projects-kpi-item">
-              <span className="kpi-num">
-                <AnimatedCounter end={2000} suffix="+" />
-              </span>
-              <span className="kpi-lbl">Công trình hoàn thành</span>
+          {/* Trust Badges Row (Sang trọng, tinh tế, đồng bộ cùng trang Bảng giá & Dịch vụ) */}
+          <div className="projects-trust-badges-row">
+            <div className="trust-badge-pill">
+              <Building2 size={15} />
+              <span>2.000+ Công trình hoàn thành</span>
             </div>
-            <div className="projects-kpi-divider"></div>
-
-            <div className="projects-kpi-item">
-              <span className="kpi-num">
-                <AnimatedCounter end={10} suffix="+" />
-              </span>
-              <span className="kpi-lbl">Năm kinh nghiệm</span>
+            <div className="trust-badge-pill">
+              <Award size={15} />
+              <span>10+ Năm kinh nghiệm</span>
             </div>
-            <div className="projects-kpi-divider"></div>
-
-            <div className="projects-kpi-item">
-              <span className="kpi-num">100%</span>
-              <span className="kpi-lbl">Khách hàng nghiệm thu hài lòng</span>
+            <div className="trust-badge-pill">
+              <CheckCircle2 size={15} />
+              <span>100% Nghiệm thu hài lòng</span>
             </div>
-            <div className="projects-kpi-divider"></div>
-
-            <div className="projects-kpi-item">
-              <span className="kpi-num">30 Phút</span>
-              <span className="kpi-lbl">Khảo sát tận nơi miễn phí</span>
+            <div className="trust-badge-pill">
+              <Clock size={15} />
+              <span>Khảo sát tận nơi miễn phí</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 2. FILTER TABS & SEARCH BAR */}
-      <section className="projects-filter-section">
+      {/* 2. BREADCRUMB */}
+      <div className="projects-breadcrumb-bar">
         <div className="container">
-          <div className="projects-filter-controls">
-            {/* Filter Tabs */}
-            <div className="projects-filter-pills">
-              {FILTER_TABS.map((tab) => {
-                const count = tab.key === 'all'
-                  ? projectsList.length
-                  : projectsList.filter(p => p.categoryKey === tab.key).length;
-
-                return (
-                  <button
-                    key={tab.key}
-                    type="button"
-                    className={`filter-pill-btn ${activeTab === tab.key ? 'active' : ''}`}
-                    onClick={() => setActiveTab(tab.key)}
-                  >
-                    <span className="pill-icon">{tab.icon}</span>
-                    <span className="pill-text">{tab.label}</span>
-                    <span className="pill-count">({count})</span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Search Input */}
-            <div className="projects-search-wrapper">
-              <Search size={18} className="search-icon" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Tìm công trình: Sơn Trà, Euro Village, Hòa Xuân..."
-                aria-label="Tìm kiếm công trình"
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  className="search-clear-btn"
-                  onClick={() => setSearchQuery('')}
-                  title="Xóa tìm kiếm"
-                >
-                  <X size={15} />
-                </button>
-              )}
-            </div>
-          </div>
-
-          <div className="projects-count-bar">
-            <span>
-              Đang hiển thị: <strong>{filteredProjects.length}</strong> công trình tiêu biểu
-            </span>
-            {searchQuery && (
-              <span className="search-result-hint">
-                (Kết quả khớp với: "{searchQuery}")
-              </span>
-            )}
-          </div>
+          <Link to="/" title="Trang chủ">
+            Trang chủ <ChevronRight size={14} />
+          </Link>
+          <span className="current-page">Công trình thực tế</span>
         </div>
-      </section>
+      </div>
 
       {/* 3. PROJECTS SHOWCASE GRID */}
       <section className="projects-grid-section">
         <div className="container">
-          {filteredProjects.length === 0 ? (
+          {loading && projectsList.length === 0 ? (
+            <div className="projects-empty-state" style={{ padding: "4rem 1rem", textAlign: "center" }}>
+              <Building2 size={42} className="empty-icon" style={{ margin: "0 auto 12px", color: "#f5bd20", opacity: 0.8 }} />
+              <p style={{ color: "#94a3b8", fontSize: "1rem" }}>Đang tải danh sách công trình thực tế...</p>
+            </div>
+          ) : filteredProjects.length === 0 ? (
             <div className="projects-empty-state">
               <Building2 size={48} className="empty-icon" />
-              <h3>Không tìm thấy công trình phù hợp</h3>
-              <p>Vui lòng thử từ khóa tìm kiếm khác hoặc chuyển danh mục công trình.</p>
-              <button
-                type="button"
-                className="btn-reset-filter"
-                onClick={() => { setActiveTab('all'); setSearchQuery(''); }}
-              >
-                Xem tất cả công trình
-              </button>
+              <h3>Chưa có công trình nào</h3>
+              <p>Danh sách công trình thực tế đang được cập nhật từ hệ thống.</p>
             </div>
           ) : (
             <div className="projects-modern-grid">
@@ -433,7 +278,11 @@ export default function Projects() {
                   className="project-modern-card"
                 >
                   {/* Card Image Wrapper */}
-                  <div className="card-media-wrapper" onClick={() => openModal(proj)}>
+                  <Link
+                    to={`/cong-trinh/${getProjectSlug(proj)}`}
+                    className="card-media-wrapper"
+                    style={{ textDecoration: "none", display: "block" }}
+                  >
                     <img
                       src={formatImgSrc(proj.image)}
                       alt={proj.title}
@@ -442,7 +291,7 @@ export default function Projects() {
                     />
                     <div className="card-media-overlay">
                       <span className="view-detail-badge">
-                        <Eye size={16} /> Xem chi tiết công trình
+                        <Eye size={16} /> Xem bài viết công trình
                       </span>
                     </div>
 
@@ -457,7 +306,32 @@ export default function Projects() {
                         <Calendar size={13} /> {proj.completedDate}
                       </div>
                     )}
-                  </div>
+
+                    {/* Số lượng hình ảnh nếu có nhiều ảnh */}
+                    {Array.isArray(proj.images) && proj.images.length > 1 && (
+                      <div
+                        style={{
+                          position: "absolute",
+                          bottom: "10px",
+                          right: "10px",
+                          background: "rgba(0, 0, 0, 0.75)",
+                          color: "#fff",
+                          padding: "3px 8px",
+                          borderRadius: "12px",
+                          fontSize: "0.72rem",
+                          fontWeight: 600,
+                          backdropFilter: "blur(4px)",
+                          border: "1px solid rgba(255, 255, 255, 0.2)",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "4px",
+                          zIndex: 2
+                        }}
+                      >
+                        📷 {proj.images.length} ảnh
+                      </div>
+                    )}
+                  </Link>
 
                   {/* Card Content */}
                   <div className="card-content-body">
@@ -468,8 +342,13 @@ export default function Projects() {
                     </div>
 
                     {/* Title */}
-                    <h3 className="card-project-title" onClick={() => openModal(proj)}>
-                      {proj.title}
+                    <h3 className="card-project-title">
+                      <Link
+                        to={`/cong-trinh/${getProjectSlug(proj)}`}
+                        style={{ textDecoration: "none", color: "inherit" }}
+                      >
+                        {proj.title}
+                      </Link>
                     </h3>
 
                     {/* Scale Highlight */}
@@ -498,14 +377,14 @@ export default function Projects() {
 
                     {/* Card Actions Footer */}
                     <div className="card-action-footer">
-                      <button
-                        type="button"
+                      <Link
+                        to={`/cong-trinh/${getProjectSlug(proj)}`}
                         className="btn-card-details"
-                        onClick={() => openModal(proj)}
+                        style={{ textDecoration: "none" }}
                       >
                         <span>Chi tiết công trình</span>
                         <ArrowUpRight size={16} />
-                      </button>
+                      </Link>
 
                       <a
                         href="tel:0904678323"
@@ -703,17 +582,62 @@ export default function Projects() {
             </button>
 
             <div className="modal-scroll-inner">
-              {/* Modal Image Header */}
-              <div className="modal-image-holder">
-                <img
-                  src={formatImgSrc(selectedProject.image)}
-                  alt={selectedProject.title}
-                  className="modal-banner-img"
-                />
-                <div className="modal-category-pill">
-                  {selectedProject.category}
-                </div>
-              </div>
+              {/* Modal Image Header with Multi-image gallery */}
+              {(() => {
+                const modalImages = Array.isArray(selectedProject.images) && selectedProject.images.length > 0
+                  ? selectedProject.images
+                  : Array.isArray(selectedProject.gallery) && selectedProject.gallery.length > 0
+                    ? selectedProject.gallery
+                    : [selectedProject.image];
+                const activeImg = modalImages[activeModalImgIndex] || selectedProject.image;
+
+                return (
+                  <div>
+                    <div className="modal-image-holder">
+                      <img
+                        src={formatImgSrc(activeImg)}
+                        alt={selectedProject.title}
+                        className="modal-banner-img"
+                      />
+                      <div className="modal-category-pill">
+                        {selectedProject.category}
+                      </div>
+                    </div>
+
+                    {modalImages.length > 1 && (
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "8px",
+                          padding: "10px 16px",
+                          background: "rgba(15, 23, 42, 0.95)",
+                          overflowX: "auto",
+                          borderBottom: "1px solid rgba(255, 255, 255, 0.08)"
+                        }}
+                      >
+                        {modalImages.map((img, idx) => (
+                          <img
+                            key={idx}
+                            src={formatImgSrc(img)}
+                            alt={`Ảnh ${idx + 1}`}
+                            onClick={() => setActiveModalImgIndex(idx)}
+                            style={{
+                              width: 65,
+                              height: 48,
+                              objectFit: "cover",
+                              borderRadius: 6,
+                              cursor: "pointer",
+                              border: activeModalImgIndex === idx ? "2px solid #10b981" : "1px solid rgba(255, 255, 255, 0.2)",
+                              opacity: activeModalImgIndex === idx ? 1 : 0.6,
+                              transition: "all 0.2s ease"
+                            }}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
 
               {/* Modal Body Info */}
               <div className="modal-body-content">
@@ -732,33 +656,44 @@ export default function Projects() {
                   {selectedProject.title}
                 </h2>
 
-                {/* Scale & Technical Specs */}
-                <div className="modal-specs-box">
-                  <h4>Thông Số Kỹ Thuật & Cấu Hình Lắp Đặt:</h4>
-                  <ul>
-                    {selectedProject.scale && (
-                      <li>
-                        <strong>Quy mô / Kích thước:</strong> {selectedProject.scale}
-                      </li>
-                    )}
-                    {selectedProject.motor && (
-                      <li>
-                        <strong>Động cơ & Điều khiển:</strong> {selectedProject.motor}
-                      </li>
-                    )}
-                    {selectedProject.features && selectedProject.features.map((feat, fIdx) => (
-                      <li key={fIdx}>
-                        <strong>Tính năng:</strong> {feat}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                {/* Scale & Technical Specs (chỉ hiển thị nếu có specs riêng và chưa có bài viết chi tiết) */}
+                {(!selectedProject.content && (selectedProject.scale || selectedProject.motor || (selectedProject.features && selectedProject.features.length > 0))) && (
+                  <div className="modal-specs-box">
+                    <h4>Thông Số Kỹ Thuật & Cấu Hình Lắp Đặt:</h4>
+                    <ul>
+                      {selectedProject.scale && (
+                        <li>
+                          <strong>Quy mô / Kích thước:</strong> {selectedProject.scale}
+                        </li>
+                      )}
+                      {selectedProject.motor && (
+                        <li>
+                          <strong>Động cơ & Điều khiển:</strong> {selectedProject.motor}
+                        </li>
+                      )}
+                      {selectedProject.features && selectedProject.features.map((feat, fIdx) => (
+                        <li key={fIdx}>
+                          <strong>Tính năng:</strong> {feat}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
-                {/* Description */}
-                <div className="modal-desc-box">
-                  <h4>Mô Tả Quá Trình Thi Công:</h4>
-                  <p>{selectedProject.description}</p>
-                </div>
+                {/* Bài viết chi tiết thi công (Rich HTML Article) hoặc Mô tả ngắn fallback */}
+                {selectedProject.content ? (
+                  <div className="modal-article-rich-box">
+                    <div 
+                      className="project-article-rendered-content"
+                      dangerouslySetInnerHTML={{ __html: selectedProject.content }}
+                    />
+                  </div>
+                ) : (
+                  <div className="modal-desc-box">
+                    <h4>Mô Tả Quá Trình Thi Công:</h4>
+                    <p>{selectedProject.description}</p>
+                  </div>
+                )}
 
                 {/* Modal CTA Footer */}
                 <div className="modal-cta-footer">

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { Link, Navigate } from "react-router-dom";
-import { 
+import {
   Users, Package, FolderKanban, CheckCircle, Trash2, Plus, Edit,
   RefreshCw, X, Shield, Phone, ArrowLeft, LayoutDashboard, Database,
   Newspaper, Search, Eye, Tag, FileText, Check, Menu, LogOut, Sparkles, FileSpreadsheet, FileEdit,
@@ -10,12 +10,14 @@ import {
 import AdminCategorySeo from "../components/AdminCategorySeo";
 import AdminPriceQuote from "../components/AdminPriceQuote";
 import AdminProductArticleEditor from "../components/AdminProductArticleEditor";
+import AdminProjectArticleEditor, { SAMPLE_PROJECT_TEMPLATE } from "../components/AdminProjectArticleEditor";
 import AdminProductQuickInfoCard from "../components/AdminProductQuickInfoCard";
 import { getProductCardDescription } from "../utils/productDescriptionHelper";
 import { useAuth } from "../context/AuthContext";
 import { slugify } from "../utils/slug.js";
 import { matchKeywords, extractSearchableText } from "../utils/searchHelper";
 import { DEFAULT_SERVICES as DEFAULT_SAMPLE_SERVICES } from "../data/defaultServices";
+import { compressImage } from "../utils/imageCompressor";
 import "./Admin.css";
 
 const DEFAULT_SAMPLE_REVIEWS = [
@@ -129,7 +131,7 @@ export default function Admin() {
   const [productSubTab, setProductSubTab] = useState("list"); // "list" | "editor"
   const [editingArticleCode, setEditingArticleCode] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  
+
   // Data states
   const [contacts, setContacts] = useState([]);
   const [products, setProducts] = useState([]);
@@ -155,8 +157,9 @@ export default function Admin() {
   const [showProductModal, setShowProductModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null); // null = add, object = edit
 
-  const [showProjectModal, setShowProjectModal] = useState(false);
+  const [showProjectForm, setShowProjectForm] = useState(false);
   const [editingProject, setEditingProject] = useState(null);
+  const projectFormRef = useRef(null);
 
   const [showNewsModal, setShowNewsModal] = useState(false);
   const [editingNews, setEditingNews] = useState(null);
@@ -165,6 +168,7 @@ export default function Admin() {
   const [editingService, setEditingService] = useState(null);
   const [isUploadingServiceImg, setIsUploadingServiceImg] = useState(false);
   const [isUploadingProductImg, setIsUploadingProductImg] = useState(false);
+  const [isUploadingProjectImg, setIsUploadingProjectImg] = useState(false);
 
   // Form states
   const initialProductState = {
@@ -172,7 +176,7 @@ export default function Admin() {
     code: "",
     category: "cuacuon",
     subCategory: "Cửa cuốn khe thoáng Đức",
-    image: "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=800&q=80",
+    image: "/about_door_1.png",
     description: "",
     specs: "Hợp kim nhôm 6063-T5, Bảo hành 5 năm",
     badge: "HOT",
@@ -181,10 +185,13 @@ export default function Admin() {
 
   const initialProjectState = {
     title: "",
-    category: "Cửa Trượt Tự Động",
+    category: "Cửa Cuốn Khe Thoáng",
     location: "Đà Nẵng",
-    image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80",
-    description: "Công trình thi công lắp đặt hoàn thiện chuẩn cao cấp."
+    image: "",
+    images: [],
+    gallery: [],
+    description: "",
+    content: ""
   };
 
   const initialNewsState = {
@@ -208,9 +215,28 @@ export default function Admin() {
   };
 
   const [productForm, setProductForm] = useState(initialProductState);
+  const [isCustomSubCategory, setIsCustomSubCategory] = useState(false);
   const [projectForm, setProjectForm] = useState(initialProjectState);
+  const [projectUrlInput, setProjectUrlInput] = useState("");
   const [newsForm, setNewsForm] = useState(initialNewsState);
   const [serviceForm, setServiceForm] = useState(initialServiceState);
+
+  // Danh sách loại sản phẩm kết hợp giữa chuẩn mặc định và các loại do admin tự nhập
+  const availableSubCategories = useMemo(() => {
+    const list = [...(SUBCATEGORIES[productForm.category] || [])];
+    if (Array.isArray(products)) {
+      products.forEach((p) => {
+        if (
+          p.category === productForm.category &&
+          p.subCategory &&
+          !list.includes(p.subCategory)
+        ) {
+          list.push(p.subCategory);
+        }
+      });
+    }
+    return list;
+  }, [productForm.category, products]);
 
   // Notification Toast Helper
   const showToast = (msg) => {
@@ -259,9 +285,67 @@ export default function Admin() {
         setContacts(pureContacts);
       }
       if (dataP && dataP.success) setProducts(dataP.data);
-      if (dataPr && dataPr.success) setProjects(dataPr.data);
+      let localProjects = [];
+      try {
+        const localPr = localStorage.getItem("boss_admin_projects");
+        if (localPr) {
+          const parsed = JSON.parse(localPr);
+          if (Array.isArray(parsed)) localProjects = parsed.filter(p => p && typeof p === 'object');
+        }
+      } catch (_) { }
+
+      if (dataPr && dataPr.success && Array.isArray(dataPr.data) && dataPr.data.length > 0) {
+        const validApi = dataPr.data.filter(p => p && typeof p === 'object');
+        // Hợp nhất dữ liệu API với localStorage để luôn bảo lưu bài viết người dùng đã lưu
+        const merged = validApi.map((apiP) => {
+          const apiId = String(apiP._id || apiP.id || '').trim();
+          const apiTitle = String(apiP.title || '').trim().toLowerCase();
+
+          const localMatch = localProjects.find((lp) => {
+            if (!lp) return false;
+            const lpId = String(lp._id || lp.id || '').trim();
+            const lpTitle = String(lp.title || '').trim().toLowerCase();
+            if (apiId && lpId && apiId === lpId) return true;
+            if (apiTitle && lpTitle && apiTitle === lpTitle) return true;
+            return false;
+          });
+
+          if (localMatch) {
+            return {
+              ...apiP,
+              ...localMatch,
+              content: (typeof localMatch.content === 'string' && localMatch.content.trim())
+                ? localMatch.content
+                : (typeof apiP.content === 'string' ? apiP.content : "")
+            };
+          }
+          return apiP;
+        });
+
+        // Bổ sung các dự án chỉ có trên localStorage
+        localProjects.forEach((lp) => {
+          if (!lp) return;
+          const lpId = String(lp._id || lp.id || '').trim();
+          const lpTitle = String(lp.title || '').trim().toLowerCase();
+
+          const exists = merged.some((p) => {
+            if (!p) return false;
+            const pId = String(p._id || p.id || '').trim();
+            const pTitle = String(p.title || '').trim().toLowerCase();
+            if (pId && lpId && pId === lpId) return true;
+            if (pTitle && lpTitle && pTitle === lpTitle) return true;
+            return false;
+          });
+          if (!exists) merged.push(lp);
+        });
+
+        setProjects(merged);
+        localStorage.setItem("boss_admin_projects", JSON.stringify(merged));
+      } else if (localProjects.length > 0) {
+        setProjects(localProjects);
+      }
       if (dataN && dataN.success) setNews(dataN.data);
-      
+
       let loadedServices = [];
       if (dataS && dataS.success && Array.isArray(dataS.data) && dataS.data.length > 0) {
         loadedServices = dataS.data;
@@ -303,14 +387,14 @@ export default function Admin() {
       setReviews(loadedReviews);
       try {
         localStorage.setItem("boss_customer_reviews", JSON.stringify(loadedReviews));
-      } catch (_) {}
+      } catch (_) { }
 
       // Auto-sync with backend if backend DB is empty
       if (dataS && dataS.success && Array.isArray(dataS.data) && dataS.data.length === 0) {
         try {
           fetch(`${import.meta.env.VITE_API_URL}/api/services/seed`, { method: "POST" })
-            .catch(() => {});
-        } catch (_) {}
+            .catch(() => { });
+        } catch (_) { }
       }
     } catch (err) {
       console.error("Admin Fetch Error:", err);
@@ -372,17 +456,22 @@ export default function Admin() {
   // ----------------------------------------------------
   const handleOpenAddProduct = () => {
     setEditingProduct(null);
+    setIsCustomSubCategory(false);
     setProductForm(initialProductState);
     setShowProductModal(true);
   };
 
   const handleOpenEditProduct = (product) => {
     setEditingProduct(product);
+    const cat = product.category || "cuacuon";
+    const subCat = product.subCategory || "Cửa cuốn khe thoáng Đức";
+    const isStandard = SUBCATEGORIES[cat]?.includes(subCat);
+    setIsCustomSubCategory(!isStandard && Boolean(subCat));
     setProductForm({
       title: product.title || "",
       code: product.code || "",
-      category: product.category || "cuacuon",
-      subCategory: product.subCategory || "Cửa cuốn khe thoáng Đức",
+      category: cat,
+      subCategory: subCat,
       image: product.image || "",
       description: product.description || "",
       specs: Array.isArray(product.specs) ? product.specs.join(", ") : (product.specs || ""),
@@ -395,11 +484,16 @@ export default function Admin() {
   const handleProductSubmit = async (e) => {
     e.preventDefault();
     try {
-      const specsArray = typeof productForm.specs === "string" 
+      const specsArray = typeof productForm.specs === "string"
         ? productForm.specs.split(",").map(s => s.trim()).filter(Boolean)
         : productForm.specs;
 
-      const payload = { ...productForm, specs: specsArray };
+      const payload = {
+        ...productForm,
+        specs: specsArray,
+        images: productForm.image ? [productForm.image] : [],
+        gallery: productForm.image ? [productForm.image] : []
+      };
       if (!payload.description || payload.description.includes("là giải pháp tối ưu cho những ai đang tìm kiếm")) {
         const articleExcerpt = getProductCardDescription(productForm);
         if (articleExcerpt) payload.description = articleExcerpt;
@@ -415,7 +509,12 @@ export default function Admin() {
         });
         data = await res.json();
         if (data.success) {
-          setProducts(products.map(p => p._id === editingProduct._id ? data.data : p));
+          const updated = products.map(p => p._id === editingProduct._id ? data.data : p);
+          setProducts(updated);
+          try {
+            localStorage.setItem("boss_cached_products", JSON.stringify(updated));
+            window.dispatchEvent(new CustomEvent("boss_products_updated", { detail: updated }));
+          } catch (e) {}
           showToast("✨ Đã cập nhật thông tin sản phẩm thành công!");
         }
       } else {
@@ -427,7 +526,12 @@ export default function Admin() {
         });
         data = await res.json();
         if (data.success) {
-          setProducts([data.data, ...products]);
+          const updated = [data.data, ...products];
+          setProducts(updated);
+          try {
+            localStorage.setItem("boss_cached_products", JSON.stringify(updated));
+            window.dispatchEvent(new CustomEvent("boss_products_updated", { detail: updated }));
+          } catch (e) {}
           showToast("🎉 Thêm sản phẩm mới thành công!");
         }
       }
@@ -458,7 +562,14 @@ export default function Admin() {
         });
         data = await res.json();
         if (data.success) {
-          setProducts(prev => prev.map(p => p._id === payload._id ? data.data : p));
+          setProducts(prev => {
+            const updated = prev.map(p => p._id === payload._id ? data.data : p);
+            try {
+              localStorage.setItem("boss_cached_products", JSON.stringify(updated));
+              window.dispatchEvent(new CustomEvent("boss_products_updated", { detail: updated }));
+            } catch (e) {}
+            return updated;
+          });
           showToast("✨ Đã cập nhật thông tin sản phẩm thành công!");
         }
       } else {
@@ -469,7 +580,14 @@ export default function Admin() {
         });
         data = await res.json();
         if (data.success) {
-          setProducts(prev => [data.data, ...prev]);
+          setProducts(prev => {
+            const updated = [data.data, ...prev];
+            try {
+              localStorage.setItem("boss_cached_products", JSON.stringify(updated));
+              window.dispatchEvent(new CustomEvent("boss_products_updated", { detail: updated }));
+            } catch (e) {}
+            return updated;
+          });
           showToast("🎉 Thêm sản phẩm mới thành công!");
         }
       }
@@ -487,7 +605,12 @@ export default function Admin() {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/api/products/${id}`, { method: "DELETE" });
       const data = await res.json();
       if (data.success) {
-        setProducts(products.filter(p => p._id !== id));
+        const updated = products.filter(p => p._id !== id);
+        setProducts(updated);
+        try {
+          localStorage.setItem("boss_cached_products", JSON.stringify(updated));
+          window.dispatchEvent(new CustomEvent("boss_products_updated", { detail: updated }));
+        } catch (e) {}
         showToast("🗑️ Đã xóa sản phẩm thành công!");
       }
     } catch (err) {
@@ -497,75 +620,399 @@ export default function Admin() {
   };
 
   // ----------------------------------------------------
-  // PROJECT HANDLERS (ADD & EDIT & DELETE)
+  // PROJECT HANDLERS (ADD & EDIT & DELETE & UPLOAD)
   // ----------------------------------------------------
   const handleOpenAddProject = () => {
     setEditingProject(null);
-    setProjectForm(initialProjectState);
-    setShowProjectModal(true);
+    setProjectForm({
+      title: "",
+      category: "Cửa Cuốn Khe Thoáng",
+      location: "Đà Nẵng",
+      image: "",
+      images: [],
+      gallery: [],
+      description: "",
+      content: ""
+    });
+    setProjectUrlInput("");
+    setShowProjectForm(true);
+    setTimeout(() => {
+      projectFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
   };
 
   const handleOpenEditProject = (project) => {
     setEditingProject(project);
+    const existingImages = Array.isArray(project.images) && project.images.length > 0
+      ? project.images
+      : Array.isArray(project.gallery) && project.gallery.length > 0
+        ? project.gallery
+        : project.image
+          ? [project.image]
+          : [];
+
+    let currentContent = project.content || "";
+    // Nếu project chưa có bài viết HTML riêng (công trình cũ chỉ có phần mô tả ngắn):
+    // Tự động nạp phần mô tả cũ và các ảnh có sẵn vào khung soạn thảo để người dùng tiếp tục chỉnh sửa, không bị mất thông tin cũ!
+    if (!currentContent.trim()) {
+      if (project.description && project.description.trim()) {
+        let genHtml = `<p style="line-height: 1.8; color: #334155; margin-bottom: 16px;">${project.description}</p>`;
+        existingImages.forEach((imgUrl, i) => {
+          genHtml += `
+<figure class="project-article-figure" style="text-align: center; margin: 24px 0;">
+  <img src="${imgUrl}" alt="Hình ảnh công trình ${i + 1}" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.12); border: 1px solid #cbd5e1;" />
+  <figcaption style="margin-top: 8px; font-size: 0.88rem; color: #64748b; font-style: italic; text-align: center;">Hình ảnh ${i + 1}: Thi công thực tế tại công trình</figcaption>
+</figure>`;
+        });
+        currentContent = genHtml;
+      }
+    }
+
     setProjectForm({
       title: project.title || "",
-      category: project.category || "Cửa Trượt Tự Động",
+      category: project.category || "Cửa Cuốn Khe Thoáng",
       location: project.location || "Đà Nẵng",
-      image: project.image || "",
-      description: project.description || ""
+      image: existingImages[0] || project.image || "",
+      images: existingImages,
+      gallery: existingImages,
+      description: project.description || "",
+      content: currentContent
     });
-    setShowProjectModal(true);
+    setProjectUrlInput("");
+    setShowProjectForm(true);
+    setTimeout(() => {
+      projectFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
   };
 
-  const handleProjectSubmit = async (e) => {
-    e.preventDefault();
+  // Thêm một hoặc nhiều đường link URL ảnh vào danh sách công trình
+  const handleAddProjectUrl = () => {
+    if (!projectUrlInput.trim()) return;
+    const rawUrls = projectUrlInput
+      .split(/[\n,\s]+/)
+      .map((u) => u.trim())
+      .filter((u) => u.length > 0 && (u.startsWith("http://") || u.startsWith("https://") || u.startsWith("/") || u.startsWith("data:")));
+
+    if (rawUrls.length === 0) {
+      showToast("⚠️ Vui lòng nhập link ảnh hợp lệ (http://, https://...)");
+      return;
+    }
+
+    setProjectForm((prev) => {
+      const existing = Array.isArray(prev.images) ? [...prev.images] : (prev.image ? [prev.image] : []);
+      const combined = [...existing];
+      rawUrls.forEach((u) => {
+        if (!combined.includes(u)) combined.push(u);
+      });
+      return {
+        ...prev,
+        images: combined,
+        gallery: combined,
+        image: combined[0] || ""
+      };
+    });
+    setProjectUrlInput("");
+    showToast(`✨ Đã thêm ${rawUrls.length} ảnh công trình!`);
+  };
+
+  // Tải một hoặc nhiều ảnh công trình từ máy tính
+  const handleUploadProjectImages = async (e) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
+    const validFiles = files.filter((f) => f.type.startsWith("image/"));
+    if (validFiles.length === 0) {
+      showToast("⚠️ Vui lòng chọn tệp hình ảnh hợp lệ (JPG, PNG, WebP)!");
+      return;
+    }
+
+    setIsUploadingProjectImg(true);
     try {
-      let res, data;
-      if (editingProject) {
-        res = await fetch(`${import.meta.env.VITE_API_URL}/api/projects/${editingProject._id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(projectForm)
-        });
-        data = await res.json();
-        if (data.success) {
-          setProjects(projects.map(p => p._id === editingProject._id ? data.data : p));
-          showToast("✨ Đã cập nhật thông tin dự án thành công!");
-        }
-      } else {
-        res = await fetch(`${import.meta.env.VITE_API_URL}/api/projects`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(projectForm)
-        });
-        data = await res.json();
-        if (data.success) {
-          setProjects([data.data, ...projects]);
-          showToast("🎉 Thêm dự án mới thành công!");
+      const processedFiles = await Promise.all(validFiles.map((f) => compressImage(f)));
+      const backendBase = import.meta.env.VITE_API_URL || "";
+      const multipleUploadEndpoint = backendBase ? `${backendBase}/api/upload/multiple` : "/api/upload/multiple";
+      const singleUploadEndpoint = backendBase ? `${backendBase}/api/upload` : "/api/upload";
+
+      const uploadedUrls = [];
+
+      // 1. Thử dùng endpoint tải nhiều ảnh nếu có từ 2 ảnh trở lên
+      if (processedFiles.length > 1) {
+        try {
+          const multiFormData = new FormData();
+          processedFiles.forEach((file) => multiFormData.append("images", file));
+          const res = await fetch(multipleUploadEndpoint, {
+            method: "POST",
+            body: multiFormData
+          });
+          if (res.ok) {
+            const data = await res.json();
+            if (data.success && Array.isArray(data.files)) {
+              data.files.forEach((f) => {
+                const fullUrl = f.url?.startsWith("http") || f.url?.startsWith("data:")
+                  ? f.url
+                  : `${backendBase}${f.url}`;
+                uploadedUrls.push(fullUrl);
+              });
+            }
+          }
+        } catch (multiErr) {
+          console.warn("Project multi upload error, fallback to single:", multiErr);
         }
       }
 
-      if (data.success) {
-        setShowProjectModal(false);
+      // 2. Tải tuần tự nếu upload multiple chưa có kết quả
+      if (uploadedUrls.length === 0) {
+        for (const file of processedFiles) {
+          try {
+            const singleFormData = new FormData();
+            singleFormData.append("image", file);
+            const res = await fetch(singleUploadEndpoint, {
+              method: "POST",
+              body: singleFormData
+            });
+            if (res.ok) {
+              const data = await res.json();
+              if (data.success && (data.url || data.imageUrl)) {
+                const rawUrl = data.url || data.imageUrl;
+                const finalUrl = rawUrl.startsWith("http") || rawUrl.startsWith("data:")
+                  ? rawUrl
+                  : `${backendBase}${rawUrl}`;
+                uploadedUrls.push(finalUrl);
+                continue;
+              }
+            }
+          } catch (singleErr) {
+            console.warn("Single upload error, fallback to Base64:", singleErr);
+          }
+
+          // Fallback FileReader Base64
+          await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+              if (event.target?.result) {
+                uploadedUrls.push(event.target.result);
+              }
+              resolve();
+            };
+            reader.onerror = () => resolve();
+            reader.readAsDataURL(file);
+          });
+        }
+      }
+
+      if (uploadedUrls.length > 0) {
+        setProjectForm((prev) => {
+          const existing = Array.isArray(prev.images) ? [...prev.images] : (prev.image ? [prev.image] : []);
+          const combined = [...existing];
+          uploadedUrls.forEach((u) => {
+            if (!combined.includes(u)) combined.push(u);
+          });
+          return {
+            ...prev,
+            images: combined,
+            gallery: combined,
+            image: combined[0] || ""
+          };
+        });
+        showToast(`🎉 Đã tải lên thành công ${uploadedUrls.length} ảnh công trình!`);
       }
     } catch (err) {
+      console.error("Project upload error:", err);
+      showToast("❌ Lỗi khi tải ảnh công trình lên!");
+    } finally {
+      setIsUploadingProjectImg(false);
+      e.target.value = "";
+    }
+  };
+
+  // Đặt làm ảnh đại diện chính của công trình
+  const handleSetMainProjectImage = (index) => {
+    setProjectForm((prev) => {
+      const list = Array.isArray(prev.images) ? [...prev.images] : (prev.image ? [prev.image] : []);
+      if (index < 0 || index >= list.length) return prev;
+      const target = list.splice(index, 1)[0];
+      list.unshift(target);
+      return {
+        ...prev,
+        images: list,
+        gallery: list,
+        image: list[0] || ""
+      };
+    });
+    showToast("⭐ Đã chọn làm hình ảnh đại diện chính của công trình!");
+  };
+
+  // Xóa 1 ảnh khỏi danh sách công trình
+  const handleRemoveProjectImage = (index) => {
+    setProjectForm((prev) => {
+      const list = Array.isArray(prev.images) ? [...prev.images] : (prev.image ? [prev.image] : []);
+      list.splice(index, 1);
+      return {
+        ...prev,
+        images: list,
+        gallery: list,
+        image: list[0] || ""
+      };
+    });
+    showToast("🗑️ Đã xóa hình ảnh khỏi công trình");
+  };
+
+  // Xóa toàn bộ ảnh của công trình
+  const handleClearAllProjectImages = () => {
+    setProjectForm((prev) => ({
+      ...prev,
+      images: [],
+      gallery: [],
+      image: ""
+    }));
+    setProjectUrlInput("");
+    showToast("🗑️ Đã xóa toàn bộ hình ảnh công trình");
+  };
+
+  const handleProjectSubmit = async (e, directContent) => {
+    if (e && e.preventDefault) e.preventDefault();
+    try {
+      const contentHtml = (typeof directContent === "string" ? directContent : projectForm.content) || "";
+
+      // 1. Tự động trích xuất các link ảnh có trong bài viết
+      const imgRegex = /<img[^>]+src=["']([^"']+)["']/gi;
+      const extractedImgs = [];
+      let match;
+      while ((match = imgRegex.exec(contentHtml)) !== null) {
+        if (match[1] && !extractedImgs.includes(match[1])) {
+          extractedImgs.push(match[1]);
+        }
+      }
+
+      let currentImages = Array.isArray(projectForm.images)
+        ? [...projectForm.images]
+        : (projectForm.image ? [projectForm.image] : []);
+
+      extractedImgs.forEach((u) => {
+        if (!currentImages.includes(u)) currentImages.push(u);
+      });
+
+      if (projectUrlInput && projectUrlInput.trim()) {
+        const extraUrls = projectUrlInput
+          .split(/[\n,\s]+/)
+          .map((u) => u.trim())
+          .filter((u) => u.length > 0 && (u.startsWith("http://") || u.startsWith("https://") || u.startsWith("/") || u.startsWith("data:")));
+        extraUrls.forEach((u) => {
+          if (!currentImages.includes(u)) currentImages.push(u);
+        });
+      }
+
+      // Tự động lấy ảnh đầu tiên xuất hiện trong bài viết làm ảnh bìa chính (Thumbnail)
+      let primaryImage = extractedImgs[0] || projectForm.image || currentImages[0] || "";
+      if (!primaryImage) {
+        primaryImage = "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80";
+      }
+
+      // Đảm bảo primaryImage luôn đứng đầu tiên trong danh sách ảnh
+      if (currentImages.includes(primaryImage)) {
+        currentImages = [primaryImage, ...currentImages.filter(img => img !== primaryImage)];
+      } else {
+        currentImages.unshift(primaryImage);
+      }
+
+      // 2. Bảo lưu mô tả hoặc trích xuất đoạn văn đầu tiên từ bài viết làm tóm tắt
+      let shortDesc = projectForm.description || "";
+      if (!shortDesc.trim() && contentHtml.trim()) {
+        const plainText = contentHtml.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+        shortDesc = plainText.length > 180 ? plainText.substring(0, 180) + "..." : plainText;
+      }
+
+      const tempId = editingProject ? (editingProject._id || editingProject.id) : `proj-${Date.now()}`;
+      const payload = {
+        ...projectForm,
+        _id: tempId,
+        id: tempId,
+        image: primaryImage,
+        images: currentImages.length > 0 ? currentImages : [primaryImage],
+        gallery: currentImages.length > 0 ? currentImages : [primaryImage],
+        description: shortDesc || "Công trình thi công lắp đặt hoàn thiện bởi BOSS Đà Nẵng.",
+        content: contentHtml
+      };
+
+      let apiSavedItem = null;
+      const backendBase = import.meta.env.VITE_API_URL || "";
+      if (backendBase) {
+        try {
+          if (editingProject) {
+            const editId = editingProject._id || editingProject.id;
+            const res = await fetch(`${backendBase}/api/projects/${editId}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload)
+            });
+            if (res.ok) {
+              const resJson = await res.json();
+              if (resJson && resJson.success && resJson.data) {
+                apiSavedItem = resJson.data;
+              }
+            }
+          } else {
+            const res = await fetch(`${backendBase}/api/projects`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload)
+            });
+            if (res.ok) {
+              const resJson = await res.json();
+              if (resJson && resJson.success && resJson.data) {
+                apiSavedItem = resJson.data;
+              }
+            }
+          }
+        } catch (apiErr) {
+          console.warn("Project API error, falling back to local save:", apiErr);
+        }
+      }
+
+      // Luôn đảm bảo content bài viết của người dùng được giữ nguyên 100%
+      const finalItem = {
+        ...payload,
+        ...(apiSavedItem || {}),
+        content: (apiSavedItem && apiSavedItem.content && apiSavedItem.content.trim())
+          ? apiSavedItem.content
+          : payload.content
+      };
+
+      const updated = editingProject
+        ? projects.map(p =>
+            ((editingProject._id && p._id === editingProject._id) ||
+             (editingProject.id && p.id === editingProject.id) ||
+             (p.title === editingProject.title))
+              ? finalItem
+              : p
+          )
+        : [finalItem, ...projects];
+
+      setProjects(updated);
+      localStorage.setItem("boss_admin_projects", JSON.stringify(updated));
+      setShowProjectForm(false);
+      setEditingProject(null);
+      showToast(editingProject ? "✨ Đã cập nhật bài viết công trình thành công!" : "🎉 Đã thêm và đăng bài viết công trình thành công!");
+    } catch (err) {
       console.error("Project Submit Error:", err);
-      showToast("❌ Lỗi khi lưu dữ liệu dự án");
+      showToast("❌ Có lỗi xảy ra khi lưu bài viết công trình.");
     }
   };
 
   const handleDeleteProject = async (id) => {
-    if (!window.confirm("Bạn có chắc muốn xóa dự án này?")) return;
+    if (!window.confirm("Bạn có chắc muốn xóa công trình này?")) return;
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/projects/${id}`, { method: "DELETE" });
-      const data = await res.json();
-      if (data.success) {
-        setProjects(projects.filter(p => p._id !== id));
-        showToast("🗑️ Đã xóa dự án thành công!");
-      }
+      await fetch(`${import.meta.env.VITE_API_URL}/api/projects/${id}`, { method: "DELETE" }).catch(() => null);
+      const updated = projects.filter(p => p._id !== id);
+      setProjects(updated);
+      localStorage.setItem("boss_admin_projects", JSON.stringify(updated));
+      showToast("🗑️ Đã xóa công trình thành công!");
     } catch (err) {
       console.error("Delete project error:", err);
-      showToast("❌ Lỗi khi xóa dự án");
+      const updated = projects.filter(p => p._id !== id);
+      setProjects(updated);
+      localStorage.setItem("boss_admin_projects", JSON.stringify(updated));
+      showToast("🗑️ Đã xóa công trình!");
     }
   };
 
@@ -938,7 +1385,7 @@ export default function Admin() {
       setReviews(updated);
       try {
         localStorage.setItem("boss_customer_reviews", JSON.stringify(updated));
-      } catch (_) {}
+      } catch (_) { }
       showToast("🗑️ Đã xóa đánh giá khách hàng thành công!");
     } catch (err) {
       console.error("Delete review error:", err);
@@ -946,7 +1393,7 @@ export default function Admin() {
       setReviews(updated);
       try {
         localStorage.setItem("boss_customer_reviews", JSON.stringify(updated));
-      } catch (_) {}
+      } catch (_) { }
       showToast("🗑️ Đã xóa đánh giá khỏi bộ nhớ!");
     }
   };
@@ -1014,7 +1461,7 @@ export default function Admin() {
   const pendingContactsCount = contacts.filter(
     c => c.status === "pending" && !c.productCategory?.toLowerCase().includes("đánh giá")
   ).length;
-  const serviceContactsCount = contacts.filter(c => 
+  const serviceContactsCount = contacts.filter(c =>
     c.productCategory?.toLowerCase().includes("dịch vụ")
   ).length;
 
@@ -1029,8 +1476,8 @@ export default function Admin() {
 
       {/* 1. SIDEBAR */}
       {mobileMenuOpen && (
-        <div 
-          className="admin-sidebar-backdrop" 
+        <div
+          className="admin-sidebar-backdrop"
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
@@ -1041,7 +1488,7 @@ export default function Admin() {
             <h2>BOSS ADMIN</h2>
             <span>BẢNG ĐIỀU KHIỂN</span>
           </div>
-          <button 
+          <button
             type="button"
             className="admin-sidebar-close-btn"
             onClick={() => setMobileMenuOpen(false)}
@@ -1052,7 +1499,7 @@ export default function Admin() {
         </div>
 
         <div className="admin-nav-list">
-          <button 
+          <button
             className={`admin-nav-item ${activeTab === "contacts" ? "active" : ""}`}
             onClick={() => { setActiveTab("contacts"); setMobileMenuOpen(false); }}
           >
@@ -1060,32 +1507,25 @@ export default function Admin() {
             {pendingContactsCount > 0 && <span className="nav-badge-count">{pendingContactsCount}</span>}
           </button>
 
-          <button 
+          <button
             className={`admin-nav-item ${activeTab === "products" ? "active" : ""}`}
-            onClick={() => { 
-              setActiveTab("products"); 
+            onClick={() => {
+              setActiveTab("products");
               setProductSubTab("list");
-              setMobileMenuOpen(false); 
+              setMobileMenuOpen(false);
             }}
           >
             <Package size={18} /> Quản Lý Sản Phẩm
           </button>
 
-          <button 
-            className={`admin-nav-item ${activeTab === "projects" ? "active" : ""}`}
-            onClick={() => { setActiveTab("projects"); setMobileMenuOpen(false); }}
+          <button
+            className={`admin-nav-item ${activeTab === "pricing" ? "active" : ""}`}
+            onClick={() => { setActiveTab("pricing"); setMobileMenuOpen(false); }}
           >
-            <FolderKanban size={18} /> Quản Lý Dự Án
+            <FileSpreadsheet size={18} /> Quản Lý Báo Giá
           </button>
 
-          <button 
-            className={`admin-nav-item ${activeTab === "news" ? "active" : ""}`}
-            onClick={() => { setActiveTab("news"); setMobileMenuOpen(false); }}
-          >
-            <Newspaper size={18} /> Quản Lý Tin Tức
-          </button>
-
-          <button 
+          <button
             className={`admin-nav-item ${activeTab === "services" ? "active" : ""}`}
             onClick={() => { setActiveTab("services"); setMobileMenuOpen(false); }}
           >
@@ -1093,7 +1533,21 @@ export default function Admin() {
             {services.length > 0 && <span className="nav-badge-count">{services.length}</span>}
           </button>
 
-          <button 
+          <button
+            className={`admin-nav-item ${activeTab === "news" ? "active" : ""}`}
+            onClick={() => { setActiveTab("news"); setMobileMenuOpen(false); }}
+          >
+            <Newspaper size={18} /> Quản Lý Tin Tức
+          </button>
+
+          <button
+            className={`admin-nav-item ${activeTab === "projects" ? "active" : ""}`}
+            onClick={() => { setActiveTab("projects"); setMobileMenuOpen(false); }}
+          >
+            <FolderKanban size={18} /> Quản Lý Công Trình
+          </button>
+
+          <button
             className={`admin-nav-item ${activeTab === "reviews" ? "active" : ""}`}
             onClick={() => { setActiveTab("reviews"); setMobileMenuOpen(false); }}
           >
@@ -1101,18 +1555,11 @@ export default function Admin() {
             {reviews.length > 0 && <span className="nav-badge-count">{reviews.length}</span>}
           </button>
 
-          <button 
+          <button
             className={`admin-nav-item ${activeTab === "seo" ? "active" : ""}`}
             onClick={() => { setActiveTab("seo"); setMobileMenuOpen(false); }}
           >
             <Sparkles size={18} /> Bài Sale & SEO Danh Mục
-          </button>
-
-          <button 
-            className={`admin-nav-item ${activeTab === "pricing" ? "active" : ""}`}
-            onClick={() => { setActiveTab("pricing"); setMobileMenuOpen(false); }}
-          >
-            <FileSpreadsheet size={18} /> Quản Lý Bảng Báo Giá
           </button>
         </div>
 
@@ -1120,9 +1567,9 @@ export default function Admin() {
           <Link to="/" className="btn-back-to-site" onClick={() => setMobileMenuOpen(false)}>
             <ArrowLeft size={18} /> Quay về Trang Chủ
           </Link>
-          <button 
-            type="button" 
-            className="btn-sidebar-logout" 
+          <button
+            type="button"
+            className="btn-sidebar-logout"
             onClick={() => {
               setMobileMenuOpen(false);
               logout();
@@ -1138,9 +1585,9 @@ export default function Admin() {
         {/* TOPBAR */}
         <header className="admin-topbar">
           <div className="topbar-left">
-            <button 
+            <button
               type="button"
-              className="admin-mobile-menu-btn" 
+              className="admin-mobile-menu-btn"
               onClick={() => setMobileMenuOpen(true)}
               aria-label="Mở menu quản trị"
             >
@@ -1167,8 +1614,8 @@ export default function Admin() {
                 <span className="admin-role-tag">QUẢN TRỊ VIÊN</span>
               </div>
             </div>
-            <button 
-              type="button" 
+            <button
+              type="button"
               className="btn-admin-logout"
               onClick={() => logout()}
               title="Đăng xuất khỏi trang quản trị"
@@ -1183,7 +1630,7 @@ export default function Admin() {
         <div className="admin-content-body">
           {/* STATS CARDS (DESKTOP: ALL 6 CARDS) */}
           <div className="admin-stats-grid admin-stats-grid-desktop">
-            <div 
+            <div
               className={`admin-stat-card ${activeTab === "contacts" ? "active" : ""}`}
               onClick={() => setActiveTab("contacts")}
               title="Xem danh sách yêu cầu báo giá"
@@ -1200,7 +1647,7 @@ export default function Admin() {
               </div>
             </div>
 
-            <div 
+            <div
               className={`admin-stat-card ${activeTab === "services" ? "active" : ""}`}
               onClick={() => setActiveTab("services")}
               title="Xem danh sách dịch vụ"
@@ -1223,7 +1670,7 @@ export default function Admin() {
               </div>
             </div>
 
-            <div 
+            <div
               className={`admin-stat-card ${activeTab === "reviews" ? "active" : ""}`}
               onClick={() => setActiveTab("reviews")}
               title="Xem danh sách đánh giá khách hàng"
@@ -1245,7 +1692,7 @@ export default function Admin() {
               </div>
             </div>
 
-            <div 
+            <div
               className={`admin-stat-card ${activeTab === "products" ? "active" : ""}`}
               onClick={() => { setActiveTab("products"); setProductSubTab("list"); }}
               title="Xem danh sách sản phẩm"
@@ -1267,21 +1714,21 @@ export default function Admin() {
               </div>
             </div>
 
-            <div 
+            <div
               className={`admin-stat-card ${activeTab === "projects" ? "active" : ""}`}
               onClick={() => setActiveTab("projects")}
-              title="Xem danh sách dự án"
+              title="Xem danh sách công trình"
             >
               <div className="stat-icon blue">
                 <FolderKanban size={24} />
               </div>
               <div className="stat-info">
-                <h4>Dự Án Tiêu Biểu</h4>
+                <h4>Công Trình Tiêu Biểu</h4>
                 <p>{projects.length}</p>
               </div>
             </div>
 
-            <div 
+            <div
               className={`admin-stat-card ${activeTab === "news" ? "active" : ""}`}
               onClick={() => setActiveTab("news")}
               title="Xem danh sách tin tức & bài viết"
@@ -1303,11 +1750,11 @@ export default function Admin() {
           <div className="admin-mobile-stats-grid">
             {activeTab === "products" ? (
               <>
-                <div 
+                <div
                   className="admin-stat-card active"
-                  style={{ 
-                    background: "linear-gradient(135deg, rgba(16, 185, 129, 0.16) 0%, rgba(30, 41, 59, 0.85) 100%)", 
-                    border: "1px solid rgba(16, 185, 129, 0.38)" 
+                  style={{
+                    background: "linear-gradient(135deg, rgba(16, 185, 129, 0.16) 0%, rgba(30, 41, 59, 0.85) 100%)",
+                    border: "1px solid rgba(16, 185, 129, 0.38)"
                   }}
                 >
                   <div className="stat-icon" style={{ background: "rgba(16, 185, 129, 0.2)", color: "#10b981" }}>
@@ -1324,11 +1771,11 @@ export default function Admin() {
                   </div>
                 </div>
 
-                <div 
+                <div
                   className="admin-stat-card"
-                  style={{ 
-                    background: "linear-gradient(135deg, rgba(212, 175, 55, 0.14) 0%, rgba(30, 41, 59, 0.85) 100%)", 
-                    border: "1px solid rgba(212, 175, 55, 0.32)" 
+                  style={{
+                    background: "linear-gradient(135deg, rgba(212, 175, 55, 0.14) 0%, rgba(30, 41, 59, 0.85) 100%)",
+                    border: "1px solid rgba(212, 175, 55, 0.32)"
                   }}
                 >
                   <div className="stat-icon" style={{ background: "rgba(212, 175, 55, 0.2)", color: "#f5bd20" }}>
@@ -1347,11 +1794,11 @@ export default function Admin() {
               </>
             ) : activeTab === "services" ? (
               <>
-                <div 
+                <div
                   className="admin-stat-card active"
-                  style={{ 
-                    background: "linear-gradient(135deg, rgba(234, 179, 8, 0.15) 0%, rgba(30, 41, 59, 0.85) 100%)", 
-                    border: "1px solid rgba(234, 179, 8, 0.35)" 
+                  style={{
+                    background: "linear-gradient(135deg, rgba(234, 179, 8, 0.15) 0%, rgba(30, 41, 59, 0.85) 100%)",
+                    border: "1px solid rgba(234, 179, 8, 0.35)"
                   }}
                 >
                   <div className="stat-icon" style={{ background: "rgba(234, 179, 8, 0.2)", color: "#eab308" }}>
@@ -1363,12 +1810,12 @@ export default function Admin() {
                   </div>
                 </div>
 
-                <div 
+                <div
                   className="admin-stat-card"
                   onClick={() => setActiveTab("contacts")}
-                  style={{ 
-                    background: "linear-gradient(135deg, rgba(56, 189, 248, 0.14) 0%, rgba(30, 41, 59, 0.85) 100%)", 
-                    border: "1px solid rgba(56, 189, 248, 0.32)" 
+                  style={{
+                    background: "linear-gradient(135deg, rgba(56, 189, 248, 0.14) 0%, rgba(30, 41, 59, 0.85) 100%)",
+                    border: "1px solid rgba(56, 189, 248, 0.32)"
                   }}
                 >
                   <div className="stat-icon" style={{ background: "rgba(56, 189, 248, 0.2)", color: "#38bdf8" }}>
@@ -1382,11 +1829,11 @@ export default function Admin() {
               </>
             ) : activeTab === "reviews" ? (
               <>
-                <div 
+                <div
                   className="admin-stat-card active"
-                  style={{ 
-                    background: "linear-gradient(135deg, rgba(245, 189, 32, 0.14) 0%, rgba(30, 41, 59, 0.85) 100%)", 
-                    border: "1px solid rgba(245, 189, 32, 0.35)" 
+                  style={{
+                    background: "linear-gradient(135deg, rgba(245, 189, 32, 0.14) 0%, rgba(30, 41, 59, 0.85) 100%)",
+                    border: "1px solid rgba(245, 189, 32, 0.35)"
                   }}
                 >
                   <div className="stat-icon" style={{ background: "rgba(245, 189, 32, 0.2)", color: "#f5bd20" }}>
@@ -1398,11 +1845,11 @@ export default function Admin() {
                   </div>
                 </div>
 
-                <div 
+                <div
                   className="admin-stat-card"
-                  style={{ 
-                    background: "linear-gradient(135deg, rgba(16, 185, 129, 0.16) 0%, rgba(30, 41, 59, 0.85) 100%)", 
-                    border: "1px solid rgba(16, 185, 129, 0.35)" 
+                  style={{
+                    background: "linear-gradient(135deg, rgba(16, 185, 129, 0.16) 0%, rgba(30, 41, 59, 0.85) 100%)",
+                    border: "1px solid rgba(16, 185, 129, 0.35)"
                   }}
                 >
                   <div className="stat-icon" style={{ background: "rgba(16, 185, 129, 0.2)", color: "#10b981" }}>
@@ -1416,28 +1863,28 @@ export default function Admin() {
               </>
             ) : activeTab === "projects" ? (
               <>
-                <div 
+                <div
                   className="admin-stat-card active"
-                  style={{ 
-                    background: "linear-gradient(135deg, rgba(59, 130, 246, 0.16) 0%, rgba(30, 41, 59, 0.85) 100%)", 
-                    border: "1px solid rgba(59, 130, 246, 0.35)" 
+                  style={{
+                    background: "linear-gradient(135deg, rgba(59, 130, 246, 0.16) 0%, rgba(30, 41, 59, 0.85) 100%)",
+                    border: "1px solid rgba(59, 130, 246, 0.35)"
                   }}
                 >
                   <div className="stat-icon blue">
                     <FolderKanban size={20} />
                   </div>
                   <div className="stat-info">
-                    <h4>Dự Án Tiêu Biểu</h4>
-                    <p>{projects.length} <span style={{ fontSize: "0.78rem", color: "#3b82f6", fontWeight: 600 }}>({projects.length} dự án)</span></p>
+                    <h4>Công Trình Tiêu Biểu</h4>
+                    <p>{projects.length} <span style={{ fontSize: "0.78rem", color: "#3b82f6", fontWeight: 600 }}>({projects.length} công trình)</span></p>
                   </div>
                 </div>
 
-                <div 
+                <div
                   className="admin-stat-card"
                   onClick={() => setActiveTab("reviews")}
-                  style={{ 
-                    background: "linear-gradient(135deg, rgba(245, 189, 32, 0.14) 0%, rgba(30, 41, 59, 0.85) 100%)", 
-                    border: "1px solid rgba(245, 189, 32, 0.32)" 
+                  style={{
+                    background: "linear-gradient(135deg, rgba(245, 189, 32, 0.14) 0%, rgba(30, 41, 59, 0.85) 100%)",
+                    border: "1px solid rgba(245, 189, 32, 0.32)"
                   }}
                 >
                   <div className="stat-icon" style={{ background: "rgba(245, 189, 32, 0.18)", color: "#f5bd20" }}>
@@ -1451,11 +1898,11 @@ export default function Admin() {
               </>
             ) : activeTab === "news" ? (
               <>
-                <div 
+                <div
                   className="admin-stat-card active"
-                  style={{ 
-                    background: "linear-gradient(135deg, rgba(168, 85, 247, 0.16) 0%, rgba(30, 41, 59, 0.85) 100%)", 
-                    border: "1px solid rgba(168, 85, 247, 0.35)" 
+                  style={{
+                    background: "linear-gradient(135deg, rgba(168, 85, 247, 0.16) 0%, rgba(30, 41, 59, 0.85) 100%)",
+                    border: "1px solid rgba(168, 85, 247, 0.35)"
                   }}
                 >
                   <div className="stat-icon" style={{ background: "rgba(168, 85, 247, 0.2)", color: "#a855f7" }}>
@@ -1467,11 +1914,11 @@ export default function Admin() {
                   </div>
                 </div>
 
-                <div 
+                <div
                   className="admin-stat-card"
-                  style={{ 
-                    background: "linear-gradient(135deg, rgba(212, 175, 55, 0.14) 0%, rgba(30, 41, 59, 0.85) 100%)", 
-                    border: "1px solid rgba(212, 175, 55, 0.32)" 
+                  style={{
+                    background: "linear-gradient(135deg, rgba(212, 175, 55, 0.14) 0%, rgba(30, 41, 59, 0.85) 100%)",
+                    border: "1px solid rgba(212, 175, 55, 0.32)"
                   }}
                 >
                   <div className="stat-icon" style={{ background: "rgba(212, 175, 55, 0.2)", color: "#d4af37" }}>
@@ -1486,12 +1933,12 @@ export default function Admin() {
             ) : (
               /* DEFAULT (contacts, etc.) - KHỞI TẠO MÀN HÌNH ĐIỆN THOẠI */
               <>
-                <div 
+                <div
                   className="admin-stat-card active"
                   onClick={() => setActiveTab("contacts")}
-                  style={{ 
-                    background: "linear-gradient(135deg, rgba(16, 185, 129, 0.16) 0%, rgba(30, 41, 59, 0.85) 100%)", 
-                    border: "1px solid rgba(16, 185, 129, 0.35)" 
+                  style={{
+                    background: "linear-gradient(135deg, rgba(16, 185, 129, 0.16) 0%, rgba(30, 41, 59, 0.85) 100%)",
+                    border: "1px solid rgba(16, 185, 129, 0.35)"
                   }}
                 >
                   <div className="stat-icon green">
@@ -1503,12 +1950,12 @@ export default function Admin() {
                   </div>
                 </div>
 
-                <div 
+                <div
                   className="admin-stat-card"
                   onClick={() => setActiveTab("reviews")}
-                  style={{ 
-                    background: "linear-gradient(135deg, rgba(245, 189, 32, 0.14) 0%, rgba(30, 41, 59, 0.85) 100%)", 
-                    border: "1px solid rgba(245, 189, 32, 0.32)" 
+                  style={{
+                    background: "linear-gradient(135deg, rgba(245, 189, 32, 0.14) 0%, rgba(30, 41, 59, 0.85) 100%)",
+                    border: "1px solid rgba(245, 189, 32, 0.32)"
                   }}
                 >
                   <div className="stat-icon" style={{ background: "rgba(245, 189, 32, 0.18)", color: "#f5bd20" }}>
@@ -1536,8 +1983,8 @@ export default function Admin() {
                 <div className="table-header-controls">
                   <div className="admin-search-box">
                     <Search size={16} />
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       placeholder="Tìm kiếm tên, SĐT..."
                       value={contactSearch}
                       onChange={(e) => setContactSearch(e.target.value)}
@@ -1549,23 +1996,23 @@ export default function Admin() {
 
               {/* FILTER CHIPS (TẤT CẢ VS ĐƠN DỊCH VỤ VS ĐƠN SẢN PHẨM) */}
               <div className="contact-filter-chips">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className={`chip-btn ${contactFilter === "all" ? "active" : ""}`}
                   onClick={() => setContactFilter("all")}
                 >
                   Tất cả ({contacts.length})
                 </button>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className={`chip-btn service ${contactFilter === "service" ? "active" : ""}`}
                   onClick={() => setContactFilter("service")}
                 >
                   <span className="desktop-stat-label">🛠️ Đơn Dịch Vụ Sửa Chữa ({serviceContactsCount})</span>
                   <span className="mobile-stat-label">🛠️ Dịch Vụ ({serviceContactsCount})</span>
                 </button>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className={`chip-btn ${contactFilter === "product" ? "active" : ""}`}
                   onClick={() => setContactFilter("product")}
                 >
@@ -1624,16 +2071,16 @@ export default function Admin() {
                         </td>
                         <td>
                           {item.status === "pending" && (
-                            <button 
-                              className="btn-action-icon" 
+                            <button
+                              className="btn-action-icon"
                               title="Đánh dấu đã liên hệ"
                               onClick={() => handleUpdateContactStatus(item._id, "contacted")}
                             >
                               <CheckCircle size={16} />
                             </button>
                           )}
-                          <button 
-                            className="btn-action-icon delete" 
+                          <button
+                            className="btn-action-icon delete"
                             title="Xóa yêu cầu"
                             onClick={() => handleDeleteContact(item._id)}
                           >
@@ -1719,7 +2166,7 @@ export default function Admin() {
 
                       <div className="admin-contact-card-actions">
                         {item.status === "pending" && (
-                          <button 
+                          <button
                             type="button"
                             className="card-contact-btn btn-mark-contacted"
                             onClick={() => handleUpdateContactStatus(item._id, "contacted")}
@@ -1728,7 +2175,7 @@ export default function Admin() {
                             <span>Đã liên hệ</span>
                           </button>
                         )}
-                        <button 
+                        <button
                           type="button"
                           className="card-contact-btn btn-delete-contact"
                           onClick={() => handleDeleteContact(item._id)}
@@ -1786,8 +2233,8 @@ export default function Admin() {
                     <div className="table-header-controls">
                       <div className="admin-search-box">
                         <Search size={16} />
-                        <input 
-                          type="text" 
+                        <input
+                          type="text"
                           placeholder="Tìm mã SP, tên sản phẩm..."
                           value={productSearch}
                           onChange={(e) => setProductSearch(e.target.value)}
@@ -1829,7 +2276,7 @@ export default function Admin() {
                             <td style={{ maxWidth: 250, fontSize: "0.85rem", color: "#94a3b8" }}>{p.description}</td>
                             <td style={{ color: "#10b981", fontWeight: 600 }}>{p.price || "Liên hệ"}</td>
                             <td>
-                              <button 
+                              <button
                                 className="btn-action-icon article"
                                 onClick={() => {
                                   setEditingArticleCode(p.code);
@@ -1839,14 +2286,14 @@ export default function Admin() {
                               >
                                 <FileEdit size={16} />
                               </button>
-                              <button 
+                              <button
                                 className="btn-action-icon edit"
                                 onClick={() => handleOpenEditProduct(p)}
                                 title="Sửa thông tin sản phẩm"
                               >
                                 <Edit size={16} />
                               </button>
-                              <button 
+                              <button
                                 className="btn-action-icon delete"
                                 onClick={() => handleDeleteProduct(p._id)}
                                 title="Xóa sản phẩm"
@@ -1876,7 +2323,7 @@ export default function Admin() {
                               <img src={p.image} alt={p.title} className="admin-prod-card-img" />
                               {p.badge && <span className="admin-prod-card-badge">{p.badge}</span>}
                             </div>
-                            
+
                             <div className="admin-prod-card-main-info">
                               <div className="admin-prod-card-meta">
                                 <span className="admin-prod-card-code">{p.code}</span>
@@ -1897,7 +2344,7 @@ export default function Admin() {
                           )}
 
                           <div className="admin-prod-card-actions">
-                            <button 
+                            <button
                               type="button"
                               className="card-action-btn card-action-article"
                               onClick={() => {
@@ -1909,8 +2356,8 @@ export default function Admin() {
                               <FileEdit size={14} />
                               <span>Soạn bài</span>
                             </button>
-                            
-                            <button 
+
+                            <button
                               type="button"
                               className="card-action-btn card-action-edit"
                               onClick={() => handleOpenEditProduct(p)}
@@ -1919,8 +2366,8 @@ export default function Admin() {
                               <Edit size={14} />
                               <span>Sửa</span>
                             </button>
-                            
-                            <button 
+
+                            <button
                               type="button"
                               className="card-action-btn card-action-delete"
                               onClick={() => handleDeleteProduct(p._id)}
@@ -1945,7 +2392,7 @@ export default function Admin() {
               {productSubTab === "editor" && (
                 <div className="product-editor-subtab-layout">
                   {/* KHUNG THÔNG TIN CƠ BẢN SẢN PHẨM (ẢNH 1 NẰM DƯỚI ẢNH 2, NGOÀI WORD) */}
-                  <AdminProductQuickInfoCard 
+                  <AdminProductQuickInfoCard
                     currentProductCode={editingArticleCode || (products[0]?.code) || "BEC.5810"}
                     onSelectProductCode={(code) => setEditingArticleCode(code)}
                     dbProducts={products}
@@ -1954,8 +2401,8 @@ export default function Admin() {
                   />
 
                   {/* TRÌNH SOẠN BÀI VIẾT CHI TIẾT & SEO (WORD) */}
-                  <AdminProductArticleEditor 
-                    showToast={showToast} 
+                  <AdminProductArticleEditor
+                    showToast={showToast}
                     initialProductCode={editingArticleCode || (products[0]?.code) || "BEC.5810"}
                     onBackToProducts={() => setProductSubTab("list")}
                     dbProducts={products}
@@ -1970,29 +2417,89 @@ export default function Admin() {
           {activeTab === "projects" && (
             <div className="admin-table-container">
               <div className="table-action-header">
-                <h2>DỰ ÁN TIÊU BIỂU ({projects.length})</h2>
+                <h2>CÔNG TRÌNH TIÊU BIỂU ({projects.length})</h2>
                 <div className="table-header-controls">
                   <div className="admin-search-box">
                     <Search size={16} />
-                    <input 
-                      type="text" 
-                      placeholder="Tìm tên dự án, địa điểm..."
+                    <input
+                      type="text"
+                      placeholder="Tìm tên công trình, địa điểm..."
                       value={projectSearch}
                       onChange={(e) => setProjectSearch(e.target.value)}
                       className="admin-search-input"
                     />
                   </div>
-                  <button className="btn-add-new" onClick={handleOpenAddProject}>
-                    <Plus size={16} /> THÊM DỰ ÁN MỚI
+                  <button 
+                    className="btn-add-new" 
+                    onClick={showProjectForm && !editingProject ? () => { setShowProjectForm(false); setEditingProject(null); } : handleOpenAddProject}
+                    style={showProjectForm && !editingProject ? { background: "rgba(239, 68, 68, 0.2)", color: "#f87171", border: "1px solid rgba(239, 68, 68, 0.4)" } : {}}
+                  >
+                    {showProjectForm && !editingProject ? (
+                      <>
+                        <X size={16} /> ĐÓNG KHUNG NHẬP
+                      </>
+                    ) : (
+                      <>
+                        <Plus size={16} /> THÊM CÔNG TRÌNH MỚI
+                      </>
+                    )}
                   </button>
                 </div>
               </div>
+
+              {/* KHUNG BIỂU MẪU THÊM / SỬA CÔNG TRÌNH NẰM TRỰC TIẾP TRÊN TRANG (INLINE FORM KHÔNG BỊ MODAL CHE NỀN) */}
+              {showProjectForm && (
+                <div className="admin-inline-form-card" ref={projectFormRef}>
+                  <div className="inline-form-header">
+                    <div className="inline-form-title">
+                      <h3>
+                        {editingProject ? (
+                          <>
+                            <span>✏️ Chỉnh Sửa Công Trình:</span>
+                            <span className="highlight-text">{editingProject.title}</span>
+                          </>
+                        ) : (
+                          <>
+                            <span>➕ Thêm Công Trình Tiêu Biểu Mới</span>
+                          </>
+                        )}
+                      </h3>
+                      <p className="inline-form-desc">
+                        {editingProject 
+                          ? "Cập nhật thông tin chi tiết, địa điểm và danh sách hình ảnh thực tế của công trình bên dưới." 
+                          : "Nhập thông tin công trình, tải lên nhiều hình ảnh để hiển thị công trình thực tế trên website."}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      className="btn-close-inline-form"
+                      onClick={() => { setShowProjectForm(false); setEditingProject(null); }}
+                      title="Đóng biểu mẫu"
+                    >
+                      <X size={16} />
+                      <span>Đóng</span>
+                    </button>
+                  </div>
+
+                  <AdminProjectArticleEditor
+                    projectForm={projectForm}
+                    setProjectForm={setProjectForm}
+                    editingProject={editingProject}
+                    onSave={handleProjectSubmit}
+                    onCancel={() => { setShowProjectForm(false); setEditingProject(null); }}
+                    showToast={showToast}
+                    compressImage={compressImage}
+                    isUploading={isUploadingProjectImg}
+                    setIsUploading={setIsUploadingProjectImg}
+                  />
+                </div>
+              )}
               <div className="table-scroll-hint"><span>⇄ Vuốt sang ngang để xem đầy đủ cột</span></div>
               <table className="admin-table">
                 <thead>
                   <tr>
                     <th>Hình ảnh</th>
-                    <th>Tên dự án</th>
+                    <th>Tên công trình</th>
                     <th>Hạng mục</th>
                     <th>Địa điểm</th>
                     <th>Mô tả</th>
@@ -2004,24 +2511,24 @@ export default function Admin() {
                     filteredProjects.map((pr) => (
                       <tr key={pr._id}>
                         <td>
-                          <img src={pr.image} alt={pr.title} style={{ width: 60, height: 40, objectFit: "cover", borderRadius: 6 }} />
+                          <img src={formatImgSrc(pr.image)} alt={pr.title} style={{ width: 60, height: 40, objectFit: "cover", borderRadius: 6 }} />
                         </td>
                         <td style={{ fontWeight: 600 }}>{pr.title}</td>
                         <td><span className="admin-badge-category">{pr.category}</span></td>
                         <td>{pr.location}</td>
                         <td style={{ maxWidth: 280, fontSize: "0.85rem", color: "#94a3b8" }}>{pr.description}</td>
                         <td>
-                          <button 
+                          <button
                             className="btn-action-icon edit"
                             onClick={() => handleOpenEditProject(pr)}
-                            title="Sửa dự án"
+                            title="Sửa công trình"
                           >
                             <Edit size={16} />
                           </button>
-                          <button 
+                          <button
                             className="btn-action-icon delete"
                             onClick={() => handleDeleteProject(pr._id)}
-                            title="Xóa dự án"
+                            title="Xóa công trình"
                           >
                             <Trash2 size={16} />
                           </button>
@@ -2031,7 +2538,7 @@ export default function Admin() {
                   ) : (
                     <tr>
                       <td colSpan="6" style={{ textAlign: "center", padding: "2rem" }}>
-                        Chưa có dự án nào phù hợp với tìm kiếm.
+                        Chưa có công trình nào phù hợp với tìm kiếm.
                       </td>
                     </tr>
                   )}
@@ -2048,8 +2555,8 @@ export default function Admin() {
                 <div className="table-header-controls">
                   <div className="admin-search-box">
                     <Search size={16} />
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       placeholder="Tìm tiêu đề bài viết..."
                       value={newsSearch}
                       onChange={(e) => setNewsSearch(e.target.value)}
@@ -2092,14 +2599,14 @@ export default function Admin() {
                         <td><span className="admin-badge-category">{n.author || "BOSS"}</span></td>
                         <td style={{ maxWidth: 280, fontSize: "0.85rem", color: "#94a3b8" }}>{n.summary}</td>
                         <td>
-                          <button 
+                          <button
                             className="btn-action-icon edit"
                             onClick={() => handleOpenEditNews(n)}
                             title="Sửa bài viết"
                           >
                             <Edit size={16} />
                           </button>
-                          <button 
+                          <button
                             className="btn-action-icon delete"
                             onClick={() => handleDeleteNews(n._id)}
                             title="Xóa bài viết"
@@ -2129,16 +2636,16 @@ export default function Admin() {
                 <div className="table-header-controls">
                   <div className="admin-search-box">
                     <Search size={16} />
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       placeholder="Tìm tiêu đề, nội dung dịch vụ..."
                       value={serviceSearch}
                       onChange={(e) => setServiceSearch(e.target.value)}
                       className="admin-search-input"
                     />
                   </div>
-                  <button 
-                    className="btn-seed-services" 
+                  <button
+                    className="btn-seed-services"
                     onClick={() => handleSeedDefaultServices(false)}
                     disabled={seedingServices}
                     title="Khôi phục hoặc nạp thêm 8 dịch vụ tiêu chuẩn"
@@ -2182,10 +2689,10 @@ export default function Admin() {
                     filteredServices.map((s, idx) => (
                       <tr key={s._id || s.id || idx}>
                         <td>
-                          <img 
-                            src={formatImgSrc(s.img)} 
-                            alt={s.title} 
-                            style={{ width: 64, height: 44, objectFit: "cover", borderRadius: 6, border: "1px solid rgba(212,175,55,0.3)" }} 
+                          <img
+                            src={formatImgSrc(s.img)}
+                            alt={s.title}
+                            style={{ width: 64, height: 44, objectFit: "cover", borderRadius: 6, border: "1px solid rgba(212,175,55,0.3)" }}
                           />
                         </td>
                         <td style={{ fontWeight: 600 }}>
@@ -2208,14 +2715,14 @@ export default function Admin() {
                           {s.desc}
                         </td>
                         <td>
-                          <button 
+                          <button
                             className="btn-action-icon edit"
                             onClick={() => handleOpenEditService(s)}
                             title="Sửa dịch vụ"
                           >
                             <Edit size={16} />
                           </button>
-                          <button 
+                          <button
                             className="btn-action-icon delete"
                             onClick={() => handleDeleteService(s._id)}
                             title="Xóa dịch vụ"
@@ -2237,8 +2744,8 @@ export default function Admin() {
                             Hệ thống hiện chưa có bản ghi dịch vụ nào. Bạn có thể tự tạo dịch vụ mới hoặc nạp sẵn 8 dịch vụ tiêu chuẩn (cửa cuốn, sửa chữa 24/7, cửa kéo, phụ kiện...).
                           </p>
                           <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-                            <button 
-                              className="btn-add-new" 
+                            <button
+                              className="btn-add-new"
                               onClick={() => handleSeedDefaultServices(false)}
                               disabled={seedingServices}
                               style={{ background: "linear-gradient(135deg, #d4af37 0%, #b8972e 100%)", color: "#000", fontWeight: 700 }}
@@ -2277,8 +2784,8 @@ export default function Admin() {
                 <div className="table-header-controls">
                   <div className="admin-search-box">
                     <Search size={16} />
-                    <input 
-                      type="text" 
+                    <input
+                      type="text"
                       placeholder="Tìm tên khách, email, nhận xét..."
                       value={reviewSearch}
                       onChange={(e) => setReviewSearch(e.target.value)}
@@ -2303,36 +2810,36 @@ export default function Admin() {
 
               {/* BỘ LỌC ĐÁNH GIÁ */}
               <div className="contact-filter-chips">
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className={`chip-btn ${reviewRatingFilter === "all" ? "active" : ""}`}
                   onClick={() => setReviewRatingFilter("all")}
                 >
                   Tất cả ({reviews.length})
                 </button>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className={`chip-btn ${reviewRatingFilter === "5" ? "active" : ""}`}
                   onClick={() => setReviewRatingFilter("5")}
                 >
                   ⭐ 5 Sao ({reviews.filter(r => Number(r.rating) === 5).length})
                 </button>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className={`chip-btn ${reviewRatingFilter === "4" ? "active" : ""}`}
                   onClick={() => setReviewRatingFilter("4")}
                 >
                   ⭐ 4 Sao ({reviews.filter(r => Number(r.rating) === 4).length})
                 </button>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className={`chip-btn ${reviewRatingFilter === "3" ? "active" : ""}`}
                   onClick={() => setReviewRatingFilter("3")}
                 >
                   ⭐ ≤ 3 Sao ({reviews.filter(r => Number(r.rating) <= 3).length})
                 </button>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className={`chip-btn ${reviewRatingFilter === "has_media" ? "active" : ""}`}
                   onClick={() => setReviewRatingFilter("has_media")}
                 >
@@ -2361,7 +2868,7 @@ export default function Admin() {
                         <td>{idx + 1}</td>
                         <td>
                           <div className="admin-review-user-cell">
-                            <div 
+                            <div
                               className="admin-review-avatar"
                               style={{ background: item.color || "#07522f" }}
                             >
@@ -2399,8 +2906,8 @@ export default function Admin() {
                         <td>
                           {item.mediaUrl ? (
                             item.mediaType === "video" ? (
-                              <button 
-                                type="button" 
+                              <button
+                                type="button"
                                 className="admin-media-thumb-btn"
                                 onClick={() => setViewingReview(item)}
                                 title="Bấm để xem video thực tế"
@@ -2408,8 +2915,8 @@ export default function Admin() {
                                 <VideoIcon size={13} /> Video clip
                               </button>
                             ) : (
-                              <div 
-                                className="admin-review-thumb-wrap" 
+                              <div
+                                className="admin-review-thumb-wrap"
                                 onClick={() => setViewingReview(item)}
                                 title="Bấm để xem ảnh phóng to"
                               >
@@ -2429,7 +2936,7 @@ export default function Admin() {
                         <td style={{ textAlign: "center" }}>
                           <div className="admin-actions-cell" style={{ justifyContent: "center" }}>
                             {/* Nút Xem chi tiết */}
-                            <button 
+                            <button
                               type="button"
                               className="btn-action-icon view"
                               onClick={() => setViewingReview(item)}
@@ -2438,7 +2945,7 @@ export default function Admin() {
                               <Eye size={16} />
                             </button>
                             {/* CHỈ CÓ NÚT XÓA - KHÔNG CÓ NÚT SỬA */}
-                            <button 
+                            <button
                               type="button"
                               className="btn-action-icon delete"
                               onClick={() => handleDeleteReview(item._id || item.id)}
@@ -2468,7 +2975,7 @@ export default function Admin() {
                     <div key={item._id || item.id || idx} className="admin-mobile-review-card">
                       <div className="m-review-header">
                         <div className="m-review-user">
-                          <div 
+                          <div
                             className="admin-review-avatar"
                             style={{ background: item.color || "#07522f" }}
                           >
@@ -2510,18 +3017,18 @@ export default function Admin() {
                         <span className="m-review-date">
                           {item.createdAt ? new Date(item.createdAt).toLocaleDateString("vi-VN") : "Mới đây"}
                         </span>
-                        
+
                         <div className="m-review-actions">
-                          <button 
-                            type="button" 
+                          <button
+                            type="button"
                             className="btn-m-action view"
                             onClick={() => setViewingReview(item)}
                           >
                             <Eye size={14} /> Chi tiết
                           </button>
                           {/* CHỈ CÓ NÚT XÓA */}
-                          <button 
-                            type="button" 
+                          <button
+                            type="button"
                             className="btn-m-action delete"
                             onClick={() => handleDeleteReview(item._id || item.id)}
                           >
@@ -2543,14 +3050,14 @@ export default function Admin() {
           {/* 8. QUẢN LÝ BÀI VIẾT CHI TIẾT SẢN PHẨM (WYSIWYG WORD EDITOR) */}
           {activeTab === "article-editor" && (
             <div className="product-editor-subtab-layout">
-              <AdminProductQuickInfoCard 
+              <AdminProductQuickInfoCard
                 currentProductCode={editingArticleCode || (products[0]?.code) || "BEC.5810"}
                 onSelectProductCode={(code) => setEditingArticleCode(code)}
                 dbProducts={products}
                 onSaveProduct={handleSaveProductFromEditor}
                 showToast={showToast}
               />
-              <AdminProductArticleEditor 
+              <AdminProductArticleEditor
                 showToast={showToast}
                 initialProductCode={editingArticleCode || (products[0]?.code) || "BEC.5810"}
                 onBackToProducts={() => {
@@ -2578,11 +3085,11 @@ export default function Admin() {
             <form onSubmit={handleProductSubmit}>
               <div className="admin-form-group">
                 <label>Tên sản phẩm *</label>
-                <input 
-                  type="text" 
-                  value={productForm.title} 
-                  onChange={(e) => setProductForm({ ...productForm, title: e.target.value })} 
-                  required 
+                <input
+                  type="text"
+                  value={productForm.title}
+                  onChange={(e) => setProductForm({ ...productForm, title: e.target.value })}
+                  required
                   placeholder="Ví dụ: CỬA CUỐN KHE THOÁNG CHỐNG BÃO"
                 />
               </div>
@@ -2590,22 +3097,23 @@ export default function Admin() {
               <div className="admin-form-grid-3">
                 <div className="admin-form-group">
                   <label>Mã sản phẩm *</label>
-                  <input 
-                    type="text" 
-                    value={productForm.code} 
-                    onChange={(e) => setProductForm({ ...productForm, code: e.target.value })} 
-                    required 
+                  <input
+                    type="text"
+                    value={productForm.code}
+                    onChange={(e) => setProductForm({ ...productForm, code: e.target.value })}
+                    required
                     placeholder="Mã: BD-999"
                   />
                 </div>
                 <div className="admin-form-group">
                   <label>Danh mục *</label>
-                  <select 
-                    value={productForm.category} 
+                  <select
+                    value={productForm.category}
                     onChange={(e) => {
                       const newCat = e.target.value;
-                      setProductForm({ 
-                        ...productForm, 
+                      setIsCustomSubCategory(false);
+                      setProductForm({
+                        ...productForm,
                         category: newCat,
                         subCategory: SUBCATEGORIES[newCat]?.[0] || ""
                       });
@@ -2619,24 +3127,72 @@ export default function Admin() {
                   </select>
                 </div>
                 <div className="admin-form-group">
-                  <label>Loại sản phẩm *</label>
-                  <select 
-                    value={productForm.subCategory} 
-                    onChange={(e) => setProductForm({ ...productForm, subCategory: e.target.value })}
-                  >
-                    {SUBCATEGORIES[productForm.category]?.map(sub => (
-                      <option key={sub} value={sub}>{sub}</option>
-                    ))}
-                  </select>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+                    <label style={{ margin: 0 }}>Loại sản phẩm *</label>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const nextState = !isCustomSubCategory;
+                        setIsCustomSubCategory(nextState);
+                        if (!nextState && !availableSubCategories.includes(productForm.subCategory)) {
+                          setProductForm({ ...productForm, subCategory: availableSubCategories[0] || "" });
+                        }
+                      }}
+                      style={{
+                        background: "none",
+                        border: "none",
+                        color: "#10b981",
+                        fontSize: "0.78rem",
+                        fontWeight: "600",
+                        cursor: "pointer",
+                        textDecoration: "underline",
+                        padding: 0
+                      }}
+                    >
+                      {isCustomSubCategory ? "← Chọn từ có sẵn" : "+ Điền tên khác"}
+                    </button>
+                  </div>
+
+                  {!isCustomSubCategory ? (
+                    <select
+                      value={availableSubCategories.includes(productForm.subCategory) ? productForm.subCategory : "__custom__"}
+                      onChange={(e) => {
+                        if (e.target.value === "__custom__") {
+                          setIsCustomSubCategory(true);
+                        } else {
+                          setProductForm({ ...productForm, subCategory: e.target.value });
+                        }
+                      }}
+                    >
+                      {availableSubCategories.map(sub => (
+                        <option key={sub} value={sub}>{sub}</option>
+                      ))}
+                      <option value="__custom__">+ Điền tên loại khác (Tự nhập)...</option>
+                    </select>
+                  ) : (
+                    <input
+                      type="text"
+                      value={productForm.subCategory}
+                      onChange={(e) => setProductForm({ ...productForm, subCategory: e.target.value })}
+                      placeholder="Nhập tên loại sản phẩm mới..."
+                      autoFocus
+                      required
+                    />
+                  )}
+                  {isCustomSubCategory && (
+                    <span style={{ fontSize: "0.72rem", color: "#10b981", marginTop: "4px", display: "block" }}>
+                      ✓ Sẽ tự động lưu và xuất hiện trên Navbar
+                    </span>
+                  )}
                 </div>
               </div>
 
               <div className="admin-form-group">
                 <label>Giá tham khảo</label>
-                <input 
-                  type="text" 
-                  value={productForm.price} 
-                  onChange={(e) => setProductForm({ ...productForm, price: e.target.value })} 
+                <input
+                  type="text"
+                  value={productForm.price}
+                  onChange={(e) => setProductForm({ ...productForm, price: e.target.value })}
                   placeholder="1.500.000đ/m2"
                 />
               </div>
@@ -2647,23 +3203,23 @@ export default function Admin() {
                   <span style={{ fontSize: "0.76rem", color: "#38bdf8" }}>Dán link hoặc chọn từ máy</span>
                 </div>
                 <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
-                  <input 
-                    type="text" 
-                    value={productForm.image} 
-                    onChange={(e) => setProductForm({ ...productForm, image: e.target.value })} 
-                    required 
+                  <input
+                    type="text"
+                    value={productForm.image}
+                    onChange={(e) => setProductForm({ ...productForm, image: e.target.value })}
+                    required
                     placeholder="Nhập đường dẫn ảnh hoặc bấm nút bên cạnh..."
                     style={{ flex: 1 }}
                   />
-                  <label style={{ 
-                    display: "inline-flex", 
-                    alignItems: "center", 
-                    gap: "6px", 
-                    background: "linear-gradient(135deg, rgba(0, 77, 50, 0.95) 0%, rgba(5, 150, 105, 0.95) 100%)", 
-                    color: "white", 
-                    padding: "10px 16px", 
-                    borderRadius: "8px", 
-                    cursor: "pointer", 
+                  <label style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    background: "linear-gradient(135deg, rgba(0, 77, 50, 0.95) 0%, rgba(5, 150, 105, 0.95) 100%)",
+                    color: "white",
+                    padding: "10px 16px",
+                    borderRadius: "8px",
+                    cursor: "pointer",
                     fontSize: "0.85rem",
                     fontWeight: "600",
                     whiteSpace: "nowrap",
@@ -2671,32 +3227,32 @@ export default function Admin() {
                   }}>
                     <Upload size={15} />
                     {isUploadingProductImg ? "Đang tải..." : "Chọn ảnh từ máy"}
-                    <input 
-                      type="file" 
-                      accept="image/*" 
-                      onChange={handleUploadProductImage} 
-                      disabled={isUploadingProductImg} 
-                      style={{ display: "none" }} 
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleUploadProductImage}
+                      disabled={isUploadingProductImg}
+                      style={{ display: "none" }}
                     />
                   </label>
                 </div>
 
                 {/* Preview Thumbnail */}
                 {productForm.image && (
-                  <div style={{ 
-                    marginTop: "8px", 
-                    display: "flex", 
-                    alignItems: "center", 
+                  <div style={{
+                    marginTop: "8px",
+                    display: "flex",
+                    alignItems: "center",
                     gap: "12px",
                     background: "rgba(0,0,0,0.3)",
                     padding: "8px 12px",
                     borderRadius: "8px",
                     border: "1px dashed rgba(16, 185, 129, 0.35)"
                   }}>
-                    <img 
-                      src={formatImgSrc(productForm.image)} 
-                      alt="Preview" 
-                      style={{ width: "60px", height: "50px", objectFit: "cover", borderRadius: "4px" }} 
+                    <img
+                      src={formatImgSrc(productForm.image)}
+                      alt="Preview"
+                      style={{ width: "60px", height: "50px", objectFit: "cover", borderRadius: "4px" }}
                       onError={(e) => { e.target.style.display = 'none'; }}
                     />
                     <span style={{ fontSize: "0.8rem", color: "#94a3b8", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>
@@ -2715,10 +3271,10 @@ export default function Admin() {
 
               <div className="admin-form-group">
                 <label>Thông số kỹ thuật (phân cách bằng dấu phẩy)</label>
-                <input 
-                  type="text" 
-                  value={productForm.specs} 
-                  onChange={(e) => setProductForm({ ...productForm, specs: e.target.value })} 
+                <input
+                  type="text"
+                  value={productForm.specs}
+                  onChange={(e) => setProductForm({ ...productForm, specs: e.target.value })}
                   placeholder="Nhôm 6063-T5, Sơn tĩnh điện CHLB Đức, Bảo hành 5 năm"
                 />
               </div>
@@ -2754,81 +3310,6 @@ export default function Admin() {
         </div>
       )}
 
-      {/* MODAL THÊM / SỬA DỰ ÁN */}
-      {showProjectModal && (
-        <div className="admin-modal-overlay">
-          <div className="admin-modal-card">
-            <div className="modal-header">
-              <h3>{editingProject ? "✏️ Chỉnh Sửa Dự Án Tiêu Biểu" : "➕ Thêm Dự Án Tiêu Biểu Mới"}</h3>
-              <button style={{ background: "none", border: "none", color: "white", cursor: "pointer" }} onClick={() => setShowProjectModal(false)}>
-                <X size={20} />
-              </button>
-            </div>
-            <form onSubmit={handleProjectSubmit}>
-              <div className="admin-form-group">
-                <label>Tên dự án *</label>
-                <input 
-                  type="text" 
-                  value={projectForm.title} 
-                  onChange={(e) => setProjectForm({ ...projectForm, title: e.target.value })} 
-                  required 
-                  placeholder="Ví dụ: Cổng Tự Động Villa Ocean Villas"
-                />
-              </div>
-
-              <div className="admin-form-grid-2">
-                <div className="admin-form-group">
-                  <label>Hạng mục / Loại dự án</label>
-                  <input 
-                    type="text" 
-                    value={projectForm.category} 
-                    onChange={(e) => setProjectForm({ ...projectForm, category: e.target.value })} 
-                    placeholder="Cửa Trượt Tự Động / Cổng Âm Sàn..."
-                  />
-                </div>
-
-                <div className="admin-form-group">
-                  <label>Địa điểm công trình</label>
-                  <input 
-                    type="text" 
-                    value={projectForm.location} 
-                    onChange={(e) => setProjectForm({ ...projectForm, location: e.target.value })} 
-                    placeholder="Đà Nẵng / Quảng Nam..."
-                  />
-                </div>
-              </div>
-
-              <div className="admin-form-group">
-                <label>URL Hình ảnh dự án *</label>
-                <input 
-                  type="text" 
-                  value={projectForm.image} 
-                  onChange={(e) => setProjectForm({ ...projectForm, image: e.target.value })} 
-                  required
-                />
-              </div>
-
-              <div className="admin-form-group">
-                <label>Mô tả dự án</label>
-                <textarea 
-                  rows="3" 
-                  value={projectForm.description} 
-                  onChange={(e) => setProjectForm({ ...projectForm, description: e.target.value })}
-                  placeholder="Nội dung thi công..."
-                ></textarea>
-              </div>
-
-              <div className="modal-footer">
-                <button type="button" className="btn-cancel" onClick={() => setShowProjectModal(false)}>Hủy</button>
-                <button type="submit" className="btn-save">
-                  {editingProject ? "Cập Nhật Dự Án" : "Lưu Dự Án"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
       {/* MODAL THÊM / SỬA TIN TỨC */}
       {showNewsModal && (
         <div className="admin-modal-overlay">
@@ -2842,9 +3323,9 @@ export default function Admin() {
             <form onSubmit={handleNewsSubmit}>
               <div className="admin-form-group">
                 <label>Tiêu đề bài viết *</label>
-                <input 
-                  type="text" 
-                  value={newsForm.title} 
+                <input
+                  type="text"
+                  value={newsForm.title}
                   onChange={(e) => {
                     const newTitle = e.target.value;
                     setNewsForm((prev) => ({
@@ -2852,18 +3333,18 @@ export default function Admin() {
                       title: newTitle,
                       slug: !editingNews ? slugify(newTitle) : prev.slug
                     }));
-                  }} 
-                  required 
+                  }}
+                  required
                   placeholder="Ví dụ: Xu Hướng Lắp Đặt Cửa Cuốn Cao Cấp 2026"
                 />
               </div>
 
               <div className="admin-form-group">
                 <label>Đường dẫn tĩnh SEO (Slug không dấu)</label>
-                <input 
-                  type="text" 
-                  value={newsForm.slug} 
-                  onChange={(e) => setNewsForm({ ...newsForm, slug: e.target.value })} 
+                <input
+                  type="text"
+                  value={newsForm.slug}
+                  onChange={(e) => setNewsForm({ ...newsForm, slug: e.target.value })}
                   placeholder="ví dụ: cua-khe-thoang-giai-phap-lay-sang"
                 />
               </div>
@@ -2871,37 +3352,37 @@ export default function Admin() {
               <div className="admin-form-grid-2">
                 <div className="admin-form-group">
                   <label>Ngày đăng</label>
-                  <input 
-                    type="text" 
-                    value={newsForm.date} 
-                    onChange={(e) => setNewsForm({ ...newsForm, date: e.target.value })} 
+                  <input
+                    type="text"
+                    value={newsForm.date}
+                    onChange={(e) => setNewsForm({ ...newsForm, date: e.target.value })}
                   />
                 </div>
                 <div className="admin-form-group">
                   <label>Tác giả</label>
-                  <input 
-                    type="text" 
-                    value={newsForm.author} 
-                    onChange={(e) => setNewsForm({ ...newsForm, author: e.target.value })} 
+                  <input
+                    type="text"
+                    value={newsForm.author}
+                    onChange={(e) => setNewsForm({ ...newsForm, author: e.target.value })}
                   />
                 </div>
               </div>
 
               <div className="admin-form-group">
                 <label>URL Hình ảnh đại diện *</label>
-                <input 
-                  type="text" 
-                  value={newsForm.image} 
-                  onChange={(e) => setNewsForm({ ...newsForm, image: e.target.value })} 
+                <input
+                  type="text"
+                  value={newsForm.image}
+                  onChange={(e) => setNewsForm({ ...newsForm, image: e.target.value })}
                   required
                 />
               </div>
 
               <div className="admin-form-group">
                 <label>Tóm tắt ngắn</label>
-                <textarea 
-                  rows="2" 
-                  value={newsForm.summary} 
+                <textarea
+                  rows="2"
+                  value={newsForm.summary}
                   onChange={(e) => setNewsForm({ ...newsForm, summary: e.target.value })}
                   placeholder="Tóm tắt ngắn gọn bài viết..."
                 ></textarea>
@@ -2909,9 +3390,9 @@ export default function Admin() {
 
               <div className="admin-form-group">
                 <label>Nội dung chi tiết</label>
-                <textarea 
-                  rows="4" 
-                  value={newsForm.content} 
+                <textarea
+                  rows="4"
+                  value={newsForm.content}
                   onChange={(e) => setNewsForm({ ...newsForm, content: e.target.value })}
                   placeholder="Nội dung bài viết..."
                 ></textarea>
@@ -2934,9 +3415,9 @@ export default function Admin() {
           <div className="admin-modal-card">
             <div className="modal-header">
               <h3>{editingService ? "✏️ Chỉnh Sửa Dịch Vụ BOSS" : "➕ Thêm Dịch Vụ Mới Vào Hệ Thống"}</h3>
-              <button 
+              <button
                 type="button"
-                style={{ background: "none", border: "none", color: "white", cursor: "pointer" }} 
+                style={{ background: "none", border: "none", color: "white", cursor: "pointer" }}
                 onClick={() => setShowServiceModal(false)}
               >
                 <X size={20} />
@@ -2945,11 +3426,11 @@ export default function Admin() {
             <form onSubmit={handleServiceSubmit}>
               <div className="admin-form-group">
                 <label>Tiêu đề dịch vụ *</label>
-                <input 
-                  type="text" 
-                  value={serviceForm.title} 
-                  onChange={(e) => setServiceForm({ ...serviceForm, title: e.target.value })} 
-                  required 
+                <input
+                  type="text"
+                  value={serviceForm.title}
+                  onChange={(e) => setServiceForm({ ...serviceForm, title: e.target.value })}
+                  required
                   placeholder="Ví dụ: SỬA CHỮA CỬA CUỐN 24/24 TẠI ĐÀ NẴNG"
                 />
               </div>
@@ -2957,28 +3438,28 @@ export default function Admin() {
               <div className="admin-form-grid-3">
                 <div className="admin-form-group">
                   <label>Ngày đăng</label>
-                  <input 
-                    type="text" 
-                    value={serviceForm.date} 
-                    onChange={(e) => setServiceForm({ ...serviceForm, date: e.target.value })} 
+                  <input
+                    type="text"
+                    value={serviceForm.date}
+                    onChange={(e) => setServiceForm({ ...serviceForm, date: e.target.value })}
                     placeholder="DD/MM/YYYY"
                   />
                 </div>
                 <div className="admin-form-group">
                   <label>Thứ tự hiển thị</label>
-                  <input 
-                    type="number" 
-                    value={serviceForm.order} 
-                    onChange={(e) => setServiceForm({ ...serviceForm, order: Number(e.target.value) })} 
+                  <input
+                    type="number"
+                    value={serviceForm.order}
+                    onChange={(e) => setServiceForm({ ...serviceForm, order: Number(e.target.value) })}
                     placeholder="1, 2, 3..."
                   />
                 </div>
                 <div className="admin-form-group">
                   <label>Hotline hỗ trợ</label>
-                  <input 
-                    type="text" 
-                    value={serviceForm.phone} 
-                    onChange={(e) => setServiceForm({ ...serviceForm, phone: e.target.value })} 
+                  <input
+                    type="text"
+                    value={serviceForm.phone}
+                    onChange={(e) => setServiceForm({ ...serviceForm, phone: e.target.value })}
                     placeholder="0904.678.323"
                   />
                 </div>
@@ -2987,56 +3468,56 @@ export default function Admin() {
               <div className="admin-form-group">
                 <label>Hình ảnh đại diện dịch vụ *</label>
                 <div className="service-img-input-row" style={{ display: "flex", gap: "10px", alignItems: "center", marginBottom: "8px" }}>
-                  <input 
-                    type="text" 
-                    value={serviceForm.img} 
-                    onChange={(e) => setServiceForm({ ...serviceForm, img: e.target.value })} 
+                  <input
+                    type="text"
+                    value={serviceForm.img}
+                    onChange={(e) => setServiceForm({ ...serviceForm, img: e.target.value })}
                     required
                     placeholder="Đường dẫn ảnh: /service_repair_247.png hoặc URL"
                     style={{ flex: 1 }}
                   />
-                  <label className="btn-upload-file-label" style={{ 
-                    display: "inline-flex", 
-                    alignItems: "center", 
-                    gap: "6px", 
-                    background: "rgba(212, 175, 55, 0.2)", 
-                    color: "#f5d77f", 
-                    border: "1px solid rgba(212, 175, 55, 0.4)", 
-                    padding: "9px 14px", 
-                    borderRadius: "6px", 
-                    cursor: "pointer", 
+                  <label className="btn-upload-file-label" style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    background: "rgba(212, 175, 55, 0.2)",
+                    color: "#f5d77f",
+                    border: "1px solid rgba(212, 175, 55, 0.4)",
+                    padding: "9px 14px",
+                    borderRadius: "6px",
+                    cursor: "pointer",
                     fontSize: "0.85rem",
                     fontWeight: "600",
                     whiteSpace: "nowrap"
                   }}>
                     <Upload size={15} />
                     {isUploadingServiceImg ? "Đang tải..." : "Tải ảnh từ máy"}
-                    <input 
-                      type="file" 
-                      accept="image/*" 
-                      onChange={handleUploadServiceImage} 
-                      disabled={isUploadingServiceImg} 
-                      style={{ display: "none" }} 
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleUploadServiceImage}
+                      disabled={isUploadingServiceImg}
+                      style={{ display: "none" }}
                     />
                   </label>
                 </div>
 
                 {/* Preview Thumbnail */}
                 {serviceForm.img && (
-                  <div className="service-img-preview-box" style={{ 
-                    marginTop: "6px", 
-                    display: "flex", 
-                    alignItems: "center", 
+                  <div className="service-img-preview-box" style={{
+                    marginTop: "6px",
+                    display: "flex",
+                    alignItems: "center",
                     gap: "12px",
                     background: "rgba(0,0,0,0.3)",
                     padding: "8px 12px",
                     borderRadius: "6px",
                     border: "1px dashed rgba(212,175,55,0.3)"
                   }}>
-                    <img 
-                      src={formatImgSrc(serviceForm.img)} 
-                      alt="Preview" 
-                      style={{ width: "70px", height: "50px", objectFit: "cover", borderRadius: "4px" }} 
+                    <img
+                      src={formatImgSrc(serviceForm.img)}
+                      alt="Preview"
+                      style={{ width: "70px", height: "50px", objectFit: "cover", borderRadius: "4px" }}
                       onError={(e) => { e.target.style.display = 'none'; }}
                     />
                     <span style={{ fontSize: "0.8rem", color: "#94a3b8" }}>
@@ -3048,9 +3529,9 @@ export default function Admin() {
 
               <div className="admin-form-group">
                 <label>Mô tả tóm tắt (hiển thị trên thẻ dịch vụ)</label>
-                <textarea 
-                  rows="2" 
-                  value={serviceForm.desc} 
+                <textarea
+                  rows="2"
+                  value={serviceForm.desc}
                   onChange={(e) => setServiceForm({ ...serviceForm, desc: e.target.value })}
                   placeholder="Mô tả ngắn gọn về dịch vụ này..."
                 ></textarea>
@@ -3058,9 +3539,9 @@ export default function Admin() {
 
               <div className="admin-form-group">
                 <label>Nội dung chi tiết dịch vụ (khi bấm 'Xem chi tiết')</label>
-                <textarea 
-                  rows="6" 
-                  value={serviceForm.content} 
+                <textarea
+                  rows="6"
+                  value={serviceForm.content}
                   onChange={(e) => setServiceForm({ ...serviceForm, content: e.target.value })}
                   placeholder="Nội dung chi tiết từng gạch đầu dòng, quy trình, cam kết bảo hành..."
                 ></textarea>
@@ -3085,7 +3566,7 @@ export default function Admin() {
               <h3>
                 <Star size={18} fill="#f5bd20" color="#f5bd20" /> Chi Tiết Đánh Giá Khách Hàng
               </h3>
-              <button 
+              <button
                 type="button"
                 style={{ background: "none", border: "none", color: "white", cursor: "pointer" }}
                 onClick={() => setViewingReview(null)}
@@ -3097,7 +3578,7 @@ export default function Admin() {
             <div className="review-modal-body-readonly">
               {/* Reviewer Header */}
               <div className="readonly-reviewer-box">
-                <div 
+                <div
                   className="readonly-avatar"
                   style={{ background: viewingReview.color || "#07522f" }}
                 >
@@ -3151,16 +3632,16 @@ export default function Admin() {
             </div>
 
             <div className="modal-footer" style={{ justifyContent: "space-between" }}>
-              <button 
-                type="button" 
+              <button
+                type="button"
                 className="btn-cancel-modal"
                 onClick={() => setViewingReview(null)}
               >
                 Đóng
               </button>
-              
-              <button 
-                type="button" 
+
+              <button
+                type="button"
                 className="btn-delete-review-modal"
                 onClick={() => {
                   handleDeleteReview(viewingReview._id || viewingReview.id);

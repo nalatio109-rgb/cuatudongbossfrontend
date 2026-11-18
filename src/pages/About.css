@@ -43,7 +43,7 @@
   position: relative;
   overflow: hidden;
   color: #ffffff;
-  padding: 4.5rem 0 3.75rem;
+  padding: 2.25rem 0 2rem;
   border-radius: 0 0 24px 24px;
 }
 
@@ -108,7 +108,7 @@
   position: absolute;
   top: 0;
   right: 0;
-  width: 55%;
+  width: 58%;
   height: 100%;
   z-index: 1;
   overflow: hidden;
@@ -119,9 +119,10 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center 28%;
   opacity: 1;
-  mask-image: linear-gradient(to right, transparent 0%, black 25%);
-  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 25%);
+  mask-image: linear-gradient(to right, transparent 0%, black 20%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 20%);
   animation: heroBgPan 22s ease-in-out infinite alternate;
   transform-origin: center right;
   will-change: transform;
@@ -151,17 +152,17 @@
 }
 
 .exact-hero-subtitle {
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   font-weight: 700;
-  letter-spacing: 2px;
+  letter-spacing: 1.8px;
   color: #a7f3d0;
   text-transform: uppercase;
-  margin-bottom: 0.85rem;
+  margin-bottom: 0.55rem;
   display: inline-flex;
   align-items: center;
-  gap: 9px;
+  gap: 8px;
   background: rgba(255, 255, 255, 0.08);
-  padding: 6px 14px;
+  padding: 4px 12px;
   border-radius: 20px;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -200,10 +201,10 @@
 }
 
 .exact-hero-title {
-  font-size: clamp(2rem, 3.5vw, 3.1rem);
+  font-size: clamp(1.65rem, 2.6vw, 2.35rem);
   font-weight: 800;
-  line-height: 1.25;
-  margin-bottom: 1.25rem;
+  line-height: 1.22;
+  margin-bottom: 0.75rem;
   color: #ffffff;
 }
 
@@ -228,10 +229,10 @@
 }
 
 .exact-hero-desc {
-  font-size: 1.05rem;
-  line-height: 1.7;
+  font-size: 0.95rem;
+  line-height: 1.55;
   color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 1.75rem;
+  margin-bottom: 1.15rem;
 }
 
 /* Yellow Button with Light Sweep Shimmer */
@@ -239,12 +240,12 @@
   background-color: #f5bd20;
   color: #04361e;
   font-weight: 800;
-  font-size: 0.98rem;
-  padding: 13px 30px;
+  font-size: 0.9rem;
+  padding: 10px 24px;
   border-radius: 30px;
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   text-decoration: none;
   box-shadow: 0 4px 18px rgba(245, 189, 32, 0.35);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);

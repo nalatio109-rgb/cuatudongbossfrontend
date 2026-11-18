@@ -82,7 +82,7 @@ export default function ProductDetail() {
         setProduct(match);
       }
     }
-  }, [id, location.key, location.state]);
+  }, [id, location.key, location.state, allProducts]);
 
   // Load product from API if not passed via location state
   useEffect(() => {
@@ -106,6 +106,15 @@ export default function ProductDetail() {
           .then((data) => {
             if (data.success && data.data) {
               setAllProducts(data.data);
+              if (!product && id) {
+                const match = data.data.find(
+                  (p) =>
+                    String(p.id) === String(id) ||
+                    p.code?.toLowerCase() === id.toLowerCase() ||
+                    getProductSlug(p) === id
+                );
+                if (match) setProduct(match);
+              }
             }
           })
           .catch((err) => console.log("All products fetch error:", err));
@@ -231,7 +240,7 @@ export default function ProductDetail() {
         code: "BEC.5810",
         category: "cuacuon",
         title: "Cửa cuốn Bossdoor ECO BEC.5810",
-        image: "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=600&q=80",
+        image: "/about_door_1.png",
         price: "1.500.000đ/m²"
       },
       {
@@ -446,7 +455,16 @@ export default function ProductDetail() {
 
   // Fallback article content generator if not yet created in admin
   const defaultArticleContent = useMemo(() => {
-    if (productArticle?.content) return productArticle.content;
+    let content = productArticle?.content;
+    if (content) {
+      if (extendedDetails?.image) {
+        content = content.replace(
+          /https:\/\/images\.unsplash\.com\/photo-1558008258-3256797b43f3[^\s"']*/g,
+          extendedDetails.image
+        );
+      }
+      return content;
+    }
 
     return `
 <h2>1. Giới thiệu tổng quan về ${extendedDetails.title}</h2>
@@ -637,13 +655,6 @@ export default function ProductDetail() {
                 </tbody>
               </table>
             </div>
-
-            {/* MÔ TẢ NGẮN */}
-            {extendedDetails.description && (
-              <p className="product-short-description">
-                {extendedDetails.description}
-              </p>
-            )}
 
             {/* CAM KẾT CHÍNH HÃNG 4 ĐIỂM */}
             <div className="quick-guarantee-grid">

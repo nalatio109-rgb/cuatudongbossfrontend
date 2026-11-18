@@ -2618,3 +2618,102 @@ body.admin-mode {
   }
 }
 
+/* ==========================================================================
+   INLINE FORM CHO CÔNG TRÌNH TIÊU BIỂU (TRỰC TIẾP TRÊN TRANG, KHÔNG POPUP)
+   ========================================================================== */
+.admin-inline-form-card {
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.45);
+  border-radius: 16px;
+  padding: 1.5rem 1.75rem;
+  margin: 0.5rem 0 1.75rem 0;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 25px rgba(16, 185, 129, 0.12);
+  animation: inlineFormSlideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes inlineFormSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.inline-form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.inline-form-title h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 4px 0;
+}
+
+.inline-form-title .highlight-text {
+  color: #38bdf8;
+}
+
+.inline-form-desc {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.btn-close-inline-form {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #e2e8f0;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-close-inline-form:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #f87171;
+}
+
+.inline-form-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+@media (max-width: 768px) {
+  .admin-inline-form-card {
+    padding: 1.1rem;
+    border-radius: 12px;
+  }
+  .inline-form-footer {
+    flex-direction: column-reverse;
+    gap: 8px;
+  }
+  .inline-form-footer button {
+    width: 100%;
+    padding: 12px;
+  }
+}
+
+

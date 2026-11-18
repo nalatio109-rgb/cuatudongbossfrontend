@@ -311,7 +311,7 @@ export const DEFAULT_PRODUCT_ARTICLES = [
     category: "cuacuon",
     status: "published",
     uploadedImages: [
-      "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=1000&q=80",
+      "/about_door_1.png",
       "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1000&q=80"
     ],
     seo: {
@@ -333,7 +333,7 @@ export const DEFAULT_PRODUCT_ARTICLES = [
 </div>
 
 <figure class="editor-image-figure align-center" style="max-width: 85%;">
-  <img src="https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=1000&q=80" alt="Cửa cuốn Bossdoor ECO BEC.5810 lắp đặt mặt tiền nhà phố" />
+  <img src="/about_door_1.png" alt="Cửa cuốn Bossdoor ECO BEC.5810 lắp đặt mặt tiền nhà phố" />
   <figcaption>Hình 1: Cửa cuốn Bossdoor ECO BEC.5810 thanh thoát và sang trọng</figcaption>
 </figure>
 
@@ -479,7 +479,7 @@ export const DEFAULT_PRODUCT_ARTICLES = [
     category: "cuacuon",
     status: "published",
     uploadedImages: [
-      "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=1000&q=80",
+      "/about_door_1.png",
       "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80"
     ],
     seo: {
@@ -502,7 +502,7 @@ export const DEFAULT_PRODUCT_ARTICLES = [
 </div>
 
 <figure class="editor-image-figure align-center" style="max-width: 85%;">
-  <img src="https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=1000&q=80" alt="Cửa cuốn khe thoáng Đức BossDoor BD-900 lắp đặt hoàn thiện tại Đà Nẵng" />
+  <img src="/about_door_1.png" alt="Cửa cuốn khe thoáng Đức BossDoor BD-900 lắp đặt hoàn thiện tại Đà Nẵng" />
   <figcaption>Hình 1: Cửa cuốn khe thoáng Đức BossDoor BD-900 thi công thực tế tại công trình Đà Nẵng</figcaption>
 </figure>
 

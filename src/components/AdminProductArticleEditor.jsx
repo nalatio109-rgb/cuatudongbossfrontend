@@ -172,10 +172,71 @@ export default function AdminProductArticleEditor({
   // Secondary keyword input state
   const [newKeywordInput, setNewKeywordInput] = useState("");
 
+  // Helper to sanitize article content and replace obsolete auditorium photo with real product image
+  const sanitizeArticle = (art, targetCode = null) => {
+    if (!art) return { sanitized: art, hasChanged: false };
+    const code = (targetCode || art.productCode || "").toUpperCase();
+    const prod = (dbProducts || []).find((p) => p.code?.toUpperCase() === code);
+    const realImg =
+      (Array.isArray(prod?.images) && prod.images[0]) ||
+      prod?.image ||
+      (code === "BEC.5810" || code === "BD-900" ? "/about_door_1.png" : "/about_door_1.png");
+
+    let content = art.content || "";
+    let hasChanged = false;
+
+    if (realImg && content.includes("photo-1558008258-3256797b43f3")) {
+      content = content.replace(
+        /https:\/\/images\.unsplash\.com\/photo-1558008258-3256797b43f3[^\s"']*/g,
+        realImg
+      );
+      hasChanged = true;
+    }
+
+    let uploadedImages = Array.isArray(art.uploadedImages) ? [...art.uploadedImages] : [];
+    if (uploadedImages.some((img) => img && img.includes("photo-1558008258-3256797b43f3"))) {
+      uploadedImages = uploadedImages
+        .map((img) => (img && img.includes("photo-1558008258-3256797b43f3") ? realImg : img))
+        .filter(Boolean);
+      uploadedImages = Array.from(new Set(uploadedImages));
+      hasChanged = true;
+    }
+
+    return {
+      sanitized: {
+        ...art,
+        content,
+        uploadedImages
+      },
+      hasChanged
+    };
+  };
+
   // Load articles from Backend or LocalStorage on mount
   useEffect(() => {
     loadArticles();
   }, []);
+
+  // When dbProducts updates, ensure articles and activeArticle are sanitized with real images
+  useEffect(() => {
+    if (dbProducts && dbProducts.length > 0) {
+      setArticlesList((prevList) => {
+        if (!Array.isArray(prevList)) return prevList;
+        return prevList.map((art) => sanitizeArticle(art, art.productCode).sanitized);
+      });
+      setActiveArticle((prev) => {
+        if (!prev) return prev;
+        const { sanitized, hasChanged } = sanitizeArticle(prev, prev.productCode);
+        if (hasChanged) {
+          if (editorRef.current && !isCodeView) {
+            editorRef.current.innerHTML = sanitized.content;
+          }
+          setRawHtmlContent(sanitized.content);
+        }
+        return sanitized;
+      });
+    }
+  }, [dbProducts]);
 
   const loadArticles = async () => {
     setLoading(true);
@@ -212,13 +273,43 @@ export default function AdminProductArticleEditor({
       localStorage.setItem("boss_admin_product_articles", JSON.stringify(DEFAULT_PRODUCT_ARTICLES));
     }
 
+    // Sanitize all loaded articles
+    const needsBackendSync = [];
+    if (Array.isArray(loaded)) {
+      loaded = loaded.map((art) => {
+        const { sanitized, hasChanged } = sanitizeArticle(art, art.productCode);
+        if (hasChanged) {
+          needsBackendSync.push(sanitized);
+        }
+        return sanitized;
+      });
+
+      try {
+        localStorage.setItem("boss_admin_product_articles", JSON.stringify(loaded));
+      } catch (e) {
+        console.error(e);
+      }
+
+      // Proactively sync sanitized articles back to MongoDB so remote DB is cleaned permanently
+      if (needsBackendSync.length > 0 && import.meta.env.VITE_API_URL) {
+        needsBackendSync.forEach((artToSync) => {
+          fetch(`${import.meta.env.VITE_API_URL}/api/product-articles`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(artToSync)
+          }).catch((err) => console.log("Auto sync sanitized article error:", err));
+        });
+      }
+    }
+
     setArticlesList(loaded);
 
     // Set initial active article
     const found = loaded.find((a) => a.productCode.toUpperCase() === selectedProductCode.toUpperCase()) || loaded[0];
     if (found) {
-      setActiveArticle(JSON.parse(JSON.stringify(found)));
-      setRawHtmlContent(found.content || "");
+      const { sanitized } = sanitizeArticle(found, found.productCode);
+      setActiveArticle(JSON.parse(JSON.stringify(sanitized)));
+      setRawHtmlContent(sanitized.content || "");
     }
 
     setLoading(false);
@@ -248,8 +339,9 @@ export default function AdminProductArticleEditor({
     const existing = articlesList.find((a) => a.productCode.toUpperCase() === code.toUpperCase());
 
     if (existing) {
-      setActiveArticle(JSON.parse(JSON.stringify(existing)));
-      setRawHtmlContent(existing.content || "");
+      const { sanitized } = sanitizeArticle(existing, code);
+      setActiveArticle(JSON.parse(JSON.stringify(sanitized)));
+      setRawHtmlContent(sanitized.content || "");
     } else {
       // Create new draft template for this product
       const productInfo = availableProductOptions.find((p) => p.code === code) || {
@@ -603,10 +695,17 @@ export default function AdminProductArticleEditor({
       finalContent = editorRef.current.innerHTML;
     }
 
+    const { sanitized: cleanArticle } = sanitizeArticle(
+      {
+        ...activeArticle,
+        content: finalContent
+      },
+      activeArticle?.productCode
+    );
+
     const payload = {
-      ...activeArticle,
-      status: status,
-      content: finalContent
+      ...cleanArticle,
+      status: status
     };
 
     try {

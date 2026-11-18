@@ -14,9 +14,11 @@ import {
   Sliders,
   ShieldCheck,
   Sparkles,
-  Camera
+  Camera,
+  ArrowUpRight
 } from "lucide-react";
 import RevealOnScroll from "./RevealOnScroll";
+import { getProjectSlug } from "../utils/slug";
 import "./Projects.css";
 
 // Danh sách công trình thực tế có đầy đủ bài viết và chùm ảnh
@@ -283,9 +285,48 @@ export const HOMEPAGE_PROJECTS = [
 export default function Projects() {
   const [selectedProject, setSelectedProject] = useState(null);
   const [activePhotoIdx, setActivePhotoIdx] = useState(0);
+  const [dbProjects, setDbProjects] = useState([]);
 
-  // Duplicate array for continuous infinite marquee loop
-  const marqueeItems = [...HOMEPAGE_PROJECTS, ...HOMEPAGE_PROJECTS];
+  useEffect(() => {
+    const fetchRealProjects = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL || '';
+        const res = await fetch(`${apiUrl}/api/projects`);
+        const data = await res.json();
+        if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+          const mapped = data.data.map((p, idx) => ({
+            id: p._id || `db-${idx}`,
+            title: p.title,
+            category: p.category || "Công trình thực tế",
+            image: p.image,
+            gallery: Array.isArray(p.images) && p.images.length > 0
+              ? p.images
+              : Array.isArray(p.gallery) && p.gallery.length > 0
+                ? p.gallery
+                : [p.image],
+            images: Array.isArray(p.images) && p.images.length > 0
+              ? p.images
+              : Array.isArray(p.gallery) && p.gallery.length > 0
+                ? p.gallery
+                : [p.image],
+            location: p.location || "Đà Nẵng",
+            date: p.completedDate || (p.createdAt ? new Date(p.createdAt).getFullYear().toString() : "2024"),
+            scale: "Thi công lắp đặt hoàn thiện",
+            specs: [],
+            summary: p.description || "Công trình thực tế thi công bởi BOSS Đà Nẵng.",
+            articleContent: [p.description || "Công trình thi công hoàn thiện bởi đội ngũ kỹ thuật BOSS Đà Nẵng."],
+            content: p.content || ""
+          }));
+          setDbProjects(mapped);
+        }
+      } catch (_) {}
+    };
+    fetchRealProjects();
+  }, []);
+
+  // Use real database projects if available, otherwise fallback
+  const displayList = dbProjects.length > 0 ? dbProjects : HOMEPAGE_PROJECTS;
+  const marqueeItems = [...displayList, ...displayList];
 
   const handleOpenProject = (project) => {
     setSelectedProject(project);
@@ -318,7 +359,7 @@ export default function Projects() {
             <div className="section-header-flex">
               <div className="section-title-left">
                 <div className="section-subtitle">
-                  <span>DỰ ÁN TIÊU BIỂU</span>
+                  <span>CÔNG TRÌNH TIÊU BIỂU</span>
                   <div className="subtitle-line"></div>
                 </div>
                 <h2>NHỮNG CÔNG TRÌNH ĐÃ THỰC HIỆN</h2>
@@ -488,7 +529,18 @@ export default function Projects() {
                   )}
 
                   {/* BÀI VIẾT CHI TIẾT THI CÔNG */}
-                  {selectedProject.articleContent && (
+                  {selectedProject.content ? (
+                    <div className="home-project-article-section">
+                      <div className="home-project-section-heading">
+                        <ShieldCheck size={18} />
+                        <span>Bài Viết Chi Tiết Quá Trình Thi Công & Nghiệm Thu</span>
+                      </div>
+                      <div 
+                        className="project-article-rendered-content"
+                        dangerouslySetInnerHTML={{ __html: selectedProject.content }}
+                      />
+                    </div>
+                  ) : selectedProject.articleContent ? (
                     <div className="home-project-article-section">
                       <div className="home-project-section-heading">
                         <ShieldCheck size={18} />
@@ -500,7 +552,7 @@ export default function Projects() {
                         ))}
                       </div>
                     </div>
-                  )}
+                  ) : null}
 
                   {/* ĐÁNH GIÁ CỦA CHỦ ĐẦU TƯ / GIA CHỦ */}
                   {selectedProject.clientReview && (
@@ -546,12 +598,13 @@ export default function Projects() {
                       </a>
 
                       <Link
-                        to="/cong-trinh"
+                        to={`/cong-trinh/${getProjectSlug(selectedProject)}`}
                         onClick={handleCloseProject}
                         className="btn-modal-action-all"
+                        style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}
                       >
-                        <span>Xem trang Công Trình</span>
-                        <ArrowRight size={14} />
+                        <ArrowUpRight size={14} />
+                        <span>Xem trang bài viết riêng</span>
                       </Link>
                     </div>
                   </div>

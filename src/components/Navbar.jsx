@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { 
   Menu, X, ChevronDown, PhoneCall, ArrowRight, ShieldCheck, ChevronRight, 
@@ -95,11 +95,114 @@ export default function Navbar() {
   const [mobileExpandedCatKey, setMobileExpandedCatKey] = useState(null);
   const [mobilePricingExpanded, setMobilePricingExpanded] = useState(false);
   const [mobileServicesExpanded, setMobileServicesExpanded] = useState(false);
+  const [pricingOpen, setPricingOpen] = useState(false);
+  const [servicesOpen, setServicesOpen] = useState(false);
 
   const navRef = useRef(null);
   const hoverTimeoutRef = useRef(null);
+  const pricingTimeoutRef = useRef(null);
+  const servicesTimeoutRef = useRef(null);
+  const [dbProducts, setDbProducts] = useState(() => {
+    try {
+      const cached = localStorage.getItem("boss_cached_products");
+      return cached ? JSON.parse(cached) : [];
+    } catch (e) {
+      return [];
+    }
+  });
+
+  const fetchProductsForNav = async () => {
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL;
+      if (apiUrl) {
+        const res = await fetch(`${apiUrl}/api/products`);
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data)) {
+          setDbProducts(json.data);
+          try {
+            localStorage.setItem("boss_cached_products", JSON.stringify(json.data));
+          } catch (e) {}
+        }
+      }
+    } catch (e) {
+      console.log("Navbar products fetch error:", e);
+    }
+  };
+
+  useEffect(() => {
+    fetchProductsForNav();
+
+    const handleProductsUpdated = (e) => {
+      if (e?.detail && Array.isArray(e.detail)) {
+        setDbProducts(e.detail);
+      } else {
+        fetchProductsForNav();
+      }
+    };
+
+    window.addEventListener("boss_products_updated", handleProductsUpdated);
+    window.addEventListener("storage", handleProductsUpdated);
+    return () => {
+      window.removeEventListener("boss_products_updated", handleProductsUpdated);
+      window.removeEventListener("storage", handleProductsUpdated);
+    };
+  }, []);
+
+  // Tự động kết hợp danh mục chuẩn với bất kỳ loại sản phẩm (subCategory) nào mới được thêm trong Admin
+  const dynamicNavData = useMemo(() => {
+    return FLYOUT_PRODUCT_NAV_DATA.map((cat) => {
+      const items = [...cat.items];
+      const prodsInCat = dbProducts.filter(
+        (p) => p.category && p.category.toLowerCase() === cat.categoryKey.toLowerCase()
+      );
+
+      const existingNames = new Set(
+        items.map((i) => i.name.trim().toLowerCase())
+      );
+
+      prodsInCat.forEach((p) => {
+        const sub = (p.subCategory || "").trim();
+        if (!sub) return;
+
+        const subLower = sub.toLowerCase();
+        if (!existingNames.has(subLower)) {
+          existingNames.add(subLower);
+          items.push({
+            name: sub,
+            tag: p.badge || "MỚI",
+            desc: p.description
+              ? (p.description.length > 55 ? p.description.slice(0, 52) + "..." : p.description)
+              : `Dòng sản phẩm ${sub} chính hãng Boss Đà Nẵng`,
+            query: sub
+          });
+        }
+      });
+
+      const countSuffix =
+        cat.categoryKey === "phukien"
+          ? "linh kiện"
+          : cat.categoryKey === "cuatudong"
+          ? "giải pháp"
+          : "dòng";
+
+      return {
+        ...cat,
+        items,
+        badgeCount: `${items.length} ${countSuffix}`
+      };
+    });
+  }, [dbProducts]);
+
   const lastActiveCatRef = useRef(FLYOUT_PRODUCT_NAV_DATA[0]);
   const location = useLocation();
+
+  useEffect(() => {
+    if (dynamicNavData && dynamicNavData.length > 0) {
+      const currentCatKey = lastActiveCatRef.current?.categoryKey || dynamicNavData[0].categoryKey;
+      const updated = dynamicNavData.find((c) => c.categoryKey === currentCatKey) || dynamicNavData[0];
+      lastActiveCatRef.current = updated;
+    }
+  }, [dynamicNavData]);
 
   const { currentUser, logout, isAdmin } = useAuth();
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -116,6 +219,8 @@ export default function Navbar() {
   // Close mega menu & user menu on route changes
   useEffect(() => {
     setMegaOpen(false);
+    setPricingOpen(false);
+    setServicesOpen(false);
     setMenu(false);
     setUserMenuOpen(false);
     setHoveredCatKey(null);
@@ -179,13 +284,35 @@ export default function Navbar() {
     }, 220);
   };
 
+  const handlePricingEnter = () => {
+    if (pricingTimeoutRef.current) clearTimeout(pricingTimeoutRef.current);
+    setPricingOpen(true);
+  };
+
+  const handlePricingLeave = () => {
+    pricingTimeoutRef.current = setTimeout(() => {
+      setPricingOpen(false);
+    }, 180);
+  };
+
+  const handleServicesEnter = () => {
+    if (servicesTimeoutRef.current) clearTimeout(servicesTimeoutRef.current);
+    setServicesOpen(true);
+  };
+
+  const handleServicesLeave = () => {
+    servicesTimeoutRef.current = setTimeout(() => {
+      setServicesOpen(false);
+    }, 180);
+  };
+
   if (hoveredCatKey) {
-    const found = FLYOUT_PRODUCT_NAV_DATA.find((c) => c.categoryKey === hoveredCatKey);
+    const found = dynamicNavData.find((c) => c.categoryKey === hoveredCatKey);
     if (found) lastActiveCatRef.current = found;
   }
   const activeCatData = hoveredCatKey
-    ? FLYOUT_PRODUCT_NAV_DATA.find((c) => c.categoryKey === hoveredCatKey)
-    : lastActiveCatRef.current;
+    ? (dynamicNavData.find((c) => c.categoryKey === hoveredCatKey) || dynamicNavData[0])
+    : (lastActiveCatRef.current || dynamicNavData[0]);
 
   return (
     <>
@@ -301,7 +428,7 @@ export default function Navbar() {
                 <div className="flyout-main-list">
                   <div className="flyout-panel-title">DANH MỤC SẢN PHẨM</div>
 
-                  {FLYOUT_PRODUCT_NAV_DATA.map((cat) => (
+                  {dynamicNavData.map((cat) => (
                     <div
                       key={cat.categoryKey}
                       className={`flyout-cat-item ${hoveredCatKey === cat.categoryKey ? "active" : ""}`}
@@ -391,7 +518,7 @@ export default function Navbar() {
             {/* MOBILE ACCORDION SUBLIST - GIAO DIỆN CHUẨN DANH MỤC THÔNG MINH */}
             <div className={`mobile-sub-accordion ${mobileProdExpanded ? "show" : ""}`}>
               <div className="mobile-cats-container">
-                {FLYOUT_PRODUCT_NAV_DATA.map((cat) => {
+                {dynamicNavData.map((cat) => {
                   const isCatExpanded = mobileExpandedCatKey === cat.categoryKey;
                   return (
                     <div key={cat.categoryKey} className="mobile-flyout-cat-group">
@@ -454,18 +581,24 @@ export default function Navbar() {
           </div>
 
 
-          {/* BẢNG GIÁ VỚI DANH SÁCH XỔ XUỐNG TỐI ĐA 9 MỤC TRÊN ĐIỆN THOẠI */}
-          <div className="nav-dropdown-wrapper pricing-nav-dropdown">
+          {/* BẢNG GIÁ VỚI DROPDOWN DESKTOP & MOBILE ACCORDION */}
+          <div 
+            className={`nav-dropdown-wrapper pricing-nav-dropdown ${pricingOpen ? "is-active" : ""}`}
+            onMouseEnter={handlePricingEnter}
+            onMouseLeave={handlePricingLeave}
+          >
             <div className="mobile-nav-prod-trigger-row">
               <NavLink 
                 to="/bang-gia" 
                 onClick={() => {
                   setMenu(false);
+                  setPricingOpen(false);
                   setMobilePricingExpanded(false);
                 }} 
-                className={({ isActive }) => (isActive ? "nav-link-item active" : "nav-link-item")}
+                className={({ isActive }) => (isActive ? "nav-link-item active has-dropdown" : "nav-link-item has-dropdown")}
               >
                 <span>BẢNG GIÁ</span>
+                <ChevronDown size={13} className={`nav-arrow desktop-only-arrow ${pricingOpen ? "rotate" : ""}`} />
               </NavLink>
 
               <button 
@@ -480,6 +613,27 @@ export default function Navbar() {
               >
                 <ChevronDown size={17} className={mobilePricingExpanded ? "rotate" : ""} />
               </button>
+            </div>
+
+            {/* DESKTOP DROPDOWN CHO BẢNG GIÁ */}
+            <div className={`desktop-simple-dropdown-menu ${pricingOpen ? "show" : ""}`}>
+              <div className="desktop-dropdown-header-title">BÁO GIÁ CÁC DÒNG CỬA</div>
+              <div className="desktop-dropdown-list">
+                {MOBILE_PRICING_MENU_ITEMS.map((item, idx) => (
+                  <Link
+                    key={idx}
+                    to={`/bang-gia?q=${encodeURIComponent(item.query)}`}
+                    onClick={() => {
+                      setPricingOpen(false);
+                      setMenu(false);
+                    }}
+                    className="desktop-dropdown-item-link"
+                  >
+                    <span>{item.name}</span>
+                    <ChevronRight size={13} className="item-arrow" />
+                  </Link>
+                ))}
+              </div>
             </div>
 
             {/* Danh sách bảng giá xổ xuống trên điện thoại (tối đa 9 cái khớp ảnh yêu cầu) */}
@@ -502,18 +656,24 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* DỊCH VỤ VỚI DANH SÁCH XỔ XUỐNG TRÊN ĐIỆN THOẠI */}
-          <div className="nav-dropdown-wrapper services-nav-dropdown">
+          {/* DỊCH VỤ VỚI DROPDOWN DESKTOP & MOBILE ACCORDION */}
+          <div 
+            className={`nav-dropdown-wrapper services-nav-dropdown ${servicesOpen ? "is-active" : ""}`}
+            onMouseEnter={handleServicesEnter}
+            onMouseLeave={handleServicesLeave}
+          >
             <div className="mobile-nav-prod-trigger-row">
               <NavLink 
                 to="/dich-vu" 
                 onClick={() => {
                   setMenu(false);
+                  setServicesOpen(false);
                   setMobileServicesExpanded(false);
                 }} 
-                className={({ isActive }) => (isActive ? "nav-link-item active" : "nav-link-item")}
+                className={({ isActive }) => (isActive ? "nav-link-item active has-dropdown" : "nav-link-item has-dropdown")}
               >
                 <span>DỊCH VỤ</span>
+                <ChevronDown size={13} className={`nav-arrow desktop-only-arrow ${servicesOpen ? "rotate" : ""}`} />
               </NavLink>
 
               <button 
@@ -528,6 +688,27 @@ export default function Navbar() {
               >
                 <ChevronDown size={17} className={mobileServicesExpanded ? "rotate" : ""} />
               </button>
+            </div>
+
+            {/* DESKTOP DROPDOWN CHO DỊCH VỤ */}
+            <div className={`desktop-simple-dropdown-menu ${servicesOpen ? "show" : ""}`}>
+              <div className="desktop-dropdown-header-title">DỊCH VỤ CHUYÊN NGHIỆP</div>
+              <div className="desktop-dropdown-list">
+                {MOBILE_SERVICES_MENU_ITEMS.map((item, idx) => (
+                  <Link
+                    key={idx}
+                    to={item.to || `/dich-vu?service=${encodeURIComponent(item.name)}`}
+                    onClick={() => {
+                      setServicesOpen(false);
+                      setMenu(false);
+                    }}
+                    className="desktop-dropdown-item-link"
+                  >
+                    <span>{item.name}</span>
+                    <ChevronRight size={13} className="item-arrow" />
+                  </Link>
+                ))}
+              </div>
             </div>
 
             {/* Danh sách dịch vụ xổ xuống trên điện thoại */}
@@ -642,7 +823,11 @@ export default function Navbar() {
                 <span className="user-initial-badge">
                   {currentUser.fullName ? currentUser.fullName[0].toUpperCase() : "U"}
                 </span>
-                <span className="user-short-name">{currentUser.fullName}</span>
+                <span className="user-short-name">
+                  {isAdmin && (currentUser.fullName === "Quản Trị Viên" || currentUser.fullName?.toLowerCase().includes("quản trị"))
+                    ? "Quản trị"
+                    : (currentUser.fullName || "Tài khoản")}
+                </span>
                 {isAdmin && (
                   <>
                     <span className="admin-chip">ADMIN</span>

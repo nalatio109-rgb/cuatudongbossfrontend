@@ -18,7 +18,13 @@ const projectSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    images: [{ type: String }],
+    gallery: [{ type: String }],
     description: {
+      type: String,
+      default: "",
+    },
+    content: {
       type: String,
       default: "",
     },

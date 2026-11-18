@@ -48,6 +48,31 @@ a {
   color: inherit;
 }
 
+/* HIỂN THỊ RÕ RÀNG LINK GẮN VÔ CHỮ TRONG BÀI VIẾT (MÀU XANH DƯƠNG & GẠCH CHÂN) */
+.project-article-rendered-content a,
+.article-content-editable a,
+.preview-article-canvas a,
+.article-wysiwyg-wrapper a,
+a.project-article-link {
+  color: #2563eb !important;
+  font-weight: 700 !important;
+  text-decoration: underline !important;
+  text-decoration-color: #3b82f6 !important;
+  text-underline-offset: 3.5px !important;
+  text-decoration-thickness: 2px !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease;
+}
+
+.project-article-rendered-content a:hover,
+.article-content-editable a:hover,
+.preview-article-canvas a:hover,
+.article-wysiwyg-wrapper a:hover,
+a.project-article-link:hover {
+  color: #1d4ed8 !important;
+  text-decoration-color: #1d4ed8 !important;
+}
+
 .container {
   width: min(1200px, calc(100% - 50px));
   margin: auto;
@@ -108,12 +133,17 @@ a {
   border-bottom-color: rgba(245, 189, 24, 0.35);
 }
 
-.nav-inner {
+.navbar .nav-inner {
+  width: 100% !important;
+  max-width: 1440px !important;
+  padding: 0 24px !important;
+  margin: 0 auto !important;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
+  gap: 16px;
+  box-sizing: border-box;
 }
 
 .logo {
@@ -122,6 +152,7 @@ a {
   gap: 8px;
   position: relative;
   transition: transform 0.3s ease;
+  flex-shrink: 0;
 }
 
 .logo:hover {
@@ -166,15 +197,16 @@ a {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 2px;
   flex: 1;
   background: rgba(0, 0, 0, 0.22);
-  padding: 4px;
+  padding: 3px 6px;
   border-radius: 30px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   max-width: fit-content;
   margin: 0 auto;
   position: relative;
+  flex-shrink: 1;
 }
 
 .mobile-drawer-header,
@@ -187,10 +219,10 @@ a {
 
 .nav-sliding-pill {
   position: absolute;
-  top: 4px;
-  height: 38px;
+  top: 3px;
+  height: 36px;
   background: #f5bd20;
-  border-radius: 20px;
+  border-radius: 18px;
   box-shadow: 0 4px 18px rgba(245, 189, 24, 0.45);
   transition: left 0.38s cubic-bezier(0.34, 1.56, 0.64, 1), width 0.38s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease;
   z-index: 1;
@@ -198,15 +230,15 @@ a {
 }
 
 .nav a {
-  height: 38px;
-  padding: 0 16px;
-  border-radius: 20px;
+  height: 36px;
+  padding: 0 11px;
+  border-radius: 18px;
   display: flex;
   align-items: center;
-  gap: 6px;
-  font-size: 13.5px;
+  gap: 5px;
+  font-size: 13px;
   font-weight: 700;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.2px;
   white-space: nowrap;
   color: rgba(255, 255, 255, 0.85);
   transition: color 0.3s ease, transform 0.2s ease;
@@ -754,8 +786,121 @@ a {
   background: rgba(255, 255, 255, 0.05);
 }
 
+/* ================= DESKTOP DROPDOWN MENU FOR BẢNG GIÁ & DỊCH VỤ ================= */
+.desktop-simple-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px) scale(0.97);
+  width: 285px;
+  background: linear-gradient(175deg, #021a10 0%, #010d08 100%);
+  border: 1px solid rgba(245, 189, 32, 0.35);
+  border-radius: 20px;
+  box-shadow: 
+    0 24px 60px rgba(0, 0, 0, 0.9),
+    0 0 30px rgba(245, 189, 32, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  padding: 12px 10px 12px;
+  margin-top: 8px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.25s;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Hover trigger for desktop - supports both CSS :hover and JS .show */
+.nav-dropdown-wrapper:hover .desktop-simple-dropdown-menu,
+.desktop-simple-dropdown-menu.show {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0) scale(1);
+}
+
+/* Invisible bridge so mouse moving from link to dropdown never drops hover */
+.desktop-simple-dropdown-menu::before {
+  content: "";
+  position: absolute;
+  top: -14px;
+  left: 0;
+  right: 0;
+  height: 14px;
+}
+
+.desktop-dropdown-top-bar {
+  display: none !important;
+}
+
+.desktop-dropdown-header-title {
+  font-size: 11px;
+  font-weight: 850;
+  color: #f5bd20;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  padding: 2px 8px 8px;
+  border-bottom: 1px solid rgba(245, 189, 32, 0.18);
+  margin-bottom: 8px;
+}
+
+.desktop-dropdown-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  overflow-x: hidden !important;
+  overflow-y: visible !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.desktop-dropdown-list::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.desktop-dropdown-item-link {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 8px 14px !important;
+  border-radius: 20px !important;
+  font-size: 13px !important;
+  font-weight: 650 !important;
+  color: rgba(255, 255, 255, 0.92) !important;
+  background: rgba(3, 44, 25, 0.5) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  height: auto !important;
+  text-decoration: none !important;
+  transition: all 0.22s ease !important;
+  white-space: nowrap !important;
+}
+
+.desktop-dropdown-item-link:hover {
+  background: rgba(245, 189, 32, 0.16) !important;
+  border-color: rgba(245, 189, 32, 0.45) !important;
+  color: #f5bd20 !important;
+  transform: translateX(4px) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+}
+
+.desktop-dropdown-item-link .item-arrow {
+  color: rgba(245, 189, 32, 0.45);
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.desktop-dropdown-item-link:hover .item-arrow {
+  color: #f5bd20;
+  transform: translateX(2px);
+}
+
 @media (max-width: 992px) {
-  .flyout-dropdown-menu {
+  .flyout-dropdown-menu,
+  .desktop-simple-dropdown-menu {
     display: none !important;
   }
 }
@@ -765,26 +910,27 @@ a {
   background: linear-gradient(135deg, #ff1a26 0%, #d6000c 100%);
   color: white;
   border-radius: 30px;
-  padding: 9px 20px;
+  padding: 8px 16px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 14.5px;
+  gap: 7px;
+  font-size: 13.5px;
   font-weight: 850;
   white-space: nowrap;
   border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: 0 6px 20px rgba(227, 6, 19, 0.4);
+  box-shadow: 0 4px 16px rgba(227, 6, 19, 0.4);
   transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
+  flex-shrink: 0;
 }
 
 .call-btn-pulse {
   position: absolute;
   top: 50%;
-  left: 18px;
+  left: 16px;
   transform: translate(-50%, -50%);
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   background: rgba(255, 255, 255, 0.3);
   border-radius: 50%;
   animation: callPulse 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
@@ -805,8 +951,8 @@ a {
 
 .call-btn:hover {
   background: linear-gradient(135deg, #ff333f 0%, #e6000e 100%);
-  transform: translateY(-2px) scale(1.03);
-  box-shadow: 0 10px 28px rgba(227, 6, 19, 0.55);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 8px 24px rgba(227, 6, 19, 0.55);
 }
 
 .call-btn:hover .call-icon {
@@ -827,7 +973,8 @@ a {
 .nav-right-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  flex-shrink: 0;
 }
 
 .nav-login-pill-btn {
@@ -837,12 +984,13 @@ a {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(245, 189, 32, 0.35);
   color: #f5bd20;
-  padding: 8px 16px;
+  padding: 7px 14px;
   border-radius: 20px;
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 700;
   transition: all 0.25s ease;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .nav-login-pill-btn:hover {
@@ -855,19 +1003,21 @@ a {
 
 .nav-user-dropdown-box {
   position: relative;
+  flex-shrink: 0;
 }
 
 .nav-user-trigger-btn {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   background: rgba(15, 23, 42, 0.7);
   border: 1px solid rgba(245, 189, 32, 0.35);
-  padding: 4px 12px 4px 5px;
+  padding: 3px 10px 3px 4px;
   border-radius: 30px;
   color: #ffffff;
   cursor: pointer;
   transition: all 0.25s ease;
+  flex-shrink: 0;
 }
 
 .nav-user-trigger-btn:hover {
@@ -877,22 +1027,23 @@ a {
 }
 
 .user-initial-badge {
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
   background: linear-gradient(135deg, #f5bd20 0%, #d4a017 100%);
   color: #042416;
   font-weight: 800;
-  font-size: 12.5px;
+  font-size: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .user-short-name {
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 700;
-  max-width: 100px;
+  max-width: 85px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -901,11 +1052,12 @@ a {
 .admin-chip {
   background: #ef4444;
   color: white;
-  font-size: 9px;
+  font-size: 8.5px;
   font-weight: 800;
-  padding: 1px 6px;
-  border-radius: 10px;
+  padding: 1.5px 5.5px;
+  border-radius: 8px;
   letter-spacing: 0.5px;
+  flex-shrink: 0;
 }
 
 .admin-status-dot {
@@ -4030,15 +4182,6 @@ footer {
 
 @media(max-width: 1000px) {
 
-  .nav {
-    gap: 12px;
-  }
-
-  .nav a {
-    font-size: 12px;
-    white-space: nowrap;
-  }
-
   .hero h1 {
     font-size: 38px;
   }
@@ -4080,6 +4223,82 @@ footer {
 
   .news-cards {
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Responsive Desktop Navbar Scaling for Laptops & Scaled Screens */
+@media (max-width: 1280px) {
+  .navbar .nav-inner {
+    padding: 0 16px !important;
+    gap: 10px !important;
+  }
+  .nav {
+    gap: 1px;
+    padding: 2px 4px;
+  }
+  .nav a {
+    height: 34px;
+    padding: 0 8px;
+    font-size: 12px;
+    gap: 4px;
+  }
+  .nav-sliding-pill {
+    height: 34px;
+    top: 2px;
+  }
+  .user-short-name {
+    display: none;
+  }
+  .nav-user-trigger-btn {
+    padding: 3px 8px 3px 3px;
+    gap: 5px;
+  }
+  .call-btn {
+    padding: 7px 12px;
+    font-size: 12.5px;
+    gap: 5px;
+  }
+}
+
+@media (max-width: 1080px) {
+  .nav a {
+    padding: 0 6px;
+    font-size: 11.5px;
+  }
+  .logo-img {
+    height: 36px;
+  }
+  .call-btn {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 992px) {
+  .navbar .nav-inner {
+    padding: 0 12px !important;
+  }
+  .nav {
+    display: none !important;
+  }
+  .nav.open {
+    display: flex !important;
+  }
+  .mobile-menu {
+    display: flex !important;
+    order: 3;
+  }
+  .logo {
+    order: 1;
+  }
+  .nav-right-actions {
+    order: 2;
+    margin-left: auto;
+    margin-right: 8px;
+    gap: 8px;
+  }
+  .nav-sliding-pill {
+    display: none !important;
   }
 }
 

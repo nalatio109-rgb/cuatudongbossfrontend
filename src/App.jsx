@@ -14,6 +14,7 @@ import Pricing from "./pages/Pricing";
 import ProductPricing from "./pages/ProductPricing";
 import Services from "./pages/Services";
 import Projects from "./pages/Projects";
+import ProjectDetail from "./pages/ProjectDetail";
 import NewsPage from "./pages/News";
 import NewsDetail from "./pages/NewsDetail";
 import Contact from "./pages/Contact";
@@ -79,7 +80,9 @@ export default function App() {
         <Route path="/bang-gia-cap-nhat-cua-keo-cong-nghe-duc-2026-tai-da-nang.html" element={<ProductPricing />} />
         <Route path="/dich-vu" element={<Services />} />
         <Route path="/cong-trinh" element={<Projects />} />
+        <Route path="/cong-trinh/:id" element={<ProjectDetail />} />
         <Route path="/du-an" element={<Navigate to="/cong-trinh" replace />} />
+        <Route path="/du-an/:id" element={<ProjectDetail />} />
         <Route path="/tin-tuc" element={<NewsPage />} />
         <Route path="/tin-tuc/:id" element={<NewsDetail />} />
         <Route path="/lien-he" element={<Contact />} />

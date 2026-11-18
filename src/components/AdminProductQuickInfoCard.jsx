@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { 
   Package, ChevronDown, ChevronUp, Save, Loader2, Undo2, Upload, X, 
   Image as ImageIcon, Plus, Trash2, Star 
@@ -51,6 +51,7 @@ export default function AdminProductQuickInfoCard({
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [urlInput, setUrlInput] = useState("");
+  const [isCustomSubCategory, setIsCustomSubCategory] = useState(false);
 
   const [formData, setFormData] = useState({
     _id: "",
@@ -65,6 +66,23 @@ export default function AdminProductQuickInfoCard({
     description: "",
     specs: ""
   });
+
+  // Danh sách loại sản phẩm kết hợp giữa chuẩn mặc định và các loại do admin tự nhập
+  const availableSubCategories = useMemo(() => {
+    const list = [...(SUBCATEGORIES[formData.category] || [])];
+    if (Array.isArray(dbProducts)) {
+      dbProducts.forEach((p) => {
+        if (
+          p.category === formData.category &&
+          p.subCategory &&
+          !list.includes(p.subCategory)
+        ) {
+          list.push(p.subCategory);
+        }
+      });
+    }
+    return list;
+  }, [formData.category, dbProducts]);
 
   // Đồng bộ dữ liệu khi currentProductCode hoặc dbProducts thay đổi
   useEffect(() => {
@@ -86,12 +104,17 @@ export default function AdminProductQuickInfoCard({
             ? [found.image]
             : [];
 
+      const cat = found.category || "cuacuon";
+      const subCat = found.subCategory || SUBCATEGORIES[cat]?.[0] || "";
+      const isStandard = SUBCATEGORIES[cat]?.includes(subCat);
+      setIsCustomSubCategory(!isStandard && Boolean(subCat));
+
       setFormData({
         _id: found._id || "",
         title: found.title || "",
         code: found.code || currentProductCode,
-        category: found.category || "cuacuon",
-        subCategory: found.subCategory || SUBCATEGORIES[found.category || "cuacuon"]?.[0] || "",
+        category: cat,
+        subCategory: subCat,
         price: found.price || "",
         badge: found.badge || "",
         image: initialImages[0] || found.image || "",
@@ -101,7 +124,8 @@ export default function AdminProductQuickInfoCard({
       });
       setUrlInput("");
     } else {
-      const defaultImg = "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=800&q=80";
+      setIsCustomSubCategory(false);
+      const defaultImg = "/about_door_1.png";
       setFormData({
         _id: "",
         title: `Sản phẩm ${currentProductCode || ""}`,
@@ -465,6 +489,7 @@ export default function AdminProductQuickInfoCard({
                 value={formData.category}
                 onChange={(e) => {
                   const newCat = e.target.value;
+                  setIsCustomSubCategory(false);
                   setFormData({
                     ...formData,
                     category: newCat,
@@ -481,17 +506,128 @@ export default function AdminProductQuickInfoCard({
             </div>
 
             <div className="quick-info-form-group">
-              <label>Loại sản phẩm *</label>
-              <select
-                value={formData.subCategory}
-                onChange={(e) => setFormData({ ...formData, subCategory: e.target.value })}
-              >
-                {(SUBCATEGORIES[formData.category] || []).map((sub) => (
-                  <option key={sub} value={sub}>
-                    {sub}
-                  </option>
-                ))}
-              </select>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+                <label style={{ margin: 0 }}>Loại sản phẩm *</label>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const next = !isCustomSubCategory;
+                    setIsCustomSubCategory(next);
+                    if (!next && !availableSubCategories.includes(formData.subCategory)) {
+                      setFormData({ ...formData, subCategory: availableSubCategories[0] || "" });
+                    }
+                  }}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "4px",
+                    background: isCustomSubCategory ? "#ef4444" : "#10b981",
+                    color: "white",
+                    border: "none",
+                    padding: "3px 8px",
+                    borderRadius: "6px",
+                    fontSize: "0.75rem",
+                    fontWeight: "600",
+                    cursor: "pointer"
+                  }}
+                >
+                  {isCustomSubCategory ? "✕ Chọn có sẵn" : "+ Điền tên khác"}
+                </button>
+              </div>
+
+              <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+                {!isCustomSubCategory ? (
+                  <>
+                    <select
+                      style={{ flex: 1 }}
+                      value={availableSubCategories.includes(formData.subCategory) ? formData.subCategory : "__custom__"}
+                      onChange={(e) => {
+                        if (e.target.value === "__custom__") {
+                          setIsCustomSubCategory(true);
+                        } else {
+                          setFormData({ ...formData, subCategory: e.target.value });
+                        }
+                      }}
+                    >
+                      {availableSubCategories.map((sub) => (
+                        <option key={sub} value={sub}>{sub}</option>
+                      ))}
+                      <option value="__custom__">+ Điền tên loại khác (Tự nhập)...</option>
+                    </select>
+                    <button
+                      type="button"
+                      title="Bấm để tự điền tên loại sản phẩm mới"
+                      onClick={() => setIsCustomSubCategory(true)}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "5px",
+                        background: "linear-gradient(135deg, #10b981 0%, #059669 100%)",
+                        color: "white",
+                        border: "none",
+                        padding: "8px 12px",
+                        borderRadius: "8px",
+                        fontSize: "0.82rem",
+                        fontWeight: "600",
+                        cursor: "pointer",
+                        whiteSpace: "nowrap",
+                        height: "40px"
+                      }}
+                    >
+                      <Plus size={16} /> Thêm mới
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <input
+                      type="text"
+                      style={{
+                        flex: 1,
+                        border: "1px solid #10b981",
+                        background: "rgba(16, 185, 129, 0.08)",
+                        color: "#fff"
+                      }}
+                      value={formData.subCategory}
+                      onChange={(e) => setFormData({ ...formData, subCategory: e.target.value })}
+                      placeholder="Nhập tên loại sản phẩm mới..."
+                      autoFocus
+                      required
+                    />
+                    <button
+                      type="button"
+                      title="Quay lại chọn danh mục có sẵn"
+                      onClick={() => {
+                        setIsCustomSubCategory(false);
+                        if (!availableSubCategories.includes(formData.subCategory)) {
+                          setFormData({ ...formData, subCategory: availableSubCategories[0] || "" });
+                        }
+                      }}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "4px",
+                        background: "#334155",
+                        color: "white",
+                        border: "none",
+                        padding: "8px 12px",
+                        borderRadius: "8px",
+                        fontSize: "0.82rem",
+                        fontWeight: "500",
+                        cursor: "pointer",
+                        whiteSpace: "nowrap",
+                        height: "40px"
+                      }}
+                    >
+                      ✕ Hủy
+                    </button>
+                  </>
+                )}
+              </div>
+              {isCustomSubCategory && (
+                <span style={{ fontSize: "0.72rem", color: "#10b981", marginTop: "4px", display: "block" }}>
+                  ✓ Loại sản phẩm này sẽ tự động lưu và xuất hiện trên Navbar
+                </span>
+              )}
             </div>
           </div>
 

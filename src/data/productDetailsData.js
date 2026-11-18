@@ -21,7 +21,7 @@ export const EXTENDED_PRODUCT_MAP = {
       "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80",
       "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1000&q=80",
       "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1000&q=80",
-      "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=1000&q=80"
+      "/why-choose-us.png"
     ],
     quickSpecs: [
       { label: "Mã sản phẩm", value: "CK-SR1" },
@@ -62,7 +62,7 @@ export const EXTENDED_PRODUCT_MAP = {
         {
           name: "4. Hệ thống Khóa an toàn & Bát khóa chống trộm",
           desc: "Trang bị bát khóa dày 6mm bằng thép tôi cứng kết hợp cơ cấu khóa âm sàn hoặc trụ khóa chuyên dụng, ngăn chặn hoàn toàn việc dùng xà beng cạy cửa hoặc kìm cộng lực cắt khóa. Đảm bảo an ninh tuyệt đối cho tài sản trong nhà.",
-          image: "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=800&q=80"
+          image: "/project_1.png"
         }
       ]
     },
@@ -180,7 +180,7 @@ export const EXTENDED_PRODUCT_MAP = {
       "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1000&q=80",
       "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80",
       "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1000&q=80",
-      "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=1000&q=80"
+      "/why-choose-us.png"
     ],
     quickSpecs: [
       { label: "Mã sản phẩm", value: "CK-SR2" },
@@ -221,7 +221,7 @@ export const EXTENDED_PRODUCT_MAP = {
         {
           name: "4. Khóa âm và bát khóa",
           desc: "Bát khóa dày dặn chống cắt phá trộm cắp an tâm tuyệt đối.",
-          image: "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=800&q=80"
+          image: "/project_1.png"
         }
       ]
     },
@@ -409,12 +409,10 @@ export const EXTENDED_PRODUCT_MAP = {
     reviewCount: 54,
     businessStatus: "Sẵn hàng tại kho Đà Nẵng • Thi công trong 24h",
     badge: "HOT NHẤT",
+    image: "/about_door_1.png",
     description: "Cửa cuốn Bossdoor ECO BEC.5810 là sản phẩm cửa cuốn khe thoáng thế hệ mới mang thương hiệu BossDoor danh tiếng. Được sản xuất từ hợp kim nhôm 6063-T5 chuẩn hàng không, BEC.5810 là sự kết hợp xuất sắc giữa độ cứng cáp chống bão, thiết kế nan sang trọng và công nghệ giảm chấn 2 chiều vận hành êm ái hàng đầu.",
     gallery: [
-      "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=1000&q=80",
-      "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1000&q=80",
-      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1000&q=80",
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80"
+      "/about_door_1.png"
     ],
     quickSpecs: [
       { label: "Mã sản phẩm", value: "BEC.5810" },
@@ -440,7 +438,7 @@ export const EXTENDED_PRODUCT_MAP = {
         {
           name: "1. Nan cửa nhôm 6063-T5 kép có khe thoáng",
           desc: "Nan cửa 2 lớp với thanh giằng chịu lực ở giữa, đúc từ phôi nhôm nguyên chất 6063-T5. Các lỗ thoáng hình thoi hoặc oval bố trí so le giúp đón ánh sáng tự nhiên và thông gió mà vẫn ngăn được bụi bẩn.",
-          image: "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=800&q=80"
+          image: "/about_door_1.png"
         },
         {
           name: "2. Gioăng giảm chấn 2 chiều siêu êm",
@@ -527,11 +525,9 @@ export const EXTENDED_PRODUCT_MAP = {
     reviewCount: 68,
     businessStatus: "Sẵn hàng thi công trong 24h",
     badge: "BÁN CHẠY",
+    image: "/about_door_1.png",
     gallery: [
-      "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=1000&q=80",
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80",
-      "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1000&q=80",
-      "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1000&q=80"
+      "/about_door_1.png"
     ],
     quickSpecs: [
       { label: "Mã sản phẩm", value: "BD-900" },
@@ -558,7 +554,7 @@ export const EXTENDED_PRODUCT_MAP = {
         {
           name: "1. Thân nan nhôm 6063-T5 siêu bền dày 1.4 - 2.2 mm",
           desc: "Đúc từ hợp kim nhôm chuẩn hàng không 6063-T5 với gân tăng cứng kép, chống búa đập và chịu lực gió lớn.",
-          image: "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=800&q=80"
+          image: "/about_door_1.png"
         },
         {
           name: "2. Khe thoáng điều hòa không khí & ánh sáng",
@@ -621,7 +617,7 @@ export const EXTENDED_PRODUCT_MAP = {
     badge: "TIẾT KIỆM NHẤT",
     gallery: [
       "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1000&q=80",
-      "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=1000&q=80",
+      "/why-choose-us.png",
       "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80"
     ],
     quickSpecs: [
@@ -642,7 +638,7 @@ export const EXTENDED_PRODUCT_MAP = {
       title: "Cấu tạo chi tiết cửa cuốn Đài Loan DL-75",
       components: [
         { name: "1. Thân lá thép mạ màu bản 75mm", desc: "Dập sóng chịu lực, mạ kẽm chống rỉ sét.", image: "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80" },
-        { name: "2. Hệ lò xo trợ lực hoặc mô tơ", desc: "Lò xo thép xoắn đàn hồi cao giúp kéo tay nhẹ nhàng.", image: "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=800&q=80" }
+        { name: "2. Hệ lò xo trợ lực hoặc mô tơ", desc: "Lò xo thép xoắn đàn hồi cao giúp kéo tay nhẹ nhàng.", image: "/project_1.png" }
       ]
     },
     sectionC: {
@@ -688,7 +684,7 @@ export const EXTENDED_PRODUCT_MAP = {
     badge: "LUXURY",
     gallery: [
       "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1000&q=80",
-      "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=1000&q=80",
+      "/about_door_1.png",
       "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80"
     ],
     quickSpecs: [
@@ -708,7 +704,7 @@ export const EXTENDED_PRODUCT_MAP = {
       title: "Cấu tạo dòng Luxury",
       components: [
         { name: "1. Nan nhôm 6063-T6 siêu dày", desc: "Hợp kim nhôm hàng không siêu cứng chịu bão cấp 14.", image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=800&q=80" },
-        { name: "2. Hệ giảm chấn kép 2 chiều", desc: "Triệt tiêu hoàn toàn rung lắc và tiếng ồn khi vận hành.", image: "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=800&q=80" }
+        { name: "2. Hệ giảm chấn kép 2 chiều", desc: "Triệt tiêu hoàn toàn rung lắc và tiếng ồn khi vận hành.", image: "/project_1.png" }
       ]
     },
     sectionC: {
@@ -787,6 +783,38 @@ export function getProductExtendedDetails(product) {
 
     const template = EXTENDED_PRODUCT_MAP[fallbackKey] || EXTENDED_PRODUCT_MAP["CK-SR1"];
     const resolvedSlug = product.slug || slugify(product.title || product.code || template.title);
+    const primaryImg =
+      (Array.isArray(product.images) && product.images[0]) ||
+      product.image ||
+      template.image ||
+      "/about_door_1.png";
+
+    // Strictly prioritize images configured on this product (from Admin / Database)
+    let resolvedGallery = [];
+    if (Array.isArray(product.images) && product.images.length > 0) {
+      resolvedGallery = product.images.filter(Boolean);
+    } else if (Array.isArray(product.gallery) && product.gallery.length > 0) {
+      resolvedGallery = product.gallery.filter(Boolean);
+    } else if (product.image) {
+      resolvedGallery = [product.image];
+    } else if (Array.isArray(template.gallery) && template.gallery.length > 0) {
+      resolvedGallery = template.gallery.filter(Boolean);
+    } else {
+      resolvedGallery = [primaryImg];
+    }
+
+    resolvedGallery = resolvedGallery.filter(
+      (img) => img && !img.includes("photo-1558008258-3256797b43f3")
+    );
+
+    if (primaryImg && !resolvedGallery.includes(primaryImg)) {
+      resolvedGallery = [primaryImg, ...resolvedGallery];
+    } else if (primaryImg && resolvedGallery[0] !== primaryImg) {
+      resolvedGallery = [primaryImg, ...resolvedGallery.filter((img) => img !== primaryImg)];
+    }
+    if (resolvedGallery.length === 0) {
+      resolvedGallery = [primaryImg || "/about_door_1.png"];
+    }
 
     return {
       ...template,
@@ -795,16 +823,8 @@ export function getProductExtendedDetails(product) {
       code: product.code || template.code,
       title: product.title || template.title,
       price: product.price || template.price,
-      gallery: (Array.isArray(product.gallery) && product.gallery.length > 0)
-        ? product.gallery
-        : (Array.isArray(product.images) && product.images.length > 0)
-          ? product.images
-          : [
-              product.image,
-              template.gallery[1] || product.image,
-              template.gallery[2] || product.image,
-              template.gallery[3] || product.image
-            ],
+      image: primaryImg,
+      gallery: resolvedGallery,
       quickSpecs: [
         { label: "Mã sản phẩm", value: product.code || "TIÊU CHUẨN" },
         { label: "Tên dòng sản phẩm", value: product.title },
@@ -821,15 +841,52 @@ export function getProductExtendedDetails(product) {
     };
   }
 
-  const resolvedGallery = (Array.isArray(product.gallery) && product.gallery.length > 0)
-    ? product.gallery
-    : (Array.isArray(product.images) && product.images.length > 0)
-      ? product.images
-      : matched.gallery;
+  // MATCHED ITEM: prioritize real product.image as primary image #1
+  const primaryImg =
+    (Array.isArray(product.images) && product.images[0]) ||
+    product.image ||
+    (Array.isArray(product.gallery) && product.gallery[0]) ||
+    matched.image ||
+    "/about_door_1.png";
+
+  // Strictly prioritize images configured on this product (from Admin / Database)
+  let resolvedGallery = [];
+  if (Array.isArray(product.images) && product.images.length > 0) {
+    resolvedGallery = product.images.filter(Boolean);
+  } else if (Array.isArray(product.gallery) && product.gallery.length > 0) {
+    resolvedGallery = product.gallery.filter(Boolean);
+  } else if (product.image) {
+    // Product only has 1 image configured in Admin -> STRICTLY 1 IMAGE! Do NOT add mock stock images!
+    resolvedGallery = [product.image];
+  } else if (matched && Array.isArray(matched.gallery) && matched.gallery.length > 0) {
+    // Only if product itself has NO image at all, fallback to matched template
+    resolvedGallery = matched.gallery.filter(Boolean);
+  } else if (matched?.image) {
+    resolvedGallery = [matched.image];
+  } else {
+    resolvedGallery = [primaryImg];
+  }
+
+  // Filter out any auditorium stock photos
+  resolvedGallery = resolvedGallery.filter(
+    (img) => img && !img.includes("photo-1558008258-3256797b43f3")
+  );
+
+  // Guarantee primaryImg is always at index 0 of gallery without duplicates
+  if (primaryImg && !resolvedGallery.includes(primaryImg)) {
+    resolvedGallery = [primaryImg, ...resolvedGallery];
+  } else if (primaryImg && resolvedGallery[0] !== primaryImg) {
+    resolvedGallery = [primaryImg, ...resolvedGallery.filter((img) => img !== primaryImg)];
+  }
+
+  if (resolvedGallery.length === 0) {
+    resolvedGallery = [primaryImg || "/about_door_1.png"];
+  }
 
   return {
     ...matched,
     ...product,
+    image: primaryImg,
     gallery: resolvedGallery,
     slug: matched.slug || inputSlug,
     code: matched.code || product.code,

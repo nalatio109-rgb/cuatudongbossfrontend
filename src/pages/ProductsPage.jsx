@@ -59,7 +59,7 @@ export default function ProductsPage() {
     {
       id: 1,
       category: "cuacuon",
-      image: "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=800&q=80",
+      image: "/about_door_1.png",
       title: "CỬA CUỐN KHE THOÁNG ECO BEC.5810",
       code: "BEC.5810",
       description: "Cửa cuốn Bossdoor ECO BEC.5810 là sản phẩm cửa cuốn khe thoáng thế hệ mới mang thương hiệu BossDoor danh tiếng. Được sản xuất từ hợp kim nhôm 6063-T5 chuẩn hàng không, BEC.5810 là sự kết hợp xuất sắc giữa độ cứng cáp chống bão, thiết kế nan sang trọng và công nghệ giảm chấn 2 chiều vận hành êm ái hàng đầu.",
@@ -72,7 +72,7 @@ export default function ProductsPage() {
     {
       id: 2,
       category: "cuacuon",
-      image: "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=800&q=80",
+      image: "/about_door_1.png",
       title: "Cửa cuốn khe thoáng Đức BossDoor BD-900",
       code: "BD-900",
       description: "Thân cửa hợp kim nhôm 6063-T5 cao cấp, sơn tĩnh điện CHLB Đức bảo hành 10 năm.",
@@ -159,7 +159,7 @@ export default function ProductsPage() {
     {
       id: 8,
       category: "phukien",
-      image: "https://images.unsplash.com/photo-1558008258-3256797b43f3?auto=format&fit=crop&w=800&q=80",
+      image: "/project_1.png",
       title: "BỘ ĐIỀU KHIỂN CỬA CUỐN QUA ĐIỆN THOẠI (SMART WIFI)",
       code: "WF-APP",
       description: "Đóng mở cửa từ xa mọi lúc mọi nơi qua Smartphone 4G/Wi-Fi, cảnh báo đột nhập.",
@@ -356,6 +356,7 @@ export default function ProductsPage() {
     "description",
     "category",
     "categoryName",
+    "subCategory",
     "specs",
     "badge",
     "price",
