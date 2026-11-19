@@ -89,14 +89,18 @@ const About = () => {
         <div className="exact-hero-glow-1"></div>
         <div className="exact-hero-glow-2"></div>
 
-        <div className="exact-hero-bg">
-          <img className="about-desktop-hero-img" src="/boss_team_hero.jpg" alt="Showroom & Đội ngũ BOSS Đà Nẵng" />
-          <img className="about-mobile-hero-img" src="/about_team.jpg" alt="Showroom & Đội ngũ BOSS Đà Nẵng" />
-        </div>
+        <RevealOnScroll animation="fade-left" delay={200} className="exact-hero-bg-reveal">
+          <div className="exact-hero-bg">
+            <img className="about-desktop-hero-img" src="/boss_team_hero.jpg" alt="Showroom & Đội ngũ BOSS Đà Nẵng" />
+            <img className="about-mobile-hero-img" src="/about_team.jpg" alt="Showroom & Đội ngũ BOSS Đà Nẵng" />
+          </div>
+        </RevealOnScroll>
 
-        <div className="exact-hero-right-slogan">
-          Chất lượng tạo nên thương hiệu
-        </div>
+        <RevealOnScroll animation="fade-down" delay={350} className="exact-hero-slogan-reveal">
+          <div className="exact-hero-right-slogan">
+            Chất lượng tạo nên thương hiệu
+          </div>
+        </RevealOnScroll>
 
         <div className="exact-container">
           <div className="exact-hero-grid">

@@ -43,7 +43,7 @@
 .project-detail-main-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 1.5rem 1rem 3rem 1rem;
+  padding: 0.85rem 1rem 2.5rem 1rem;
 }
 
 /* TOP CONTROLS */
@@ -51,7 +51,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.25rem;
+  margin-bottom: 0.75rem;
 }
 
 .btn-back-link {
@@ -59,12 +59,12 @@
   align-items: center;
   gap: 6px;
   color: #07522f;
-  font-size: 0.88rem;
+  font-size: 0.82rem;
   font-weight: 700;
   text-decoration: none;
   background: rgba(7, 82, 47, 0.08);
-  padding: 8px 14px;
-  border-radius: 8px;
+  padding: 6px 12px;
+  border-radius: 7px;
   transition: all 0.2s ease;
 }
 
@@ -80,9 +80,9 @@
   background: #ffffff;
   border: 1px solid #cbd5e1;
   color: #334155;
-  padding: 8px 14px;
-  border-radius: 8px;
-  font-size: 0.85rem;
+  padding: 6px 12px;
+  border-radius: 7px;
+  font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -96,80 +96,80 @@
 /* HEADER */
 .project-detail-header {
   background: #ffffff;
-  border-radius: 16px;
-  padding: 2rem 2.25rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  padding: 1.15rem 1.4rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
   border: 1px solid #e2e8f0;
-  margin-bottom: 2rem;
+  margin-bottom: 1.15rem;
 }
 
 .header-badge-row {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 1rem;
+  gap: 8px;
+  margin-bottom: 0.65rem;
 }
 
 .badge-category {
   background: #07522f;
   color: #ffffff;
-  padding: 5px 12px;
-  border-radius: 6px;
-  font-size: 0.8rem;
+  padding: 4px 10px;
+  border-radius: 5px;
+  font-size: 0.75rem;
   font-weight: 700;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
   text-transform: uppercase;
 }
 
 .badge-year {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   background: #f1f5f9;
   color: #475569;
-  padding: 5px 12px;
-  border-radius: 6px;
-  font-size: 0.8rem;
+  padding: 4px 10px;
+  border-radius: 5px;
+  font-size: 0.75rem;
   font-weight: 600;
 }
 
 .badge-verified {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   background: rgba(16, 185, 129, 0.12);
   color: #059669;
   border: 1px solid rgba(16, 185, 129, 0.3);
-  padding: 5px 12px;
-  border-radius: 6px;
-  font-size: 0.8rem;
+  padding: 4px 10px;
+  border-radius: 5px;
+  font-size: 0.75rem;
   font-weight: 700;
 }
 
 .project-main-title {
-  font-size: 2.1rem;
+  font-size: 1.6rem;
   font-weight: 900;
   color: #07522f;
-  line-height: 1.35;
-  margin: 0 0 1.25rem 0;
+  line-height: 1.3;
+  margin: 0 0 0.75rem 0;
 }
 
 .project-meta-strip {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 1.5rem;
-  padding-top: 1rem;
+  gap: 1.25rem;
+  padding-top: 0.65rem;
   border-top: 1px solid #f1f5f9;
-  font-size: 0.92rem;
+  font-size: 0.86rem;
   color: #64748b;
 }
 
 .meta-strip-item {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
 }
 
 .meta-icon {
@@ -180,7 +180,7 @@
 .project-detail-layout-grid {
   display: grid;
   grid-template-columns: 1fr 340px;
-  gap: 2rem;
+  gap: 1.25rem;
   align-items: start;
 }
 
@@ -930,13 +930,14 @@ a.project-article-link:hover {
     grid-template-columns: 1fr;
   }
   .project-main-title {
-    font-size: 1.7rem;
+    font-size: 1.45rem;
   }
   .project-detail-header {
-    padding: 1.5rem;
+    padding: 1rem 1.15rem;
+    margin-bottom: 1rem;
   }
   .project-article-body-wrapper {
-    padding: 1.75rem 1.25rem;
+    padding: 1.5rem 1.15rem;
   }
   .related-projects-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -944,6 +945,13 @@ a.project-article-link:hover {
 }
 
 @media (max-width: 640px) {
+  .project-detail-main-container {
+    padding: 0.65rem 0.75rem 2rem 0.75rem;
+  }
+  .project-detail-header {
+    padding: 0.85rem 0.95rem;
+    margin-bottom: 0.85rem;
+  }
   .hero-main-photo-holder {
     height: 300px;
   }
@@ -966,12 +974,15 @@ a.project-article-link:hover {
     grid-template-columns: 1fr;
   }
   .project-main-title {
-    font-size: 1.45rem;
+    font-size: 1.25rem;
+    line-height: 1.35;
   }
   .project-meta-strip {
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.65rem;
+    gap: 0.5rem;
+    padding-top: 0.5rem;
+    font-size: 0.82rem;
   }
   .cta-box-buttons {
     flex-direction: column;

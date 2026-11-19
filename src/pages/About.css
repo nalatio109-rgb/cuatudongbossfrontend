@@ -104,6 +104,33 @@
   }
 }
 
+.exact-hero-bg-reveal {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 58%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.exact-hero-bg-reveal .exact-hero-bg {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.exact-hero-slogan-reveal {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.75rem;
+  z-index: 3;
+}
+
+.exact-hero-slogan-reveal .exact-hero-right-slogan {
+  position: static;
+}
+
 .exact-hero-bg {
   position: absolute;
   top: 0;
@@ -114,28 +141,16 @@
   overflow: hidden;
 }
 
-/* Smooth Ken Burns cinematic zoom on building photo */
+/* Static building photo on desktop (không chuyển động, nâng ảnh lên thấy đến đầu gối) */
 .exact-hero-bg img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 28%;
+  object-position: center 80%;
   opacity: 1;
   mask-image: linear-gradient(to right, transparent 0%, black 20%);
   -webkit-mask-image: linear-gradient(to right, transparent 0%, black 20%);
-  animation: heroBgPan 22s ease-in-out infinite alternate;
   transform-origin: center right;
-  will-change: transform;
-}
-
-@keyframes heroBgPan {
-  0% {
-    transform: scale(1) translate(0, 0);
-  }
-
-  100% {
-    transform: scale(1.06) translate(-1.5%, -1%);
-  }
 }
 
 .exact-hero-grid {
@@ -1398,20 +1413,56 @@
     display: inline !important;
   }
 
-  /* Ảnh nền Hero: Trên mobile hiển thị ảnh showroom & đội ngũ sau lưng chữ */
+  /* Tắt toàn bộ hiệu ứng chuyển động trong Hero Banner trên Mobile */
+  .exact-hero-glow-1,
+  .exact-hero-glow-2 {
+    display: none !important;
+    animation: none !important;
+  }
+
+  /* Ảnh nền Hero: Trên mobile hiển thị ảnh showroom & đội ngũ sau lưng chữ, đứng yên tĩnh */
   .about-desktop-hero-img {
     display: none !important;
+  }
+
+  .exact-hero-bg,
+  .exact-hero-bg *,
+  .exact-hero-bg img,
+  .exact-hero-bg .about-mobile-hero-img {
+    animation: none !important;
+    transition: none !important;
+    will-change: auto !important;
   }
 
   .exact-hero-bg .about-mobile-hero-img {
     display: block !important;
     width: 130% !important;
     max-width: none !important;
-    height: 100% !important;
+    height: 115% !important;
     object-fit: cover !important;
-    object-position: 25% 42% !important;
-    transform: translateX(45px) !important;
+    object-position: 25% 52% !important;
+    transform: translate(45px, -24px) !important;
+  }
+
+  .hero-live-dot,
+  .exact-hero-title .gold-cursive,
+  .exact-btn-yellow::after,
+  .exact-hero-left,
+  .exact-hero-left.reveal-on-scroll {
     animation: none !important;
+    transform: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+  }
+
+  .exact-hero-bg-reveal {
+    width: 100% !important;
+    height: 100% !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
 
   .exact-hero-bg {
@@ -1617,6 +1668,21 @@
 
   .exact-hero-bg {
     opacity: 1 !important;
+  }
+
+  .exact-hero-bg,
+  .exact-hero-bg *,
+  .exact-hero-bg img,
+  .exact-hero-bg .about-mobile-hero-img {
+    animation: none !important;
+    transition: none !important;
+    will-change: auto !important;
+  }
+
+  .exact-hero-bg .about-mobile-hero-img {
+    transform: translate(45px, -26px) !important;
+    height: 118% !important;
+    object-position: 25% 54% !important;
   }
 
   .exact-hero-bg img {

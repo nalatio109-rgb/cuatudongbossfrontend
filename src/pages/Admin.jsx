@@ -11,6 +11,7 @@ import AdminCategorySeo from "../components/AdminCategorySeo";
 import AdminPriceQuote from "../components/AdminPriceQuote";
 import AdminProductArticleEditor from "../components/AdminProductArticleEditor";
 import AdminProjectArticleEditor, { SAMPLE_PROJECT_TEMPLATE } from "../components/AdminProjectArticleEditor";
+import AdminNewsArticleEditor, { SAMPLE_NEWS_TEMPLATE } from "../components/AdminNewsArticleEditor";
 import AdminProductQuickInfoCard from "../components/AdminProductQuickInfoCard";
 import { getProductCardDescription } from "../utils/productDescriptionHelper";
 import { useAuth } from "../context/AuthContext";
@@ -18,6 +19,7 @@ import { slugify } from "../utils/slug.js";
 import { matchKeywords, extractSearchableText } from "../utils/searchHelper";
 import { DEFAULT_SERVICES as DEFAULT_SAMPLE_SERVICES } from "../data/defaultServices";
 import { compressImage } from "../utils/imageCompressor";
+import { sortByNewest } from "../utils/sortHelper";
 import "./Admin.css";
 
 const DEFAULT_SAMPLE_REVIEWS = [
@@ -161,8 +163,9 @@ export default function Admin() {
   const [editingProject, setEditingProject] = useState(null);
   const projectFormRef = useRef(null);
 
-  const [showNewsModal, setShowNewsModal] = useState(false);
+  const [showNewsForm, setShowNewsForm] = useState(false);
   const [editingNews, setEditingNews] = useState(null);
+  const newsFormRef = useRef(null);
 
   const [showServiceModal, setShowServiceModal] = useState(false);
   const [editingService, setEditingService] = useState(null);
@@ -187,6 +190,7 @@ export default function Admin() {
     title: "",
     category: "Cửa Cuốn Khe Thoáng",
     location: "Đà Nẵng",
+    completedDate: "",
     image: "",
     images: [],
     gallery: [],
@@ -197,7 +201,8 @@ export default function Admin() {
   const initialNewsState = {
     title: "",
     slug: "",
-    image: "https://images.unsplash.com/photo-1541888946425-d0fbb186a5b7?auto=format&fit=crop&w=800&q=80",
+    category: "Tư vấn & Kinh nghiệm",
+    image: "",
     date: new Date().toLocaleDateString("vi-VN"),
     summary: "",
     content: "",
@@ -339,12 +344,76 @@ export default function Admin() {
           if (!exists) merged.push(lp);
         });
 
+        // Sắp xếp bài viết mới nhất lên đầu tiên
+        merged.sort(sortByNewest);
+
         setProjects(merged);
         localStorage.setItem("boss_admin_projects", JSON.stringify(merged));
       } else if (localProjects.length > 0) {
+        localProjects.sort(sortByNewest);
         setProjects(localProjects);
       }
-      if (dataN && dataN.success) setNews(dataN.data);
+      let localNews = [];
+      try {
+        const localN = localStorage.getItem("boss_admin_news");
+        if (localN) {
+          const parsed = JSON.parse(localN);
+          if (Array.isArray(parsed)) localNews = parsed.filter(n => n && typeof n === 'object');
+        }
+      } catch (_) { }
+
+      if (dataN && dataN.success && Array.isArray(dataN.data) && dataN.data.length > 0) {
+        const validApi = dataN.data.filter(n => n && typeof n === 'object');
+        const mergedNews = validApi.map((apiN) => {
+          const apiId = String(apiN._id || apiN.id || '').trim();
+          const apiTitle = String(apiN.title || '').trim().toLowerCase();
+
+          const localMatch = localNews.find((ln) => {
+            if (!ln) return false;
+            const lnId = String(ln._id || ln.id || '').trim();
+            const lnTitle = String(ln.title || '').trim().toLowerCase();
+            if (apiId && lnId && apiId === lnId) return true;
+            if (apiTitle && lnTitle && apiTitle === lnTitle) return true;
+            return false;
+          });
+
+          if (localMatch) {
+            return {
+              ...apiN,
+              ...localMatch,
+              content: (typeof localMatch.content === 'string' && localMatch.content.trim())
+                ? localMatch.content
+                : (typeof apiN.content === 'string' ? apiN.content : "")
+            };
+          }
+          return apiN;
+        });
+
+        localNews.forEach((ln) => {
+          if (!ln) return;
+          const lnId = String(ln._id || ln.id || '').trim();
+          const lnTitle = String(ln.title || '').trim().toLowerCase();
+          const exists = mergedNews.some((n) => {
+            if (!n) return false;
+            const nId = String(n._id || n.id || '').trim();
+            const nTitle = String(n.title || '').trim().toLowerCase();
+            if (nId && lnId && nId === lnId) return true;
+            if (nTitle && lnTitle && nTitle === lnTitle) return true;
+            return false;
+          });
+          if (!exists) mergedNews.push(ln);
+        });
+
+        mergedNews.sort(sortByNewest);
+        setNews(mergedNews);
+        localStorage.setItem("boss_admin_news", JSON.stringify(mergedNews));
+      } else if (localNews.length > 0) {
+        localNews.sort(sortByNewest);
+        setNews(localNews);
+      } else if (dataN && dataN.success && Array.isArray(dataN.data)) {
+        const sortedNews = [...dataN.data].sort(sortByNewest);
+        setNews(sortedNews);
+      }
 
       let loadedServices = [];
       if (dataS && dataS.success && Array.isArray(dataS.data) && dataS.data.length > 0) {
@@ -628,6 +697,7 @@ export default function Admin() {
       title: "",
       category: "Cửa Cuốn Khe Thoáng",
       location: "Đà Nẵng",
+      completedDate: "",
       image: "",
       images: [],
       gallery: [],
@@ -672,6 +742,7 @@ export default function Admin() {
       title: project.title || "",
       category: project.category || "Cửa Cuốn Khe Thoáng",
       location: project.location || "Đà Nẵng",
+      completedDate: project.completedDate || (project.date || ""),
       image: existingImages[0] || project.image || "",
       images: existingImages,
       gallery: existingImages,
@@ -969,24 +1040,27 @@ export default function Admin() {
         }
       }
 
+      const nowIso = new Date().toISOString();
       // Luôn đảm bảo content bài viết của người dùng được giữ nguyên 100%
       const finalItem = {
         ...payload,
         ...(apiSavedItem || {}),
         content: (apiSavedItem && apiSavedItem.content && apiSavedItem.content.trim())
           ? apiSavedItem.content
-          : payload.content
+          : payload.content,
+        createdAt: (apiSavedItem && apiSavedItem.createdAt) || (editingProject && editingProject.createdAt) || nowIso,
+        updatedAt: nowIso
       };
 
-      const updated = editingProject
-        ? projects.map(p =>
-            ((editingProject._id && p._id === editingProject._id) ||
-             (editingProject.id && p.id === editingProject.id) ||
-             (p.title === editingProject.title))
-              ? finalItem
-              : p
-          )
-        : [finalItem, ...projects];
+      // Luôn đưa bài viết vừa mới tạo hoặc vừa cập nhật lên đầu danh sách, các bài cũ đẩy xuống
+      const filtered = projects.filter(p => {
+        const pId = String(p._id || p.id || '').trim();
+        const editId = String(editingProject?._id || editingProject?.id || '').trim();
+        if (editId && pId && editId === pId) return false;
+        if (editingProject && p.title && editingProject.title && p.title.trim().toLowerCase() === editingProject.title.trim().toLowerCase()) return false;
+        return true;
+      });
+      const updated = [finalItem, ...filtered].sort(sortByNewest);
 
       setProjects(updated);
       localStorage.setItem("boss_admin_projects", JSON.stringify(updated));
@@ -1022,77 +1096,158 @@ export default function Admin() {
   const handleOpenAddNews = () => {
     setEditingNews(null);
     setNewsForm(initialNewsState);
-    setShowNewsModal(true);
+    setShowNewsForm(true);
+    setTimeout(() => {
+      newsFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
   };
 
   const handleOpenEditNews = (article) => {
     setEditingNews(article);
     setNewsForm({
       title: article.title || "",
-      slug: article.slug || "",
+      slug: article.slug || slugify(article.title || ""),
+      category: article.category || "Tư vấn & Kinh nghiệm",
       image: article.image || "",
       date: article.date || new Date().toLocaleDateString("vi-VN"),
       summary: article.summary || "",
       content: article.content || "",
       author: article.author || "BOSS Đà Nẵng"
     });
-    setShowNewsModal(true);
+    setShowNewsForm(true);
+    setTimeout(() => {
+      newsFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
   };
 
-  const handleNewsSubmit = async (e) => {
-    e.preventDefault();
+  const handleNewsSubmit = async (e, directContent) => {
+    if (e && e.preventDefault) e.preventDefault();
     try {
+      const contentHtml = (typeof directContent === "string" ? directContent : newsForm.content) || "";
+
+      // 1. Tự động trích xuất các link ảnh có trong bài viết
+      const imgRegex = /<img[^>]+src=["']([^"']+)["']/gi;
+      const extractedImgs = [];
+      let match;
+      while ((match = imgRegex.exec(contentHtml)) !== null) {
+        if (match[1] && !extractedImgs.includes(match[1])) {
+          extractedImgs.push(match[1]);
+        }
+      }
+
+      // Tự động lấy ảnh đầu tiên xuất hiện trong bài viết làm ảnh bìa chính (Thumbnail) nếu chưa có
+      let primaryImage = newsForm.image || extractedImgs[0] || "";
+      if (!primaryImage) {
+        primaryImage = "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80";
+      }
+
+      // 2. Bảo lưu tóm tắt hoặc trích xuất đoạn văn đầu tiên từ bài viết làm tóm tắt
+      let shortSummary = newsForm.summary || "";
+      if (!shortSummary.trim() && contentHtml.trim()) {
+        const plainText = contentHtml.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+        shortSummary = plainText.length > 180 ? plainText.substring(0, 180) + "..." : plainText;
+      }
+
+      const generatedSlug = newsForm.slug && newsForm.slug.trim() 
+        ? slugify(newsForm.slug.trim()) 
+        : slugify(newsForm.title || "tin-tuc-boss");
+
+      const tempId = editingNews ? (editingNews._id || editingNews.id) : `news-${Date.now()}`;
       const payload = {
         ...newsForm,
-        slug: newsForm.slug && newsForm.slug.trim() ? newsForm.slug.trim() : slugify(newsForm.title)
+        _id: tempId,
+        id: tempId,
+        title: newsForm.title || "Bài viết tin tức BOSS Đà Nẵng",
+        slug: generatedSlug,
+        category: newsForm.category || "Tư vấn & Kinh nghiệm",
+        author: newsForm.author || "BOSS Đà Nẵng",
+        date: newsForm.date || new Date().toLocaleDateString("vi-VN"),
+        image: primaryImage,
+        summary: shortSummary || "Cập nhật tin tức thị trường và cẩm nang lựa chọn cửa cuốn tại Đà Nẵng.",
+        content: contentHtml
       };
 
-      let res, data;
-      if (editingNews) {
-        res = await fetch(`${import.meta.env.VITE_API_URL}/api/news/${editingNews._id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-        data = await res.json();
-        if (data.success) {
-          setNews(news.map(n => n._id === editingNews._id ? data.data : n));
-          showToast("✨ Đã cập nhật bài viết thành công!");
-        }
-      } else {
-        res = await fetch(`${import.meta.env.VITE_API_URL}/api/news`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-        data = await res.json();
-        if (data.success) {
-          setNews([data.data, ...news]);
-          showToast("🎉 Thêm bài viết mới thành công!");
+      let apiSavedItem = null;
+      const backendBase = import.meta.env.VITE_API_URL || "";
+      if (backendBase) {
+        try {
+          if (editingNews) {
+            const editId = editingNews._id || editingNews.id;
+            const res = await fetch(`${backendBase}/api/news/${editId}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload)
+            });
+            if (res.ok) {
+              const resJson = await res.json();
+              if (resJson && resJson.success && resJson.data) {
+                apiSavedItem = resJson.data;
+              }
+            }
+          } else {
+            const res = await fetch(`${backendBase}/api/news`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload)
+            });
+            if (res.ok) {
+              const resJson = await res.json();
+              if (resJson && resJson.success && resJson.data) {
+                apiSavedItem = resJson.data;
+              }
+            }
+          }
+        } catch (apiErr) {
+          console.warn("News API error, falling back to local save:", apiErr);
         }
       }
 
-      if (data.success) {
-        setShowNewsModal(false);
-      }
+      const nowIso = new Date().toISOString();
+      const finalItem = {
+        ...payload,
+        ...(apiSavedItem || {}),
+        content: (apiSavedItem && apiSavedItem.content && apiSavedItem.content.trim())
+          ? apiSavedItem.content
+          : payload.content,
+        createdAt: (apiSavedItem && apiSavedItem.createdAt) || (editingNews && editingNews.createdAt) || nowIso,
+        updatedAt: nowIso
+      };
+
+      // Luôn đưa bài viết vừa mới tạo hoặc vừa cập nhật lên đầu danh sách, các bài cũ đẩy xuống
+      const filtered = news.filter(n => {
+        const nId = String(n._id || n.id || '').trim();
+        const editId = String(editingNews?._id || editingNews?.id || '').trim();
+        if (editId && nId && editId === nId) return false;
+        if (editingNews && n.title && editingNews.title && n.title.trim().toLowerCase() === editingNews.title.trim().toLowerCase()) return false;
+        return true;
+      });
+      const updated = [finalItem, ...filtered].sort(sortByNewest);
+
+      setNews(updated);
+      localStorage.setItem("boss_admin_news", JSON.stringify(updated));
+      setShowNewsForm(false);
+      setEditingNews(null);
+      showToast(editingNews ? "✨ Đã cập nhật bài viết tin tức thành công!" : "🎉 Đã thêm và đăng bài viết tin tức thành công!");
     } catch (err) {
       console.error("News Submit Error:", err);
-      showToast("❌ Lỗi khi lưu bài viết");
+      showToast("❌ Có lỗi xảy ra khi lưu bài viết tin tức.");
     }
   };
 
   const handleDeleteNews = async (id) => {
-    if (!window.confirm("Bạn có chắc muốn xóa bài viết này?")) return;
+    if (!window.confirm("Bạn có chắc muốn xóa bài viết tin tức này?")) return;
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/news/${id}`, { method: "DELETE" });
-      const data = await res.json();
-      if (data.success) {
-        setNews(news.filter(n => n._id !== id));
-        showToast("🗑️ Đã xóa bài viết thành công!");
-      }
+      await fetch(`${import.meta.env.VITE_API_URL}/api/news/${id}`, { method: "DELETE" }).catch(() => null);
+      const updated = news.filter(n => n._id !== id && n.id !== id);
+      setNews(updated);
+      localStorage.setItem("boss_admin_news", JSON.stringify(updated));
+      showToast("🗑️ Đã xóa bài viết tin tức thành công!");
     } catch (err) {
       console.error("Delete news error:", err);
-      showToast("❌ Lỗi khi xóa bài viết");
+      const updated = news.filter(n => n._id !== id && n.id !== id);
+      setNews(updated);
+      localStorage.setItem("boss_admin_news", JSON.stringify(updated));
+      showToast("🗑️ Đã xóa bài viết tin tức!");
     }
   };
 
@@ -2502,6 +2657,7 @@ export default function Admin() {
                     <th>Tên công trình</th>
                     <th>Hạng mục</th>
                     <th>Địa điểm</th>
+                    <th>Ngày thi công</th>
                     <th>Mô tả</th>
                     <th>Thao tác</th>
                   </tr>
@@ -2516,6 +2672,11 @@ export default function Admin() {
                         <td style={{ fontWeight: 600 }}>{pr.title}</td>
                         <td><span className="admin-badge-category">{pr.category}</span></td>
                         <td>{pr.location}</td>
+                        <td>
+                          <span style={{ fontSize: "0.85rem", color: "#07522f", fontWeight: 600, background: "rgba(7, 82, 47, 0.08)", padding: "3px 8px", borderRadius: "5px", whiteSpace: "nowrap" }}>
+                            {pr.completedDate || (pr.createdAt ? new Date(pr.createdAt).toLocaleDateString("vi-VN") : "—")}
+                          </span>
+                        </td>
                         <td style={{ maxWidth: 280, fontSize: "0.85rem", color: "#94a3b8" }}>{pr.description}</td>
                         <td>
                           <button
@@ -2557,23 +2718,83 @@ export default function Admin() {
                     <Search size={16} />
                     <input
                       type="text"
-                      placeholder="Tìm tiêu đề bài viết..."
+                      placeholder="Tìm tiêu đề, nội dung, chuyên mục..."
                       value={newsSearch}
                       onChange={(e) => setNewsSearch(e.target.value)}
                       className="admin-search-input"
                     />
                   </div>
-                  <button className="btn-add-new" onClick={handleOpenAddNews}>
-                    <Plus size={16} /> THÊM BÀI VIẾT MỚI
+                  <button
+                    className="btn-add-new"
+                    onClick={showNewsForm && !editingNews ? () => { setShowNewsForm(false); setEditingNews(null); } : handleOpenAddNews}
+                    style={showNewsForm && !editingNews ? { background: "rgba(239, 68, 68, 0.2)", color: "#f87171", border: "1px solid rgba(239, 68, 68, 0.4)" } : {}}
+                  >
+                    {showNewsForm && !editingNews ? (
+                      <>
+                        <X size={16} /> ĐÓNG KHUNG NHẬP
+                      </>
+                    ) : (
+                      <>
+                        <Plus size={16} /> THÊM BÀI VIẾT MỚI
+                      </>
+                    )}
                   </button>
                 </div>
               </div>
+
+              {/* KHUNG BIỂU MẪU THÊM / SỬA TIN TỨC NẰM TRỰC TIẾP TRÊN TRANG (INLINE FORM KHÔNG BỊ MODAL CHE NỀN) */}
+              {showNewsForm && (
+                <div className="admin-inline-form-card" ref={newsFormRef}>
+                  <div className="inline-form-header">
+                    <div className="inline-form-title">
+                      <h3>
+                        {editingNews ? (
+                          <>
+                            <span>✏️ Chỉnh Sửa Bài Viết Tin Tức:</span>
+                            <span className="highlight-text">{editingNews.title}</span>
+                          </>
+                        ) : (
+                          <>
+                            <span>➕ Soạn Thảo & Đăng Bài Viết Tin Tức Mới</span>
+                          </>
+                        )}
+                      </h3>
+                      <p className="inline-form-desc">
+                        {editingNews
+                          ? "Cập nhật nội dung, tiêu đề, danh mục, hình ảnh minh họa và đường dẫn SEO của bài viết tin tức bên dưới."
+                          : "Soạn bài viết tin tức chuyên ngành, cẩm nang chọn cửa hoặc kinh nghiệm thi công với trình soạn thảo trực quan đầy đủ tính năng."}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      className="btn-close-inline-form"
+                      onClick={() => { setShowNewsForm(false); setEditingNews(null); }}
+                      title="Đóng biểu mẫu"
+                    >
+                      <X size={16} />
+                      <span>Đóng</span>
+                    </button>
+                  </div>
+
+                  <AdminNewsArticleEditor
+                    newsForm={newsForm}
+                    setNewsForm={setNewsForm}
+                    editingNews={editingNews}
+                    onSave={handleNewsSubmit}
+                    onCancel={() => { setShowNewsForm(false); setEditingNews(null); }}
+                    showToast={showToast}
+                    compressImage={compressImage}
+                  />
+                </div>
+              )}
+
               <div className="table-scroll-hint"><span>⇄ Vuốt sang ngang để xem đầy đủ cột</span></div>
               <table className="admin-table">
                 <thead>
                   <tr>
                     <th>Hình ảnh</th>
                     <th>Tiêu đề bài viết</th>
+                    <th>Chuyên mục</th>
                     <th>Ngày đăng</th>
                     <th>Tác giả</th>
                     <th>Tóm tắt ngắn</th>
@@ -2583,9 +2804,9 @@ export default function Admin() {
                 <tbody>
                   {filteredNews.length > 0 ? (
                     filteredNews.map((n) => (
-                      <tr key={n._id}>
+                      <tr key={n._id || n.id}>
                         <td>
-                          <img src={n.image} alt={n.title} style={{ width: 60, height: 40, objectFit: "cover", borderRadius: 6 }} />
+                          <img src={n.image || "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=120&q=80"} alt={n.title} style={{ width: 60, height: 40, objectFit: "cover", borderRadius: 6 }} />
                         </td>
                         <td style={{ fontWeight: 600 }}>
                           <div>{n.title}</div>
@@ -2595,9 +2816,14 @@ export default function Admin() {
                             </Link>
                           </div>
                         </td>
+                        <td>
+                          <span className="admin-badge-category" style={{ background: "rgba(16, 185, 129, 0.15)", color: "#10b981", border: "1px solid rgba(16, 185, 129, 0.3)" }}>
+                            {n.category || "Tư vấn"}
+                          </span>
+                        </td>
                         <td>{n.date}</td>
                         <td><span className="admin-badge-category">{n.author || "BOSS"}</span></td>
-                        <td style={{ maxWidth: 280, fontSize: "0.85rem", color: "#94a3b8" }}>{n.summary}</td>
+                        <td style={{ maxWidth: 260, fontSize: "0.85rem", color: "#94a3b8" }}>{n.summary}</td>
                         <td>
                           <button
                             className="btn-action-icon edit"
@@ -2608,7 +2834,7 @@ export default function Admin() {
                           </button>
                           <button
                             className="btn-action-icon delete"
-                            onClick={() => handleDeleteNews(n._id)}
+                            onClick={() => handleDeleteNews(n._id || n.id)}
                             title="Xóa bài viết"
                           >
                             <Trash2 size={16} />
@@ -2618,7 +2844,7 @@ export default function Admin() {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan="6" style={{ textAlign: "center", padding: "2rem" }}>
+                      <td colSpan="7" style={{ textAlign: "center", padding: "2rem" }}>
                         Chưa có bài viết tin tức nào.
                       </td>
                     </tr>
@@ -3310,104 +3536,6 @@ export default function Admin() {
         </div>
       )}
 
-      {/* MODAL THÊM / SỬA TIN TỨC */}
-      {showNewsModal && (
-        <div className="admin-modal-overlay">
-          <div className="admin-modal-card">
-            <div className="modal-header">
-              <h3>{editingNews ? "✏️ Chỉnh Sửa Bài Viết Tin Tức" : "➕ Thêm Bài Viết Tin Tức Mới"}</h3>
-              <button style={{ background: "none", border: "none", color: "white", cursor: "pointer" }} onClick={() => setShowNewsModal(false)}>
-                <X size={20} />
-              </button>
-            </div>
-            <form onSubmit={handleNewsSubmit}>
-              <div className="admin-form-group">
-                <label>Tiêu đề bài viết *</label>
-                <input
-                  type="text"
-                  value={newsForm.title}
-                  onChange={(e) => {
-                    const newTitle = e.target.value;
-                    setNewsForm((prev) => ({
-                      ...prev,
-                      title: newTitle,
-                      slug: !editingNews ? slugify(newTitle) : prev.slug
-                    }));
-                  }}
-                  required
-                  placeholder="Ví dụ: Xu Hướng Lắp Đặt Cửa Cuốn Cao Cấp 2026"
-                />
-              </div>
-
-              <div className="admin-form-group">
-                <label>Đường dẫn tĩnh SEO (Slug không dấu)</label>
-                <input
-                  type="text"
-                  value={newsForm.slug}
-                  onChange={(e) => setNewsForm({ ...newsForm, slug: e.target.value })}
-                  placeholder="ví dụ: cua-khe-thoang-giai-phap-lay-sang"
-                />
-              </div>
-
-              <div className="admin-form-grid-2">
-                <div className="admin-form-group">
-                  <label>Ngày đăng</label>
-                  <input
-                    type="text"
-                    value={newsForm.date}
-                    onChange={(e) => setNewsForm({ ...newsForm, date: e.target.value })}
-                  />
-                </div>
-                <div className="admin-form-group">
-                  <label>Tác giả</label>
-                  <input
-                    type="text"
-                    value={newsForm.author}
-                    onChange={(e) => setNewsForm({ ...newsForm, author: e.target.value })}
-                  />
-                </div>
-              </div>
-
-              <div className="admin-form-group">
-                <label>URL Hình ảnh đại diện *</label>
-                <input
-                  type="text"
-                  value={newsForm.image}
-                  onChange={(e) => setNewsForm({ ...newsForm, image: e.target.value })}
-                  required
-                />
-              </div>
-
-              <div className="admin-form-group">
-                <label>Tóm tắt ngắn</label>
-                <textarea
-                  rows="2"
-                  value={newsForm.summary}
-                  onChange={(e) => setNewsForm({ ...newsForm, summary: e.target.value })}
-                  placeholder="Tóm tắt ngắn gọn bài viết..."
-                ></textarea>
-              </div>
-
-              <div className="admin-form-group">
-                <label>Nội dung chi tiết</label>
-                <textarea
-                  rows="4"
-                  value={newsForm.content}
-                  onChange={(e) => setNewsForm({ ...newsForm, content: e.target.value })}
-                  placeholder="Nội dung bài viết..."
-                ></textarea>
-              </div>
-
-              <div className="modal-footer">
-                <button type="button" className="btn-cancel" onClick={() => setShowNewsModal(false)}>Hủy</button>
-                <button type="submit" className="btn-save">
-                  {editingNews ? "Cập Nhật Bài Viết" : "Lưu Bài Viết"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
 
       {/* MODAL THÊM / SỬA DỊCH VỤ */}
       {showServiceModal && (

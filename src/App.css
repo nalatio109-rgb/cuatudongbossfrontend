@@ -73,6 +73,50 @@ a.project-article-link:hover {
   text-decoration-color: #1d4ed8 !important;
 }
 
+/* ==========================================================================
+   GLOBAL REVEAL ON SCROLL ANIMATIONS (HIỆU ỨNG CHUYỂN ĐỘNG KHI LƯỚT TỚI NƠI)
+   ========================================================================== */
+.reveal-element {
+  opacity: 0;
+  will-change: opacity, transform;
+  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.reveal-element.reveal-fade-up {
+  transform: translateY(35px);
+}
+
+.reveal-element.reveal-fade-down {
+  transform: translateY(-35px);
+}
+
+.reveal-element.reveal-fade-left {
+  transform: translateX(-40px);
+}
+
+.reveal-element.reveal-fade-right {
+  transform: translateX(40px);
+}
+
+.reveal-element.reveal-zoom-in {
+  transform: scale(0.92);
+}
+
+.reveal-element.reveal-zoom-out {
+  transform: scale(1.08);
+}
+
+.reveal-element.reveal-fade {
+  transform: none;
+}
+
+.reveal-element.is-revealed {
+  opacity: 1 !important;
+  transform: translate(0, 0) scale(1) !important;
+}
+
 .container {
   width: min(1200px, calc(100% - 50px));
   margin: auto;

@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import RevealOnScroll from "./RevealOnScroll";
 import { getProjectSlug } from "../utils/slug";
+import { sortByNewest } from "../utils/sortHelper";
 import "./Projects.css";
 
 // Danh sách công trình thực tế có đầy đủ bài viết và chùm ảnh
@@ -290,12 +291,48 @@ export default function Projects() {
   useEffect(() => {
     const fetchRealProjects = async () => {
       try {
+        let apiProjects = [];
         const apiUrl = import.meta.env.VITE_API_URL || '';
-        const res = await fetch(`${apiUrl}/api/projects`);
-        const data = await res.json();
-        if (data.success && Array.isArray(data.data) && data.data.length > 0) {
-          const mapped = data.data.map((p, idx) => ({
-            id: p._id || `db-${idx}`,
+        try {
+          const res = await fetch(`${apiUrl}/api/projects`);
+          const data = await res.json();
+          if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+            apiProjects = data.data;
+          }
+        } catch (_) {}
+
+        let localProjects = [];
+        try {
+          const localSaved = localStorage.getItem("boss_admin_projects");
+          if (localSaved) {
+            const parsed = JSON.parse(localSaved);
+            if (Array.isArray(parsed)) localProjects = parsed;
+          }
+        } catch (_) {}
+
+        // Kết hợp và giữ bài viết mới nhất
+        const combined = [...apiProjects];
+        localProjects.forEach((lp) => {
+          if (!lp) return;
+          const lpId = String(lp._id || lp.id || '').trim();
+          const lpTitle = String(lp.title || '').trim().toLowerCase();
+          const idx = combined.findIndex(p => {
+            const pId = String(p._id || p.id || '').trim();
+            const pTitle = String(p.title || '').trim().toLowerCase();
+            return (pId && lpId && pId === lpId) || (pTitle && lpTitle && pTitle === lpTitle);
+          });
+          if (idx >= 0) {
+            combined[idx] = { ...combined[idx], ...lp };
+          } else {
+            combined.push(lp);
+          }
+        });
+
+        if (combined.length > 0) {
+          combined.sort(sortByNewest);
+          const mapped = combined.map((p, idx) => ({
+            id: p._id || p.id || `db-${idx}`,
+            _id: p._id || p.id,
             title: p.title,
             category: p.category || "Công trình thực tế",
             image: p.image,
@@ -315,7 +352,9 @@ export default function Projects() {
             specs: [],
             summary: p.description || "Công trình thực tế thi công bởi BOSS Đà Nẵng.",
             articleContent: [p.description || "Công trình thi công hoàn thiện bởi đội ngũ kỹ thuật BOSS Đà Nẵng."],
-            content: p.content || ""
+            content: p.content || "",
+            createdAt: p.createdAt,
+            updatedAt: p.updatedAt
           }));
           setDbProjects(mapped);
         }

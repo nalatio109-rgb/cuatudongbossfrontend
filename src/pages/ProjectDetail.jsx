@@ -10,7 +10,6 @@ import {
   ChevronLeft,
   ShieldCheck,
   CheckCircle2,
-  Clock,
   Share2,
   Eye,
   Camera,
@@ -25,6 +24,7 @@ import RevealOnScroll from '../components/RevealOnScroll';
 import { getProjectSlug, slugify } from '../utils/slug';
 import { SAMPLE_PROJECT_TEMPLATE } from '../components/AdminProjectArticleEditor';
 import { HOMEPAGE_PROJECTS } from '../components/Projects';
+import { sortByNewest } from '../utils/sortHelper';
 import './ProjectDetail.css';
 
 const formatImgSrc = (src) => {
@@ -297,6 +297,9 @@ export default function ProjectDetail() {
           });
         }
 
+        // Sắp xếp bài viết / công trình mới nhất lên đầu tiên
+        combinedList.sort(sortByNewest);
+
         if (!isMounted) return;
         setAllProjects(combinedList);
 
@@ -351,6 +354,22 @@ export default function ProjectDetail() {
       isMounted = false;
     };
   }, [id]);
+
+  // Tự động gắn thuộc tính title để khi rê chuột vào bất kỳ link nào sẽ hiện URL đầy đủ
+  useEffect(() => {
+    if (project?.content) {
+      const container = document.querySelector(".project-article-rendered-content");
+      if (container) {
+        const anchors = container.querySelectorAll("a");
+        anchors.forEach((a) => {
+          const href = a.getAttribute("href");
+          if (href && !a.getAttribute("title")) {
+            a.setAttribute("title", `Đến trang: ${href}`);
+          }
+        });
+      }
+    }
+  }, [project?.content]);
 
   // Các công trình liên quan khác
   const relatedProjects = useMemo(() => {
@@ -455,12 +474,6 @@ export default function ProjectDetail() {
               <MapPin size={17} className="meta-icon" />
               <span>
                 <strong>Địa điểm:</strong> {project.location || 'Đà Nẵng'}
-              </span>
-            </div>
-            <div className="meta-strip-item">
-              <Clock size={17} className="meta-icon" />
-              <span>
-                <strong>Thời gian đọc:</strong> ~3 phút
               </span>
             </div>
             <div className="meta-strip-item">

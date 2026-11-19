@@ -19,13 +19,13 @@ import {
   Award,
   Wrench,
   Building2,
-  Eye,
-  Check
+  Eye
 } from 'lucide-react';
 import './Projects.css';
 import RevealOnScroll from '../components/RevealOnScroll';
 import AnimatedCounter from '../components/AnimatedCounter';
 import { getProjectSlug } from '../utils/slug';
+import { sortByNewest } from '../utils/sortHelper';
 
 const formatImgSrc = (src) => {
   if (!src) return '/project_1.png';
@@ -39,13 +39,115 @@ const formatImgSrc = (src) => {
   return src;
 };
 
+// Component trình chiếu ảnh tự động chuyển sang ảnh tiếp theo sau 3 giây
+function ProjectCardSlider({ proj, getProjectSlug, formatImgSrc }) {
+  const imagesList = useMemo(() => {
+    let list = [];
+    if (Array.isArray(proj.images) && proj.images.length > 0) {
+      list = proj.images;
+    } else if (Array.isArray(proj.gallery) && proj.gallery.length > 0) {
+      list = proj.gallery;
+    } else if (proj.image) {
+      list = [proj.image];
+    }
+    const unique = [];
+    list.forEach((img) => {
+      if (img && typeof img === 'string' && img.trim() && !unique.includes(img.trim())) {
+        unique.push(img.trim());
+      }
+    });
+    return unique.length > 0 ? unique : ['/project_1.png'];
+  }, [proj.images, proj.gallery, proj.image]);
+
+  const [activeIdx, setActiveIdx] = useState(0);
+  const [isPaused, setIsPaused] = useState(false);
+
+  useEffect(() => {
+    if (imagesList.length <= 1 || isPaused) return;
+
+    const timer = setInterval(() => {
+      setActiveIdx((prev) => (prev + 1) % imagesList.length);
+    }, 3000);
+
+    return () => clearInterval(timer);
+  }, [imagesList.length, isPaused]);
+
+  return (
+    <Link
+      to={`/cong-trinh/${getProjectSlug(proj)}`}
+      className="card-media-wrapper"
+      style={{ textDecoration: "none", display: "block" }}
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      onTouchStart={() => setIsPaused(true)}
+      onTouchEnd={() => setIsPaused(false)}
+    >
+      <div
+        className="card-slider-track"
+        style={{ transform: `translateX(-${activeIdx * 100}%)` }}
+      >
+        {imagesList.map((imgSrc, i) => (
+          <img
+            key={i}
+            src={formatImgSrc(imgSrc)}
+            alt={`${proj.title} - ảnh ${i + 1}`}
+            loading="lazy"
+            className="card-media-img"
+          />
+        ))}
+      </div>
+
+      <div className="card-media-overlay">
+        <span className="view-detail-badge">
+          <Eye size={16} /> Xem bài viết công trình
+        </span>
+      </div>
+
+      {/* Category Tag */}
+      {proj.category && (
+        <div className="card-badge-category">
+          {proj.category}
+        </div>
+      )}
+
+      {/* Số lượng hình ảnh nếu có nhiều ảnh */}
+      {imagesList.length > 1 && (
+        <div
+          style={{
+            position: "absolute",
+            bottom: "10px",
+            right: "10px",
+            background: "rgba(0, 0, 0, 0.75)",
+            color: "#fff",
+            padding: "3px 8px",
+            borderRadius: "12px",
+            fontSize: "0.72rem",
+            fontWeight: 600,
+            backdropFilter: "blur(4px)",
+            border: "1px solid rgba(255, 255, 255, 0.2)",
+            display: "flex",
+            alignItems: "center",
+            gap: "4px",
+            zIndex: 2,
+            transition: "all 0.2s ease"
+          }}
+        >
+          📷 {activeIdx + 1}/{imagesList.length} ảnh
+        </div>
+      )}
+    </Link>
+  );
+}
+
 export default function Projects() {
   const [projectsList, setProjectsList] = useState(() => {
     try {
       const saved = localStorage.getItem("boss_admin_projects");
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return [...parsed].sort(sortByNewest);
+        }
       }
     } catch (_) {}
     return [];
@@ -129,7 +231,9 @@ export default function Projects() {
                     'Bảo hành tận tâm 24/7'
                   ],
               description: item.description || 'Công trình thi công lắp đặt hoàn thiện bởi đội ngũ kỹ thuật BOSS Đà Nẵng.',
-              content: preservedContent
+              content: preservedContent,
+              createdAt: item.createdAt || (localMatch && localMatch.createdAt),
+              updatedAt: item.updatedAt || (localMatch && localMatch.updatedAt)
             };
           });
 
@@ -149,6 +253,9 @@ export default function Projects() {
             if (!exists) mappedApi.push(lp);
           });
 
+          // Sắp xếp bài viết mới nhất lên đầu tiên, bài cũ đẩy xuống
+          mappedApi.sort(sortByNewest);
+
           setProjectsList(mappedApi);
           localStorage.setItem("boss_admin_projects", JSON.stringify(mappedApi));
         } else {
@@ -156,7 +263,10 @@ export default function Projects() {
           if (localSaved) {
             try {
               const parsed = JSON.parse(localSaved);
-              if (Array.isArray(parsed)) setProjectsList(parsed);
+              if (Array.isArray(parsed)) {
+                parsed.sort(sortByNewest);
+                setProjectsList(parsed);
+              }
             } catch (_) {}
           }
         }
@@ -166,7 +276,10 @@ export default function Projects() {
         if (localSaved) {
           try {
             const parsed = JSON.parse(localSaved);
-            if (Array.isArray(parsed)) setProjectsList(parsed);
+            if (Array.isArray(parsed)) {
+              parsed.sort(sortByNewest);
+              setProjectsList(parsed);
+            }
           } catch (_) {}
         }
       } finally {
@@ -272,73 +385,33 @@ export default function Projects() {
             <div className="projects-modern-grid">
               {filteredProjects.map((proj, idx) => (
                 <RevealOnScroll
-                  key={proj.id || idx}
+                  key={proj.id || proj._id || idx}
                   animation="fade-up"
-                  delay={(idx % 3) * 100}
-                  className="project-modern-card"
+                  delay={(idx % 3) * 120}
+                  className="project-card-reveal-wrapper"
                 >
-                  {/* Card Image Wrapper */}
-                  <Link
-                    to={`/cong-trinh/${getProjectSlug(proj)}`}
-                    className="card-media-wrapper"
-                    style={{ textDecoration: "none", display: "block" }}
-                  >
-                    <img
-                      src={formatImgSrc(proj.image)}
-                      alt={proj.title}
-                      loading="lazy"
-                      className="card-media-img"
+                  <div className="project-modern-card">
+                    {/* Card Image Slider (Tự động nhảy ảnh sau 3 giây) */}
+                    <ProjectCardSlider
+                      proj={proj}
+                      getProjectSlug={getProjectSlug}
+                      formatImgSrc={formatImgSrc}
                     />
-                    <div className="card-media-overlay">
-                      <span className="view-detail-badge">
-                        <Eye size={16} /> Xem bài viết công trình
-                      </span>
-                    </div>
 
-                    {/* Category Tag */}
-                    <div className="card-badge-category">
-                      {proj.category}
-                    </div>
-
-                    {/* Completion Year */}
-                    {proj.completedDate && (
-                      <div className="card-badge-year">
-                        <Calendar size={13} /> {proj.completedDate}
-                      </div>
-                    )}
-
-                    {/* Số lượng hình ảnh nếu có nhiều ảnh */}
-                    {Array.isArray(proj.images) && proj.images.length > 1 && (
-                      <div
-                        style={{
-                          position: "absolute",
-                          bottom: "10px",
-                          right: "10px",
-                          background: "rgba(0, 0, 0, 0.75)",
-                          color: "#fff",
-                          padding: "3px 8px",
-                          borderRadius: "12px",
-                          fontSize: "0.72rem",
-                          fontWeight: 600,
-                          backdropFilter: "blur(4px)",
-                          border: "1px solid rgba(255, 255, 255, 0.2)",
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "4px",
-                          zIndex: 2
-                        }}
-                      >
-                        📷 {proj.images.length} ảnh
-                      </div>
-                    )}
-                  </Link>
-
-                  {/* Card Content */}
+                    {/* Card Content */}
                   <div className="card-content-body">
-                    {/* Location */}
+                    {/* Location & Completed Date Frame */}
                     <div className="card-location-row">
-                      <MapPin size={15} className="location-pin" />
-                      <span>{proj.location}</span>
+                      <div className="card-location-item">
+                        <MapPin size={15} className="location-pin" />
+                        <span>{proj.location || "Đà Nẵng"}</span>
+                      </div>
+                      {proj.completedDate && (
+                        <div className="card-date-badge">
+                          <Calendar size={13} className="card-date-icon" />
+                          <span>{proj.completedDate}</span>
+                        </div>
+                      )}
                     </div>
 
                     {/* Title */}
@@ -351,29 +424,10 @@ export default function Projects() {
                       </Link>
                     </h3>
 
-                    {/* Scale Highlight */}
-                    {proj.scale && (
-                      <div className="card-scale-highlight">
-                        <Ruler size={14} className="scale-icon" />
-                        <span>{proj.scale}</span>
-                      </div>
-                    )}
-
                     {/* Description Snippet */}
                     <p className="card-description-snippet">
                       {proj.description}
                     </p>
-
-                    {/* Card Features / Tags */}
-                    {proj.features && proj.features.length > 0 && (
-                      <div className="card-tags-row">
-                        {proj.features.slice(0, 2).map((feat, fIdx) => (
-                          <span key={fIdx} className="card-spec-chip">
-                            <Check size={12} /> {feat}
-                          </span>
-                        ))}
-                      </div>
-                    )}
 
                     {/* Card Actions Footer */}
                     <div className="card-action-footer">
@@ -395,8 +449,9 @@ export default function Projects() {
                       </a>
                     </div>
                   </div>
-                </RevealOnScroll>
-              ))}
+                </div>
+              </RevealOnScroll>
+            ))}
             </div>
           )}
         </div>

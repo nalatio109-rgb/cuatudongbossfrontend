@@ -21,7 +21,9 @@ import {
   Info,
   Link as LinkIcon,
   Unlink,
-  ExternalLink
+  ExternalLink,
+  Copy,
+  Check
 } from "lucide-react";
 import "./AdminProjectArticleEditor.css";
 
@@ -29,6 +31,7 @@ export const SAMPLE_PROJECT_TEMPLATE = {
   title: "Thi công cửa cuốn khe thoáng cho anh Đô - Lê Lai",
   category: "Cửa Cuốn Khe Thoáng",
   location: "66 Lê Lai, Hải Châu, Đà Nẵng",
+  completedDate: "2026",
   image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80",
   description: "Thi công lắp đặt hoàn thiện hệ thống cửa cuốn khe thoáng Eurodoor E60 công nghệ Đức cho gia đình anh Đô tại đường Lê Lai, Đà Nẵng.",
   content: `<table class="project-specs-table" style="width: 100%; border-collapse: collapse; margin: 16px 0 24px 0; background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 8px; overflow: hidden;">
@@ -113,6 +116,13 @@ export default function AdminProjectArticleEditor({
   const [linkText, setLinkText] = useState("");
   const [linkOpenNewTab, setLinkOpenNewTab] = useState(true);
   const savedRangeRef = useRef(null);
+  const editingAnchorRef = useRef(null);
+
+  // Floating link hover preview card
+  const [hoveredLink, setHoveredLink] = useState(null);
+  const [copiedLink, setCopiedLink] = useState(false);
+  const hoverTimeoutRef = useRef(null);
+  const sheetContainerRef = useRef(null);
 
   // Mở popup gắn link và lưu lại đoạn chữ đang chọn
   const handleOpenLinkPopover = (e) => {
@@ -135,11 +145,13 @@ export default function AdminProjectArticleEditor({
     if (sel && sel.anchorNode) {
       const anchorEl = sel.anchorNode.parentElement?.closest("a");
       if (anchorEl) {
+        editingAnchorRef.current = anchorEl;
         const existingHref = anchorEl.getAttribute("href") || "";
         if (existingHref) setLinkUrl(existingHref);
         if (!selectedStr) {
           selectedStr = anchorEl.textContent.trim();
         }
+        setLinkOpenNewTab(anchorEl.target === "_blank");
       }
     }
 
@@ -174,6 +186,33 @@ export default function AdminProjectArticleEditor({
     const inlineStyle = "color: #2563eb; font-weight: 700; text-decoration: underline; text-decoration-color: #3b82f6; text-underline-offset: 3.5px; text-decoration-thickness: 2px; cursor: pointer;";
 
     if (editorRef.current) {
+      // Trường hợp 1: Chỉnh sửa thẻ a đang có từ floating preview hoặc selection
+      if (editingAnchorRef.current && editorRef.current.contains(editingAnchorRef.current)) {
+        const anchor = editingAnchorRef.current;
+        anchor.href = cleanUrl;
+        anchor.textContent = displayText;
+        anchor.title = `Liên kết: ${cleanUrl}`;
+        anchor.setAttribute("data-link-url", cleanUrl);
+        if (linkOpenNewTab) {
+          anchor.target = "_blank";
+          anchor.rel = "noopener noreferrer";
+        } else {
+          anchor.removeAttribute("target");
+          anchor.removeAttribute("rel");
+        }
+        anchor.style.cssText = inlineStyle;
+        editingAnchorRef.current = null;
+        editorRef.current.focus();
+        handleContentInput();
+        setShowLinkPopover(false);
+        setLinkUrl("");
+        setLinkText("");
+        savedRangeRef.current = null;
+        if (showToast) showToast(`🔗 Đã cập nhật link vào chữ "${displayText}"!`);
+        return;
+      }
+
+      // Trường hợp 2: Chèn thẻ a mới vào vùng bôi đen (selection)
       const range = savedRangeRef.current;
       // Kiểm tra vùng chọn có hợp lệ và nằm bên trong editor không
       if (range && editorRef.current.contains(range.commonAncestorContainer)) {
@@ -184,6 +223,8 @@ export default function AdminProjectArticleEditor({
         // Tạo thẻ a đúng vị trí chữ đang chọn với màu xanh dương và gạch chân
         const linkEl = document.createElement("a");
         linkEl.href = cleanUrl;
+        linkEl.title = `Liên kết: ${cleanUrl}`;
+        linkEl.setAttribute("data-link-url", cleanUrl);
         linkEl.className = "project-article-link";
         if (linkOpenNewTab) {
           linkEl.target = "_blank";
@@ -208,12 +249,12 @@ export default function AdminProjectArticleEditor({
       } else {
         // Fallback chèn thẻ a nếu không có vùng chọn
         editorRef.current.focus();
-        const linkHtml = `<a href="${cleanUrl}"${targetAttr} class="project-article-link" style="${inlineStyle}">${displayText}</a>`;
+        const linkHtml = `<a href="${cleanUrl}"${targetAttr} title="Liên kết: ${cleanUrl}" data-link-url="${cleanUrl}" class="project-article-link" style="${inlineStyle}">${displayText}</a>`;
         document.execCommand("insertHTML", false, linkHtml);
         handleContentInput();
       }
     } else {
-      const linkHtml = `<a href="${cleanUrl}"${targetAttr} class="project-article-link" style="${inlineStyle}">${displayText}</a>`;
+      const linkHtml = `<a href="${cleanUrl}"${targetAttr} title="Liên kết: ${cleanUrl}" data-link-url="${cleanUrl}" class="project-article-link" style="${inlineStyle}">${displayText}</a>`;
       setProjectForm((prev) => ({
         ...prev,
         content: (prev.content || "") + linkHtml
@@ -224,6 +265,7 @@ export default function AdminProjectArticleEditor({
     setLinkUrl("");
     setLinkText("");
     savedRangeRef.current = null;
+    editingAnchorRef.current = null;
     if (showToast) showToast(`🔗 Đã gắn link màu xanh dương vào chữ "${displayText}"!`);
   };
 
@@ -251,6 +293,7 @@ export default function AdminProjectArticleEditor({
           handleContentInput();
           setShowLinkPopover(false);
           savedRangeRef.current = null;
+          editingAnchorRef.current = null;
           if (showToast) showToast("✂️ Đã gỡ bỏ liên kết thành công!");
           return;
         }
@@ -260,9 +303,116 @@ export default function AdminProjectArticleEditor({
       handleContentInput();
       setShowLinkPopover(false);
       savedRangeRef.current = null;
+      editingAnchorRef.current = null;
       if (showToast) showToast("✂️ Đã gỡ bỏ liên kết thành công!");
     }
   };
+
+  // Hover detection over links in editor or preview
+  const handleEditorMouseOver = (e) => {
+    const anchor = e.target.closest("a");
+    if (anchor && (editorRef.current?.contains(anchor) || sheetContainerRef.current?.contains(anchor))) {
+      if (hoverTimeoutRef.current) {
+        clearTimeout(hoverTimeoutRef.current);
+        hoverTimeoutRef.current = null;
+      }
+      const rect = anchor.getBoundingClientRect();
+      const href = anchor.getAttribute("href") || anchor.href || "";
+      const text = anchor.innerText || anchor.textContent || "";
+      const openNewTab = anchor.target === "_blank";
+      setHoveredLink({
+        href,
+        text,
+        openNewTab,
+        rect,
+        anchorEl: anchor
+      });
+    }
+  };
+
+  const handleEditorMouseOut = (e) => {
+    const anchor = e.target.closest("a");
+    if (anchor) {
+      if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = setTimeout(() => {
+        setHoveredLink(null);
+      }, 300);
+    }
+  };
+
+  const handleCopyFloatingLink = (url) => {
+    if (!url) return;
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(url).then(() => {
+        setCopiedLink(true);
+        setTimeout(() => setCopiedLink(false), 1600);
+        if (showToast) showToast("📋 Đã sao chép liên kết vào clipboard!");
+      }).catch(() => {
+        if (showToast) showToast("📋 Đã sao chép liên kết!");
+      });
+    } else {
+      if (showToast) showToast(`📋 Link: ${url}`);
+    }
+  };
+
+  const handleEditFloatingLink = (linkItem) => {
+    if (!linkItem) return;
+    setLinkUrl(linkItem.href || "");
+    setLinkText(linkItem.text || "");
+    setLinkOpenNewTab(linkItem.openNewTab || false);
+
+    if (linkItem.anchorEl) {
+      editingAnchorRef.current = linkItem.anchorEl;
+      if (editorRef.current) {
+        const range = document.createRange();
+        range.selectNodeContents(linkItem.anchorEl);
+        const sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+        savedRangeRef.current = range;
+      }
+    }
+    setHoveredLink(null);
+    setShowLinkPopover(true);
+  };
+
+  const handleUnlinkFloating = (anchorEl) => {
+    if (!anchorEl || !anchorEl.parentNode) return;
+    const parent = anchorEl.parentNode;
+    while (anchorEl.firstChild) {
+      parent.insertBefore(anchorEl.firstChild, anchorEl);
+    }
+    parent.removeChild(anchorEl);
+    setHoveredLink(null);
+    handleContentInput();
+    if (showToast) showToast("✂️ Đã gỡ bỏ liên kết thành công!");
+  };
+
+  // Close floating card on window scroll or resize
+  useEffect(() => {
+    const handleScrollOrResize = () => {
+      if (hoveredLink) setHoveredLink(null);
+    };
+    window.addEventListener("scroll", handleScrollOrResize, true);
+    window.addEventListener("resize", handleScrollOrResize);
+    return () => {
+      window.removeEventListener("scroll", handleScrollOrResize, true);
+      window.removeEventListener("resize", handleScrollOrResize);
+    };
+  }, [hoveredLink]);
+
+  // Tự động gán title cho tất cả thẻ a trong editor nếu thiếu
+  useEffect(() => {
+    if (editorRef.current) {
+      const anchors = editorRef.current.querySelectorAll("a");
+      anchors.forEach((a) => {
+        const href = a.getAttribute("href");
+        if (href && !a.getAttribute("title")) {
+          a.setAttribute("title", `Liên kết: ${href}`);
+        }
+      });
+    }
+  }, [projectForm.content, editorMode]);
 
   // Đồng bộ nội dung vào editor DOM khi chuyển chế độ hoặc đổi bài viết
   useEffect(() => {
@@ -505,7 +655,7 @@ export default function AdminProjectArticleEditor({
             />
           </div>
 
-          <div className="admin-form-grid-2">
+          <div className="admin-form-grid-3">
             <div className="admin-form-group">
               <label>Hạng mục / Loại sản phẩm</label>
               <input
@@ -524,6 +674,30 @@ export default function AdminProjectArticleEditor({
                 onChange={(e) => setProjectForm({ ...projectForm, location: e.target.value })}
                 placeholder="Ví dụ: 66 Lê Lai, Hải Châu, Đà Nẵng"
               />
+            </div>
+
+            <div className="admin-form-group">
+              <label>Ngày tháng đã thi công (Gần đây nhất lên đầu)</label>
+              <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
+                <input
+                  type="text"
+                  value={projectForm.completedDate || ""}
+                  onChange={(e) => setProjectForm({ ...projectForm, completedDate: e.target.value })}
+                  placeholder="Ví dụ: 19/11/2026, Tháng 11/2026 hoặc 2026"
+                  style={{ flex: 1 }}
+                />
+                <input
+                  type="date"
+                  title="Chọn nhanh từ lịch"
+                  style={{ width: "40px", height: "38px", padding: "4px", cursor: "pointer", borderRadius: "6px", border: "1px solid #cbd5e1", background: "#f8fafc" }}
+                  onChange={(e) => {
+                    if (e.target.value) {
+                      const [y, m, d] = e.target.value.split("-");
+                      setProjectForm({ ...projectForm, completedDate: `${d}/${m}/${y}` });
+                    }
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -889,7 +1063,97 @@ export default function AdminProjectArticleEditor({
           )}
 
           {/* ================= KHUNG NỘI DUNG CHÍNH (EDITOR SHEET) ================= */}
-          <div className="article-sheet-container">
+          <div
+            ref={sheetContainerRef}
+            className="article-sheet-container"
+            onMouseOver={handleEditorMouseOver}
+            onMouseOut={handleEditorMouseOut}
+          >
+            {/* FLOATING LINK PREVIEW CARD KHI RÊ CHUỘT VÀO LINK */}
+            {hoveredLink && (
+              <div
+                className="editor-floating-link-card"
+                style={{
+                  position: "fixed",
+                  top: `${Math.max(12, Math.min(window.innerHeight - 56, hoveredLink.rect.bottom + 8))}px`,
+                  left: `${Math.max(16, Math.min(window.innerWidth - 380, hoveredLink.rect.left))}px`,
+                  zIndex: 999999
+                }}
+                onMouseEnter={() => {
+                  if (hoverTimeoutRef.current) {
+                    clearTimeout(hoverTimeoutRef.current);
+                    hoverTimeoutRef.current = null;
+                  }
+                }}
+                onMouseLeave={() => {
+                  if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+                  hoverTimeoutRef.current = setTimeout(() => {
+                    setHoveredLink(null);
+                  }, 250);
+                }}
+              >
+                <div className="floating-link-icon" title="Liên kết trong bài viết">
+                  <LinkIcon size={15} />
+                </div>
+                <div className="floating-link-url-wrap">
+                  <span className="floating-link-label">Đường dẫn liên kết:</span>
+                  <a
+                    href={hoveredLink.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="floating-link-url"
+                    title={`Bấm để mở: ${hoveredLink.href}`}
+                  >
+                    {hoveredLink.href}
+                  </a>
+                </div>
+
+                <div className="floating-link-divider" />
+
+                <div className="floating-link-actions">
+                  <a
+                    href={hoveredLink.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="floating-link-btn"
+                    title="Mở liên kết trong tab mới"
+                  >
+                    <ExternalLink size={12} />
+                    <span>Mở</span>
+                  </a>
+
+                  <button
+                    type="button"
+                    className={`floating-link-btn ${copiedLink ? "btn-copied" : ""}`}
+                    onClick={() => handleCopyFloatingLink(hoveredLink.href)}
+                    title="Sao chép địa chỉ liên kết"
+                  >
+                    {copiedLink ? <Check size={12} /> : <Copy size={12} />}
+                    <span>{copiedLink ? "Đã chép" : "Chép"}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    className="floating-link-btn"
+                    onClick={() => handleEditFloatingLink(hoveredLink)}
+                    title="Chỉnh sửa liên kết này"
+                  >
+                    <Edit3 size={12} />
+                    <span>Sửa</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    className="floating-link-btn btn-unlink"
+                    onClick={() => handleUnlinkFloating(hoveredLink.anchorEl)}
+                    title="Gỡ bỏ liên kết khỏi chữ"
+                  >
+                    <Unlink size={12} />
+                    <span>Gỡ</span>
+                  </button>
+                </div>
+              </div>
+            )}
             {editorMode === "wysiwyg" && (
               <div className="article-wysiwyg-wrapper">
                 <div
