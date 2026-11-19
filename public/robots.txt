@@ -4,5 +4,5 @@ Disallow: /admin
 Disallow: /login
 Disallow: /register
 
-Sitemap: https://cuatudongboss.vn/sitemap.xml
+Sitemap: https://danangdoor.com/sitemap.xml
 

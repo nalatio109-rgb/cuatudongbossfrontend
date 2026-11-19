@@ -9,6 +9,19 @@
   ],
   "headers": [
     {
+      "source": "/(og-image.jpg|og-image.png|logo.png)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=604800, immutable"
+        }
+      ]
+    },
+    {
       "source": "/sitemap.xml",
       "headers": [
         {
