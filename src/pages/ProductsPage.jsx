@@ -543,7 +543,6 @@ export default function ProductsPage() {
 
                   <div className="card-details">
                     <div className="card-header-icon">
-                      <div className="icon-box">{product.icon}</div>
                       <h3>{product.title}</h3>
                     </div>
                     {product.price && <div className="product-price">{formatProductPrice(product.price, product.category)}</div>}

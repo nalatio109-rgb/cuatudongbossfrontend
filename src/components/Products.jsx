@@ -598,7 +598,7 @@ export default function Products() {
                 }}
               >
                 <div className="new-product-content">
-                  <div className="product-icon-badge">{product.icon}</div>
+                  {product.icon ? <div className="product-icon-badge">{product.icon}</div> : null}
                   {product.badge && !/hot/i.test(product.badge) ? (
                     <span className="badge-new">{product.badge}</span>
                   ) : product.isNew ? (
