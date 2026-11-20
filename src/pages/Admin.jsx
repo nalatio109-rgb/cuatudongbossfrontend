@@ -623,16 +623,21 @@ export default function Admin() {
         if (articleExcerpt) payload.description = articleExcerpt;
       }
       let res, data;
-      if (payload._id) {
-        res = await fetch(`${import.meta.env.VITE_API_URL}/api/products/${payload._id}`, {
+      const cleanPayload = { ...payload };
+      if (!cleanPayload._id) {
+        delete cleanPayload._id;
+      }
+
+      if (cleanPayload._id) {
+        res = await fetch(`${import.meta.env.VITE_API_URL}/api/products/${cleanPayload._id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
+          body: JSON.stringify(cleanPayload)
         });
         data = await res.json();
         if (data.success) {
           setProducts(prev => {
-            const updated = prev.map(p => p._id === payload._id ? data.data : p);
+            const updated = prev.map(p => p._id === cleanPayload._id ? data.data : p);
             try {
               localStorage.setItem("boss_cached_products", JSON.stringify(updated));
               window.dispatchEvent(new CustomEvent("boss_products_updated", { detail: updated }));
@@ -640,12 +645,14 @@ export default function Admin() {
             return updated;
           });
           showToast("✨ Đã cập nhật thông tin sản phẩm thành công!");
+        } else {
+          showToast(`❌ Lỗi: ${data.message || "Không thể cập nhật sản phẩm"}`);
         }
       } else {
         res = await fetch(`${import.meta.env.VITE_API_URL}/api/products`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
+          body: JSON.stringify(cleanPayload)
         });
         data = await res.json();
         if (data.success) {
@@ -658,12 +665,14 @@ export default function Admin() {
             return updated;
           });
           showToast("🎉 Thêm sản phẩm mới thành công!");
+        } else {
+          showToast(`❌ Lỗi: ${data.message || "Không thể tạo sản phẩm"}`);
         }
       }
       return data;
     } catch (err) {
       console.error("Save product from editor error:", err);
-      showToast("❌ Lỗi khi lưu thông tin sản phẩm");
+      showToast("❌ Lỗi khi lưu thông tin sản phẩm: " + (err.message || "Mất kết nối"));
       throw err;
     }
   };

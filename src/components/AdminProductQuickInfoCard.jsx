@@ -151,19 +151,11 @@ export default function AdminProductQuickInfoCard({
       setUrlInput("");
     } else {
       setIsCustomSubCategory(false);
-      setFormData({
-        _id: "",
-        title: currentProductCode && currentProductCode !== "NEW" ? `Sản phẩm ${currentProductCode}` : "",
-        code: currentProductCode && currentProductCode !== "NEW" ? currentProductCode : "",
-        category: "cuacuon",
-        subCategory: "Cửa cuốn khe thoáng Đức",
-        price: "",
-        badge: "",
-        image: "",
-        images: [],
-        description: "",
-        specs: ""
-      });
+      setFormData((prev) => ({
+        ...prev,
+        code: currentProductCode && currentProductCode !== "NEW" ? currentProductCode : prev.code,
+        title: prev.title || (currentProductCode && currentProductCode !== "NEW" ? `Sản phẩm ${currentProductCode}` : "")
+      }));
       setUrlInput("");
     }
   }, [currentProductCode, dbProducts]);
@@ -435,13 +427,20 @@ export default function AdminProductQuickInfoCard({
         ? formData.specs.split(",").map((s) => s.trim()).filter(Boolean)
         : formData.specs;
 
+      const newCode = formData.code.trim().toUpperCase();
+
       const payload = {
         ...formData,
+        code: newCode,
         image: primaryImage,
         images: currentImages,
         gallery: currentImages,
         specs: specsArray
       };
+
+      if (!payload._id) {
+        delete payload._id;
+      }
 
       // Tự động cập nhật mô tả tóm tắt từ bài viết nếu đang để trống hoặc chứa bản mẫu cũ
       if (!payload.description || payload.description.includes("là giải pháp tối ưu cho những ai đang tìm kiếm")) {
@@ -453,17 +452,19 @@ export default function AdminProductQuickInfoCard({
 
       if (onSaveProduct) {
         const res = await onSaveProduct(payload);
-        if (res && res.data && res.data._id) {
+        if (res && res.success && res.data && res.data._id) {
           setFormData((prev) => ({
             ...prev,
             _id: res.data._id,
-            code: res.data.code || payload.code,
+            code: res.data.code || newCode,
             image: primaryImage,
             images: currentImages
           }));
-          if (onSelectProductCode && (res.data.code || payload.code)) {
-            onSelectProductCode(res.data.code || payload.code);
+          if (onSelectProductCode && (res.data.code || newCode)) {
+            onSelectProductCode(res.data.code || newCode);
           }
+        } else if (res && !res.success) {
+          if (showToast) showToast(`❌ Lỗi lưu sản phẩm: ${res.message || "Vui lòng kiểm tra lại thông tin"}`);
         }
       }
       setUrlInput("");
