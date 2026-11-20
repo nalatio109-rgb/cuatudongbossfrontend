@@ -774,7 +774,7 @@ body.admin-mode {
 /* Modal Form Grids (Desktop 3 & 2 columns) */
 .admin-form-grid-3 {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 0.8fr 0.9fr 1.9fr;
   gap: 12px;
 }
 
