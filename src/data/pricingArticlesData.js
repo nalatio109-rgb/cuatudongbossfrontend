@@ -1004,3 +1004,4 @@ export const getPricingArticleBySlug = (slugOrCode) => {
 
   return PRICING_ARTICLES[0];
 };
+
