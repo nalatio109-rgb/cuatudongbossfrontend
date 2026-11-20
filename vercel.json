@@ -9,7 +9,33 @@
   ],
   "headers": [
     {
-      "source": "/(og-image.jpg|og-image.png|logo.png)",
+      "source": "/og-image.jpg",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=604800, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/og-image.png",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=604800, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/logo.png",
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
