@@ -25,7 +25,6 @@ export const PRODUCT_PRICE_RANGES = {
   "BEC.5810": "1.500.000 - 1.750.000đ/m²",
   "DL-75": "420.000 - 550.000đ/m²",
   "BD-LUX": "2.100.000 - 2.250.000đ/m²",
-  "BD-900": "1.450.000 - 1.850.000đ/m²",
   "BD-L70": "980.000 - 1.350.000đ/m²",
   "SN-100": "1.200.000 - 1.800.000đ/m²",
   "CK-DL": "480.000 - 850.000đ/m²",
@@ -113,26 +112,12 @@ const PRICING_CATALOG = [
     code: "BEC.5810",
     category: "cuacuon",
     title: "CỬA CUỐN KHE THOÁNG BOSSDOOR ECO BEC.5810",
-    image: "/about_door_1.png",
+    image: "https://bossdoordanang.com.vn/wp-content/uploads/2024/11/cua-cuon-bossdoor-eco-bec-5810-bossdoordanang.jpg",
     price: "1.500.000 - 1.750.000đ/m²",
     badge: "",
     businessStatus: "Đang kinh doanh • Sẵn hàng tại kho Đà Nẵng",
     description: "Cửa cuốn Bossdoor ECO BEC.5810 là sản phẩm cửa cuốn khe thoáng thế hệ mới mang thương hiệu BossDoor danh tiếng. Được sản xuất từ hợp kim nhôm 6063-T5 chuẩn hàng không, BEC.5810 là sự kết hợp xuất sắc giữa độ cứng cáp chống bão, thiết kế nan sang trọng và công nghệ giảm chấn 2 chiều vận hành êm ái hàng đầu.",
     specs: ["Hợp kim nhôm 6063-T5 cao cấp", "Sơn tĩnh điện chống muối mặn", "Bảo hành thân cửa 10 năm"]
-  },
-
-  // 6. CỬA CUỐN KHE THOÁNG TRUYỀN THỐNG BD-900
-  {
-    id: 5,
-    code: "BD-900",
-    category: "cuacuon",
-    title: "Cửa cuốn khe thoáng Đức BossDoor BD-900",
-    image: "/about_door_1.png",
-    price: "1.450.000 - 1.850.000đ/m²",
-    badge: "BÁN CHẠY",
-    businessStatus: "Đang kinh doanh • Sẵn hàng tại Đà Nẵng",
-    description: "Thân cửa hợp kim nhôm 6063-T5 cao cấp, thiết kế nan kép chống bão, sơn tĩnh điện CHLB Đức bảo hành 10 năm không phai màu.",
-    specs: ["Hợp kim nhôm 6063-T5 siêu bền", "Độ dày nan: 1.4 - 2.2 mm", "Bảo hành mô-tơ 10 năm"]
   },
 
   // 7. CỬA CUỐN CAO CẤP THẾ HỆ MỚI BD-LUX
@@ -265,7 +250,6 @@ export const getMobilePricingTitle = (prod) => {
     "BD-L70": "Bảng giá cửa cuốn tấm liền MaxDoor công nghệ Úc",
     "DL-75": "Bảng giá cửa cuốn Đài Loan giá rẻ tại Đà Nẵng",
     "BEC.5810": "Bảng giá cửa cuốn khe thoáng BossDoor ECO BEC.5810",
-    "BD-900": "Bảng giá cửa cuốn khe thoáng Đức BossDoor BD-900",
     "BD-LUX": "Bảng giá cửa cuốn siêu sang thế hệ mới BossDoor Luxury",
     "CK-IX304": "Bảng giá cửa kéo 100% Inox 304 chống rỉ sét tại Đà Nẵng",
     "SN-100": "Bảng giá cửa cuốn song ngang - mắc võng Inox",
@@ -329,7 +313,11 @@ export default function Pricing() {
                 });
               }
             });
-            setProductsList(Array.from(map.values()));
+            setProductsList(
+              Array.from(map.values()).filter(
+                (p) => p.code !== "BD-900" && !/BD-900/i.test(p.code)
+              )
+            );
           }
         })
         .catch((err) => console.log("Pricing hub fetch error:", err));

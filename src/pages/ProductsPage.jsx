@@ -21,7 +21,18 @@ export default function ProductsPage() {
 
   const [activeCategory, setActiveCategory] = useState(catFromUrl || "all");
   const [searchQuery, setSearchQuery] = useState(searchFromUrl || "");
-  const [dbProducts, setDbProducts] = useState([]);
+  const [dbProducts, setDbProducts] = useState(() => {
+    try {
+      const cached = localStorage.getItem("boss_cached_products");
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return parsed.filter((p) => p.code !== "BD-900" && !/BD-900/i.test(p.code));
+        }
+      }
+    } catch (e) {}
+    return [];
+  });
 
   useEffect(() => {
     if (catFromUrl) {
@@ -37,14 +48,21 @@ export default function ProductsPage() {
   }, [catFromUrl, searchFromUrl]);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/products`)
-      .then((res) => res.json())
-      .then((resData) => {
-        if (resData.success && resData.data && resData.data.length > 0) {
-          setDbProducts(resData.data);
-        }
-      })
-      .catch((err) => console.error("Products API error:", err));
+    const apiUrl = import.meta.env.VITE_API_URL;
+    if (apiUrl) {
+      fetch(`${apiUrl}/api/products`)
+        .then((res) => res.json())
+        .then((resData) => {
+          if (resData.success && resData.data && resData.data.length > 0) {
+            const clean = resData.data.filter((p) => p.code !== "BD-900" && !/BD-900/i.test(p.code));
+            setDbProducts(clean);
+            try {
+              localStorage.setItem("boss_cached_products", JSON.stringify(clean));
+            } catch (e) {}
+          }
+        })
+        .catch((err) => console.error("Products API error:", err));
+    }
   }, []);
 
   const categories = [
@@ -60,7 +78,7 @@ export default function ProductsPage() {
     {
       id: 1,
       category: "cuacuon",
-      image: "/about_door_1.png",
+      image: "https://bossdoordanang.com.vn/wp-content/uploads/2024/11/cua-cuon-bossdoor-eco-bec-5810-bossdoordanang.jpg",
       title: "CỬA CUỐN KHE THOÁNG ECO BEC.5810",
       code: "BEC.5810",
       description: "Cửa cuốn Bossdoor ECO BEC.5810 là sản phẩm cửa cuốn khe thoáng thế hệ mới mang thương hiệu BossDoor danh tiếng. Được sản xuất từ hợp kim nhôm 6063-T5 chuẩn hàng không, BEC.5810 là sự kết hợp xuất sắc giữa độ cứng cáp chống bão, thiết kế nan sang trọng và công nghệ giảm chấn 2 chiều vận hành êm ái hàng đầu.",
@@ -73,13 +91,13 @@ export default function ProductsPage() {
     {
       id: 2,
       category: "cuacuon",
-      image: "/about_door_1.png",
-      title: "Cửa cuốn khe thoáng Đức BossDoor BD-900",
-      code: "BD-900",
-      description: "Thân cửa hợp kim nhôm 6063-T5 cao cấp, sơn tĩnh điện CHLB Đức bảo hành 10 năm.",
-      details: "Dòng cửa cuốn cao cấp thế hệ mới BossDoor tích hợp công nghệ chống sao chép mã khoá, cảm biến tự dừng khi gặp vật cản và điều khiển qua Smartphone từ xa.",
-      specs: ["Hợp kim nhôm 6063-T5 siêu bền", "Độ dày nan: 1.4 - 2.2 mm", "Cảm biến hồng ngoại an toàn", "Bảo hành mô-tơ 5 năm"],
-      price: "1.450.000đ/m²",
+      image: "https://cuacuondanang.com.vn/wp-content/uploads/2025/06/Cua-sieu-truong-CD.100.jpg",
+      title: "CỬA CUỐN SIÊU TRƯỜNG BOSS STRONG CD.100",
+      code: "CD.100",
+      description: "Hợp kim nhôm 6063T5, độ dày nan 1.5mm - 2.5mm, lắp đặt an toàn cho cửa khẩu độ lớn.",
+      details: "Cửa cuốn siêu trường Boss Strong CD.100 nan nhôm 6063T5 chống gió bão giật cấp 12, bản nan lớn vững chãi.",
+      specs: ["Hợp kim nhôm 6063T5", "Độ dày nan: 1.5 - 2.5mm", "Khẩu độ rộng đến 10.5m", "Bảo hành 5 năm"],
+      price: "4.110.000đ/m²",
       badge: "BÁN CHẠY",
       icon: <Home size={22} />
     },
@@ -349,7 +367,9 @@ export default function ProductsPage() {
     }
   ];
 
-  const productList = dbProducts.length > 0 ? dbProducts : products;
+  const productList = (dbProducts.length > 0 ? dbProducts : products).filter(
+    (p) => p.code !== "BD-900" && !/BD-900/i.test(p.code)
+  );
 
   const productSearchFields = [
     "title",

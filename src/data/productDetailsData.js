@@ -409,10 +409,10 @@ export const EXTENDED_PRODUCT_MAP = {
     reviewCount: 54,
     businessStatus: "Sẵn hàng tại kho Đà Nẵng • Thi công trong 24h",
     badge: "",
-    image: "/about_door_1.png",
+    image: "https://bossdoordanang.com.vn/wp-content/uploads/2024/11/cua-cuon-bossdoor-eco-bec-5810-bossdoordanang.jpg",
     description: "Cửa cuốn Bossdoor ECO BEC.5810 là sản phẩm cửa cuốn khe thoáng thế hệ mới mang thương hiệu BossDoor danh tiếng. Được sản xuất từ hợp kim nhôm 6063-T5 chuẩn hàng không, BEC.5810 là sự kết hợp xuất sắc giữa độ cứng cáp chống bão, thiết kế nan sang trọng và công nghệ giảm chấn 2 chiều vận hành êm ái hàng đầu.",
     gallery: [
-      "/about_door_1.png"
+      "https://bossdoordanang.com.vn/wp-content/uploads/2024/11/cua-cuon-bossdoor-eco-bec-5810-bossdoordanang.jpg"
     ],
     quickSpecs: [
       { label: "Mã sản phẩm", value: "BEC.5810" },
@@ -438,7 +438,7 @@ export const EXTENDED_PRODUCT_MAP = {
         {
           name: "1. Nan cửa nhôm 6063-T5 kép có khe thoáng",
           desc: "Nan cửa 2 lớp với thanh giằng chịu lực ở giữa, đúc từ phôi nhôm nguyên chất 6063-T5. Các lỗ thoáng hình thoi hoặc oval bố trí so le giúp đón ánh sáng tự nhiên và thông gió mà vẫn ngăn được bụi bẩn.",
-          image: "/about_door_1.png"
+          image: "https://bossdoordanang.com.vn/wp-content/uploads/2024/11/cua-cuon-bossdoor-eco-bec-5810-bossdoordanang.jpg"
         },
         {
           name: "2. Gioăng giảm chấn 2 chiều siêu êm",
@@ -502,105 +502,6 @@ export const EXTENDED_PRODUCT_MAP = {
       { q: "Sơn tĩnh điện của cửa có bền trước gió biển Đà Nẵng không?", a: "Sơn AkzoNobel Đức được bảo hành chống phai màu và chống ăn mòn muối biển lên đến 10 năm." }
     ],
     pricingUrl: "/bang-gia/BEC.5810"
-  },
-
-  // 5.5 CỬA CUỐN KHE THOÁNG ĐỨC BOSSDOOR BD-900 (THEO YÊU CẦU CỦA KHÁCH HÀNG)
-  "BD-900": {
-    code: "BD-900",
-    slug: "cua-cuon-khe-thoang-duc-bossdoor-bd-900",
-    aliases: [
-      "BD-900",
-      "bd-900",
-      "2",
-      "cua-cuon-khe-thoang-duc-bossdoor-bd-900",
-      "cua-cuon-khe-duc",
-      "cua-cuon-khe-duc-bd-900",
-      "cua-cuon-bd-900",
-      "cua-cuon-duc-bd-900"
-    ],
-    title: "Cửa cuốn khe thoáng Đức BossDoor BD-900",
-    category: "cuacuon",
-    price: "1.450.000đ/m²",
-    rating: 5.0,
-    reviewCount: 68,
-    businessStatus: "Sẵn hàng thi công trong 24h",
-    badge: "BÁN CHẠY",
-    image: "/about_door_1.png",
-    gallery: [
-      "/about_door_1.png"
-    ],
-    quickSpecs: [
-      { label: "Mã sản phẩm", value: "BD-900" },
-      { label: "Thương hiệu", value: "BossDoor chính hãng CHLB Đức" },
-      { label: "Chất liệu thân nan", value: "Hợp kim nhôm 6063-T5 cao cấp" },
-      { label: "Độ dày nan", value: "1.4 mm - 2.2 mm (Gân tăng cứng kép)" },
-      { label: "Công nghệ sơn", value: "Sơn tĩnh điện AkzoNobel Đức bảo hành 10 năm" },
-      { label: "Màu sắc", value: "Ghi sáng, Cà phê ánh kim, Vàng kem cát" },
-      { label: "Bảo hành", value: "10 năm chính hãng Boss Đà Nẵng" }
-    ],
-    sectionA: {
-      intro: "Cửa cuốn khe thoáng Đức BossDoor BD-900 là sản phẩm cửa cuốn cao cấp thế hệ mới, được thiết kế và sản xuất theo tiêu chuẩn kỹ thuật CHLB Đức, mang lại sự vững chắc chống gió bão, vận hành êm ái và tính thẩm mỹ thanh lịch hàng đầu tại Đà Nẵng.",
-      origin: "Dây chuyền công nghệ CHLB Đức, tiêu chuẩn nhôm 6063-T5 và sơn phủ AkzoNobel cao cấp.",
-      purpose: "Bảo vệ an toàn tối đa cho nhà phố mặt tiền, biệt thự liền kề, showroom và gara ô tô gia đình.",
-      highlights: [
-        "Hợp kim nhôm 6063-T5 siêu cứng vững, chịu áp lực bão cấp 12.",
-        "Sơn tĩnh điện AkzoNobel CHLB Đức bảo hành 10 năm chống phai màu muối biển.",
-        "Cảm biến hồng ngoại an toàn tự động đảo chiều khi phát hiện vật cản."
-      ]
-    },
-    sectionB: {
-      title: "Đặc điểm cấu tạo chi tiết cửa cuốn Đức BossDoor BD-900",
-      components: [
-        {
-          name: "1. Thân nan nhôm 6063-T5 siêu bền dày 1.4 - 2.2 mm",
-          desc: "Đúc từ hợp kim nhôm chuẩn hàng không 6063-T5 với gân tăng cứng kép, chống búa đập và chịu lực gió lớn.",
-          image: "/about_door_1.png"
-        },
-        {
-          name: "2. Khe thoáng điều hòa không khí & ánh sáng",
-          desc: "Lỗ thoáng hình oval tinh tế giúp đối lưu không khí tự nhiên và đón nắng sớm vào không gian bên trong.",
-          image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80"
-        },
-        {
-          name: "3. Gioăng nỉ giảm chấn 2 chiều siêu êm",
-          desc: "Hệ thống gioăng triệt tiêu tiếng ồn va đập giữa các thanh nan khi đóng mở, đem lại không gian yên tĩnh.",
-          image: "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=800&q=80"
-        }
-      ]
-    },
-    sectionC: {
-      specsTable: [
-        { label: "Mã sản phẩm", value: "BD-900" },
-        { label: "Vật liệu", value: "Hợp kim nhôm 6063-T5 cao cấp" },
-        { label: "Độ dày nan", value: "1.4 mm - 2.2 mm" },
-        { label: "Công nghệ sơn", value: "Sơn tĩnh điện AkzoNobel CHLB Đức" },
-        { label: "Màu sắc", value: "Ghi sáng, Cà phê ánh kim, Vàng kem cát" },
-        { label: "Hệ thống an toàn", value: "Cảm biến hồng ngoại tự đảo chiều, còi báo động" },
-        { label: "Bảo hành", value: "10 năm chính hãng" }
-      ]
-    },
-    sectionD: [
-      { title: "Chống bão cấp 12", desc: "Nan dày 1.4 - 2.2mm cứng cáp.", icon: "Shield" },
-      { title: "Vận hành siêu êm", desc: "Gioăng giảm chấn 2 chiều.", icon: "VolumeX" },
-      { title: "Bảo hành 10 năm", desc: "Hỗ trợ kỹ thuật 24/7 tận chân công trình.", icon: "Check" }
-    ],
-    sectionE: [
-      { name: "Nhà phố & Biệt thự", desc: "Sang trọng, hiện đại, tăng tính thẩm mỹ." },
-      { name: "Showroom & Cửa hàng", desc: "Thông thoáng ánh sáng và an toàn tuyệt đối." }
-    ],
-    sectionF: {
-      guideTitle: "Tư vấn kỹ sư Boss Đà Nẵng",
-      guideContent: ["Nên kết hợp cùng bình lưu điện UPS BossDoor chính hãng để mở cửa bình thường khi cúp điện."]
-    },
-    sectionG: {
-      warrantyTitle: "Chính sách bảo hành",
-      policies: ["Bảo hành nan nhôm và màu sơn 10 năm.", "Khảo sát và đo đạc miễn phí trong 24h tại Đà Nẵng."]
-    },
-    faq: [
-      { q: "Cửa cuốn BD-900 có ồn không?", a: "Nhờ hệ giảm chấn 2 chiều, BD-900 đóng mở rất êm ái, giảm đến 90% tiếng ồn so với cửa cuốn thông thường." },
-      { q: "Khi mất điện cửa có mở được không?", a: "Cửa có thể mở bằng xích kéo cơ học hoặc thông qua bộ tích điện UPS tự động." }
-    ],
-    pricingUrl: "/bang-gia/BD-900"
   },
 
   // 6. CỬA CUỐN ĐÀI LOAN GIÁ RẺ DL-75
@@ -684,7 +585,7 @@ export const EXTENDED_PRODUCT_MAP = {
     badge: "LUXURY",
     gallery: [
       "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1000&q=80",
-      "/about_door_1.png",
+      "https://bossdoordanang.com.vn/wp-content/uploads/2024/11/cua-cuon-bossdoor-eco-bec-5810-bossdoordanang.jpg",
       "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80"
     ],
     quickSpecs: [
@@ -787,7 +688,7 @@ export function getProductExtendedDetails(product) {
       (Array.isArray(product.images) && product.images[0]) ||
       product.image ||
       template.image ||
-      "/about_door_1.png";
+      "https://bossdoordanang.com.vn/wp-content/uploads/2024/11/cua-cuon-bossdoor-eco-bec-5810-bossdoordanang.jpg";
 
     // Strictly prioritize images configured on this product (from Admin / Database)
     let resolvedGallery = [];
@@ -813,7 +714,7 @@ export function getProductExtendedDetails(product) {
       resolvedGallery = [primaryImg, ...resolvedGallery.filter((img) => img !== primaryImg)];
     }
     if (resolvedGallery.length === 0) {
-      resolvedGallery = [primaryImg || "/about_door_1.png"];
+      resolvedGallery = [primaryImg || "https://bossdoordanang.com.vn/wp-content/uploads/2024/11/cua-cuon-bossdoor-eco-bec-5810-bossdoordanang.jpg"];
     }
 
     return {
@@ -847,7 +748,7 @@ export function getProductExtendedDetails(product) {
     product.image ||
     (Array.isArray(product.gallery) && product.gallery[0]) ||
     matched.image ||
-    "/about_door_1.png";
+    "https://bossdoordanang.com.vn/wp-content/uploads/2024/11/cua-cuon-bossdoor-eco-bec-5810-bossdoordanang.jpg";
 
   // Strictly prioritize images configured on this product (from Admin / Database)
   let resolvedGallery = [];
@@ -880,7 +781,7 @@ export function getProductExtendedDetails(product) {
   }
 
   if (resolvedGallery.length === 0) {
-    resolvedGallery = [primaryImg || "/about_door_1.png"];
+    resolvedGallery = [primaryImg || "https://bossdoordanang.com.vn/wp-content/uploads/2024/11/cua-cuon-bossdoor-eco-bec-5810-bossdoordanang.jpg"];
   }
 
   return {

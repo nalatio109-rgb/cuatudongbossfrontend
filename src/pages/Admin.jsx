@@ -180,7 +180,7 @@ export default function Admin() {
     code: "",
     category: "cuacuon",
     subCategory: "Cửa cuốn khe thoáng Đức",
-    image: "/about_door_1.png",
+    image: "",
     description: "",
     specs: "Hợp kim nhôm 6063-T5, Bảo hành 5 năm",
     badge: "",

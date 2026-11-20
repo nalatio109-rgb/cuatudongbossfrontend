@@ -311,7 +311,7 @@ export const DEFAULT_PRODUCT_ARTICLES = [
     category: "cuacuon",
     status: "published",
     uploadedImages: [
-      "/about_door_1.png",
+      "https://bossdoordanang.com.vn/wp-content/uploads/2024/11/cua-cuon-bossdoor-eco-bec-5810-bossdoordanang.jpg",
       "https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1000&q=80"
     ],
     seo: {
@@ -333,7 +333,7 @@ export const DEFAULT_PRODUCT_ARTICLES = [
 </div>
 
 <figure class="editor-image-figure align-center" style="max-width: 85%;">
-  <img src="/about_door_1.png" alt="Cửa cuốn Bossdoor ECO BEC.5810 lắp đặt mặt tiền nhà phố" />
+  <img src="https://bossdoordanang.com.vn/wp-content/uploads/2024/11/cua-cuon-bossdoor-eco-bec-5810-bossdoordanang.jpg" alt="Cửa cuốn Bossdoor ECO BEC.5810 lắp đặt mặt tiền nhà phố" />
   <figcaption>Hình 1: Cửa cuốn Bossdoor ECO BEC.5810 thanh thoát và sang trọng</figcaption>
 </figure>
 
@@ -470,87 +470,6 @@ export const DEFAULT_PRODUCT_ARTICLES = [
   </tbody>
 </table>
     `
-  },
-
-  // 6. CỬA CUỐN KHE THOÁNG ĐỨC BOSSDOOR BD-900
-  {
-    productCode: "BD-900",
-    productTitle: "Cửa cuốn khe thoáng Đức BossDoor BD-900",
-    category: "cuacuon",
-    status: "published",
-    uploadedImages: [
-      "/about_door_1.png",
-      "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80"
-    ],
-    seo: {
-      title: "Cửa cuốn khe thoáng Đức BossDoor BD-900 - Báo Giá Tại Đà Nẵng",
-      description: "Cửa cuốn khe thoáng Đức BossDoor BD-900 nan nhôm 6063-T5 cao cấp sơn AkzoNobel Đức. Tích hợp cảm biến tự dừng chống kẹt và điều khiển Smartphone.",
-      focusKeyword: "Cửa cuốn khe thoáng Đức BossDoor BD-900",
-      secondaryKeywords: ["cửa cuốn đức", "cửa cuốn bossdoor", "cửa cuốn đà nẵng", "bd-900", "cửa cuốn khe thoáng"],
-      slug: "cua-cuon-khe-thoang-duc-bossdoor-bd-900",
-      imageAlt: "Cửa cuốn khe thoáng Đức BossDoor BD-900 chính hãng tại Đà Nẵng",
-      canonicalUrl: "https://bossdoordanang.com/san-pham/cua-cuon-khe-thoang-duc-bossdoor-bd-900"
-    },
-    content: `
-<h2>1. Giới thiệu tổng quan Cửa cuốn khe thoáng Đức BossDoor BD-900</h2>
-<p><strong>Cửa cuốn khe thoáng Đức BossDoor BD-900</strong> là một trong những dòng cửa cuốn công nghệ Đức được ưa chuộng hàng đầu tại Đà Nẵng và các tỉnh miền Trung. Với kết cấu thân nan hợp kim nhôm định hình 6063-T5 siêu cứng vững, độ dày nan từ 1.4 mm đến 2.2 mm, BD-900 đem lại sự kiên cố vững chãi, chống chịu sức gió giật cấp 12 mà vẫn giữ được nét thanh lịch, sang trọng cho mặt tiền ngôi nhà.</p>
-<p>Bề mặt nan cửa được phủ lớp sơn tĩnh điện ngoài trời chính hãng <em>AkzoNobel CHLB Đức</em> gia nhiệt cao tần, đảm bảo không phai màu, không bong tróc trước khí hậu nhiệt đới gió biển đặc trưng của Đà Nẵng.</p>
-
-<div class="editor-callout-box">
-  <h4>💡 Điểm vượt trội của Cửa cuốn Đức BossDoor BD-900:</h4>
-  <p>Trang bị hệ thống cảm biến hồng ngoại thông minh tự động đảo chiều khi gặp vật cản, tích hợp còi báo động chống cạy cửa và hộp điều khiển mã nhảy ARC (Anti-Rolling Code) ngăn chặn tuyệt đối thiết bị sao chép mã khóa từ xa.</p>
-</div>
-
-<figure class="editor-image-figure align-center" style="max-width: 85%;">
-  <img src="/about_door_1.png" alt="Cửa cuốn khe thoáng Đức BossDoor BD-900 lắp đặt hoàn thiện tại Đà Nẵng" />
-  <figcaption>Hình 1: Cửa cuốn khe thoáng Đức BossDoor BD-900 thi công thực tế tại công trình Đà Nẵng</figcaption>
-</figure>
-
-<h2>2. Đặc điểm cấu tạo &amp; Công nghệ vượt bậc</h2>
-<p>Thân cửa được đúc từ phôi nhôm nguyên chất tiêu chuẩn 6063-T5 với các đường gân tăng cứng chạy dọc thân nan. Các lỗ thoáng hình thoi thoáng khí được thiết kế khoa học, giúp không gian bên trong đón gió và ánh sáng tự nhiên khi mở ở chế độ khe thoáng, đồng thời đóng kín khít an toàn tuyệt đối khi hạ cửa xuống hết cỡ.</p>
-
-<table class="editor-content-table">
-  <thead>
-    <tr>
-      <th>Thông số kỹ thuật</th>
-      <th>Quy cách chi tiết cửa cuốn Đức BD-900</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><strong>Mã sản phẩm</strong></td>
-      <td>BD-900</td>
-    </tr>
-    <tr>
-      <td><strong>Vật liệu thân nan</strong></td>
-      <td>Hợp kim nhôm 6063-T5 (Độ cứng tiêu chuẩn hàng không)</td>
-    </tr>
-    <tr>
-      <td><strong>Độ dày nan</strong></td>
-      <td>1.4 mm - 2.2 mm (Gân tăng cứng chịu lực kép)</td>
-    </tr>
-    <tr>
-      <td><strong>Công nghệ sơn</strong></td>
-      <td>Sơn tĩnh điện AkzoNobel CHLB Đức bảo hành 10 năm</td>
-    </tr>
-    <tr>
-      <td><strong>Màu sắc tiêu chuẩn</strong></td>
-      <td>Ghi sáng, Cà phê ánh kim, Vàng kem cát</td>
-    </tr>
-    <tr>
-      <td><strong>Tính năng an toàn</strong></td>
-      <td>Tự dừng khi gặp vật cản, chống dò mã ARC, mở bằng tay khi mất điện</td>
-    </tr>
-    <tr>
-      <td><strong>Bảo hành chính hãng</strong></td>
-      <td>10 năm tận nơi tại chân công trình Đà Nẵng</td>
-    </tr>
-  </tbody>
-</table>
-
-<h2>3. Vận hành thông minh &amp; Điều khiển từ xa</h2>
-<p>Cửa cuốn BossDoor BD-900 dễ dàng tích hợp bộ điều khiển thông minh qua Smartphone qua kết nối Wi-Fi / 4G. Gia chủ có thể kiểm tra trạng thái đóng/mở cửa, mở cửa cho người thân từ xa ở bất cứ đâu trên thế giới và nhận thông báo ngay lập tức nếu có tác động lực cạy phá từ bên ngoài.</p>
-`
   }
 ];
 

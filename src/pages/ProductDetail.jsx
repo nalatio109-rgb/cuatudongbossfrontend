@@ -241,7 +241,7 @@ export default function ProductDetail() {
         code: "BEC.5810",
         category: "cuacuon",
         title: "Cửa cuốn Bossdoor ECO BEC.5810",
-        image: "/about_door_1.png",
+        image: "https://bossdoordanang.com.vn/wp-content/uploads/2024/11/cua-cuon-bossdoor-eco-bec-5810-bossdoordanang.jpg",
         price: "1.500.000đ/m²"
       },
       {

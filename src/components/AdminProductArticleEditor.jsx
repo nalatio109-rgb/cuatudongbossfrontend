@@ -90,7 +90,6 @@ const PRODUCT_OPTIONS = [
   { code: "BEC.5810", title: "Cửa cuốn Bossdoor ECO BEC.5810", category: "cuacuon" },
   { code: "DL-75", title: "Cửa cuốn Đài Loan giá rẻ DL-75", category: "cuacuon" },
   { code: "BD-LUX", title: "Cửa cuốn thế hệ mới BossDoor Luxury", category: "cuacuon" },
-  { code: "BD-900", title: "Cửa cuốn khe thoáng Đức BossDoor BD-900", category: "cuacuon" },
   { code: "BD-L70", title: "Cửa cuốn tấm liền Úc siêu êm BD-L70", category: "cuacuon" },
   { code: "SN-100", title: "Cửa cuốn song ngang - mắc võng SN-100", category: "cuacuon" },
   { code: "CK-DL", title: "Cửa kéo Đài Loan truyền thống CK-DL", category: "cuakeo" },
@@ -180,7 +179,7 @@ export default function AdminProductArticleEditor({
     const realImg =
       (Array.isArray(prod?.images) && prod.images[0]) ||
       prod?.image ||
-      (code === "BEC.5810" || code === "BD-900" ? "/about_door_1.png" : "/about_door_1.png");
+      "https://bossdoordanang.com.vn/wp-content/uploads/2024/11/cua-cuon-bossdoor-eco-bec-5810-bossdoordanang.jpg";
 
     let content = art.content || "";
     let hasChanged = false;

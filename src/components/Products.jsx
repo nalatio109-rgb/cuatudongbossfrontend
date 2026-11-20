@@ -15,7 +15,7 @@ const OVERVIEW_6_PRODUCTS = [
   {
     id: 1,
     category: "cuacuon",
-    image: "/about_door_1.png",
+    image: "https://bossdoordanang.com.vn/wp-content/uploads/2024/11/cua-cuon-bossdoor-eco-bec-5810-bossdoordanang.jpg",
     title: "CỬA CUỐN",
     description: "Vận hành bền bỉ, an toàn tuyệt đối",
     details: "Hệ thống cửa cuốn công nghệ Đức, thân cửa hợp kim nhôm cao cấp 6063-T5, tích hợp công biến đảo chiều thông minh khi gặp vật cản.",
@@ -96,12 +96,12 @@ const CATALOG_PRODUCTS = [
   {
     id: 101,
     category: "cuacuon",
-    code: "BD-900",
-    image: "/about_door_1.png",
-    title: "CỬA CUỐN KHE THOÁNG\nĐỨC BOSSDOOR BD-900",
-    description: "Hợp kim nhôm 6063-T5 cao cấp, sơn AkzoNobel CHLB Đức bảo hành 10 năm.",
-    details: "Dòng cửa cuốn cao cấp thế hệ mới BossDoor tích hợp công nghệ chống sao chép mã khoá, cảm biến tự dừng khi gặp vật cản và điều khiển qua Smartphone từ xa.",
-    specs: ["Hợp kim nhôm 6063-T5 siêu bền", "Độ dày nan: 1.4 - 2.2 mm", "Cảm biến hồng ngoại an toàn", "Bảo hành mô-tơ 5 năm"],
+    code: "CD.100",
+    image: "https://cuacuondanang.com.vn/wp-content/uploads/2025/06/Cua-sieu-truong-CD.100.jpg",
+    title: "CỬA CUỐN SIÊU TRƯỜNG\nBOSS STRONG CD.100",
+    description: "Hợp kim nhôm 6063T5, độ dày nan 1.5mm - 2.5mm, khẩu độ an toàn rộng đến 10.5m.",
+    details: "Dòng cửa cuốn siêu trường nan nhôm hợp kim 6063T5 bản lớn, chống gió bão giật cấp 12, vận hành đầm chắc kiên cố cho công trình khẩu độ lớn.",
+    specs: ["Hợp kim nhôm 6063T5 siêu bền", "Độ dày nan: 1.5 - 2.5 mm", "Cảm biến an toàn tự dừng", "Bảo hành mô-tơ 5 năm"],
     icon: <Home size={24} />,
     badge: "BÁN CHẠY",
     isNew: true
@@ -110,7 +110,7 @@ const CATALOG_PRODUCTS = [
     id: 102,
     category: "cuacuon",
     code: "BEC.5810",
-    image: "/about_door_1.png",
+    image: "https://bossdoordanang.com.vn/wp-content/uploads/2024/11/cua-cuon-bossdoor-eco-bec-5810-bossdoordanang.jpg",
     title: "CỬA CUỐN KHE THOÁNG\nECO BEC.5810",
     description: "Cửa cuốn Bossdoor ECO BEC.5810 là sản phẩm cửa cuốn khe thoáng thế hệ mới mang thương hiệu BossDoor danh tiếng. Được sản xuất từ hợp kim nhôm 6063-T5 chuẩn hàng không, BEC.5810 là sự kết hợp xuất sắc giữa độ cứng cáp chống bão, thiết kế nan sang trọng và công nghệ giảm chấn 2 chiều vận hành êm ái hàng đầu.",
     details: "Cửa cuốn Bossdoor ECO BEC.5810 nan nhôm 6063-T5 cao cấp sơn tĩnh điện AkzoNobel CHLB Đức, tích hợp gioăng giảm chấn 2 chiều triệt tiêu rung chấn.",
@@ -458,13 +458,13 @@ export default function Products() {
       return OVERVIEW_6_PRODUCTS;
     }
 
-    const catalogFiltered = CATALOG_PRODUCTS.filter((p) => p.category === activeTab);
+    const catalogFiltered = CATALOG_PRODUCTS.filter((p) => p.category === activeTab && p.code !== "BD-900" && !/BD-900/i.test(p.code));
     const dbFiltered = dbProducts
-      .filter((p) => p.category === activeTab)
+      .filter((p) => p.category === activeTab && p.code !== "BD-900" && !/BD-900/i.test(p.code))
       .map((item, idx) => ({
         id: item._id || `db-${idx}`,
         category: item.category,
-        image: item.image || "/about_door_1.png",
+        image: item.image || "https://bossdoordanang.com.vn/wp-content/uploads/2024/11/cua-cuon-bossdoor-eco-bec-5810-bossdoordanang.jpg",
         title: item.title,
         description: item.description || "Sản phẩm chính hãng chất lượng cao",
         details: item.details || item.description,
