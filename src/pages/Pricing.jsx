@@ -61,11 +61,8 @@ export default function Pricing() {
             <div className="desktop-svc-banner">
               <h1>BẢNG GIÁ BOSS ĐÀ NẴNG</h1>
               <p className="banner-sub-desc">
-                Hệ thống phân phối, thi công & sửa chữa cửa cuốn, cửa kéo, cổng tự động chuyên nghiệp 24/7
-              </p>
-              <p className="banner-trust-line">
-                ★ Cam kết uy tín & bảo hành chính hãng 5 – 10 năm • Động cơ mô tơ 1 đổi 1 • Cứu hộ kỹ thuật thần tốc 24/7
-              </p>
+                Chuyên mục bảng giá cửa cuốn Đà Nẵng tại BossDoor Đà Nẵng cung cấp đầy đủ thông tin giá cả, chất liệu và tính năng cửa cuốn chất lượng cao              </p>
+
             </div>
 
             {/* Mobile Banner View */}
@@ -103,16 +100,6 @@ export default function Pricing() {
 
       {/* 3. MAIN PRICING CONTENT SECTION */}
       <main className="container pricing-hub-main-container">
-        {/* Title Box */}
-        <RevealOnScroll animation="fade-left" className="site293-title-box">
-          <h2>Bảng giá</h2>
-          <div className="title-underline"></div>
-        </RevealOnScroll>
-
-        <p className="pricing-category-description">
-          Chuyên mục bảng giá cửa cuốn Đà Nẵng tại BossDoor Đà Nẵng cung cấp đầy đủ thông tin giá cả, chất liệu và tính năng cửa cuốn chất lượng cao.
-        </p>
-
         {/* Search Controls Bar */}
         <div className="pricing-search-controls-bar">
           <div className="pricing-hub-search-bar">
