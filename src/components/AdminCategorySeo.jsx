@@ -20,7 +20,7 @@ import { defaultCategorySeoTemplates } from "../data/defaultCategorySeo";
 import "./AdminCategorySeo.css";
 
 const CATEGORIES = [
-  { id: "cuacuon", label: "Cửa Cuốn", badge: "Hot" },
+  { id: "cuacuon", label: "Cửa Cuốn", badge: "Khe thoáng" },
   { id: "phukien", label: "Phụ Kiện Cửa", badge: "Linh kiện" },
   { id: "cuakeo", label: "Cửa Kéo", badge: "Đài Loan/Inox" },
   { id: "cuatudong", label: "Cổng & Cửa Tự Động", badge: "Italia/Nhật" },

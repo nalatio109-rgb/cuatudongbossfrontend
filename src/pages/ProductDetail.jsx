@@ -576,7 +576,7 @@ export default function ProductDetail() {
                 className="main-view-image"
                 loading="eager"
               />
-              {extendedDetails.badge && (
+              {extendedDetails.badge && !/hot/i.test(extendedDetails.badge) && (
                 <span className="badge-tag-floating hot-tag">
                   {extendedDetails.badge}
                 </span>

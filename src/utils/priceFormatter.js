@@ -66,3 +66,4 @@ export function formatProductPrice(price, category = "cuacuon") {
 
   return `${formatVND(cleanNumber)}${unit}`;
 }
+

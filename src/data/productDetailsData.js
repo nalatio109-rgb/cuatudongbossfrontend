@@ -408,7 +408,7 @@ export const EXTENDED_PRODUCT_MAP = {
     rating: 5.0,
     reviewCount: 54,
     businessStatus: "Sẵn hàng tại kho Đà Nẵng • Thi công trong 24h",
-    badge: "HOT NHẤT",
+    badge: "",
     image: "/about_door_1.png",
     description: "Cửa cuốn Bossdoor ECO BEC.5810 là sản phẩm cửa cuốn khe thoáng thế hệ mới mang thương hiệu BossDoor danh tiếng. Được sản xuất từ hợp kim nhôm 6063-T5 chuẩn hàng không, BEC.5810 là sự kết hợp xuất sắc giữa độ cứng cáp chống bão, thiết kế nan sang trọng và công nghệ giảm chấn 2 chiều vận hành êm ái hàng đầu.",
     gallery: [

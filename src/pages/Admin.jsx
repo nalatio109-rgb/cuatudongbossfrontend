@@ -183,7 +183,7 @@ export default function Admin() {
     image: "/about_door_1.png",
     description: "",
     specs: "Hợp kim nhôm 6063-T5, Bảo hành 5 năm",
-    badge: "HOT",
+    badge: "",
     price: "1.500.000đ/m2"
   };
 
@@ -2493,7 +2493,7 @@ export default function Admin() {
                           <div className="admin-prod-card-top">
                             <div className="admin-prod-card-img-wrap">
                               <img src={p.image} alt={p.title} className="admin-prod-card-img" />
-                              {p.badge && <span className="admin-prod-card-badge">{p.badge}</span>}
+                              {p.badge && !/hot/i.test(p.badge) && <span className="admin-prod-card-badge">{p.badge}</span>}
                             </div>
 
                             <div className="admin-prod-card-main-info">

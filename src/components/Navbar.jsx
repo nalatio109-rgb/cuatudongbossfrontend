@@ -14,7 +14,7 @@ export const FLYOUT_PRODUCT_NAV_DATA = [
     badgeCount: "5 dòng",
     icon: <DoorClosed size={18} />,
     items: [
-      { name: "Cửa cuốn khe thoáng Đức", tag: "HOT", desc: "Cách âm, thoáng khí, hợp kim nhôm 6063", query: "Khe thoáng Đức" },
+      { name: "Cửa cuốn khe thoáng Đức", tag: "", desc: "Cách âm, thoáng khí, hợp kim nhôm 6063", query: "Khe thoáng Đức" },
       { name: "Cửa cuốn BossDoor cao cấp AI", tag: "CÔNG NGHỆ AI", desc: "Cảm biến chống xô, báo động qua điện thoại", query: "Cao cấp" },
       { name: "Cửa cuốn tấm liền Úc siêu êm", tag: "BÁN CHẠY", desc: "Vận hành êm ái 99%, có còi báo động", query: "Tấm liền Úc" },
       { name: "Cửa cuốn công nghệ Đài Loan", tag: "", desc: "Chi phí tối ưu, tôn mạ màu bền đẹp", query: "Đài Loan" },
@@ -169,7 +169,7 @@ export default function Navbar() {
           existingNames.add(subLower);
           items.push({
             name: sub,
-            tag: p.badge || "MỚI",
+            tag: (p.badge && !/hot/i.test(p.badge)) ? p.badge : "MỚI",
             desc: p.description
               ? (p.description.length > 55 ? p.description.slice(0, 52) + "..." : p.description)
               : `Dòng sản phẩm ${sub} chính hãng Boss Đà Nẵng`,

@@ -168,7 +168,7 @@ const CATALOG_PRODUCTS = [
     details: "Cửa cuốn song ngang mắc võng chất liệu Inox 304 hoặc sắt sơn tĩnh điện cao cấp, đảm bảo an toàn chống đột nhập mà vẫn giữ không gian trưng bày sản phẩm sang trọng.",
     specs: ["Inox 304 / Sắt sơn tĩnh điện", "Ống phi 19 - 22mm dày 1.0 - 1.2mm", "Tầm nhìn thông thoáng 90%", "Bảo hành 3 năm"],
     icon: <AlignJustify size={24} />,
-    badge: "HOT TTTM",
+    badge: "TTTM",
     isNew: true
   },
 
@@ -599,7 +599,7 @@ export default function Products() {
               >
                 <div className="new-product-content">
                   <div className="product-icon-badge">{product.icon}</div>
-                  {product.badge ? (
+                  {product.badge && !/hot/i.test(product.badge) ? (
                     <span className="badge-new">{product.badge}</span>
                   ) : product.isNew ? (
                     <span className="badge-new">MỚI</span>

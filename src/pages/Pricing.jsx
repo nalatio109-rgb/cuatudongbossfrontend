@@ -115,7 +115,7 @@ const PRICING_CATALOG = [
     title: "CỬA CUỐN KHE THOÁNG BOSSDOOR ECO BEC.5810",
     image: "/about_door_1.png",
     price: "1.500.000 - 1.750.000đ/m²",
-    badge: "HOT",
+    badge: "",
     businessStatus: "Đang kinh doanh • Sẵn hàng tại kho Đà Nẵng",
     description: "Cửa cuốn Bossdoor ECO BEC.5810 là sản phẩm cửa cuốn khe thoáng thế hệ mới mang thương hiệu BossDoor danh tiếng. Được sản xuất từ hợp kim nhôm 6063-T5 chuẩn hàng không, BEC.5810 là sự kết hợp xuất sắc giữa độ cứng cáp chống bão, thiết kế nan sang trọng và công nghệ giảm chấn 2 chiều vận hành êm ái hàng đầu.",
     specs: ["Hợp kim nhôm 6063-T5 cao cấp", "Sơn tĩnh điện chống muối mặn", "Bảo hành thân cửa 10 năm"]
@@ -157,7 +157,7 @@ const PRICING_CATALOG = [
     title: "CỬA CUỐN SONG NGANG - MẮC VÕNG INOX / SƠN TĨNH ĐIỆN",
     image: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80",
     price: "1.200.000 - 1.800.000đ/m²",
-    badge: "HOT",
+    badge: "",
     businessStatus: "Đang kinh doanh • Sẵn hàng thi công",
     description: "Thông thoáng tối đa, góc quan sát rộng cho TTTM, ngân hàng, gara ô tô. Vật liệu Inox 304 hoặc sắt sơn tĩnh điện cao cấp.",
     specs: ["Inox 304 / Sắt sơn tĩnh điện", "Ống phi 19 - 22mm dày 1.0 - 1.2mm", "Tầm nhìn thông thoáng 90%"]
@@ -241,7 +241,7 @@ const PRICING_CATALOG = [
     title: "CỬA KÍNH TRƯỢT TỰ ĐỘNG KABA / NABCO NHẬT BẢN",
     image: "https://images.unsplash.com/photo-1511818966892-d7d671e672a2?auto=format&fit=crop&w=800&q=80",
     price: "18.500.000 - 28.000.000đ/bộ",
-    badge: "HOT",
+    badge: "",
     businessStatus: "Đang kinh doanh • Sẵn hàng thi công",
     description: "Mắt thần cảm biến radar vi sóng siêu nhạy, động cơ DC Brushless vận hành siêu êm cho TTTM, sảnh khách sạn và bệnh viện.",
     specs: ["Động cơ DC Brushless Nhật Bản", "Tải trọng: 150kg x 2 cánh", "Bảo hành 3 năm"]
@@ -557,7 +557,7 @@ export default function Pricing() {
               <div className="card-thumb-column">
                 <div className="card-image-box">
                   <img src={prod.image} alt={prod.title} loading="lazy" />
-                  {prod.badge && <span className="card-badge-pill">{prod.badge}</span>}
+                  {prod.badge && !/hot/i.test(prod.badge) && <span className="card-badge-pill">{prod.badge}</span>}
                   <span className="card-code-pill">MÃ: {prod.code}</span>
                 </div>
               </div>

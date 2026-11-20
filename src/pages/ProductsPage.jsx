@@ -67,7 +67,7 @@ export default function ProductsPage() {
       details: "Cửa cuốn Bossdoor ECO BEC.5810 nan nhôm 6063-T5 cao cấp sơn tĩnh điện AkzoNobel CHLB Đức, tích hợp gioăng giảm chấn 2 chiều siêu êm.",
       specs: ["Hợp kim nhôm 6063-T5 siêu bền", "Sơn AkzoNobel Đức bảo hành 10 năm", "Giảm chấn 2 chiều siêu êm", "Bảo hành 10 năm"],
       price: "1.500.000đ/m²",
-      badge: "HOT NHẤT",
+      badge: "",
       icon: <Home size={22} />
     },
     {
@@ -116,7 +116,7 @@ export default function ProductsPage() {
       description: "Thông thoáng tối đa, góc quan sát rộng cho TTTM, ngân hàng, gara.",
       details: "Cửa cuốn song ngang mắc võng chất liệu Inox 304 hoặc sắt sơn tĩnh điện cao cấp, đảm bảo an toàn tuyệt đối mà vẫn giữ không gian thông thoáng.",
       specs: ["Inox 304 / Sắt sơn tĩnh điện", "Ống phi 19 - 22mm dày 1.0 - 1.2mm", "Tầm nhìn thông thoáng 90%", "Bảo hành 3 năm"],
-      badge: "HOT",
+      badge: "",
       icon: <AlignJustify size={22} />
     },
     {
@@ -306,7 +306,7 @@ export default function ProductsPage() {
       description: "Mắt thần cảm biến radar vi sóng siêu nhạy, vận hành êm ái cho TTTM, sảnh lớn.",
       details: "Cửa kính trượt tự động cao cấp nhập khẩu Nhật Bản / Thụy Sĩ. Động cơ DC không chổi than êm ái, hoạt động liên tục với tuổi thọ > 2.000.000 lần đóng mở.",
       specs: ["Động cơ DC Brushless 120W", "Tải trọng: 150kg x 2 cánh", "Cảm biến an toàn chống kẹp người", "Bảo hành 3 năm"],
-      badge: "HOT",
+      badge: "",
       icon: <ArrowRightLeft size={22} />
     },
     {
@@ -512,7 +512,9 @@ export default function ProductsPage() {
                 >
                   <div className="card-image-wrap">
                     <img src={product.image} alt={product.title} />
-                    <span className="product-badge">{product.badge}</span>
+                    {product.badge && !/hot/i.test(product.badge) && (
+                      <span className="product-badge">{product.badge}</span>
+                    )}
                     <span className="product-code-tag">{product.code}</span>
                     <div className="card-overlay-btn">
                       <Eye size={20} /> Xem chi tiết
