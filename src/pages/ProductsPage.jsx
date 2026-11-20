@@ -527,7 +527,6 @@ export default function ProductsPage() {
                       <h3>{product.title}</h3>
                     </div>
                     {product.price && <div className="product-price">{formatProductPrice(product.price, product.category)}</div>}
-                    <p className="card-desc">{getProductCardDescription(product)}</p>
 
                     <div className="card-specs-mini">
                       {product.specs.slice(0, 2).map((s, idx) => (
