@@ -11,10 +11,14 @@ import {
   HeadphonesIcon,
   PhoneCall,
   Sparkles,
-  Layers
+  Layers,
+  ChevronRight,
+  Clock,
+  RotateCcw
 } from "lucide-react";
 import { PRICING_ARTICLES } from "../data/pricingArticlesData";
 import { matchKeywords } from "../utils/searchHelper";
+import RevealOnScroll from "../components/RevealOnScroll";
 import "./Pricing.css";
 
 export default function Pricing() {
@@ -47,65 +51,96 @@ export default function Pricing() {
   }, [searchQuery]);
 
   return (
-    <div className="pricing-hub-page">
-      {/* 1. BREADCRUMB BAR (Khớp chuẩn 100% Ảnh 3) */}
-      <nav className="pricing-top-breadcrumb-bar" aria-label="Breadcrumb">
-        <div className="container">
-          <Link to="/" className="top-crumb-link">Trang chủ</Link>
-          <span className="top-crumb-sep">»</span>
-          <span className="top-crumb-current">Bảng giá</span>
-        </div>
-      </nav>
-
-      {/* 2. CHUYÊN MỤC BẢNG GIÁ HEADER & SEARCH (Khớp 100% Ảnh 3) */}
-      <header className="pricing-hub-header-section">
-        <div className="container">
-          <div className="pricing-header-main-box">
-            <h1 className="pricing-category-main-title">Bảng giá</h1>
-            <p className="pricing-category-description">
-              Chuyên mục bảng giá cửa cuốn Đà Nẵng tại BossDoor Đà Nẵng cung cấp đầy đủ thông tin giá cả, chất liệu và tính năng cửa cuốn chất lượng cao.
-            </p>
-
-            {/* Quick Search Bar */}
-            <div className="pricing-hub-search-bar">
-              <Search size={18} className="search-icon" />
-              <input
-                type="text"
-                placeholder="Tìm bảng giá dòng cửa (Ví dụ: Bossdoor, Austdoor, Titadoor, Doortech, Đài Loan, Đức, Úc...)"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  className="clear-search-btn"
-                  onClick={() => setSearchQuery("")}
-                  title="Xóa tìm kiếm"
-                >
-                  ✕
-                </button>
-              )}
+    <div className="pricing-hub-page site-293-style">
+      {/* 1. TOP BANNER HEADER (Khung giống 100% Ảnh Dịch Vụ người dùng yêu cầu) */}
+      <div className="site293-top-banner">
+        <div className="banner-overlay"></div>
+        <div className="container relative-z">
+          <RevealOnScroll animation="fade-down" className="banner-text-box">
+            {/* Desktop Banner View (Khớp 100% Ảnh 2) */}
+            <div className="desktop-svc-banner">
+              <h1>BẢNG GIÁ BOSS ĐÀ NẴNG</h1>
+              <p className="banner-sub-desc">
+                Hệ thống phân phối, thi công & sửa chữa cửa cuốn, cửa kéo, cổng tự động chuyên nghiệp 24/7
+              </p>
+              <p className="banner-trust-line">
+                ★ Cam kết uy tín & bảo hành chính hãng 5 – 10 năm • Động cơ mô tơ 1 đổi 1 • Cứu hộ kỹ thuật thần tốc 24/7
+              </p>
             </div>
-          </div>
-        </div>
-      </header>
 
-      {/* 3. DANH SÁCH BÀI VIẾT BẢNG GIÁ (Dạng card ngang bài viết chuẩn 100% như Ảnh 3) */}
+            {/* Mobile Banner View */}
+            <div className="mobile-svc-banner">
+              <h1>BẢNG GIÁ BOSS ĐÀ NẴNG</h1>
+              <p className="mobile-sub-desc">
+                Bảng giá cửa cuốn, cửa kéo & cổng tự động chuyên nghiệp 2026
+              </p>
+              <div className="mobile-svc-badges">
+                <div className="svc-badge-pill">
+                  <ShieldCheck size={14} />
+                  <span>Bảo hành 5 – 10 năm</span>
+                </div>
+                <div className="svc-badge-pill">
+                  <Clock size={14} />
+                  <span>Cứu hộ 24/7</span>
+                </div>
+                <div className="svc-badge-pill">
+                  <RotateCcw size={14} />
+                  <span>Mô tơ 1 đổi 1</span>
+                </div>
+              </div>
+            </div>
+          </RevealOnScroll>
+        </div>
+      </div>
+
+      {/* 2. BREADCRUMB */}
+      <div className="site293-breadcrumb">
+        <div className="container">
+          <Link to="/" title="Trang chủ">Trang chủ <ChevronRight size={14} /></Link>
+          <span className="current-page">Bảng giá</span>
+        </div>
+      </div>
+
+      {/* 3. MAIN PRICING CONTENT SECTION */}
       <main className="container pricing-hub-main-container">
-        {/* Status Count */}
-        <div className="pricing-hub-count-bar">
-          <div className="count-left">
-            <Layers size={16} className="count-icon" />
-            <span>
-              Hiển thị <strong>{filteredArticles.length}</strong> chuyên mục bảng giá chi tiết
-            </span>
+        {/* Title Box */}
+        <RevealOnScroll animation="fade-left" className="site293-title-box">
+          <h2>Bảng giá</h2>
+          <div className="title-underline"></div>
+        </RevealOnScroll>
+
+        <p className="pricing-category-description">
+          Chuyên mục bảng giá cửa cuốn Đà Nẵng tại BossDoor Đà Nẵng cung cấp đầy đủ thông tin giá cả, chất liệu và tính năng cửa cuốn chất lượng cao.
+        </p>
+
+        {/* Search Controls Bar */}
+        <div className="pricing-search-controls-bar">
+          <div className="pricing-hub-search-bar">
+            <Search size={18} className="search-icon" />
+            <input
+              type="text"
+              placeholder="Tìm bảng giá dòng cửa (Ví dụ: Bossdoor, Austdoor, Titadoor, Doortech, Đài Loan, Đức, Úc...)"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                className="clear-search-btn"
+                onClick={() => setSearchQuery("")}
+                title="Xóa tìm kiếm"
+              >
+                ✕
+              </button>
+            )}
           </div>
-          <span className="live-status-pill">
-            ⚡ Báo giá tại xưởng - Khảo sát đo đạc 0đ tại Đà Nẵng
-          </span>
+          <div className="pricing-results-count-badge">
+            <Layers size={15} />
+            <span>Hiển thị <strong>{filteredArticles.length}</strong> chuyên mục bảng giá</span>
+          </div>
         </div>
 
-        {/* Article Cards Stream */}
+        {/* Article Cards Stream (Khớp 100% Ảnh 3) */}
         <div className="pricing-article-cards-stream">
           {filteredArticles.map((article) => (
             <article
@@ -113,7 +148,7 @@ export default function Pricing() {
               className="pricing-article-list-card"
               onClick={() => navigate(article.path)}
             >
-              {/* Bên trái: Thumbnail kèm watermark BOSS ** ĐÀ NẴNG ** giống Ảnh 3 */}
+              {/* Bên trái: Thumbnail kèm watermark BOSS ** ĐÀ NẴNG ** */}
               <div className="card-thumb-column">
                 <div className="card-thumb-wrapper">
                   <img
@@ -130,7 +165,7 @@ export default function Pricing() {
                 </div>
               </div>
 
-              {/* Bên phải: Tiêu đề H3, mô tả trích dẫn, Meta row khớp Ảnh 3 */}
+              {/* Bên phải: Tiêu đề H3, mô tả trích dẫn, Meta row */}
               <div className="card-content-column">
                 <h3 className="card-article-title">
                   <Link
