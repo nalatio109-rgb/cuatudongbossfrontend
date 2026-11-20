@@ -24,7 +24,7 @@ import Workflow from '../components/Workflow';
 
 const About = () => {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
-  const videoSrc = "/BOSS%20YOUTUBE.mp4";
+  const videoSrc = "/boss_intro.mp4";
 
   const renderKpiCards = () => (
     <>
@@ -174,6 +174,7 @@ const About = () => {
               <div className="exact-door-main-img">
                 <video 
                   src={videoSrc} 
+                  poster="/boss_intro_poster.jpg"
                   controls 
                   preload="metadata"
                 />
@@ -419,6 +420,7 @@ const About = () => {
             </button>
             <video 
               src={videoSrc} 
+              poster="/boss_intro_poster.jpg"
               controls 
               autoPlay 
               style={{ width: '100%', height: '100%', objectFit: 'contain' }}
