@@ -207,8 +207,34 @@ export default function ProductPricing() {
     return getPricingArticleBySlug(effectiveId);
   }, [effectiveId]);
 
-  const [product, setProduct] = useState(() => location.state?.product || null);
-  const [loading, setLoading] = useState(!location.state?.product);
+  const [product, setProduct] = useState(() => {
+    if (location.state?.product) return location.state.product;
+    if (matchedPricingArticle) {
+      const brandQuote = BRAND_PRICE_QUOTES[matchedPricingArticle.brandCode];
+      return {
+        id: matchedPricingArticle.id,
+        code: (matchedPricingArticle.brandCode || "BOSSDOOR").toUpperCase(),
+        title: matchedPricingArticle.title,
+        category: matchedPricingArticle.brandCode?.includes("keo") ? "cuakeo" : "cuacuon",
+        price: brandQuote?.items?.[0] ? `${brandQuote.items[0].priceOver8}đ/m²` : "4.110.000đ/m²",
+        image: matchedPricingArticle.image,
+        description: matchedPricingArticle.excerpt,
+        specs: [
+          "Hợp kim nhôm 6063T5 cao cấp",
+          "Sơn tĩnh điện AkzoNobel CHLB Đức bảo hành 10 năm",
+          "Khóa cơ an toàn chống cạy phá độc quyền",
+          "Vận hành êm ái triệt tiêu tiếng ồn"
+        ]
+      };
+    }
+    return null;
+  });
+
+  const [loading, setLoading] = useState(() => {
+    if (location.state?.product) return false;
+    if (matchedPricingArticle) return false;
+    return true;
+  });
   const [allProducts, setAllProducts] = useState([]);
   const [tocOpen, setTocOpen] = useState(true);
 
@@ -414,13 +440,14 @@ export default function ProductPricing() {
       (String(product.id) === searchKey ||
         (product.code && product.code.toLowerCase() === searchKey) ||
         String(product._id || "") === searchKey ||
-        getProductSlug(product).toLowerCase() === searchKey)
+        getProductSlug(product).toLowerCase() === searchKey ||
+        (matchedPricingArticle && (String(product.id) === matchedPricingArticle.id || product.code?.toLowerCase() === matchedPricingArticle.brandCode?.toLowerCase())))
     ) {
       setLoading(false);
       return;
     }
 
-    setLoading(true);
+    setLoading(!product);
 
     const lookupProduct = async () => {
       // 1. Try fetching directly by effectiveId from backend API
@@ -460,8 +487,9 @@ export default function ProductPricing() {
         }
       }
 
+      let matched = null;
       if (Array.isArray(list) && list.length > 0) {
-        let matched = list.find((p) => {
+        matched = list.find((p) => {
           const pCode = (p.code || "").toLowerCase();
           const pId = String(p.id || p._id || "").toLowerCase();
           const pSlug = getProductSlug(p).toLowerCase();
@@ -477,38 +505,39 @@ export default function ProductPricing() {
         if (!matched && (isDirectGermanDoorUrl || !id)) {
           matched = list.find((p) => (p.code || "").toUpperCase() === "CK-DE") || list.find((p) => p.category === "cuakeo");
         }
+      }
 
-        if (!matched && matchedPricingArticle) {
-          const brandQuote = BRAND_PRICE_QUOTES[matchedPricingArticle.brandCode];
-          matched = {
-            id: matchedPricingArticle.id,
-            code: matchedPricingArticle.brandCode.toUpperCase(),
-            title: matchedPricingArticle.title,
-            category: matchedPricingArticle.brandCode.includes("keo") ? "cuakeo" : "cuacuon",
-            price: brandQuote?.items?.[0] ? `${brandQuote.items[0].priceOver8}đ/m²` : "4.110.000đ/m²",
-            image: matchedPricingArticle.image,
-            description: matchedPricingArticle.excerpt,
-            specs: [
-              "Hợp kim nhôm 6063T5 cao cấp",
-              "Sơn tĩnh điện AkzoNobel CHLB Đức bảo hành 10 năm",
-              "Khóa cơ an toàn chống cạy phá độc quyền",
-              "Vận hành êm ái triệt tiêu tiếng ồn"
-            ]
-          };
-        }
+      // 3. Fallback to matchedPricingArticle dù có API hay không
+      if (!matched && matchedPricingArticle) {
+        const brandQuote = BRAND_PRICE_QUOTES[matchedPricingArticle.brandCode];
+        matched = {
+          id: matchedPricingArticle.id,
+          code: (matchedPricingArticle.brandCode || "BOSSDOOR").toUpperCase(),
+          title: matchedPricingArticle.title,
+          category: matchedPricingArticle.brandCode?.includes("keo") ? "cuakeo" : "cuacuon",
+          price: brandQuote?.items?.[0] ? `${brandQuote.items[0].priceOver8}đ/m²` : "4.110.000đ/m²",
+          image: matchedPricingArticle.image,
+          description: matchedPricingArticle.excerpt,
+          specs: [
+            "Hợp kim nhôm 6063T5 cao cấp",
+            "Sơn tĩnh điện AkzoNobel CHLB Đức bảo hành 10 năm",
+            "Khóa cơ an toàn chống cạy phá độc quyền",
+            "Vận hành êm ái triệt tiêu tiếng ồn"
+          ]
+        };
+      }
 
-        if (matched && isMounted) {
-          const matchedObj = { ...matched };
-          if (Array.isArray(matchedObj.specs)) {
-            matchedObj.specs = matchedObj.specs.map(sanitizeSpec);
-          }
-          if (matchedObj.code && PRODUCT_PRICE_RANGES[matchedObj.code]) {
-            matchedObj.price = PRODUCT_PRICE_RANGES[matchedObj.code];
-          }
-          setProduct(matchedObj);
-          setLoading(false);
-          return;
+      if (matched && isMounted) {
+        const matchedObj = { ...matched };
+        if (Array.isArray(matchedObj.specs)) {
+          matchedObj.specs = matchedObj.specs.map(sanitizeSpec);
         }
+        if (matchedObj.code && PRODUCT_PRICE_RANGES[matchedObj.code]) {
+          matchedObj.price = PRODUCT_PRICE_RANGES[matchedObj.code];
+        }
+        setProduct(matchedObj);
+        setLoading(false);
+        return;
       }
 
       if (isMounted) setLoading(false);
@@ -751,11 +780,11 @@ export default function ProductPricing() {
             {/* ARTICLE CONTINUOUS HEADER (Khớp 100% Ảnh 4) */}
             <header className="article-continuous-header">
               <h1 className="article-main-title">
-                {productArticle.seo?.title?.split("|")[0]?.trim() || product.title}
+                {productArticle?.seo?.title ? productArticle.seo.title.split("|")[0]?.trim() : (product?.title || "Bảng giá")}
               </h1>
               <div className="article-meta-bar">
                 <span className="meta-tag-category">
-                  <Tag size={13} className="meta-icon" /> {productArticle.category || "Bảng giá"}
+                  <Tag size={13} className="meta-icon" /> {productArticle?.category || "Bảng giá"}
                 </span>
                 <span className="meta-tag-date">
                   <Calendar size={13} className="meta-icon" /> {getPublishDate(productArticle)}
@@ -815,7 +844,7 @@ export default function ProductPricing() {
             {/* BẢNG BÁO GIÁ CHÍNH (Khớp chuẩn 100% Ảnh 4: Tên sản phẩm | Chi tiết | Giá bán) */}
             <section className="pricing-table-section">
               <h2 id="bang-gia-chi-tiet" className="pricing-section-title">
-                {priceQuote?.tableHeading || priceQuote?.title || `Bảng giá ${product.title} tại Đà Nẵng`}
+                {priceQuote?.tableHeading || priceQuote?.title || `Bảng giá ${product?.title || ""} tại Đà Nẵng`}
               </h2>
 
               <div className="primary-quote-table-container">
@@ -891,9 +920,9 @@ export default function ProductPricing() {
                     <tbody>
                       {quoteTableItems.map((row, rIdx) => {
                         const isCurrentProduct = 
-                          product.code && 
-                          (product.code.toUpperCase() === row.code?.toUpperCase() || 
-                           row.code?.toUpperCase().includes(product.code.toUpperCase()));
+                          product?.code && 
+                          (product.code.toUpperCase() === row?.code?.toUpperCase() || 
+                           row?.code?.toUpperCase()?.includes(product.code.toUpperCase()));
 
                         return (
                           <tr 
@@ -1215,9 +1244,9 @@ export default function ProductPricing() {
                     <tbody>
                       {quoteTableItems.map((row, rIdx) => {
                         const isCurrentProduct = 
-                          product.code && 
-                          (product.code.toUpperCase() === row.code?.toUpperCase() || 
-                           row.code?.toUpperCase().includes(product.code.toUpperCase()));
+                          product?.code && 
+                          (product.code.toUpperCase() === row?.code?.toUpperCase() || 
+                           row?.code?.toUpperCase()?.includes(product.code.toUpperCase()));
 
                         return (
                           <tr 
