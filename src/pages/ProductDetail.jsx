@@ -23,6 +23,7 @@ import {
 import { getProductExtendedDetails } from "../data/productDetailsData";
 import { DEFAULT_PRODUCT_ARTICLES } from "../data/defaultProductArticles";
 import { getProductSlug } from "../utils/slug.js";
+import { formatProductPrice } from "../utils/priceFormatter";
 import { useAuth } from "../context/AuthContext";
 import "./ProductDetail.css";
 
@@ -320,9 +321,7 @@ export default function ProductDetail() {
           </h3>
           <div className="rel-price-row">
             <span className="rel-price-num">
-              {relProd.price && relProd.price !== "Liên hệ"
-                ? relProd.price
-                : "Liên hệ báo giá"}
+              {formatProductPrice(relProd.price, relProd.category)}
             </span>
           </div>
           <div className="rel-action-buttons">
@@ -502,7 +501,7 @@ export default function ProductDetail() {
     </tr>
     <tr>
       <td><strong>Giá niêm yết</strong></td>
-      <td>${extendedDetails.price || "Liên hệ báo giá"}</td>
+      <td>${formatProductPrice(extendedDetails.price, extendedDetails.category)}</td>
     </tr>
     <tr>
       <td><strong>Bảo hành chính hãng</strong></td>
@@ -630,9 +629,7 @@ export default function ProductDetail() {
             <div className="product-pricing-box">
               <div className="price-label">Giá niêm yết tại xưởng:</div>
               <div className="price-amount-highlight">
-                {extendedDetails.price && extendedDetails.price !== "Liên hệ"
-                  ? extendedDetails.price
-                  : "Liên hệ để nhận báo giá"}
+                {formatProductPrice(extendedDetails.price, extendedDetails.category)}
               </div>
               <div className="price-promise-note">
                 ⚡ Giá xuất xưởng - Khảo sát đo đạc thực tế <strong>0 đồng</strong> tại chân công trình

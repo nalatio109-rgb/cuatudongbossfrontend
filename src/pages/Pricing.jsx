@@ -16,6 +16,7 @@ import {
   Award
 } from "lucide-react";
 import { matchKeywords, extractSearchableText } from "../utils/searchHelper";
+import { formatProductPrice } from "../utils/priceFormatter";
 import "./Pricing.css";
 
 // Bảng giá niêm yết theo khoảng (từ giá thấp nhất đến cao nhất) cho từng sản phẩm
@@ -45,7 +46,7 @@ export const getProductPriceRange = (product) => {
   if (product.code && PRODUCT_PRICE_RANGES[product.code]) {
     return PRODUCT_PRICE_RANGES[product.code];
   }
-  return product.price && product.price !== "Liên hệ" ? product.price : "Liên hệ để nhận báo giá";
+  return product.price && product.price !== "Liên hệ" ? formatProductPrice(product.price, product.category) : "Liên hệ để nhận báo giá";
 };
 
 // Comprehensive catalog data for Boss Đà Nẵng pricing hub

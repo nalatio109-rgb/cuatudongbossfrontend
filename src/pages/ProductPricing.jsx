@@ -28,6 +28,7 @@ import { DEFAULT_PRICE_QUOTES } from "../data/defaultPriceQuotes";
 import { DEFAULT_PRODUCT_ARTICLES } from "../data/defaultProductArticles";
 import { getProductSlug } from "../utils/slug.js";
 import { getProductCardDescription } from "../utils/productDescriptionHelper";
+import { formatProductPrice } from "../utils/priceFormatter";
 import { useAuth } from "../context/AuthContext";
 import "./ProductPricing.css";
 
@@ -652,7 +653,7 @@ export default function ProductPricing() {
         ? "/bang-gia-cap-nhat-cua-keo-cong-nghe-duc-2026-tai-da-nang"
         : `/bang-gia/${slug}`;
       const desc = getProductCardDescription(p);
-      const price = PRODUCT_PRICE_RANGES[pCode] || p.price || "Liên hệ";
+      const price = PRODUCT_PRICE_RANGES[pCode] || (p.price ? formatProductPrice(p.price, p.category) : "Liên hệ");
       const specs = Array.isArray(p.specs) ? p.specs.map(sanitizeSpec) : [];
 
       return {

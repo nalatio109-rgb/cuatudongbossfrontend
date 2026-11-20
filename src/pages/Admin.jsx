@@ -14,6 +14,7 @@ import AdminProjectArticleEditor, { SAMPLE_PROJECT_TEMPLATE } from "../component
 import AdminNewsArticleEditor, { SAMPLE_NEWS_TEMPLATE } from "../components/AdminNewsArticleEditor";
 import AdminProductQuickInfoCard from "../components/AdminProductQuickInfoCard";
 import { getProductCardDescription } from "../utils/productDescriptionHelper";
+import { formatProductPrice } from "../utils/priceFormatter";
 import { useAuth } from "../context/AuthContext";
 import { slugify } from "../utils/slug.js";
 import { matchKeywords, extractSearchableText } from "../utils/searchHelper";
@@ -557,8 +558,10 @@ export default function Admin() {
         ? productForm.specs.split(",").map(s => s.trim()).filter(Boolean)
         : productForm.specs;
 
+      const finalPrice = productForm.price ? formatProductPrice(productForm.price, productForm.category) : "Liên hệ";
       const payload = {
         ...productForm,
+        price: finalPrice,
         specs: specsArray,
         images: productForm.image ? [productForm.image] : [],
         gallery: productForm.image ? [productForm.image] : []
@@ -626,6 +629,9 @@ export default function Admin() {
       const cleanPayload = { ...payload };
       if (!cleanPayload._id) {
         delete cleanPayload._id;
+      }
+      if (cleanPayload.price) {
+        cleanPayload.price = formatProductPrice(cleanPayload.price, cleanPayload.category);
       }
 
       if (cleanPayload._id) {
@@ -2440,7 +2446,7 @@ export default function Admin() {
                             <td><span style={{ background: "rgba(255,255,255,0.1)", padding: "2px 8px", borderRadius: 4, fontWeight: 600 }}>{p.code}</span></td>
                             <td><span className="admin-badge-category">{p.category}</span></td>
                             <td style={{ maxWidth: 250, fontSize: "0.85rem", color: "#94a3b8" }}>{p.description}</td>
-                            <td style={{ color: "#10b981", fontWeight: 600 }}>{p.price || "Liên hệ"}</td>
+                            <td style={{ color: "#10b981", fontWeight: 600 }}>{formatProductPrice(p.price, p.category)}</td>
                             <td>
                               <button
                                 className="btn-action-icon article"
@@ -2498,7 +2504,7 @@ export default function Admin() {
                               <h3 className="admin-prod-card-title">{p.title}</h3>
                               <div className="admin-prod-card-price-row">
                                 <span className="card-price-label">Giá:</span>
-                                <span className="card-price-value">{p.price || "Liên hệ"}</span>
+                                <span className="card-price-value">{formatProductPrice(p.price, p.category)}</span>
                               </div>
                             </div>
                           </div>
@@ -3426,12 +3432,27 @@ export default function Admin() {
               </div>
 
               <div className="admin-form-group">
-                <label>Giá tham khảo</label>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+                  <label style={{ margin: 0 }}>Giá tham khảo</label>
+                  {productForm.price && (
+                    <span style={{ fontSize: "0.78rem", color: "#10b981", fontWeight: 600 }}>
+                      Hiển thị: {formatProductPrice(productForm.price, productForm.category)}
+                    </span>
+                  )}
+                </div>
                 <input
                   type="text"
                   value={productForm.price}
                   onChange={(e) => setProductForm({ ...productForm, price: e.target.value })}
-                  placeholder="1.500.000đ/m2"
+                  onBlur={() => {
+                    if (productForm.price && productForm.price.trim()) {
+                      setProductForm((prev) => ({
+                        ...prev,
+                        price: formatProductPrice(prev.price, prev.category)
+                      }));
+                    }
+                  }}
+                  placeholder="Ví dụ: 100000 hoặc 1.500.000đ/m2"
                 />
               </div>
 

@@ -5,6 +5,7 @@ import {
 } from "lucide-react";
 import { getProductCardDescription } from "../utils/productDescriptionHelper";
 import { compressImage } from "../utils/imageCompressor";
+import { formatProductPrice } from "../utils/priceFormatter";
 import "./AdminProductQuickInfoCard.css";
 
 const SUBCATEGORIES = {
@@ -428,9 +429,11 @@ export default function AdminProductQuickInfoCard({
         : formData.specs;
 
       const newCode = formData.code.trim().toUpperCase();
+      const finalPrice = formData.price ? formatProductPrice(formData.price, formData.category) : "Liên hệ";
 
       const payload = {
         ...formData,
+        price: finalPrice,
         code: newCode,
         image: primaryImage,
         images: currentImages,
@@ -698,12 +701,27 @@ export default function AdminProductQuickInfoCard({
 
           {/* GIÁ THAM KHẢO */}
           <div className="quick-info-form-group">
-            <label>Giá tham khảo</label>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+              <label style={{ margin: 0 }}>Giá tham khảo</label>
+              {formData.price && (
+                <span style={{ fontSize: "0.8rem", color: "#10b981", fontWeight: 600 }}>
+                  Hiển thị: {formatProductPrice(formData.price, formData.category)}
+                </span>
+              )}
+            </div>
             <input
               type="text"
               value={formData.price}
               onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-              placeholder="1.500.000đ/m2"
+              onBlur={() => {
+                if (formData.price && formData.price.trim()) {
+                  setFormData((prev) => ({
+                    ...prev,
+                    price: formatProductPrice(prev.price, prev.category)
+                  }));
+                }
+              }}
+              placeholder="Ví dụ: 100000 hoặc 1.500.000đ/m2"
             />
           </div>
 

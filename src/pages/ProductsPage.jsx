@@ -8,6 +8,7 @@ import {
 import CategorySeoContent from "../components/CategorySeoContent";
 import { DEFAULT_PRODUCT_ARTICLES } from "../data/defaultProductArticles";
 import { getProductCardDescription } from "../utils/productDescriptionHelper";
+import { formatProductPrice } from "../utils/priceFormatter";
 import { getProductSlug } from "../utils/slug.js";
 import { matchKeywords, extractSearchableText } from "../utils/searchHelper";
 import "./ProductsPage.css";
@@ -523,7 +524,7 @@ export default function ProductsPage() {
                       <div className="icon-box">{product.icon}</div>
                       <h3>{product.title}</h3>
                     </div>
-                    {product.price && <div className="product-price">{product.price}</div>}
+                    {product.price && <div className="product-price">{formatProductPrice(product.price, product.category)}</div>}
                     <p className="card-desc">{getProductCardDescription(product)}</p>
 
                     <div className="card-specs-mini">
