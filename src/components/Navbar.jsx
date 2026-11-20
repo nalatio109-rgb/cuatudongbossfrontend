@@ -63,15 +63,16 @@ export const FLYOUT_PRODUCT_NAV_DATA = [
 ];
 
 export const MOBILE_PRICING_MENU_ITEMS = [
-  { name: "Cửa cuốn Bossdoor", query: "Bossdoor" },
-  { name: "Cửa cuốn Austdoor", query: "Austdoor" },
-  { name: "Cửa cuốn Doortech", query: "Doortech" },
-  { name: "Cửa cuốn Onedoor", query: "Onedoor" },
-  { name: "Cửa cuốn Titadoor", query: "Titadoor" },
-  { name: "Cửa cuốn Mitadoor", query: "Mitadoor" },
-  { name: "Cửa cuốn S68", query: "S68" },
-  { name: "Cửa cuốn Đài Loan", query: "Đài Loan" },
-  { name: "Cửa cuốn Đức", query: "Đức" },
+  { name: "Cửa cuốn Bossdoor", to: "/bang-gia/cua-cuon-bossdoor", query: "Bossdoor" },
+  { name: "Cửa cuốn Austdoor", to: "/bang-gia/cua-cuon-austdoor", query: "Austdoor" },
+  { name: "Cửa cuốn Doortech", to: "/bang-gia/cua-cuon-doortech", query: "Doortech" },
+  { name: "Cửa cuốn Onedoor", to: "/bang-gia/cua-cuon-onedoor", query: "Onedoor" },
+  { name: "Cửa cuốn Titadoor", to: "/bang-gia/cua-cuon-titadoor", query: "Titadoor" },
+  { name: "Cửa cuốn Mitadoor", to: "/bang-gia/cua-cuon-mitadoor", query: "Mitadoor" },
+  { name: "Cửa cuốn S68", to: "/bang-gia/cua-cuon-s68", query: "S68" },
+  { name: "Cửa cuốn Đài Loan", to: "/bang-gia/cua-cuon-dai-loan", query: "Đài Loan" },
+  { name: "Cửa cuốn Đức", to: "/bang-gia/cua-cuon-duc", query: "Đức" },
+  { name: "Cửa cuốn Úc", to: "/bang-gia/cua-cuon-uc", query: "Úc" },
 ];
 
 export const MOBILE_SERVICES_MENU_ITEMS = [
@@ -622,7 +623,7 @@ export default function Navbar() {
                 {MOBILE_PRICING_MENU_ITEMS.map((item, idx) => (
                   <Link
                     key={idx}
-                    to={`/bang-gia?q=${encodeURIComponent(item.query)}`}
+                    to={item.to || `/bang-gia?q=${encodeURIComponent(item.query)}`}
                     onClick={() => {
                       setPricingOpen(false);
                       setMenu(false);
@@ -636,13 +637,13 @@ export default function Navbar() {
               </div>
             </div>
 
-            {/* Danh sách bảng giá xổ xuống trên điện thoại (tối đa 9 cái khớp ảnh yêu cầu) */}
+            {/* Danh sách bảng giá xổ xuống trên điện thoại (đầy đủ 10 dòng cửa theo yêu cầu) */}
             <div className={`mobile-sub-accordion mobile-pricing-accordion ${mobilePricingExpanded ? "show" : ""}`}>
               <div className="mobile-pricing-list">
                 {MOBILE_PRICING_MENU_ITEMS.map((item, idx) => (
                   <Link
                     key={idx}
-                    to={`/bang-gia?q=${encodeURIComponent(item.query)}`}
+                    to={item.to || `/bang-gia?q=${encodeURIComponent(item.query)}`}
                     onClick={() => {
                       setMenu(false);
                       setMobilePricingExpanded(false);

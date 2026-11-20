@@ -22,10 +22,17 @@ import {
   Info,
   MessageCircle,
   Filter,
-  Calendar
+  Calendar,
+  List
 } from "lucide-react";
 import { DEFAULT_PRICE_QUOTES } from "../data/defaultPriceQuotes";
 import { DEFAULT_PRODUCT_ARTICLES } from "../data/defaultProductArticles";
+import {
+  PRICING_ARTICLES,
+  BRAND_PRICE_QUOTES,
+  BRAND_PRODUCT_ARTICLES,
+  getPricingArticleBySlug
+} from "../data/pricingArticlesData";
 import { getProductSlug } from "../utils/slug.js";
 import { getProductCardDescription } from "../utils/productDescriptionHelper";
 import { formatProductPrice } from "../utils/priceFormatter";
@@ -194,11 +201,16 @@ export default function ProductPricing() {
   const isDirectGermanDoorUrl =
     path.includes("bang-gia-cap-nhat-cua-keo-cong-nghe-duc") ||
     path.includes("cua-keo-cong-nghe-duc");
-  const effectiveId = id || (isDirectGermanDoorUrl ? "CK-DE" : "CK-DE");
+  const effectiveId = id || (isDirectGermanDoorUrl ? "CK-DE" : "cua-cuon-bossdoor");
+
+  const matchedPricingArticle = useMemo(() => {
+    return getPricingArticleBySlug(effectiveId);
+  }, [effectiveId]);
 
   const [product, setProduct] = useState(() => location.state?.product || null);
   const [loading, setLoading] = useState(!location.state?.product);
   const [allProducts, setAllProducts] = useState([]);
+  const [tocOpen, setTocOpen] = useState(true);
 
   // Fetch all products dynamically from DB
   useEffect(() => {
@@ -219,12 +231,18 @@ export default function ProductPricing() {
   }, []);
 
   const [priceQuote, setPriceQuote] = useState(() => {
+    if (matchedPricingArticle?.brandCode && BRAND_PRICE_QUOTES[matchedPricingArticle.brandCode]) {
+      return BRAND_PRICE_QUOTES[matchedPricingArticle.brandCode];
+    }
     return DEFAULT_PRICE_QUOTES.find(
       (q) => q.productCode?.toLowerCase() === (effectiveId || "CK-DE").toLowerCase()
     ) || DEFAULT_PRICE_QUOTES.find((q) => q.productCode === "CK-DE") || null;
   });
 
   const [productArticle, setProductArticle] = useState(() => {
+    if (matchedPricingArticle?.brandCode && BRAND_PRODUCT_ARTICLES[matchedPricingArticle.brandCode]) {
+      return BRAND_PRODUCT_ARTICLES[matchedPricingArticle.brandCode];
+    }
     return DEFAULT_PRODUCT_ARTICLES.find(
       (a) => a.productCode?.toLowerCase() === (effectiveId || "CK-DE").toLowerCase()
     ) || DEFAULT_PRODUCT_ARTICLES.find((a) => a.productCode === "CK-DE") || null;
@@ -272,7 +290,12 @@ export default function ProductPricing() {
         }
       }
 
-      // 3. Fallback to DEFAULT_PRICE_QUOTES
+      // 3. Fallback to BRAND_PRICE_QUOTES (Khớp thương hiệu theo slug hoặc brandCode)
+      if (!foundQuote && matchedPricingArticle?.brandCode && BRAND_PRICE_QUOTES[matchedPricingArticle.brandCode]) {
+        foundQuote = BRAND_PRICE_QUOTES[matchedPricingArticle.brandCode];
+      }
+
+      // 4. Fallback to DEFAULT_PRICE_QUOTES
       if (!foundQuote) {
         foundQuote = DEFAULT_PRICE_QUOTES.find(
           (q) =>
@@ -343,7 +366,12 @@ export default function ProductPricing() {
         }
       }
 
-      // 3. Fallback to DEFAULT_PRODUCT_ARTICLES
+      // 3. Fallback to BRAND_PRODUCT_ARTICLES
+      if (!foundArticle && matchedPricingArticle?.brandCode && BRAND_PRODUCT_ARTICLES[matchedPricingArticle.brandCode]) {
+        foundArticle = BRAND_PRODUCT_ARTICLES[matchedPricingArticle.brandCode];
+      }
+
+      // 4. Fallback to DEFAULT_PRODUCT_ARTICLES
       if (!foundArticle) {
         foundArticle = DEFAULT_PRODUCT_ARTICLES.find(
           (a) =>
@@ -354,7 +382,7 @@ export default function ProductPricing() {
         );
       }
 
-      // 4. Default fallback for German door
+      // 5. Default fallback for German door
       if (!foundArticle && (code.toUpperCase().includes("CK") || code.toUpperCase().includes("SR") || code.toUpperCase() === "VIP" || isDirectGermanDoorUrl)) {
         foundArticle = DEFAULT_PRODUCT_ARTICLES.find((a) => a.productCode === "CK-DE");
       }
@@ -369,7 +397,7 @@ export default function ProductPricing() {
     return () => {
       isMounted = false;
     };
-  }, [product, effectiveId, isDirectGermanDoorUrl]);
+  }, [product, effectiveId, isDirectGermanDoorUrl, matchedPricingArticle]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -448,6 +476,25 @@ export default function ProductPricing() {
 
         if (!matched && (isDirectGermanDoorUrl || !id)) {
           matched = list.find((p) => (p.code || "").toUpperCase() === "CK-DE") || list.find((p) => p.category === "cuakeo");
+        }
+
+        if (!matched && matchedPricingArticle) {
+          const brandQuote = BRAND_PRICE_QUOTES[matchedPricingArticle.brandCode];
+          matched = {
+            id: matchedPricingArticle.id,
+            code: matchedPricingArticle.brandCode.toUpperCase(),
+            title: matchedPricingArticle.title,
+            category: matchedPricingArticle.brandCode.includes("keo") ? "cuakeo" : "cuacuon",
+            price: brandQuote?.items?.[0] ? `${brandQuote.items[0].priceOver8}đ/m²` : "4.110.000đ/m²",
+            image: matchedPricingArticle.image,
+            description: matchedPricingArticle.excerpt,
+            specs: [
+              "Hợp kim nhôm 6063T5 cao cấp",
+              "Sơn tĩnh điện AkzoNobel CHLB Đức bảo hành 10 năm",
+              "Khóa cơ an toàn chống cạy phá độc quyền",
+              "Vận hành êm ái triệt tiêu tiếng ồn"
+            ]
+          };
         }
 
         if (matched && isMounted) {
@@ -687,134 +734,120 @@ export default function ProductPricing() {
 
   return (
     <div className="product-pricing-page">
-      {/* 1. BREADCRUMB */}
+      {/* 1. BREADCRUMB (Khớp chuẩn 100% Ảnh 4) */}
       <nav className="pricing-breadcrumb" aria-label="Breadcrumb">
         <div className="container">
           <Link to="/" className="crumb-link">Trang chủ</Link>
-          <span className="crumb-sep">/</span>
-          <Link to="/san-pham" className="crumb-link">Sản phẩm</Link>
-          <span className="crumb-sep">/</span>
+          <span className="crumb-sep">»</span>
           <Link to="/bang-gia" className="crumb-link">Bảng giá</Link>
-          <span className="crumb-sep">/</span>
+          <span className="crumb-sep">»</span>
           <span className="crumb-current">{getPricingBreadcrumbTitle(product, productArticle)}</span>
         </div>
       </nav>
 
       <main className="container pricing-main-container">
-        {productArticle?.introContent ? (
+        {productArticle ? (
           <article className="pricing-article-wrapper">
-            {/* ARTICLE CONTINUOUS HEADER */}
+            {/* ARTICLE CONTINUOUS HEADER (Khớp 100% Ảnh 4) */}
             <header className="article-continuous-header">
               <h1 className="article-main-title">
-                {productArticle.seo?.title?.split("|")[0]?.trim() || `Bảng Giá Cập Nhật ${product.title} 2026 Tại Đà Nẵng`}
+                {productArticle.seo?.title?.split("|")[0]?.trim() || product.title}
               </h1>
               <div className="article-meta-bar">
-                <span><Calendar size={14} /> Ngày đăng: {getPublishDate(productArticle)}</span>
+                <span className="meta-tag-category">
+                  <Tag size={13} className="meta-icon" /> {productArticle.category || "Bảng giá"}
+                </span>
+                <span className="meta-tag-date">
+                  <Calendar size={13} className="meta-icon" /> {getPublishDate(productArticle)}
+                </span>
               </div>
             </header>
 
-            {/* 2. PRODUCT FEATURED IMAGE */}
-            <section className="pricing-product-hero image-only">
-              <div className="hero-image-column">
-                <div className="pricing-img-wrapper">
-                  <img src={product.image} alt={product.title} />
-                  <span className="pricing-code-pill">MÃ: {product.code}</span>
-                </div>
-              </div>
-            </section>
+            {/* LEAD PARAGRAPH (Khớp 100% Ảnh 4) */}
+            {(productArticle.introLead || productArticle.introContent) && (
+              <p className="article-lead-paragraph">
+                {productArticle.introLead || (
+                  typeof productArticle.introContent === "string" && !productArticle.introContent.includes("<p")
+                    ? productArticle.introContent
+                    : "Lắp đặt cửa cuốn an toàn Bossdoor trở thành giải pháp được rất nhiều gia chủ lựa chọn hiện nay. Dù biết đây là sản phẩm rất được lòng khách hàng nhưng liệu rằng cửa cuốn Bossdoor có tốt không? Bảng giá cửa cuốn an toàn Bossdoor như thế nào? Lắp đặt cửa ở đâu tại Đà Nẵng đáng tin cậy? Để giải đáp các thông tin trên, BossDoor Đà Nẵng mời bạn theo dõi bài viết dưới đây nhé."
+                )}
+              </p>
+            )}
 
-            {/* 3. BẢNG BÁO GIÁ KỸ THUẬT CHUYÊN NGHIỆP (ĐƯỢC ĐẶT LÊN TRÊN BÀI VIẾT) */}
+            {/* MỤC LỤC NỘI DUNG (Khớp 100% Ảnh 4) */}
+            {productArticle.tableOfContents && productArticle.tableOfContents.length > 0 && (
+              <div className="pricing-toc-box">
+                <button 
+                  type="button" 
+                  className="pricing-toc-toggle-btn"
+                  onClick={() => setTocOpen(!tocOpen)}
+                  aria-expanded={tocOpen}
+                >
+                  <span className="toc-title-text">Mục lục nội dung</span>
+                  <span className="toc-btn-badge">
+                    <List size={15} />
+                    <ChevronDown size={14} className={`toc-chevron ${tocOpen ? "rotate" : ""}`} />
+                  </span>
+                </button>
+                {tocOpen && (
+                  <ul className="pricing-toc-list">
+                    {productArticle.tableOfContents.map((item, idx) => (
+                      <li key={idx}>
+                        <a 
+                          href={`#${item.id}`}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            const target = document.getElementById(item.id);
+                            if (target) {
+                              target.scrollIntoView({ behavior: "smooth", block: "start" });
+                            }
+                          }}
+                        >
+                          {item.title}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            )}
+
+            {/* BẢNG BÁO GIÁ CHÍNH (Khớp chuẩn 100% Ảnh 4: Tên sản phẩm | Chi tiết | Giá bán) */}
             <section className="pricing-table-section">
-              <div className="section-head-bar">
-                <p className="technical-sub-note">
-                  Bảng giá niêm yết theo quy chuẩn kỹ thuật nhà sản xuất, phân cấp chi tiết theo từng khoảng diện tích m² thi công:
-                </p>
-              </div>
+              <h2 id="bang-gia-chi-tiet" className="pricing-section-title">
+                {priceQuote?.tableHeading || priceQuote?.title || `Bảng giá ${product.title} tại Đà Nẵng`}
+              </h2>
 
-              {/* Bộ lọc chọn nhanh diện tích cho Mobile & Desktop */}
-              <div className="area-filter-row">
-                <span className="area-filter-title">
-                  <Filter size={14} /> Lọc theo diện tích:
-                </span>
-                <div className="area-filter-buttons">
-                  <button
-                    className={`area-btn ${activeAreaFilter === "all" ? "active" : ""}`}
-                    onClick={() => setActiveAreaFilter("all")}
-                  >
-                    Tất cả
-                  </button>
-                  <button
-                    className={`area-btn ${activeAreaFilter === "over8" ? "active" : ""}`}
-                    onClick={() => setActiveAreaFilter("over8")}
-                  >
-                    &gt; 8m² (Giá tốt nhất)
-                  </button>
-                  <button
-                    className={`area-btn ${activeAreaFilter === "from6to8" ? "active" : ""}`}
-                    onClick={() => setActiveAreaFilter("from6to8")}
-                  >
-                    6 - 8m²
-                  </button>
-                  <button
-                    className={`area-btn ${activeAreaFilter === "from4to6" ? "active" : ""}`}
-                    onClick={() => setActiveAreaFilter("from4to6")}
-                  >
-                    4 - 6m²
-                  </button>
-                </div>
-              </div>
-
-              {/* 1. HIỂN THỊ BẢNG GIÁ 3 CỘT (TÊN SẢN PHẨM - CHI TIẾT - GIÁ BÁN) DÀNH RIÊNG CHO ĐIỆN THOẠI GIỐNG ẢNH 2 */}
-              <div className="mobile-pricing-table-container">
-                <table className="mobile-spec-table">
+              <div className="primary-quote-table-container">
+                <table className="customer-quote-spec-table">
                   <thead>
                     <tr>
-                      <th className="th-name">Tên sản phẩm</th>
-                      <th className="th-specs">Chi tiết</th>
-                      <th className="th-price">Giá bán</th>
+                      <th className="th-name" style={{ width: "28%" }}>Tên sản phẩm</th>
+                      <th className="th-specs" style={{ width: "52%" }}>Chi tiết</th>
+                      <th className="th-price" style={{ width: "20%", textAlign: "center" }}>Giá bán</th>
                     </tr>
                   </thead>
                   <tbody>
                     {quoteTableItems.map((row, rIdx) => {
-                      const isCurrentProduct = 
-                        product.code && 
-                        (product.code.toUpperCase() === row.code?.toUpperCase() || 
-                         row.code?.toUpperCase().includes(product.code.toUpperCase()));
-
                       const specLines = formatMobileSpecs(row.description, row.colors);
-                      const displayPrice = getMobileTablePrice(row, activeAreaFilter);
+                      const displayPrice = row.priceOver8 ? `${row.priceOver8} đ/m²` : (row.price || "Liên hệ");
 
                       return (
-                        <tr 
-                          key={`mob-row-${rIdx}`} 
-                          className={isCurrentProduct ? "highlight-active-row" : ""}
-                        >
+                        <tr key={rIdx}>
                           <td className="cell-product-name">
-                            <div className="mobile-pname-text">
-                              {row.name || `Cửa ${row.code}`}
-                            </div>
-                            <button
-                              type="button"
-                              className="mobile-view-photo-btn"
-                              onClick={() => {
-                                const heroImg = document.querySelector(".pricing-img-wrapper");
-                                if (heroImg) {
-                                  heroImg.scrollIntoView({ behavior: "smooth", block: "center" });
-                                }
-                              }}
-                            >
-                              (xem ảnh)
-                            </button>
+                            <strong className="pname-strong">{row.name || `Cửa ${row.code}`}</strong>
                           </td>
                           <td className="cell-product-specs">
-                            {specLines.map((line, lIdx) => (
-                              <div key={lIdx} className="spec-item-line">
-                                {line}
-                              </div>
-                            ))}
+                            {specLines.length > 0 ? (
+                              specLines.map((line, lIdx) => (
+                                <div key={lIdx} className="spec-line">{line}</div>
+                              ))
+                            ) : (
+                              <div className="spec-raw">{row.description}</div>
+                            )}
                           </td>
-                          <td className="cell-product-price">
-                            <span className="price-bold">{displayPrice}</span>
+                          <td className="cell-product-price text-center">
+                            <span className="price-bold-red">{displayPrice}</span>
                           </td>
                         </tr>
                       );
