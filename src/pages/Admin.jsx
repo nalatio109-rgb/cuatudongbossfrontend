@@ -525,9 +525,9 @@ export default function Admin() {
   // ----------------------------------------------------
   const handleOpenAddProduct = () => {
     setEditingProduct(null);
-    setIsCustomSubCategory(false);
-    setProductForm(initialProductState);
-    setShowProductModal(true);
+    setEditingArticleCode("NEW");
+    setProductSubTab("editor");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleOpenEditProduct = (product) => {
@@ -2375,7 +2375,9 @@ export default function Admin() {
                   <FileEdit size={17} />
                   <span>Soạn Bài Chi Tiết SP & SEO (Word)</span>
                   {editingArticleCode && (
-                    <span className="subnav-active-code-pill">{editingArticleCode}</span>
+                    <span className="subnav-active-code-pill">
+                      {editingArticleCode === "NEW" ? "✨ TẠO MỚI" : editingArticleCode}
+                    </span>
                   )}
                 </button>
               </div>
@@ -2553,6 +2555,7 @@ export default function Admin() {
                     dbProducts={products}
                     onSaveProduct={handleSaveProductFromEditor}
                     showToast={showToast}
+                    onBackToList={() => setProductSubTab("list")}
                   />
 
                   {/* TRÌNH SOẠN BÀI VIẾT CHI TIẾT & SEO (WORD) */}

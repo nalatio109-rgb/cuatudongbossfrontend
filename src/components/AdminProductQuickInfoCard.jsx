@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { 
   Package, ChevronDown, ChevronUp, Save, Loader2, Undo2, Upload, X, 
   Image as ImageIcon, Plus, Trash2, Star 
@@ -45,18 +45,20 @@ export default function AdminProductQuickInfoCard({
   onSelectProductCode,
   dbProducts = [],
   onSaveProduct,
-  showToast
+  showToast,
+  onBackToList
 }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [urlInput, setUrlInput] = useState("");
   const [isCustomSubCategory, setIsCustomSubCategory] = useState(false);
+  const prevCodeRef = useRef(null);
 
   const [formData, setFormData] = useState({
     _id: "",
     title: "",
-    code: currentProductCode || "",
+    code: currentProductCode === "NEW" ? "" : (currentProductCode || ""),
     category: "cuacuon",
     subCategory: "Cửa cuốn khe thoáng Đức",
     price: "",
@@ -86,6 +88,30 @@ export default function AdminProductQuickInfoCard({
 
   // Đồng bộ dữ liệu khi currentProductCode hoặc dbProducts thay đổi
   useEffect(() => {
+    if (currentProductCode === "NEW") {
+      if (prevCodeRef.current !== "NEW") {
+        prevCodeRef.current = "NEW";
+        setIsCustomSubCategory(false);
+        setFormData({
+          _id: "",
+          title: "",
+          code: "",
+          category: "cuacuon",
+          subCategory: "Cửa cuốn khe thoáng Đức",
+          price: "",
+          badge: "HOT",
+          image: "",
+          images: [],
+          description: "",
+          specs: ""
+        });
+        setUrlInput("");
+      }
+      return;
+    }
+
+    prevCodeRef.current = currentProductCode;
+
     if (!currentProductCode && dbProducts.length > 0) {
       if (onSelectProductCode) onSelectProductCode(dbProducts[0].code);
       return;
@@ -125,17 +151,16 @@ export default function AdminProductQuickInfoCard({
       setUrlInput("");
     } else {
       setIsCustomSubCategory(false);
-      const defaultImg = "/about_door_1.png";
       setFormData({
         _id: "",
-        title: `Sản phẩm ${currentProductCode || ""}`,
-        code: currentProductCode || "",
+        title: currentProductCode && currentProductCode !== "NEW" ? `Sản phẩm ${currentProductCode}` : "",
+        code: currentProductCode && currentProductCode !== "NEW" ? currentProductCode : "",
         category: "cuacuon",
         subCategory: "Cửa cuốn khe thoáng Đức",
         price: "",
         badge: "",
-        image: defaultImg,
-        images: [defaultImg],
+        image: "",
+        images: [],
         description: "",
         specs: ""
       });
@@ -144,6 +169,28 @@ export default function AdminProductQuickInfoCard({
   }, [currentProductCode, dbProducts]);
 
   const handleReset = () => {
+    if (currentProductCode === "NEW") {
+      if (onBackToList) {
+        onBackToList();
+        return;
+      }
+      setFormData({
+        _id: "",
+        title: "",
+        code: "",
+        category: "cuacuon",
+        subCategory: "Cửa cuốn khe thoáng Đức",
+        price: "",
+        badge: "HOT",
+        image: "",
+        images: [],
+        description: "",
+        specs: ""
+      });
+      setUrlInput("");
+      return;
+    }
+
     const found = dbProducts.find(
       (p) => p.code?.toUpperCase() === currentProductCode?.toUpperCase()
     );
@@ -410,9 +457,13 @@ export default function AdminProductQuickInfoCard({
           setFormData((prev) => ({
             ...prev,
             _id: res.data._id,
+            code: res.data.code || payload.code,
             image: primaryImage,
             images: currentImages
           }));
+          if (onSelectProductCode && (res.data.code || payload.code)) {
+            onSelectProductCode(res.data.code || payload.code);
+          }
         }
       }
       setUrlInput("");
@@ -434,10 +485,23 @@ export default function AdminProductQuickInfoCard({
           <div className="quick-info-icon-wrapper">
             <Package size={20} className="quick-info-main-icon" />
           </div>
-          <span className="quick-info-main-title">THÔNG TIN CƠ BẢN SẢN PHẨM</span>
-          {formData.code && (
+          <span className="quick-info-main-title">
+            {currentProductCode === "NEW" ? "TẠO MỚI SẢN PHẨM - THÔNG TIN CƠ BẢN" : "THÔNG TIN CƠ BẢN SẢN PHẨM"}
+          </span>
+          {formData.code ? (
             <span className="quick-info-code-badge">
               MÃ: {formData.code}
+            </span>
+          ) : (
+            <span
+              className="quick-info-code-badge"
+              style={{
+                background: "rgba(16, 185, 129, 0.15)",
+                color: "#10b981",
+                border: "1px solid rgba(16, 185, 129, 0.4)"
+              }}
+            >
+              ✨ THÊM MỚI
             </span>
           )}
         </div>

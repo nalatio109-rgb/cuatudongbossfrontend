@@ -305,11 +305,33 @@ export default function AdminProductArticleEditor({
     setArticlesList(loaded);
 
     // Set initial active article
-    const found = loaded.find((a) => a.productCode.toUpperCase() === selectedProductCode.toUpperCase()) || loaded[0];
-    if (found) {
-      const { sanitized } = sanitizeArticle(found, found.productCode);
-      setActiveArticle(JSON.parse(JSON.stringify(sanitized)));
-      setRawHtmlContent(sanitized.content || "");
+    if (selectedProductCode === "NEW") {
+      const newArt = {
+        productCode: "NEW",
+        productTitle: "Sản phẩm mới",
+        category: "cuacuon",
+        status: "draft",
+        content: `<h2>1. Giới thiệu tổng quan về sản phẩm</h2>\n<p>Nhập nội dung bài viết chi tiết tại đây...</p>`,
+        uploadedImages: [],
+        seo: {
+          title: `Sản phẩm mới | Boss Đà Nẵng`,
+          description: `Thông tin chi tiết, cấu tạo và bảng thông số kỹ thuật.`,
+          focusKeyword: "cửa cuốn đà nẵng",
+          secondaryKeywords: ["báo giá đà nẵng"],
+          slug: "san-pham-moi",
+          imageAlt: "Sản phẩm mới BossDoor",
+          canonicalUrl: ""
+        }
+      };
+      setActiveArticle(newArt);
+      setRawHtmlContent(newArt.content);
+    } else {
+      const found = loaded.find((a) => a.productCode.toUpperCase() === selectedProductCode.toUpperCase()) || loaded[0];
+      if (found) {
+        const { sanitized } = sanitizeArticle(found, found.productCode);
+        setActiveArticle(JSON.parse(JSON.stringify(sanitized)));
+        setRawHtmlContent(sanitized.content || "");
+      }
     }
 
     setLoading(false);
@@ -337,6 +359,29 @@ export default function AdminProductArticleEditor({
       onSelectProduct(code);
     }
     const existing = articlesList.find((a) => a.productCode.toUpperCase() === code.toUpperCase());
+
+    if (code === "NEW") {
+      const newArt = {
+        productCode: "NEW",
+        productTitle: "Sản phẩm mới",
+        category: "cuacuon",
+        status: "draft",
+        content: `<h2>1. Giới thiệu tổng quan về sản phẩm</h2>\n<p>Nhập nội dung bài viết chi tiết tại đây...</p>`,
+        uploadedImages: [],
+        seo: {
+          title: `Sản phẩm mới | Boss Đà Nẵng`,
+          description: `Thông tin chi tiết, cấu tạo và bảng thông số kỹ thuật.`,
+          focusKeyword: "cửa cuốn đà nẵng",
+          secondaryKeywords: ["báo giá đà nẵng"],
+          slug: "san-pham-moi",
+          imageAlt: "Sản phẩm mới BossDoor",
+          canonicalUrl: ""
+        }
+      };
+      setActiveArticle(newArt);
+      setRawHtmlContent(newArt.content);
+      return;
+    }
 
     if (existing) {
       const { sanitized } = sanitizeArticle(existing, code);
@@ -830,6 +875,9 @@ export default function AdminProductArticleEditor({
                 onChange={(e) => handleSelectProduct(e.target.value)}
                 className="product-dropdown"
               >
+                {selectedProductCode === "NEW" && (
+                  <option value="NEW">✨ [TẠO MỚI] - Soạn bài viết cho sản phẩm mới</option>
+                )}
                 {availableProductOptions.map((prod) => (
                   <option key={prod.code} value={prod.code}>
                     [{prod.code}] - {prod.title}
