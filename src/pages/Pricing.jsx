@@ -324,14 +324,6 @@ export default function Pricing() {
     }
   }, []);
 
-  const categories = [
-    { id: "all", label: "TẤT CẢ SẢN PHẨM" },
-    { id: "cuakeo", label: "CỬA KÉO ĐỨC & ĐÀI LOAN" },
-    { id: "cuacuon", label: "CỬA CUỐN KHE THOÁNG" },
-    { id: "phukien", label: "PHỤ KIỆN & MÔ TƠ" },
-    { id: "cuatudong", label: "CỔNG & CỬA TỰ ĐỘNG" }
-  ];
-
   // Lọc lấy 2 thông số cốt lõi đắt giá nhất để hiển thị gọn gàng trên mobile ("hiện những cái cần hiện"):
   // 1. Đặc tính vật liệu / công nghệ nổi bật nhất
   // 2. Chế độ bảo hành chính hãng (10 năm)
@@ -503,20 +495,6 @@ export default function Pricing() {
 
       {/* 2. MAIN CATALOG BODY */}
       <main className="container pricing-hub-container">
-        {/* Category Tabs */}
-        <div className="pricing-tabs-row">
-          {categories.map((cat, catIdx) => (
-            <button
-              key={cat.id}
-              className={`pricing-tab-btn ${activeCategory === cat.id ? "active" : ""}`}
-              onClick={() => setActiveCategory(cat.id)}
-              style={{ animationDelay: `${catIdx * 60}ms` }}
-            >
-              {cat.label}
-            </button>
-          ))}
-        </div>
-
         {/* Status Bar */}
         <div className="catalog-status-bar">
           <div className="status-bar-left">
