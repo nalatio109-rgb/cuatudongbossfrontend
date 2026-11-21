@@ -983,19 +983,12 @@ export default function AdminPriceQuote({ showToast }) {
       {/* ========================================================================= */}
       {activeQuote && (
         <div className="quote-editor-card">
-          {/* HEADER CỦA BẢNG GIÁ ĐANG CHỌN */}
-          <div className="active-quote-banner-bar">
-            <div className="active-quote-info-col">
-              <span className="active-cat-pill">
-                DANH MỤC: {activeQuote.category === "cuacuon" ? "CỬA CUỐN" : activeQuote.category === "cuakeo" ? "CỬA KÉO" : "PHỤ KIỆN"}
-              </span>
-              <h3 className="active-quote-main-title">
-                {activeQuote.productTitle || activeQuote.title}
+          {/* 1. THÔNG TIN CHUNG */}
+          <div className="editor-section-box">
+            <div className="section-header-row">
+              <h3 className="section-title">
+                <FileSpreadsheet size={18} /> Thông Tin Nhận Diện Bảng Giá
               </h3>
-              <span className="active-quote-code-pill">MÃ: {activeQuote.productCode}</span>
-            </div>
-
-            <div className="active-quote-actions-col">
               <button
                 type="button"
                 className="btn-delete-this-quote"
@@ -1005,13 +998,6 @@ export default function AdminPriceQuote({ showToast }) {
                 <Trash2 size={15} /> Xóa Bảng Giá Này
               </button>
             </div>
-          </div>
-
-          {/* 1. THÔNG TIN CHUNG */}
-          <div className="editor-section-box">
-            <h3 className="section-title">
-              <FileSpreadsheet size={18} /> Thông Tin Nhận Diện Bảng Giá
-            </h3>
             <div className="form-grid-3">
               <div className="form-field">
                 <label>Mã sản phẩm (Code):</label>
