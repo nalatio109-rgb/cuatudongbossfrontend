@@ -46,14 +46,14 @@ export const isImageCol = (col) => {
 
 // 8 Cột mặc định tiêu chuẩn bao gồm Cột Hình Ảnh theo đúng thực tế ngành cửa tại Đà Nẵng
 const DEFAULT_GRID_COLUMNS = [
-  { id: "col_1", key: "stt", label: "STT", width: "42px" },
-  { id: "col_2", key: "code", label: "Mã SP", width: "78px" },
+  { id: "col_1", key: "stt", label: "STT", width: "50px" },
+  { id: "col_2", key: "code", label: "Mã SP", width: "88px" },
   { id: "col_img", key: "image", label: "Hình ảnh", width: "150px" },
   { id: "col_3", key: "name", label: "Tên & Quy cách kỹ thuật", width: "240px" },
-  { id: "col_4", key: "unit", label: "ĐVT", width: "60px" },
-  { id: "col_5", key: "colors", label: "Màu sắc", width: "135px" },
-  { id: "col_6", key: "priceOver8", label: "Đơn giá (> 8m²)", width: "125px" },
-  { id: "col_7", key: "price6to8", label: "Đơn giá (≤ 8m²)", width: "125px" }
+  { id: "col_4", key: "unit", label: "ĐVT", width: "65px" },
+  { id: "col_5", key: "colors", label: "Màu sắc", width: "140px" },
+  { id: "col_6", key: "priceOver8", label: "Đơn giá (> 8m²)", width: "130px" },
+  { id: "col_7", key: "price6to8", label: "Đơn giá (≤ 8m²)", width: "130px" }
 ];
 
 const DEFAULT_7_COLUMNS = DEFAULT_GRID_COLUMNS;
@@ -1227,16 +1227,18 @@ export default function AdminPriceQuote({ showToast }) {
                 <table className="admin-quote-data-table spreadsheet-table">
                   <thead>
                     <tr>
-                      <th style={{ width: "36px", textAlign: "center", padding: "4px" }}>#</th>
                       {gridColumns.map((col, cIdx) => {
                         const isSttCol = col.key === "stt" || col.id === "col_1" || col.label?.toLowerCase() === "stt";
                         const isCodeCol = col.key === "code" || col.id === "col_2" || col.label?.toLowerCase().includes("mã");
+                        const isUnitCol = col.key === "unit" || col.id === "col_4" || col.label?.toLowerCase().includes("đvt");
                         const colWidth = isSttCol
-                          ? (col.width && parseInt(col.width) <= 45 ? col.width : "42px")
+                          ? (col.width && parseInt(col.width) >= 48 ? col.width : "50px")
                           : isCodeCol
-                          ? (col.width && parseInt(col.width) <= 82 ? col.width : "78px")
+                          ? (col.width && parseInt(col.width) >= 80 ? col.width : "88px")
+                          : isUnitCol
+                          ? (col.width && parseInt(col.width) >= 60 ? col.width : "65px")
                           : col.width || "120px";
-                        const colMinWidth = isSttCol ? "34px" : isCodeCol ? "60px" : "55px";
+                        const colMinWidth = isSttCol ? "42px" : isCodeCol ? "72px" : isUnitCol ? "52px" : "55px";
 
                         return (
                           <th
@@ -1292,9 +1294,6 @@ export default function AdminPriceQuote({ showToast }) {
                   <tbody>
                     {gridRows.map((row, rIdx) => (
                       <tr key={`r-${rIdx}`}>
-                        <td className="row-num-cell font-bold text-center">
-                          {rIdx + 1}
-                        </td>
                         {gridColumns.map((col) => {
                           const isImage = isImageCol(col);
                           const isStt = col.key === "stt" || col.id === "col_1" || col.label?.toLowerCase() === "stt";
