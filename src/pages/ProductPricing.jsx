@@ -949,62 +949,14 @@ export default function ProductPricing() {
                 </div>
               )}
 
-              <div className="primary-quote-table-container">
-                <table className="customer-quote-spec-table">
-                  <thead>
-                    <tr>
-                      <th className="th-name" style={{ width: "28%" }}>Tên sản phẩm</th>
-                      <th className="th-specs" style={{ width: "52%" }}>Chi tiết</th>
-                      <th className="th-price" style={{ width: "20%", textAlign: "center" }}>Giá bán</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {quoteTableItems.map((row, rIdx) => {
-                      const specLines = formatMobileSpecs(row.description, row.colors);
-                      const displayPrice = row.priceOver8 ? `${row.priceOver8} đ/m²` : (row.price || "Liên hệ");
-
-                      return (
-                        <tr key={rIdx}>
-                          <td className="cell-product-name">
-                            <div className="product-name-with-thumb">
-                              {(row.image || row.imageUrl) && (
-                                <img
-                                  src={row.image || row.imageUrl}
-                                  alt={row.name || row.code}
-                                  className="pricing-table-item-thumb"
-                                  onError={(e) => {
-                                    e.target.style.display = "none";
-                                  }}
-                                />
-                              )}
-                              <strong className="pname-strong">{row.name || `Cửa ${row.code}`}</strong>
-                            </div>
-                          </td>
-                          <td className="cell-product-specs">
-                            {specLines.length > 0 ? (
-                              specLines.map((line, lIdx) => (
-                                <div key={lIdx} className="spec-line">{line}</div>
-                              ))
-                            ) : (
-                              <div className="spec-raw">{row.description}</div>
-                            )}
-                          </td>
-                          <td className="cell-product-price text-center">
-                            <span className="price-bold-red">{displayPrice}</span>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* 2. BẢNG GIÁ KỸ THUẬT GỐC (GIỮ NGUYÊN 100% TRÊN MÁY TÍNH) */}
+              {/* BẢNG GIÁ KỸ THUẬT ĐỒNG BỘ 100% VỚI ADMIN */}
               <div className="technical-table-container-card">
                 <div className="table-section-title-bar">
                   <div className="table-title-group">
                     <Tag size={18} className="table-title-tag-icon" />
-                    <h3 className="table-title-heading">BẢNG GIÁ SẢN PHẨM KỸ THUẬT (PHÂN TẦNG THEO DIỆN TÍCH)</h3>
+                    <h3 className="table-title-heading">
+                      {priceQuote?.title || priceQuote?.productTitle || `BẢNG GIÁ ${product?.title?.toUpperCase() || ""} (CẬP NHẬT 2026 TẠI ĐÀ NẴNG)`}
+                    </h3>
                   </div>
                   <div className="table-scroll-hint-pill">
                     ↔ Vuốt ngang để xem đầy đủ các cột giá
@@ -1383,104 +1335,14 @@ export default function ProductPricing() {
                 </div>
               )}
 
-              {/* Bộ lọc chọn nhanh diện tích cho Mobile & Desktop */}
-              <div className="area-filter-row">
-                <span className="area-filter-title">
-                  <Filter size={14} /> Lọc theo diện tích:
-                </span>
-                <div className="area-filter-buttons">
-                  <button
-                    className={`area-btn ${activeAreaFilter === "all" ? "active" : ""}`}
-                    onClick={() => setActiveAreaFilter("all")}
-                  >
-                    Tất cả
-                  </button>
-                  <button
-                    className={`area-btn ${activeAreaFilter === "over8" ? "active" : ""}`}
-                    onClick={() => setActiveAreaFilter("over8")}
-                  >
-                    &gt; 8m² (Giá tốt nhất)
-                  </button>
-                  <button
-                    className={`area-btn ${activeAreaFilter === "from6to8" ? "active" : ""}`}
-                    onClick={() => setActiveAreaFilter("from6to8")}
-                  >
-                    6 - 8m²
-                  </button>
-                  <button
-                    className={`area-btn ${activeAreaFilter === "from4to6" ? "active" : ""}`}
-                    onClick={() => setActiveAreaFilter("from4to6")}
-                  >
-                    4 - 6m²
-                  </button>
-                </div>
-              </div>
-
-              {/* 1. HIỂN THỊ BẢNG GIÁ 3 CỘT (TÊN SẢN PHẨM - CHI TIẾT - GIÁ BÁN) DÀNH RIÊNG CHO ĐIỆN THOẠI GIỐNG ẢNH 2 */}
-              <div className="mobile-pricing-table-container">
-                <table className="mobile-spec-table">
-                  <thead>
-                    <tr>
-                      <th className="th-name">Tên sản phẩm</th>
-                      <th className="th-specs">Chi tiết</th>
-                      <th className="th-price">Giá bán</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {quoteTableItems.map((row, rIdx) => {
-                      const isCurrentProduct = 
-                        product.code && 
-                        (product.code.toUpperCase() === row.code?.toUpperCase() || 
-                         row.code?.toUpperCase().includes(product.code.toUpperCase()));
-
-                      const specLines = formatMobileSpecs(row.description, row.colors);
-                      const displayPrice = getMobileTablePrice(row, activeAreaFilter);
-
-                      return (
-                        <tr 
-                          key={`mob-row-${rIdx}`} 
-                          className={isCurrentProduct ? "highlight-active-row" : ""}
-                        >
-                          <td className="cell-product-name">
-                            <div className="mobile-pname-text">
-                              {row.name || `Cửa ${row.code}`}
-                            </div>
-                            <button
-                              type="button"
-                              className="mobile-view-photo-btn"
-                              onClick={() => {
-                                const heroImg = document.querySelector(".pricing-img-wrapper");
-                                if (heroImg) {
-                                  heroImg.scrollIntoView({ behavior: "smooth", block: "center" });
-                                }
-                              }}
-                            >
-                              (xem ảnh)
-                            </button>
-                          </td>
-                          <td className="cell-product-specs">
-                            {specLines.map((line, lIdx) => (
-                              <div key={lIdx} className="spec-item-line">
-                                {line}
-                              </div>
-                            ))}
-                          </td>
-                          <td className="cell-product-price">
-                            <span className="price-bold">{displayPrice}</span>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* 2. BẢNG GIÁ KỸ THUẬT GỐC (GIỮ NGUYÊN 100% TRÊN MÁY TÍNH) */}
+              {/* BẢNG GIÁ KỸ THUẬT ĐỒNG BỘ 100% VỚI ADMIN */}
               <div className="technical-table-container-card">
                 <div className="table-section-title-bar">
                   <div className="table-title-group">
                     <Tag size={18} className="table-title-tag-icon" />
-                    <h3 className="table-title-heading">BẢNG GIÁ SẢN PHẨM KỸ THUẬT (PHÂN TẦNG THEO DIỆN TÍCH)</h3>
+                    <h3 className="table-title-heading">
+                      {priceQuote?.title || priceQuote?.productTitle || `BẢNG GIÁ ${product?.title?.toUpperCase() || ""} (CẬP NHẬT 2026 TẠI ĐÀ NẴNG)`}
+                    </h3>
                   </div>
                   <div className="table-scroll-hint-pill">
                     ↔ Vuốt ngang để xem đầy đủ các cột giá
