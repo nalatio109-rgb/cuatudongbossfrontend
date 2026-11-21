@@ -1355,7 +1355,7 @@ export default function AdminPriceQuote({ showToast }) {
                             <td key={`${col.id}-${rIdx}`} className={`spreadsheet-cell ${isStt ? "cell-stt-cell" : ""} ${isCode ? "cell-code-cell" : ""}`}>
                               {isNameOrDesc ? (
                                 <textarea
-                                  rows={1}
+                                  rows={2}
                                   className="table-textarea cell-content"
                                   value={cellVal}
                                   onChange={(e) => handleGridCellChange(rIdx, col.id, e.target.value)}
