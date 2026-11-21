@@ -46,8 +46,8 @@ export const isImageCol = (col) => {
 
 // 8 Cột mặc định tiêu chuẩn bao gồm Cột Hình Ảnh theo đúng thực tế ngành cửa tại Đà Nẵng
 const DEFAULT_GRID_COLUMNS = [
-  { id: "col_1", key: "stt", label: "STT", width: "50px" },
-  { id: "col_2", key: "code", label: "Mã SP", width: "95px" },
+  { id: "col_1", key: "stt", label: "STT", width: "42px" },
+  { id: "col_2", key: "code", label: "Mã SP", width: "78px" },
   { id: "col_img", key: "image", label: "Hình ảnh", width: "150px" },
   { id: "col_3", key: "name", label: "Tên & Quy cách kỹ thuật", width: "240px" },
   { id: "col_4", key: "unit", label: "ĐVT", width: "60px" },
@@ -520,7 +520,10 @@ export default function AdminPriceQuote({ showToast }) {
 
     const handleMouseMove = (moveEvent) => {
       const deltaX = moveEvent.clientX - resizeStartXRef.current;
-      const newWidth = Math.max(70, Math.min(650, resizeStartWidthRef.current + deltaX));
+      const isStt = gridColumns[colIdx]?.key === "stt" || gridColumns[colIdx]?.id === "col_1" || gridColumns[colIdx]?.label?.toLowerCase() === "stt";
+      const isCode = gridColumns[colIdx]?.key === "code" || gridColumns[colIdx]?.id === "col_2" || gridColumns[colIdx]?.label?.toLowerCase().includes("mã");
+      const minW = isStt ? 34 : isCode ? 60 : 55;
+      const newWidth = Math.max(minW, Math.min(650, resizeStartWidthRef.current + deltaX));
       setGridColumns((prev) => {
         const next = [...prev];
         if (next[colIdx]) {
@@ -1226,22 +1229,30 @@ export default function AdminPriceQuote({ showToast }) {
                     <tr>
                       <th style={{ width: "36px", textAlign: "center", padding: "4px" }}>#</th>
                       {gridColumns.map((col, cIdx) => {
-                        const isSttCol = col.key === "stt" || col.id === "col_1";
+                        const isSttCol = col.key === "stt" || col.id === "col_1" || col.label?.toLowerCase() === "stt";
+                        const isCodeCol = col.key === "code" || col.id === "col_2" || col.label?.toLowerCase().includes("mã");
+                        const colWidth = isSttCol
+                          ? (col.width && parseInt(col.width) <= 45 ? col.width : "42px")
+                          : isCodeCol
+                          ? (col.width && parseInt(col.width) <= 82 ? col.width : "78px")
+                          : col.width || "120px";
+                        const colMinWidth = isSttCol ? "34px" : isCodeCol ? "60px" : "55px";
+
                         return (
                           <th
                             key={col.id}
                             style={{
-                              width: col.width || "120px",
-                              minWidth: isSttCol ? "48px" : "55px",
+                              width: colWidth,
+                              minWidth: colMinWidth,
                               position: "relative"
                             }}
                           >
-                            <div className="col-header-interactive">
+                            <div className={`col-header-interactive ${isSttCol ? "stt-header-interactive" : ""} ${isCodeCol ? "code-header-interactive" : ""}`}>
                               <input
                                 type="text"
                                 value={col.label}
                                 onChange={(e) => handleUpdateColLabel(cIdx, e.target.value)}
-                                className="col-label-input"
+                                className={`col-label-input ${isSttCol ? "stt-label-input" : ""}`}
                                 title="Bấm để đổi tên cột"
                               />
                               <div className="col-header-btns">
@@ -1251,7 +1262,7 @@ export default function AdminPriceQuote({ showToast }) {
                                   onClick={() => handleInsertGridCol(cIdx)}
                                   title={`Chèn thêm 1 cột mới ngay sau cột "${col.label}"`}
                                 >
-                                  <Plus size={9} />
+                                  <Plus size={8} />
                                 </button>
                                 {!isSttCol && gridColumns.length > 2 && (
                                   <button
@@ -1342,7 +1353,7 @@ export default function AdminPriceQuote({ showToast }) {
                           }
 
                           return (
-                            <td key={`${col.id}-${rIdx}`} className="spreadsheet-cell">
+                            <td key={`${col.id}-${rIdx}`} className={`spreadsheet-cell ${isStt ? "cell-stt-cell" : ""} ${isCode ? "cell-code-cell" : ""}`}>
                               {isNameOrDesc ? (
                                 <textarea
                                   rows={1}
