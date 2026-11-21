@@ -791,6 +791,22 @@ export default function AdminPriceQuote({ showToast }) {
           </p>
         </div>
         <div className="header-actions-row">
+          {quotesList.length > 1 && (
+            <div className="header-quote-switcher">
+              <label>Bảng giá:</label>
+              <select
+                value={selectedQuoteCode}
+                onChange={(e) => handleSelectQuote(e.target.value)}
+                className="header-quote-dropdown"
+              >
+                {quotesList.map((q) => (
+                  <option key={q.productCode} value={q.productCode}>
+                    {q.productTitle || q.productCode}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
           <button
             type="button"
             className={`btn-action-primary ${showCreateForm ? "btn-close-mode" : ""}`}
@@ -1115,40 +1131,32 @@ export default function AdminPriceQuote({ showToast }) {
       )}
 
       {/* ========================================================================= */}
-      {/* 3. TABS CHỌN BẢNG GIÁ ĐỂ QUẢN LÝ / CHỈNH SỬA CHI TIẾT */}
-      {/* ========================================================================= */}
-      <div className="quote-selector-bar">
-        <div className="selector-title-row">
-          <span className="selector-label">Chọn bảng giá để quản lý hoặc chỉnh sửa:</span>
-          <span className="selector-count-badge">Tổng cộng {quotesList.length} bảng giá</span>
-        </div>
-        <div className="quote-tabs-scroll">
-          {quotesList.map((q) => (
-            <button
-              key={q.productCode}
-              type="button"
-              className={`quote-tab-pill ${selectedQuoteCode === q.productCode ? "active" : ""}`}
-              onClick={() => handleSelectQuote(q.productCode)}
-            >
-              <Tag size={13} />
-              <span>{q.productTitle || q.productCode}</span>
-              <span className="tab-code-tag">({q.productCode})</span>
-            </button>
-          ))}
-        </div>
-      </div>
-
-      {/* ========================================================================= */}
-      {/* 4. TRÌNH CHỈNH SỬA CHI TIẾT BẢNG GIÁ ĐANG CHỌN (ACTIVE QUOTE) */}
+      {/* 3. TRÌNH CHỈNH SỬA CHI TIẾT BẢNG GIÁ ĐANG CHỌN (ACTIVE QUOTE) */}
       {/* ========================================================================= */}
       {activeQuote && (
         <div className="quote-editor-card">
           {/* 1. THÔNG TIN BẢNG GIÁ & HÌNH ẢNH */}
           <div className="editor-section-box">
             <div className="section-header-row">
-              <h3 className="section-title">
-                <FileSpreadsheet size={18} /> Thông Tin Bảng Giá
-              </h3>
+              <div className="section-title-wrap">
+                <h3 className="section-title">
+                  <FileSpreadsheet size={18} /> Thông Tin Bảng Giá
+                </h3>
+                {quotesList.length > 1 && (
+                  <select
+                    value={selectedQuoteCode}
+                    onChange={(e) => handleSelectQuote(e.target.value)}
+                    className="quote-switcher-select-inline"
+                    title="Chuyển sang bảng giá khác để chỉnh sửa"
+                  >
+                    {quotesList.map((q) => (
+                      <option key={q.productCode} value={q.productCode}>
+                        {q.productTitle || q.productCode}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              </div>
               <button
                 type="button"
                 className="btn-delete-this-quote"
