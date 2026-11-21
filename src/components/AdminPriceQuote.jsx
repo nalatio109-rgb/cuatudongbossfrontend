@@ -924,7 +924,9 @@ export default function AdminPriceQuote({ showToast }) {
       })),
       items: formattedItems,
       addons: editingQuote.addons || [],
-      policies: editingQuote.policies || {}
+      policies: editingQuote.policies && Object.keys(editingQuote.policies).length > 0
+        ? editingQuote.policies
+        : DEFAULT_NEW_QUOTE_TEMPLATE.policies
     };
 
     try {
@@ -1691,55 +1693,6 @@ export default function AdminPriceQuote({ showToast }) {
                   </button>
                 </div>
               ))}
-            </div>
-          </div>
-
-          {/* PHẦN 4: GHI CHÚ VÀ CHÍNH SÁCH GIÁ */}
-          <div className="builder-section-group">
-            <h4 className="builder-group-title">
-              <HelpCircle size={18} /> 4. Ghi Chú Và Chính Sách Giá
-            </h4>
-            <div className="form-grid-2">
-              <div className="form-field">
-                <label>1. Giá đã bao gồm những hạng mục nào:</label>
-                <textarea
-                  rows={3}
-                  value={editingQuote.policies?.included || ""}
-                  onChange={(e) => handlePolicyChange("included", e.target.value)}
-                />
-              </div>
-              <div className="form-field">
-                <label>2. Những chi phí chưa bao gồm (vận chuyển, lắp đặt...):</label>
-                <textarea
-                  rows={3}
-                  value={editingQuote.policies?.excluded || ""}
-                  onChange={(e) => handlePolicyChange("excluded", e.target.value)}
-                />
-              </div>
-              <div className="form-field">
-                <label>3. Ghi chú điều kiện thi công &amp; kích thước:</label>
-                <textarea
-                  rows={3}
-                  value={editingQuote.policies?.conditionNote || ""}
-                  onChange={(e) => handlePolicyChange("conditionNote", e.target.value)}
-                />
-              </div>
-              <div className="form-field">
-                <label>4. Chính sách bảo hành và hỗ trợ kỹ thuật:</label>
-                <textarea
-                  rows={3}
-                  value={editingQuote.policies?.warrantyNote || ""}
-                  onChange={(e) => handlePolicyChange("warrantyNote", e.target.value)}
-                />
-              </div>
-              <div className="form-field span-2">
-                <label>5. Cam kết báo giá minh bạch, cạnh tranh của Boss Đà Nẵng:</label>
-                <textarea
-                  rows={2}
-                  value={editingQuote.policies?.commitmentNote || ""}
-                  onChange={(e) => handlePolicyChange("commitmentNote", e.target.value)}
-                />
-              </div>
             </div>
           </div>
 
