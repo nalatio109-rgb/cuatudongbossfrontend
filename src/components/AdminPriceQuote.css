@@ -680,12 +680,20 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
+.spreadsheet-table {
+  table-layout: fixed;
+  width: max-content;
+  min-width: 100%;
+}
+
 .spreadsheet-table thead th {
   background: #004d32;
   color: #ffffff;
   padding: 8px 10px;
   border-color: #003623;
   vertical-align: middle;
+  position: relative !important;
+  user-select: none;
 }
 
 .col-header-interactive {
@@ -693,6 +701,35 @@
   align-items: center;
   justify-content: space-between;
   gap: 6px;
+  padding-right: 8px;
+}
+
+.col-header-btns {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.btn-insert-col-plus {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  color: #ffffff;
+  width: 19px;
+  height: 19px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-insert-col-plus:hover {
+  background: #10b981;
+  border-color: #10b981;
+  color: #ffffff;
+  transform: scale(1.1);
 }
 
 .col-label-input {
@@ -719,9 +756,9 @@
   background: rgba(220, 38, 38, 0.6);
   border: none;
   color: #ffffff;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
+  width: 19px;
+  height: 19px;
+  border-radius: 4px;
   font-size: 10px;
   line-height: 1;
   display: flex;
@@ -729,11 +766,59 @@
   justify-content: center;
   cursor: pointer;
   flex-shrink: 0;
-  transition: background 0.2s;
+  transition: all 0.15s;
 }
 
 .btn-del-col-x:hover {
   background: #dc2626;
+  transform: scale(1.1);
+}
+
+/* KÉO THẢ CO GIÃN ĐỘ RỘNG CỘT (COLUMN RESIZER) */
+.col-resize-handle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 8px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 20;
+  background: transparent;
+  transition: background 0.15s ease;
+}
+
+.col-resize-handle:hover,
+.col-resize-handle.active {
+  background: #f5bd20;
+  box-shadow: 0 0 6px rgba(245, 189, 32, 0.9);
+}
+
+.row-actions-cell {
+  white-space: nowrap;
+  vertical-align: middle !important;
+  padding: 4px 6px !important;
+}
+
+.btn-insert-row-inline {
+  background: #ecfdf5;
+  border: 1px solid #10b981;
+  color: #047857;
+  padding: 5px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  margin-right: 4px;
+  transition: all 0.15s;
+}
+
+.btn-insert-row-inline:hover {
+  background: #059669;
+  color: #ffffff;
+  border-color: #059669;
 }
 
 .row-num-cell {

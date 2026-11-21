@@ -303,6 +303,34 @@ export default function AdminPriceQuote({ showToast }) {
     setInputRowsCount((prev) => prev + 1);
   };
 
+  // Chèn 1 hàng mới vào bất kỳ vị trí nào (ngay sau hàng afterIndex)
+  const handleInsertGridRow = (afterIndex) => {
+    setGridRows((prev) => {
+      const newRow = {};
+      const nextStt = afterIndex + 2;
+      gridColumns.forEach((col, idx) => {
+        if (idx === 0) newRow[col.id] = String(nextStt);
+        else if (idx === 1) newRow[col.id] = `SP-${String(nextStt).padStart(2, "0")}`;
+        else if (idx === 2) newRow[col.id] = `Dòng sản phẩm mới ${nextStt}`;
+        else if (idx === 3) newRow[col.id] = "m2";
+        else if (idx === 4) newRow[col.id] = "Ghi sáng, Vàng kem";
+        else if (idx === 5) newRow[col.id] = "";
+        else newRow[col.id] = "";
+      });
+      const next = [...prev];
+      next.splice(afterIndex + 1, 0, newRow);
+      // Tự động đánh lại STT cột đầu
+      if (gridColumns[0]) {
+        next.forEach((r, rIdx) => {
+          r[gridColumns[0].id] = String(rIdx + 1);
+        });
+      }
+      return next;
+    });
+    setInputRowsCount((prev) => prev + 1);
+    triggerToast(`✨ Đã chèn 1 hàng mới ngay dưới hàng ${afterIndex + 1}!`);
+  };
+
   // Xóa 1 hàng
   const handleDeleteGridRow = (rowIdx) => {
     setGridRows((prev) => {
@@ -318,7 +346,7 @@ export default function AdminPriceQuote({ showToast }) {
     setInputRowsCount((prev) => Math.max(1, prev - 1));
   };
 
-  // Thêm 1 cột mới
+  // Thêm 1 cột mới ở cuối bảng
   const handleAddGridCol = () => {
     const nextColNum = gridColumns.length + 1;
     const newColId = `col_${Date.now()}_${nextColNum}`;
@@ -326,7 +354,7 @@ export default function AdminPriceQuote({ showToast }) {
       id: newColId,
       key: newColId,
       label: `Cột mới ${nextColNum}`,
-      width: "130px"
+      width: "140px"
     };
     setGridColumns((prev) => [...prev, newCol]);
     setGridRows((prev) =>
@@ -336,6 +364,67 @@ export default function AdminPriceQuote({ showToast }) {
       }))
     );
     setInputColsCount((prev) => prev + 1);
+  };
+
+  // Chèn 1 cột mới vào bất kỳ vị trí nào (ngay sau cột afterIndex)
+  const handleInsertGridCol = (afterIndex) => {
+    const nextColNum = gridColumns.length + 1;
+    const newColId = `col_${Date.now()}_${nextColNum}`;
+    const newCol = {
+      id: newColId,
+      key: newColId,
+      label: `Cột mới ${nextColNum}`,
+      width: "140px"
+    };
+    setGridColumns((prev) => {
+      const next = [...prev];
+      next.splice(afterIndex + 1, 0, newCol);
+      return next;
+    });
+    setGridRows((prev) =>
+      prev.map((r) => ({
+        ...r,
+        [newColId]: ""
+      }))
+    );
+    setInputColsCount((prev) => prev + 1);
+    triggerToast(`✨ Đã chèn 1 cột mới cạnh cột "${gridColumns[afterIndex]?.label || afterIndex + 1}"!`);
+  };
+
+  // Co giãn to nhỏ độ rộng của cột (Column Resizer kéo thả chuột)
+  const [resizingColIndex, setResizingColIndex] = useState(null);
+  const resizeStartXRef = useRef(0);
+  const resizeStartWidthRef = useRef(0);
+
+  const handleResizeStart = (e, colIdx) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setResizingColIndex(colIdx);
+    resizeStartXRef.current = e.clientX;
+    const curWidthStr = gridColumns[colIdx]?.width || "130px";
+    const curWidth = parseInt(curWidthStr, 10) || 130;
+    resizeStartWidthRef.current = curWidth;
+
+    const handleMouseMove = (moveEvent) => {
+      const deltaX = moveEvent.clientX - resizeStartXRef.current;
+      const newWidth = Math.max(70, Math.min(650, resizeStartWidthRef.current + deltaX));
+      setGridColumns((prev) => {
+        const next = [...prev];
+        if (next[colIdx]) {
+          next[colIdx] = { ...next[colIdx], width: `${newWidth}px` };
+        }
+        return next;
+      });
+    };
+
+    const handleMouseUp = () => {
+      setResizingColIndex(null);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
   };
 
   // Xóa 1 cột
@@ -1002,7 +1091,7 @@ export default function AdminPriceQuote({ showToast }) {
               <div className="matrix-quick-hint">
                 <Info size={15} />
                 <span>
-                  Bạn có thể <strong>bấm vào tiêu đề từng cột để đổi tên cột</strong>, gõ trực tiếp giá và thông tin vào các ô, hoặc bấm <strong>+ Thêm hàng</strong> / <strong>+ Thêm cột</strong> bất cứ lúc nào.
+                  💡 <strong>Kéo thả viền mép cột</strong> để co giãn to/nhỏ độ rộng cột. Bấm dấu <strong>+</strong> trên tiêu đề cột hoặc nút <strong>+ Chèn</strong> trên từng hàng để <strong>thêm cột / hàng vào bất cứ chỗ nào</strong> bạn muốn!
                 </span>
               </div>
 
@@ -1013,7 +1102,14 @@ export default function AdminPriceQuote({ showToast }) {
                     <tr>
                       <th style={{ width: "42px", textAlign: "center" }}>#</th>
                       {gridColumns.map((col, cIdx) => (
-                        <th key={col.id} style={{ minWidth: col.width || "130px" }}>
+                        <th
+                          key={col.id}
+                          style={{
+                            width: col.width || "130px",
+                            minWidth: "70px",
+                            position: "relative"
+                          }}
+                        >
                           <div className="col-header-interactive">
                             <input
                               type="text"
@@ -1022,20 +1118,37 @@ export default function AdminPriceQuote({ showToast }) {
                               className="col-label-input"
                               title="Bấm để đổi tên cột"
                             />
-                            {gridColumns.length > 2 && (
+                            <div className="col-header-btns">
                               <button
                                 type="button"
-                                className="btn-del-col-x"
-                                onClick={() => handleDeleteGridCol(cIdx)}
-                                title={`Xóa cột "${col.label}"`}
+                                className="btn-insert-col-plus"
+                                onClick={() => handleInsertGridCol(cIdx)}
+                                title={`Chèn thêm 1 cột mới ngay sau cột "${col.label}"`}
                               >
-                                ✕
+                                <Plus size={11} />
                               </button>
-                            )}
+                              {gridColumns.length > 2 && (
+                                <button
+                                  type="button"
+                                  className="btn-del-col-x"
+                                  onClick={() => handleDeleteGridCol(cIdx)}
+                                  title={`Xóa cột "${col.label}"`}
+                                >
+                                  ✕
+                                </button>
+                              )}
+                            </div>
                           </div>
+
+                          {/* THANH KÉO CO GIÃN ĐỘ RỘNG CỘT (COLUMN RESIZER) */}
+                          <div
+                            className={`col-resize-handle ${resizingColIndex === cIdx ? "active" : ""}`}
+                            onMouseDown={(e) => handleResizeStart(e, cIdx)}
+                            title="Bấm giữ và kéo chuột sang trái/phải để co giãn to nhỏ cột này"
+                          />
                         </th>
                       ))}
-                      <th style={{ width: "45px", textAlign: "center" }}>Xóa</th>
+                      <th style={{ width: "95px", textAlign: "center" }}>Thao tác</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1071,14 +1184,22 @@ export default function AdminPriceQuote({ showToast }) {
                             </td>
                           );
                         })}
-                        <td className="text-center">
+                        <td className="text-center row-actions-cell">
+                          <button
+                            type="button"
+                            className="btn-insert-row-inline"
+                            onClick={() => handleInsertGridRow(rIdx)}
+                            title={`Chèn thêm 1 hàng mới ngay dưới hàng ${rIdx + 1}`}
+                          >
+                            <Plus size={12} /> Chèn
+                          </button>
                           <button
                             type="button"
                             className="btn-trash-row"
                             onClick={() => handleDeleteGridRow(rIdx)}
                             title={`Xóa hàng ${rIdx + 1}`}
                           >
-                            <Trash2 size={15} />
+                            <Trash2 size={14} />
                           </button>
                         </td>
                       </tr>
