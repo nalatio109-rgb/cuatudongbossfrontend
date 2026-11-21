@@ -1273,12 +1273,15 @@
 .customer-quote-table thead th {
   background: #004d32;
   color: #ffffff;
-  padding: 13px 12px;
+  padding: 14px 14px;
   font-weight: 700;
   font-size: 13px;
   text-align: left;
-  border: 1px solid #003623;
-  line-height: 1.35;
+  border-bottom: 2px solid #00281b;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  line-height: 1.4;
   white-space: nowrap;
 }
 
@@ -1287,148 +1290,117 @@
 }
 
 .customer-quote-table thead th.highlight-head {
-  background: #002e1f;
-  color: #fde047;
+  background: #004d32;
+  color: #ffffff;
 }
 
 .customer-quote-table tbody tr {
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.customer-quote-table tbody tr:nth-child(even) td {
+  background: #fafbfc;
 }
 
 .customer-quote-table tbody td {
-  padding: 8px 10px;
-  border: 1px solid #e2e8f0;
-  vertical-align: top;
+  padding: 14px 14px;
+  border: none;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
   background: #ffffff;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.15s ease;
 }
 
 .customer-quote-table tbody tr:hover td {
-  background: #f0fdf4;
+  background: #f0fdf4 !important;
 }
 
 .customer-quote-table tbody tr.highlight-current-row td {
-  background: #e6f7ef !important;
+  background: #ecfdf5 !important;
 }
 
-.cell-stt {
-  color: #475569;
+/* ================= NỘI DUNG NẰM TRỰC TIẾP TRÊN NỀN BẢNG (KHÔNG HỘP CON) ================= */
+.cell-client-stt {
+  color: #64748b;
   font-size: 14px;
-  vertical-align: middle !important;
   font-weight: 800;
-}
-
-/* THE BOX VIEW IN EACH CELL - REPLICATING THE CLEAN BOXES IN THE IMAGE */
-.table-box-view {
-  background: #ffffff;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  padding: 8px 12px;
-  font-size: 13px;
-  font-family: inherit;
-  box-sizing: border-box;
-  min-height: 38px;
-  display: flex;
-  align-items: center;
-  transition: all 0.2s ease;
-}
-
-.table-box-view:hover {
-  border-color: #004d32;
-  box-shadow: 0 2px 8px rgba(0, 77, 50, 0.08);
-  transform: translateY(-1px);
-}
-
-.table-box-view.code-box {
-  justify-content: center;
-  flex-direction: column;
-  gap: 3px;
-  padding: 6px 8px;
   text-align: center;
 }
 
-.table-box-view.code-box .code-text {
-  font-weight: 800;
+.client-code-badge {
+  display: inline-block;
+  background: #ecfdf5;
   color: #004d32;
-  font-size: 14px;
+  font-weight: 800;
+  font-size: 13px;
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: 1px solid #a7f3d0;
   letter-spacing: 0.5px;
 }
 
-.table-box-view.code-box .viewing-badge {
-  background: #004d32;
-  color: #ffffff;
-  font-size: 9.5px;
-  font-weight: 800;
-  padding: 2px 5px;
-  border-radius: 3px;
-  text-transform: uppercase;
+.client-table-thumb {
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  display: inline-block;
+  vertical-align: middle;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
 }
 
-.table-box-view.desc-box {
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  min-height: 85px;
-  max-height: 145px;
-  overflow-y: auto;
-  line-height: 1.5;
-  white-space: pre-line;
-  color: #1e293b;
-  font-size: 13px;
-  padding: 8px 10px;
-  text-align: left;
+.cell-client-desc {
+  vertical-align: middle !important;
 }
 
-.desc-box-name {
+.client-desc-title {
+  display: block;
   font-weight: 800;
   color: #0f172a;
-  margin-bottom: 2px;
+  margin-bottom: 4px;
+  font-size: 14px;
 }
 
-.desc-box-content {
+.client-desc-text {
   color: #334155;
+  line-height: 1.6;
+  white-space: pre-line;
+  font-size: 13.5px;
+  overflow: visible;
+}
+
+.cell-client-unit {
+  font-weight: 600;
+  color: #475569;
+  font-size: 13px;
+  text-align: center;
+}
+
+.client-unit-text {
+  display: inline-block;
+  color: #475569;
+  font-weight: 600;
+}
+
+.cell-client-color {
+  color: #475569;
+  font-size: 13.5px;
   line-height: 1.5;
 }
 
-.table-box-view.unit-box {
-  justify-content: center;
-  font-weight: 600;
-  color: #334155;
-  text-align: center;
-  padding: 8px 6px;
-}
-
-.table-box-view.color-box {
-  color: #334155;
-  line-height: 1.4;
-  font-size: 13px;
-  align-items: flex-start;
-}
-
-.table-box-view.price-box {
-  justify-content: center;
+.client-price-text {
+  color: #dc2626;
   font-weight: 800;
-  color: #e30613;
-  font-size: 15px;
-  text-align: center;
+  font-size: 15.5px;
   white-space: nowrap;
-  padding: 8px 10px;
 }
 
-.table-box-view.price-box.highlight-price-box {
-  background: #fef2f2;
-  border-color: #ef4444;
-  color: #b91c1c;
-  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.15);
-  font-size: 16px;
-}
-
-.customer-quote-table tbody tr.highlight-current-row .table-box-view {
-  border-color: #10b981;
-}
-
-.customer-quote-table tbody tr.highlight-current-row .table-box-view.code-box {
-  background: #ecfdf5;
+.cell-empty-dash {
+  color: #94a3b8;
+  font-weight: 500;
 }
 
 /* 4. LỰA CHỌN THÊM (ADDONS) - CLASSIC PROFESSIONAL BORDER BOX */

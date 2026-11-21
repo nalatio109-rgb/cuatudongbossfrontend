@@ -1003,16 +1003,16 @@ export default function ProductPricing() {
 
                                 if (isImg) {
                                   return (
-                                    <td key={col.id || cIdx} className="text-center">
+                                    <td key={col.id || cIdx} className="cell-client-img text-center">
                                       {cellVal ? (
                                         <img
                                           src={cellVal}
                                           alt={`SP ${rIdx + 1}`}
-                                          className="tech-table-thumb"
+                                          className="client-table-thumb"
                                           onError={(e) => { e.target.style.display = "none"; }}
                                         />
                                       ) : (
-                                        <span style={{ color: "#94a3b8" }}>—</span>
+                                        <span className="cell-empty-dash">—</span>
                                       )}
                                     </td>
                                   );
@@ -1020,7 +1020,7 @@ export default function ProductPricing() {
 
                                 if (isStt) {
                                   return (
-                                    <td key={col.id || cIdx} className="text-center cell-stt font-bold">
+                                    <td key={col.id || cIdx} className="cell-client-stt text-center font-bold">
                                       {cellVal || rIdx + 1}
                                     </td>
                                   );
@@ -1028,31 +1028,32 @@ export default function ProductPricing() {
 
                                 if (isCode) {
                                   return (
-                                    <td key={col.id || cIdx}>
-                                      <div className="table-box-view code-box">
-                                        <span className="code-text">{cellVal}</span>
-                                        {isCurrentProduct && <span className="viewing-badge">Đang xem</span>}
-                                      </div>
+                                    <td key={col.id || cIdx} className="cell-client-code text-center">
+                                      <span className="client-code-badge">{cellVal}</span>
                                     </td>
                                   );
                                 }
 
                                 if (isPrice) {
-                                  const displayStr = cellVal ? (cellVal.includes("đ") || isNaN(Number(cellVal.replace(/[,.]/g, ""))) ? cellVal : `${cellVal} đ`) : "Liên hệ";
+                                  const displayStr = cellVal ? (cellVal.includes("đ") || isNaN(Number(cellVal.replace(/[,.]/g, ""))) ? cellVal : `${cellVal} đ/m²`) : "Liên hệ";
                                   return (
-                                    <td key={col.id || cIdx}>
-                                      <div className="table-box-view price-box highlight-price-box">
-                                        <span className="price-bold-red">{displayStr}</span>
-                                      </div>
+                                    <td key={col.id || cIdx} className="cell-client-price text-center">
+                                      <span className="client-price-text">{displayStr}</span>
+                                    </td>
+                                  );
+                                }
+
+                                if (isUnit) {
+                                  return (
+                                    <td key={col.id || cIdx} className="cell-client-unit text-center">
+                                      <span className="client-unit-text">{cellVal}</span>
                                     </td>
                                   );
                                 }
 
                                 return (
-                                  <td key={col.id || cIdx} className={isUnit ? "text-center" : ""}>
-                                    <div className={`table-box-view ${isUnit ? "unit-box" : "desc-box"}`}>
-                                      <div className="desc-box-content">{cellVal}</div>
-                                    </div>
+                                  <td key={col.id || cIdx} className="cell-client-desc">
+                                    <div className="client-desc-text">{cellVal}</div>
                                   </td>
                                 );
                               })}
@@ -1065,65 +1066,48 @@ export default function ProductPricing() {
                             key={rIdx} 
                             className={isCurrentProduct ? "highlight-current-row" : ""}
                           >
-                            <td className="text-center cell-stt font-bold">
+                            <td className="cell-client-stt text-center font-bold">
                               {row.stt || rIdx + 1}
                             </td>
-                            <td>
-                              <div className="table-box-view code-box">
-                                <span className="code-text">{row.code}</span>
-                                {isCurrentProduct && (
-                                  <span className="viewing-badge">Đang xem</span>
-                                )}
-                              </div>
+                            <td className="cell-client-code text-center">
+                              <span className="client-code-badge">{row.code}</span>
                             </td>
                             {quoteTableItems.some((item) => item.image || item.imageUrl) && (
-                              <td className="text-center">
+                              <td className="cell-client-img text-center">
                                 {hasImg ? (
                                   <img
                                     src={row.image || row.imageUrl}
                                     alt={row.name || row.code}
-                                    className="tech-table-thumb"
+                                    className="client-table-thumb"
                                     onError={(e) => {
                                       e.target.style.display = "none";
                                     }}
                                   />
                                 ) : (
-                                  <span style={{ color: "#94a3b8" }}>—</span>
+                                  <span className="cell-empty-dash">—</span>
                                 )}
                               </td>
                             )}
-                            <td>
-                              <div className="table-box-view desc-box">
-                                {row.name && !row.description?.includes(row.name) && (
-                                  <div className="desc-box-name">{row.name}</div>
-                                )}
-                                <div className="desc-box-content">{row.description}</div>
-                              </div>
+                            <td className="cell-client-desc">
+                              {row.name && !row.description?.includes(row.name) && (
+                                <strong className="client-desc-title">{row.name}</strong>
+                              )}
+                              <div className="client-desc-text">{row.description}</div>
                             </td>
-                            <td className="text-center">
-                              <div className="table-box-view unit-box">
-                                {row.unit || "m2"}
-                              </div>
+                            <td className="cell-client-unit text-center">
+                              <span className="client-unit-text">{row.unit || "m2"}</span>
                             </td>
-                            <td>
-                              <div className="table-box-view color-box">
-                                {row.colors || "Theo tiêu chuẩn"}
-                              </div>
+                            <td className="cell-client-color">
+                              {row.colors || "Theo tiêu chuẩn"}
                             </td>
-                            <td>
-                              <div className={`table-box-view price-box ${activeAreaFilter === "over8" ? "highlight-price-box" : ""}`}>
-                                {row.priceOver8 || "Liên hệ"}
-                              </div>
+                            <td className="cell-client-price text-center">
+                              <span className="client-price-text">{row.priceOver8 ? (row.priceOver8.includes("đ") ? row.priceOver8 : `${row.priceOver8} đ/m²`) : "Liên hệ"}</span>
                             </td>
-                            <td>
-                              <div className={`table-box-view price-box ${activeAreaFilter === "from6to8" ? "highlight-price-box" : ""}`}>
-                                {row.price6to8 || "Liên hệ"}
-                              </div>
+                            <td className="cell-client-price text-center">
+                              <span className="client-price-text">{row.price6to8 ? (row.price6to8.includes("đ") ? row.price6to8 : `${row.price6to8} đ/m²`) : "Liên hệ"}</span>
                             </td>
-                            <td>
-                              <div className={`table-box-view price-box ${activeAreaFilter === "from4to6" ? "highlight-price-box" : ""}`}>
-                                {row.price4to6 || "Liên hệ"}
-                              </div>
+                            <td className="cell-client-price text-center">
+                              <span className="client-price-text">{row.price4to6 ? (row.price4to6.includes("đ") ? row.price4to6 : `${row.price4to6} đ/m²`) : "Liên hệ"}</span>
                             </td>
                           </tr>
                         );
@@ -1385,16 +1369,16 @@ export default function ProductPricing() {
 
                                 if (isImg) {
                                   return (
-                                    <td key={col.id || cIdx} className="text-center">
+                                    <td key={col.id || cIdx} className="cell-client-img text-center">
                                       {cellVal ? (
                                         <img
                                           src={cellVal}
                                           alt={`SP ${rIdx + 1}`}
-                                          className="tech-table-thumb"
+                                          className="client-table-thumb"
                                           onError={(e) => { e.target.style.display = "none"; }}
                                         />
                                       ) : (
-                                        <span style={{ color: "#94a3b8" }}>—</span>
+                                        <span className="cell-empty-dash">—</span>
                                       )}
                                     </td>
                                   );
@@ -1402,7 +1386,7 @@ export default function ProductPricing() {
 
                                 if (isStt) {
                                   return (
-                                    <td key={col.id || cIdx} className="text-center cell-stt font-bold">
+                                    <td key={col.id || cIdx} className="cell-client-stt text-center font-bold">
                                       {cellVal || rIdx + 1}
                                     </td>
                                   );
@@ -1410,31 +1394,32 @@ export default function ProductPricing() {
 
                                 if (isCode) {
                                   return (
-                                    <td key={col.id || cIdx}>
-                                      <div className="table-box-view code-box">
-                                        <span className="code-text">{cellVal}</span>
-                                        {isCurrentProduct && <span className="viewing-badge">Đang xem</span>}
-                                      </div>
+                                    <td key={col.id || cIdx} className="cell-client-code text-center">
+                                      <span className="client-code-badge">{cellVal}</span>
                                     </td>
                                   );
                                 }
 
                                 if (isPrice) {
-                                  const displayStr = cellVal ? (cellVal.includes("đ") || isNaN(Number(cellVal.replace(/[,.]/g, ""))) ? cellVal : `${cellVal} đ`) : "Liên hệ";
+                                  const displayStr = cellVal ? (cellVal.includes("đ") || isNaN(Number(cellVal.replace(/[,.]/g, ""))) ? cellVal : `${cellVal} đ/m²`) : "Liên hệ";
                                   return (
-                                    <td key={col.id || cIdx}>
-                                      <div className="table-box-view price-box highlight-price-box">
-                                        <span className="price-bold-red">{displayStr}</span>
-                                      </div>
+                                    <td key={col.id || cIdx} className="cell-client-price text-center">
+                                      <span className="client-price-text">{displayStr}</span>
+                                    </td>
+                                  );
+                                }
+
+                                if (isUnit) {
+                                  return (
+                                    <td key={col.id || cIdx} className="cell-client-unit text-center">
+                                      <span className="client-unit-text">{cellVal}</span>
                                     </td>
                                   );
                                 }
 
                                 return (
-                                  <td key={col.id || cIdx} className={isUnit ? "text-center" : ""}>
-                                    <div className={`table-box-view ${isUnit ? "unit-box" : "desc-box"}`}>
-                                      <div className="desc-box-content">{cellVal}</div>
-                                    </div>
+                                  <td key={col.id || cIdx} className="cell-client-desc">
+                                    <div className="client-desc-text">{cellVal}</div>
                                   </td>
                                 );
                               })}
@@ -1447,65 +1432,48 @@ export default function ProductPricing() {
                             key={rIdx} 
                             className={isCurrentProduct ? "highlight-current-row" : ""}
                           >
-                            <td className="text-center cell-stt font-bold">
+                            <td className="cell-client-stt text-center font-bold">
                               {row.stt || rIdx + 1}
                             </td>
-                            <td>
-                              <div className="table-box-view code-box">
-                                <span className="code-text">{row.code}</span>
-                                {isCurrentProduct && (
-                                  <span className="viewing-badge">Đang xem</span>
-                                )}
-                              </div>
+                            <td className="cell-client-code text-center">
+                              <span className="client-code-badge">{row.code}</span>
                             </td>
                             {quoteTableItems.some((item) => item.image || item.imageUrl) && (
-                              <td className="text-center">
+                              <td className="cell-client-img text-center">
                                 {hasImg ? (
                                   <img
                                     src={row.image || row.imageUrl}
                                     alt={row.name || row.code}
-                                    className="tech-table-thumb"
+                                    className="client-table-thumb"
                                     onError={(e) => {
                                       e.target.style.display = "none";
                                     }}
                                   />
                                 ) : (
-                                  <span style={{ color: "#94a3b8" }}>—</span>
+                                  <span className="cell-empty-dash">—</span>
                                 )}
                               </td>
                             )}
-                            <td>
-                              <div className="table-box-view desc-box">
-                                {row.name && !row.description?.includes(row.name) && (
-                                  <div className="desc-box-name">{row.name}</div>
-                                )}
-                                <div className="desc-box-content">{row.description}</div>
-                              </div>
+                            <td className="cell-client-desc">
+                              {row.name && !row.description?.includes(row.name) && (
+                                <strong className="client-desc-title">{row.name}</strong>
+                              )}
+                              <div className="client-desc-text">{row.description}</div>
                             </td>
-                            <td className="text-center">
-                              <div className="table-box-view unit-box">
-                                {row.unit || "m2"}
-                              </div>
+                            <td className="cell-client-unit text-center">
+                              <span className="client-unit-text">{row.unit || "m2"}</span>
                             </td>
-                            <td>
-                              <div className="table-box-view color-box">
-                                {row.colors || "Theo tiêu chuẩn"}
-                              </div>
+                            <td className="cell-client-color">
+                              {row.colors || "Theo tiêu chuẩn"}
                             </td>
-                            <td>
-                              <div className={`table-box-view price-box ${activeAreaFilter === "over8" ? "highlight-price-box" : ""}`}>
-                                {row.priceOver8 || "Liên hệ"}
-                              </div>
+                            <td className="cell-client-price text-center">
+                              <span className="client-price-text">{row.priceOver8 ? (row.priceOver8.includes("đ") ? row.priceOver8 : `${row.priceOver8} đ/m²`) : "Liên hệ"}</span>
                             </td>
-                            <td>
-                              <div className={`table-box-view price-box ${activeAreaFilter === "from6to8" ? "highlight-price-box" : ""}`}>
-                                {row.price6to8 || "Liên hệ"}
-                              </div>
+                            <td className="cell-client-price text-center">
+                              <span className="client-price-text">{row.price6to8 ? (row.price6to8.includes("đ") ? row.price6to8 : `${row.price6to8} đ/m²`) : "Liên hệ"}</span>
                             </td>
-                            <td>
-                              <div className={`table-box-view price-box ${activeAreaFilter === "from4to6" ? "highlight-price-box" : ""}`}>
-                                {row.price4to6 || "Liên hệ"}
-                              </div>
+                            <td className="cell-client-price text-center">
+                              <span className="client-price-text">{row.price4to6 ? (row.price4to6.includes("đ") ? row.price4to6 : `${row.price4to6} đ/m²`) : "Liên hệ"}</span>
                             </td>
                           </tr>
                         );
