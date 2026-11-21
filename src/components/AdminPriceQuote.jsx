@@ -133,12 +133,71 @@ const createDefault7Rows = () => [
   }
 ];
 
+// Chuẩn hóa cột hiển thị từ quote
+export const getActiveColumns = (quote) => {
+  if (quote?.customColumns && quote.customColumns.length > 0) {
+    return quote.customColumns.map((c) => ({
+      id: c.id || c.key,
+      key: c.key || c.id,
+      label: c.label || "Cột",
+      width: c.width || "130px"
+    }));
+  }
+  return DEFAULT_GRID_COLUMNS;
+};
+
+// Chuẩn hóa hàng hiển thị từ quote
+export const getActiveRows = (quote, cols) => {
+  if (!quote?.items || quote.items.length === 0) {
+    return createDefault7Rows();
+  }
+  return quote.items.map((item, rIdx) => {
+    const rowObj = {};
+    cols.forEach((col) => {
+      if (item.rawGridCells && item.rawGridCells[col.id] !== undefined) {
+        rowObj[col.id] = String(item.rawGridCells[col.id] ?? "");
+      } else if (item[col.id] !== undefined) {
+        rowObj[col.id] = String(item[col.id] ?? "");
+      } else if (col.key && item[col.key] !== undefined) {
+        rowObj[col.id] = String(item[col.key] ?? "");
+      } else {
+        const isStt = col.key === "stt" || col.id === "col_1" || col.label?.toLowerCase() === "stt";
+        const isCode = col.key === "code" || col.id === "col_2" || col.label?.toLowerCase().includes("mã");
+        const isImg = isImageCol(col);
+        const isName = col.key === "name" || col.id === "col_3" || col.label?.toLowerCase().includes("tên") || col.label?.toLowerCase().includes("quy cách");
+        const isUnit = col.key === "unit" || col.id === "col_4" || col.label?.toLowerCase().includes("đvt");
+        const isColor = col.key === "colors" || col.id === "col_5" || col.label?.toLowerCase().includes("màu");
+        const isPrice1 = col.key === "priceOver8" || col.id === "col_6" || col.label?.toLowerCase().includes("> 8m");
+        const isPrice2 = col.key === "price6to8" || col.id === "col_7" || col.label?.toLowerCase().includes("≤ 8m") || col.label?.toLowerCase().includes("< 8m");
+
+        if (isStt) rowObj[col.id] = String(item.stt || rIdx + 1);
+        else if (isCode) rowObj[col.id] = String(item.code || "");
+        else if (isImg) rowObj[col.id] = String(item.image || item.imageUrl || "");
+        else if (isName) rowObj[col.id] = String(item.name || item.description || "");
+        else if (isUnit) rowObj[col.id] = String(item.unit || "m2");
+        else if (isColor) rowObj[col.id] = String(item.colors || "Theo tiêu chuẩn");
+        else if (isPrice1) rowObj[col.id] = String(item.priceOver8 || item.price || "");
+        else if (isPrice2) rowObj[col.id] = String(item.price6to8 || item.priceOver8 || item.price || "");
+        else rowObj[col.id] = "";
+      }
+    });
+    return rowObj;
+  });
+};
+
 export default function AdminPriceQuote({ showToast }) {
   const [quotesList, setQuotesList] = useState([]);
   const [selectedQuoteCode, setSelectedQuoteCode] = useState(DEFAULT_PRICE_QUOTES[0].productCode);
   const [activeQuote, setActiveQuote] = useState(DEFAULT_PRICE_QUOTES[0]);
   const [loading, setLoading] = useState(false);
   const [saveStatus, setSaveStatus] = useState(null); // { success: boolean, message: string }
+
+  // STATE BẢNG GIÁ ĐANG CHỌN (ACTIVE QUOTE GRID STATE)
+  const [activeGridColumns, setActiveGridColumns] = useState(() => getActiveColumns(DEFAULT_PRICE_QUOTES[0]));
+  const [activeGridRows, setActiveGridRows] = useState(() => getActiveRows(DEFAULT_PRICE_QUOTES[0], DEFAULT_GRID_COLUMNS));
+  const [resizingActiveColIndex, setResizingActiveColIndex] = useState(null);
+  const resizeActiveStartXRef = useRef(0);
+  const resizeActiveStartWidthRef = useRef(0);
 
   // STATE KHUNG FORM THÊM BẢNG GIÁ MỚI PHÍA DƯỚI
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -220,6 +279,10 @@ export default function AdminPriceQuote({ showToast }) {
     const curr = loaded.find((q) => q.productCode === selectedQuoteCode) || loaded[0];
     setSelectedQuoteCode(curr.productCode);
     setActiveQuote(JSON.parse(JSON.stringify(curr)));
+    const cols = getActiveColumns(curr);
+    const rows = getActiveRows(curr, cols);
+    setActiveGridColumns(cols);
+    setActiveGridRows(rows);
     setLoading(false);
   };
 
@@ -227,7 +290,12 @@ export default function AdminPriceQuote({ showToast }) {
     const target = quotesList.find((q) => q.productCode === quoteCode);
     if (target) {
       setSelectedQuoteCode(target.productCode);
-      setActiveQuote(JSON.parse(JSON.stringify(target)));
+      const cloned = JSON.parse(JSON.stringify(target));
+      setActiveQuote(cloned);
+      const cols = getActiveColumns(cloned);
+      const rows = getActiveRows(cloned, cols);
+      setActiveGridColumns(cols);
+      setActiveGridRows(rows);
       setSaveStatus(null);
     }
   };
@@ -723,6 +791,10 @@ export default function AdminPriceQuote({ showToast }) {
       setQuotesList(updatedList);
       setSelectedQuoteCode(code);
       setActiveQuote(newQuoteObj);
+      const cols = getActiveColumns(newQuoteObj);
+      const rows = getActiveRows(newQuoteObj, cols);
+      setActiveGridColumns(cols);
+      setActiveGridRows(rows);
       localStorage.setItem("boss_admin_price_quotes", JSON.stringify(updatedList));
       window.dispatchEvent(new Event("priceQuotesUpdated"));
 
@@ -766,6 +838,10 @@ export default function AdminPriceQuote({ showToast }) {
     const nextActive = remaining[0];
     setSelectedQuoteCode(nextActive.productCode);
     setActiveQuote(JSON.parse(JSON.stringify(nextActive)));
+    const nextCols = getActiveColumns(nextActive);
+    const nextRows = getActiveRows(nextActive, nextCols);
+    setActiveGridColumns(nextCols);
+    setActiveGridRows(nextRows);
     triggerToast(`Đã xóa bảng giá "${codeToDelete}" thành công!`);
     setLoading(false);
   };
@@ -972,10 +1048,270 @@ export default function AdminPriceQuote({ showToast }) {
     }));
   };
 
+  // ================= THAO TÁC TRÊN BẢNG GIÁ ĐANG CHỌN (ACTIVE QUOTE GRID) =================
+  const handleActiveArticleChange = (field, value) => {
+    setActiveQuote((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleActiveGridCellChange = (rIdx, colId, value) => {
+    setActiveGridRows((prev) => {
+      const next = [...prev];
+      if (next[rIdx]) {
+        next[rIdx] = { ...next[rIdx], [colId]: value };
+      }
+      return next;
+    });
+  };
+
+  const handleActiveCellImageUpload = (rIdx, colId, e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      alert("Vui lòng chọn file hình ảnh!");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (uploadEvt) => {
+      const base64Str = uploadEvt.target?.result;
+      if (base64Str) {
+        handleActiveGridCellChange(rIdx, colId, base64Str);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleActiveAddRow = () => {
+    setActiveGridRows((prev) => {
+      const newIdx = prev.length + 1;
+      const newRow = {};
+      activeGridColumns.forEach((col) => {
+        const isStt = col.key === "stt" || col.id === "col_1" || col.label?.toLowerCase() === "stt";
+        const isCode = col.key === "code" || col.id === "col_2" || col.label?.toLowerCase().includes("mã");
+        const isUnit = col.key === "unit" || col.id === "col_4" || col.label?.toLowerCase().includes("đvt");
+        if (isStt) newRow[col.id] = String(newIdx);
+        else if (isCode) newRow[col.id] = `${activeQuote?.productCode || "BD"}-${String(newIdx).padStart(2, "0")}`;
+        else if (isUnit) newRow[col.id] = "m2";
+        else newRow[col.id] = "";
+      });
+      return [...prev, newRow];
+    });
+  };
+
+  const handleActiveInsertRow = (rIdx) => {
+    setActiveGridRows((prev) => {
+      const newRow = {};
+      activeGridColumns.forEach((col) => {
+        const isStt = col.key === "stt" || col.id === "col_1" || col.label?.toLowerCase() === "stt";
+        const isCode = col.key === "code" || col.id === "col_2" || col.label?.toLowerCase().includes("mã");
+        const isUnit = col.key === "unit" || col.id === "col_4" || col.label?.toLowerCase().includes("đvt");
+        if (isStt) newRow[col.id] = String(rIdx + 2);
+        else if (isCode) newRow[col.id] = `${activeQuote?.productCode || "BD"}-${String(rIdx + 2).padStart(2, "0")}`;
+        else if (isUnit) newRow[col.id] = "m2";
+        else newRow[col.id] = "";
+      });
+      const next = [...prev];
+      next.splice(rIdx + 1, 0, newRow);
+      const sttCol = activeGridColumns.find((c) => c.key === "stt" || c.id === "col_1" || c.label?.toLowerCase() === "stt");
+      if (sttCol) {
+        next.forEach((r, idx) => {
+          r[sttCol.id] = String(idx + 1);
+        });
+      }
+      return next;
+    });
+  };
+
+  const handleActiveDeleteRow = (rIdx) => {
+    if (activeGridRows.length <= 1) {
+      alert("Bảng giá cần giữ tối thiểu 1 hàng sản phẩm!");
+      return;
+    }
+    setActiveGridRows((prev) => {
+      const next = prev.filter((_, idx) => idx !== rIdx);
+      const sttCol = activeGridColumns.find((c) => c.key === "stt" || c.id === "col_1" || c.label?.toLowerCase() === "stt");
+      if (sttCol) {
+        next.forEach((r, idx) => {
+          r[sttCol.id] = String(idx + 1);
+        });
+      }
+      return next;
+    });
+  };
+
+  const handleActiveAddCol = () => {
+    const newColId = `col_${Date.now()}`;
+    const newCol = {
+      id: newColId,
+      key: newColId,
+      label: `Cột ${activeGridColumns.length + 1}`,
+      width: "130px"
+    };
+    setActiveGridColumns((prev) => [...prev, newCol]);
+    setActiveGridRows((prev) =>
+      prev.map((row) => ({
+        ...row,
+        [newColId]: ""
+      }))
+    );
+  };
+
+  const handleActiveAddImgCol = () => {
+    if (activeGridColumns.some(isImageCol)) {
+      alert("Bảng giá đã có sẵn Cột Hình Ảnh rồi!");
+      return;
+    }
+    const newCol = {
+      id: "col_img",
+      key: "image",
+      label: "Hình ảnh",
+      width: "150px"
+    };
+    setActiveGridColumns((prev) => {
+      const next = [...prev];
+      next.splice(2, 0, newCol);
+      return next;
+    });
+    setActiveGridRows((prev) =>
+      prev.map((row) => ({
+        ...row,
+        col_img: row.image || row.imageUrl || ""
+      }))
+    );
+  };
+
+  const handleActiveInsertCol = (cIdx) => {
+    const newColId = `col_${Date.now()}`;
+    const newCol = {
+      id: newColId,
+      key: newColId,
+      label: `Cột mới`,
+      width: "130px"
+    };
+    setActiveGridColumns((prev) => {
+      const next = [...prev];
+      next.splice(cIdx + 1, 0, newCol);
+      return next;
+    });
+    setActiveGridRows((prev) =>
+      prev.map((row) => ({
+        ...row,
+        [newColId]: ""
+      }))
+    );
+  };
+
+  const handleActiveDeleteCol = (cIdx) => {
+    if (activeGridColumns.length <= 2) {
+      alert("Cần giữ lại tối thiểu 2 cột!");
+      return;
+    }
+    const colToDelete = activeGridColumns[cIdx];
+    setActiveGridColumns((prev) => prev.filter((_, idx) => idx !== cIdx));
+    setActiveGridRows((prev) =>
+      prev.map((row) => {
+        const next = { ...row };
+        delete next[colToDelete.id];
+        return next;
+      })
+    );
+  };
+
+  const handleActiveUpdateColLabel = (cIdx, label) => {
+    setActiveGridColumns((prev) => {
+      const next = [...prev];
+      if (next[cIdx]) {
+        next[cIdx] = { ...next[cIdx], label };
+      }
+      return next;
+    });
+  };
+
+  const handleActiveResizeStart = (e, colIdx) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setResizingActiveColIndex(colIdx);
+    resizeActiveStartXRef.current = e.clientX;
+    const curWidthStr = activeGridColumns[colIdx]?.width || "130px";
+    const curWidth = parseInt(curWidthStr, 10) || 130;
+    resizeActiveStartWidthRef.current = curWidth;
+
+    const handleMouseMove = (moveEvent) => {
+      const deltaX = moveEvent.clientX - resizeActiveStartXRef.current;
+      const isStt = activeGridColumns[colIdx]?.key === "stt" || activeGridColumns[colIdx]?.id === "col_1" || activeGridColumns[colIdx]?.label?.toLowerCase() === "stt";
+      const isCode = activeGridColumns[colIdx]?.key === "code" || activeGridColumns[colIdx]?.id === "col_2" || activeGridColumns[colIdx]?.label?.toLowerCase().includes("mã");
+      const minW = isStt ? 34 : isCode ? 60 : 55;
+      const newWidth = Math.max(minW, Math.min(650, resizeActiveStartWidthRef.current + deltaX));
+      setActiveGridColumns((prev) => {
+        const next = [...prev];
+        if (next[colIdx]) {
+          next[colIdx] = { ...next[colIdx], width: `${newWidth}px` };
+        }
+        return next;
+      });
+    };
+
+    const handleMouseUp = () => {
+      setResizingActiveColIndex(null);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+  };
+
   // SAVE ACTIVE QUOTE
   const handleSaveActiveQuote = async () => {
     setLoading(true);
     setSaveStatus(null);
+
+    // Chuẩn hóa dữ liệu bảng sang items
+    const sttCol = activeGridColumns.find((c) => c.key === "stt" || c.id === "col_1" || c.label.toLowerCase() === "stt") || activeGridColumns[0];
+    const codeCol = activeGridColumns.find((c) => c.key === "code" || c.id === "col_2" || c.label.toLowerCase().includes("mã")) || activeGridColumns[1];
+    const imgCol = activeGridColumns.find(isImageCol);
+    const nameCol = activeGridColumns.find((c) => c.key === "name" || c.id === "col_3" || c.label.toLowerCase().includes("tên") || c.label.toLowerCase().includes("quy cách")) || activeGridColumns[2];
+    const unitCol = activeGridColumns.find((c) => c.key === "unit" || c.id === "col_4" || c.label.toLowerCase().includes("đvt") || c.label.toLowerCase().includes("đơn vị")) || activeGridColumns[3];
+    const colorCol = activeGridColumns.find((c) => c.key === "colors" || c.id === "col_5" || c.label.toLowerCase().includes("màu")) || activeGridColumns[4];
+    const priceCols = activeGridColumns.filter((c) => c.key?.includes("price") || c.id === "col_6" || c.id === "col_7" || c.label.toLowerCase().includes("đơn giá") || c.label.toLowerCase().includes("giá"));
+
+    const formattedItems = activeGridRows.map((row, rIdx) => {
+      const sttVal = (sttCol && row[sttCol.id]) || rIdx + 1;
+      const codeVal = (codeCol && row[codeCol.id]) || `${activeQuote.productCode}-${rIdx + 1}`;
+      const imgVal = (imgCol && row[imgCol.id]) || "";
+      const nameVal = (nameCol && row[nameCol.id]) || `Dòng sản phẩm ${rIdx + 1}`;
+      const unitVal = (unitCol && row[unitCol.id]) || "m2";
+      const colorsVal = (colorCol && row[colorCol.id]) || "Theo tiêu chuẩn";
+      const price1Val = (priceCols[0] && row[priceCols[0].id]) || "Liên hệ";
+      const price2Val = (priceCols[1] && row[priceCols[1].id]) || price1Val;
+      const price3Val = (priceCols[2] && row[priceCols[2].id]) || price2Val;
+
+      return {
+        stt: isNaN(Number(sttVal)) ? rIdx + 1 : Number(sttVal),
+        code: String(codeVal).trim(),
+        image: String(imgVal).trim(),
+        imageUrl: String(imgVal).trim(),
+        name: String(nameVal).trim(),
+        description: String(nameVal).trim(),
+        unit: String(unitVal).trim(),
+        colors: String(colorsVal).trim(),
+        priceOver8: String(price1Val).trim(),
+        price6to8: String(price2Val).trim(),
+        price4to6: String(price3Val).trim(),
+        note: `Sản phẩm ${codeVal}`,
+        rawGridCells: { ...row }
+      };
+    });
+
+    const quoteToSave = {
+      ...activeQuote,
+      customColumns: activeGridColumns.map((c) => ({
+        id: c.id,
+        key: c.key || c.id,
+        label: c.label,
+        width: c.width || "130px"
+      })),
+      items: formattedItems
+    };
 
     try {
       let success = false;
@@ -985,7 +1321,7 @@ export default function AdminPriceQuote({ showToast }) {
         const res = await fetch(`${import.meta.env.VITE_API_URL}/api/price-quotes`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(activeQuote)
+          body: JSON.stringify(quoteToSave)
         });
         const json = await res.json();
         if (json.success) {
@@ -997,22 +1333,24 @@ export default function AdminPriceQuote({ showToast }) {
       }
 
       const updatedList = quotesList.map((q) =>
-        q.productCode === activeQuote.productCode ? activeQuote : q
+        q.productCode === quoteToSave.productCode ? quoteToSave : q
       );
-      if (!updatedList.some((q) => q.productCode === activeQuote.productCode)) {
-        updatedList.push(activeQuote);
+      if (!updatedList.some((q) => q.productCode === quoteToSave.productCode)) {
+        updatedList.push(quoteToSave);
       }
       setQuotesList(updatedList);
+      setActiveQuote(quoteToSave);
       localStorage.setItem("boss_admin_price_quotes", JSON.stringify(updatedList));
       window.dispatchEvent(new Event("priceQuotesUpdated"));
 
-      triggerToast(message, true);
+      triggerToast(`🎉 ${message}`);
     } catch (err) {
       console.error("Save price quote error:", err);
       const updatedList = quotesList.map((q) =>
-        q.productCode === activeQuote.productCode ? activeQuote : q
+        q.productCode === quoteToSave.productCode ? quoteToSave : q
       );
       setQuotesList(updatedList);
+      setActiveQuote(quoteToSave);
       localStorage.setItem("boss_admin_price_quotes", JSON.stringify(updatedList));
 
       triggerToast("✨ Đã lưu bảng báo giá thành công (Lưu trữ bộ nhớ an toàn)!", true);
@@ -1042,6 +1380,11 @@ export default function AdminPriceQuote({ showToast }) {
     setQuotesList(DEFAULT_PRICE_QUOTES);
     setSelectedQuoteCode(DEFAULT_PRICE_QUOTES[0].productCode);
     setActiveQuote(JSON.parse(JSON.stringify(DEFAULT_PRICE_QUOTES[0])));
+    const resetCols = getActiveColumns(DEFAULT_PRICE_QUOTES[0]);
+    const resetRows = getActiveRows(DEFAULT_PRICE_QUOTES[0], resetCols);
+    setActiveGridColumns(resetCols);
+    setActiveGridRows(resetRows);
+    window.dispatchEvent(new Event("priceQuotesUpdated"));
     triggerToast("🎉 Đã khôi phục toàn bộ bảng giá mẫu gốc thành công!");
     setLoading(false);
   };
@@ -1555,7 +1898,285 @@ export default function AdminPriceQuote({ showToast }) {
       {/* ========================================================================= */}
       {activeQuote && (
         <div className="quote-editor-card">
-          {/* 1. LỰA CHỌN THÊM (ADD-ONS) */}
+          {/* PHẦN 1: BẢNG GIÁ KỸ THUẬT & BÀI VIẾT CỦA BẢNG GIÁ ĐANG CHỌN */}
+          <div className="editor-section-box">
+            <div className="section-header-row">
+              <div className="builder-title-badge-group">
+                <LayoutGrid size={20} className="green-icon" />
+                <div>
+                  <h3 className="section-title mb-0" style={{ fontSize: "16px", color: "#004d32" }}>
+                    BẢNG GIÁ KỸ THUẬT: {activeQuote.productTitle || activeQuote.title}
+                  </h3>
+                  <span className="matrix-badge" style={{ marginTop: "4px", display: "inline-block" }}>
+                    Đang hiển thị: {activeGridColumns.length} Cột × {activeGridRows.length} Hàng
+                  </span>
+                </div>
+              </div>
+              <div className="section-header-actions">
+                <button type="button" className="btn-append-row" onClick={handleActiveAddRow} title="Thêm 1 hàng mới vào cuối bảng">
+                  <Plus size={14} /> Thêm Hàng
+                </button>
+                <button type="button" className="btn-append-col" onClick={handleActiveAddCol} title="Thêm 1 cột mới vào bảng">
+                  <Plus size={14} /> Thêm Cột
+                </button>
+                {!activeGridColumns.some(isImageCol) && (
+                  <button type="button" className="btn-append-img-col" onClick={handleActiveAddImgCol} title="Thêm cột hình ảnh sản phẩm">
+                    <ImageIcon size={14} /> Thêm Cột Ảnh
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Hướng dẫn thao tác bảng */}
+            <div className="matrix-quick-hint">
+              <Info size={15} />
+              <span>
+                💡 <strong>Kéo thả viền mép cột</strong> để co giãn độ rộng cột. Bấm dấu <strong>+</strong> trên tiêu đề cột hoặc nút <strong>+ Chèn</strong> trên từng hàng để <strong>thêm cột / hàng vào bất cứ chỗ nào</strong> bạn muốn!
+              </span>
+            </div>
+
+            {/* BÀI VIẾT / GIỚI THIỆU PHÍA TRÊN BẢNG GIÁ */}
+            <div className="quote-article-block above-table-article">
+              <div className="article-block-header">
+                <span className="article-block-badge">
+                  <FileText size={14} /> Bài Viết / Giới Thiệu (Phía Trên Bảng Giá)
+                </span>
+                <span className="article-block-hint">
+                  Đoạn văn bản giới thiệu mở đầu hiển thị ngay phía trên bảng giá ngoài trang web
+                </span>
+              </div>
+              <textarea
+                rows={3}
+                className="quote-article-textarea"
+                value={activeQuote.articleAbove || ""}
+                onChange={(e) => handleActiveArticleChange("articleAbove", e.target.value)}
+                placeholder="Nhập đoạn văn bản / bài viết giới thiệu mở đầu phía trên bảng giá..."
+              />
+            </div>
+
+            {/* BẢNG SPREADSHEET ĐIỀN THÔNG TIN TRỰC TIẾP */}
+            <div className="admin-table-scroll-wrapper spreadsheet-wrapper">
+              <table className="admin-quote-data-table spreadsheet-table">
+                <thead>
+                  <tr>
+                    {activeGridColumns.map((col, cIdx) => {
+                      const isSttCol = col.key === "stt" || col.id === "col_1" || col.label?.toLowerCase() === "stt";
+                      const isCodeCol = col.key === "code" || col.id === "col_2" || col.label?.toLowerCase().includes("mã");
+                      const isUnitCol = col.key === "unit" || col.id === "col_4" || col.label?.toLowerCase().includes("đvt");
+                      const colWidth = isSttCol
+                        ? (col.width && parseInt(col.width) >= 48 ? col.width : "50px")
+                        : isCodeCol
+                        ? (col.width && parseInt(col.width) >= 80 ? col.width : "88px")
+                        : isUnitCol
+                        ? (col.width && parseInt(col.width) >= 60 ? col.width : "65px")
+                        : col.width || "120px";
+                      const colMinWidth = isSttCol ? "42px" : isCodeCol ? "72px" : isUnitCol ? "52px" : "55px";
+
+                      return (
+                        <th
+                          key={col.id}
+                          style={{
+                            width: colWidth,
+                            minWidth: colMinWidth,
+                            position: "relative"
+                          }}
+                        >
+                          <div className={`col-header-interactive ${isSttCol ? "stt-header-interactive" : ""} ${isCodeCol ? "code-header-interactive" : ""}`}>
+                            <input
+                              type="text"
+                              value={col.label}
+                              onChange={(e) => handleActiveUpdateColLabel(cIdx, e.target.value)}
+                              className={`col-label-input ${isSttCol ? "stt-label-input" : ""}`}
+                              title="Bấm để đổi tên cột"
+                            />
+                            <div className="col-header-btns">
+                              <button
+                                type="button"
+                                className="btn-insert-col-plus"
+                                onClick={() => handleActiveInsertCol(cIdx)}
+                                title={`Chèn thêm 1 cột mới ngay sau cột "${col.label}"`}
+                              >
+                                <Plus size={8} />
+                              </button>
+                              {!isSttCol && activeGridColumns.length > 2 && (
+                                <button
+                                  type="button"
+                                  className="btn-del-col-x"
+                                  onClick={() => handleActiveDeleteCol(cIdx)}
+                                  title={`Xóa cột "${col.label}"`}
+                                >
+                                  ✕
+                                </button>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* THANH KÉO CO GIÃN ĐỘ RỘNG CỘT (COLUMN RESIZER) */}
+                          <div
+                            className={`col-resize-handle ${resizingActiveColIndex === cIdx ? "active" : ""}`}
+                            onMouseDown={(e) => handleActiveResizeStart(e, cIdx)}
+                            title="Bấm giữ và kéo chuột sang trái/phải để co giãn to nhỏ cột này"
+                          />
+                        </th>
+                      );
+                    })}
+                    <th style={{ width: "88px", textAlign: "center", padding: "4px" }}>Thao tác</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {activeGridRows.map((row, rIdx) => (
+                    <tr key={`ar-${rIdx}`}>
+                      {activeGridColumns.map((col) => {
+                        const isImage = isImageCol(col);
+                        const isStt = col.key === "stt" || col.id === "col_1" || col.label?.toLowerCase() === "stt";
+                        const isCode = col.key === "code" || col.id === "col_2" || col.label?.toLowerCase().includes("mã");
+                        const isNameOrDesc = col.key === "name" || col.id === "col_3" || col.label?.toLowerCase().includes("tên");
+                        const isPrice = col.key?.includes("price") || col.id === "col_6" || col.id === "col_7" || col.label?.toLowerCase().includes("giá");
+                        const cellVal = row[col.id] || "";
+
+                        if (isImage) {
+                          return (
+                            <td key={`${col.id}-${rIdx}`} className="spreadsheet-cell cell-image-type">
+                              <div className={`table-img-cell-box ${cellVal ? "has-image" : ""}`}>
+                                {cellVal && (
+                                  <div className="cell-img-thumb-container" title="Ảnh sản phẩm">
+                                    <img
+                                      src={cellVal}
+                                      alt={`SP ${rIdx + 1}`}
+                                      className="cell-img-thumb"
+                                      onError={(e) => {
+                                        e.target.style.opacity = "0.3";
+                                      }}
+                                    />
+                                    <button
+                                      type="button"
+                                      className="btn-remove-cell-img"
+                                      onClick={() => handleActiveGridCellChange(rIdx, col.id, "")}
+                                      title="Gỡ ảnh này"
+                                    >
+                                      ✕
+                                    </button>
+                                  </div>
+                                )}
+                                <div className="cell-img-action-group">
+                                  <input
+                                    type="text"
+                                    className="table-input cell-img-url-input"
+                                    value={cellVal}
+                                    onChange={(e) => handleActiveGridCellChange(rIdx, col.id, e.target.value)}
+                                    placeholder="Dán link ảnh..."
+                                    title="Dán link ảnh trực tiếp (https://... hoặc /ảnh.jpg)"
+                                  />
+                                  <label className="cell-img-upload-btn" title="Tải ảnh từ máy local (PNG, JPG, WEBP)">
+                                    <Upload size={11} />
+                                    <span className="upload-btn-text">Tải</span>
+                                    <input
+                                      type="file"
+                                      accept="image/*"
+                                      style={{ display: "none" }}
+                                      onChange={(e) => handleActiveCellImageUpload(rIdx, col.id, e)}
+                                    />
+                                  </label>
+                                </div>
+                              </div>
+                            </td>
+                          );
+                        }
+
+                        return (
+                          <td key={`${col.id}-${rIdx}`} className={`spreadsheet-cell ${isStt ? "cell-stt-cell" : ""} ${isCode ? "cell-code-cell" : ""}`}>
+                            {isNameOrDesc ? (
+                              <textarea
+                                rows={2}
+                                className="table-textarea cell-content"
+                                value={cellVal}
+                                onChange={(e) => handleActiveGridCellChange(rIdx, col.id, e.target.value)}
+                                placeholder="Nhập tên, quy cách..."
+                              />
+                            ) : (
+                              <input
+                                type="text"
+                                className={`table-input cell-content ${isStt ? "cell-stt-input" : ""} ${isCode ? "bold-code cell-code-input" : ""} ${isPrice ? "price-input" : ""}`}
+                                value={cellVal}
+                                onChange={(e) => handleActiveGridCellChange(rIdx, col.id, e.target.value)}
+                                placeholder={isPrice ? "1,200,000" : isCode ? "Mã SP" : isStt ? String(rIdx + 1) : "..."}
+                              />
+                            )}
+                          </td>
+                        );
+                      })}
+                      <td className="text-center row-actions-cell">
+                        <button
+                          type="button"
+                          className="btn-insert-row-inline"
+                          onClick={() => handleActiveInsertRow(rIdx)}
+                          title={`Chèn thêm 1 hàng mới ngay dưới hàng ${rIdx + 1}`}
+                        >
+                          <Plus size={12} /> Chèn
+                        </button>
+                        <button
+                          type="button"
+                          className="btn-trash-row"
+                          onClick={() => handleActiveDeleteRow(rIdx)}
+                          title={`Xóa hàng ${rIdx + 1}`}
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* THANH THÊM HÀNG / THÊM CỘT DƯỚI BẢNG */}
+            <div className="table-quick-append-bar">
+              <button
+                type="button"
+                className="btn-append-row"
+                onClick={handleActiveAddRow}
+              >
+                <Plus size={15} /> Thêm 1 Hàng Mới
+              </button>
+              <button
+                type="button"
+                className="btn-append-col"
+                onClick={handleActiveAddCol}
+              >
+                <Plus size={15} /> Thêm 1 Cột Mới
+              </button>
+              {!activeGridColumns.some(isImageCol) && (
+                <button
+                  type="button"
+                  className="btn-append-img-col"
+                  onClick={handleActiveAddImgCol}
+                >
+                  <ImageIcon size={15} /> Thêm Cột Hình Ảnh
+                </button>
+              )}
+            </div>
+
+            {/* BÀI VIẾT CHI TIẾT & TƯ VẤN KỸ THUẬT (PHÍA DƯỚI BẢNG GIÁ) */}
+            <div className="quote-article-block below-table-article">
+              <div className="article-block-header">
+                <span className="article-block-badge">
+                  <FileText size={14} /> Bài Viết Chi Tiết &amp; Tư Vấn Kỹ Thuật (Phía Dưới Bảng Giá)
+                </span>
+                <span className="article-block-hint">
+                  Nội dung bài viết chi tiết, hướng dẫn kỹ thuật, lưu ý thi công hiển thị phía dưới bảng giá
+                </span>
+              </div>
+              <textarea
+                rows={4}
+                className="quote-article-textarea"
+                value={activeQuote.articleBelow || ""}
+                onChange={(e) => handleActiveArticleChange("articleBelow", e.target.value)}
+                placeholder="Gõ bài viết chi tiết, hướng dẫn kỹ thuật, tư vấn báo giá đặt phía dưới bảng giá..."
+              />
+            </div>
+          </div>
+
+          {/* 2. LỰA CHỌN THÊM (ADD-ONS) */}
           <div className="editor-section-box">
             <div className="section-header-row">
               <h3 className="section-title mb-0">
