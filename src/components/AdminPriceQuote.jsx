@@ -1135,20 +1135,15 @@ export default function AdminPriceQuote({ showToast }) {
       {/* ========================================================================= */}
       {activeQuote && (
         <div className="quote-editor-card">
-          {/* 1. BẢNG GIÁ SẢN PHẨM KỸ THUẬT */}
+          {/* 1. LỰA CHỌN THÊM (ADD-ONS) */}
           <div className="editor-section-box">
             <div className="section-header-row">
-              <div>
-                <h3 className="section-title mb-0">
-                  <Tag size={18} /> Bảng Giá Sản Phẩm Kỹ Thuật (Phân Tầng Theo Diện Tích)
-                </h3>
-                <span className="section-sub-info">
-                  Số lượng dòng hiện tại: <strong>{activeQuote.items?.length || 0} dòng</strong>
-                </span>
-              </div>
+              <h3 className="section-title mb-0">
+                <Plus size={18} /> Khu Vực "LỰA CHỌN THÊM" (Phụ Kiện &amp; Nâng Cấp)
+              </h3>
               <div className="section-header-actions">
-                <button type="button" className="btn-add-row" onClick={handleAddItem}>
-                  <Plus size={15} /> Thêm Dòng Sản Phẩm
+                <button type="button" className="btn-add-row" onClick={handleAddNewAddon}>
+                  <Plus size={15} /> Thêm Lựa Chọn Phụ Kiện
                 </button>
                 <button
                   type="button"
@@ -1159,124 +1154,6 @@ export default function AdminPriceQuote({ showToast }) {
                   <Trash2 size={15} /> Xóa Bảng Giá Này
                 </button>
               </div>
-            </div>
-
-            <div className="admin-table-scroll-wrapper">
-              <table className="admin-quote-data-table">
-                <thead>
-                  <tr>
-                    <th style={{ width: "42px", textAlign: "center" }}>STT</th>
-                    <th style={{ width: "95px" }}>Mã SP</th>
-                    <th style={{ minWidth: "260px" }}>Diễn giải (Cấu tạo, độ dày, sơn phủ)</th>
-                    <th style={{ width: "65px", textAlign: "center" }}>ĐVT</th>
-                    <th style={{ minWidth: "160px" }}>Màu sắc</th>
-                    <th style={{ minWidth: "125px" }}>Đơn giá (&gt; 8m²)</th>
-                    <th style={{ minWidth: "125px" }}>Đơn giá (6 - &lt; 8m²)</th>
-                    <th style={{ minWidth: "125px" }}>Đơn giá (4 - &lt; 6m²)</th>
-                    <th style={{ width: "50px", textAlign: "center" }}>Xóa</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {(activeQuote.items || []).map((row, idx) => (
-                    <tr key={idx}>
-                      <td className="text-center font-bold">{row.stt || idx + 1}</td>
-                      <td>
-                        <input
-                          type="text"
-                          className="table-input bold-code"
-                          value={row.code || ""}
-                          onChange={(e) => handleItemChange(idx, "code", e.target.value)}
-                          placeholder="SR3, VIP, BD-01..."
-                        />
-                      </td>
-                      <td>
-                        <textarea
-                          rows={3}
-                          className="table-textarea"
-                          value={row.description || row.name || ""}
-                          onChange={(e) => {
-                            handleItemChange(idx, "description", e.target.value);
-                            handleItemChange(idx, "name", e.target.value.split("\n")[0]);
-                          }}
-                          placeholder="Mô tả chi tiết kỹ thuật, độ dày nan, sơn tĩnh điện..."
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="text"
-                          className="table-input text-center"
-                          value={row.unit || "m2"}
-                          onChange={(e) => handleItemChange(idx, "unit", e.target.value)}
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="text"
-                          className="table-input"
-                          value={row.colors || ""}
-                          onChange={(e) => handleItemChange(idx, "colors", e.target.value)}
-                          placeholder="Ghi sáng, vàng kem..."
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="text"
-                          className="table-input price-input"
-                          value={row.priceOver8 || ""}
-                          onChange={(e) => handleItemChange(idx, "priceOver8", e.target.value)}
-                          placeholder="1,200,000"
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="text"
-                          className="table-input price-input"
-                          value={row.price6to8 || ""}
-                          onChange={(e) => handleItemChange(idx, "price6to8", e.target.value)}
-                          placeholder="1,250,000"
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="text"
-                          className="table-input price-input"
-                          value={row.price4to6 || ""}
-                          onChange={(e) => handleItemChange(idx, "price4to6", e.target.value)}
-                          placeholder="1,300,000"
-                        />
-                      </td>
-                      <td className="text-center">
-                        <button
-                          type="button"
-                          className="btn-trash-row"
-                          onClick={() => handleDeleteItem(idx)}
-                          title="Xóa dòng này"
-                        >
-                          <Trash2 size={16} />
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            <div className="table-bottom-action-row">
-              <button type="button" className="btn-add-row" onClick={handleAddItem}>
-                <Plus size={15} /> Thêm Dòng Sản Phẩm Mới Vào Bảng Này
-              </button>
-            </div>
-          </div>
-
-          {/* 3. LỰA CHỌN THÊM (ADD-ONS) */}
-          <div className="editor-section-box">
-            <div className="section-header-row">
-              <h3 className="section-title mb-0">
-                <Plus size={18} /> Khu Vực "LỰA CHỌN THÊM" (Phụ Kiện &amp; Nâng Cấp)
-              </h3>
-              <button type="button" className="btn-add-row" onClick={handleAddNewAddon}>
-                <Plus size={15} /> Thêm Lựa Chọn Phụ Kiện
-              </button>
             </div>
 
             <div className="addons-editor-list">
