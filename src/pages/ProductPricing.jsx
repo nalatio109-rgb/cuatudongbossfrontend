@@ -872,14 +872,14 @@ export default function ProductPricing() {
       <main className="container pricing-main-container">
         {productArticle ? (
           <article className="pricing-article-wrapper">
-            {/* ARTICLE CONTINUOUS HEADER (Khớp 100% Ảnh 4) */}
+            {/* ARTICLE CONTINUOUS HEADER */}
             <header className="article-continuous-header">
               <h1 className="article-main-title">
-                {productArticle?.seo?.title ? productArticle.seo.title.split("|")[0]?.trim() : (product?.title || "Bảng giá")}
+                {priceQuote?.title || priceQuote?.productTitle || (productArticle?.seo?.title ? productArticle.seo.title.split("|")[0]?.trim() : (product?.title || "Bảng giá"))}
               </h1>
               <div className="article-meta-bar">
                 <span className="meta-tag-category">
-                  <Tag size={13} className="meta-icon" /> {productArticle?.category || "Bảng giá"}
+                  <Tag size={13} className="meta-icon" /> {priceQuote?.category === "cuacuon" ? "Cửa cuốn" : priceQuote?.category === "cuakeo" ? "Cửa kéo" : "Báo giá kỹ thuật"}
                 </span>
                 <span className="meta-tag-date">
                   <Calendar size={13} className="meta-icon" /> {getPublishDate(productArticle)}
@@ -887,56 +887,7 @@ export default function ProductPricing() {
               </div>
             </header>
 
-            {/* LEAD PARAGRAPH (Khớp 100% Ảnh 4) */}
-            {(productArticle.introLead || productArticle.introContent) && (
-              <p className="article-lead-paragraph">
-                {productArticle.introLead || (
-                  typeof productArticle.introContent === "string" && !productArticle.introContent.includes("<p")
-                    ? productArticle.introContent
-                    : "Lắp đặt cửa cuốn an toàn Bossdoor trở thành giải pháp được rất nhiều gia chủ lựa chọn hiện nay. Dù biết đây là sản phẩm rất được lòng khách hàng nhưng liệu rằng cửa cuốn Bossdoor có tốt không? Bảng giá cửa cuốn an toàn Bossdoor như thế nào? Lắp đặt cửa ở đâu tại Đà Nẵng đáng tin cậy? Để giải đáp các thông tin trên, BossDoor Đà Nẵng mời bạn theo dõi bài viết dưới đây nhé."
-                )}
-              </p>
-            )}
-
-            {/* MỤC LỤC NỘI DUNG (Khớp 100% Ảnh 4) */}
-            {productArticle.tableOfContents && productArticle.tableOfContents.length > 0 && (
-              <div className="pricing-toc-box">
-                <button 
-                  type="button" 
-                  className="pricing-toc-toggle-btn"
-                  onClick={() => setTocOpen(!tocOpen)}
-                  aria-expanded={tocOpen}
-                >
-                  <span className="toc-title-text">Mục lục nội dung</span>
-                  <span className="toc-btn-badge">
-                    <List size={15} />
-                    <ChevronDown size={14} className={`toc-chevron ${tocOpen ? "rotate" : ""}`} />
-                  </span>
-                </button>
-                {tocOpen && (
-                  <ul className="pricing-toc-list">
-                    {productArticle.tableOfContents.map((item, idx) => (
-                      <li key={idx}>
-                        <a 
-                          href={`#${item.id}`}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            const target = document.getElementById(item.id);
-                            if (target) {
-                              target.scrollIntoView({ behavior: "smooth", block: "start" });
-                            }
-                          }}
-                        >
-                          {item.title}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            )}
-
-            {/* BẢNG BÁO GIÁ CHÍNH (Khớp chuẩn 100% Ảnh 4: Tên sản phẩm | Chi tiết | Giá bán) */}
+            {/* BẢNG BÁO GIÁ CHÍNH */}
             <section className="pricing-table-section">
               <h2 id="bang-gia-chi-tiet" className="pricing-section-title">
                 {priceQuote?.tableHeading || priceQuote?.title || `Bảng giá ${product?.title || ""} tại Đà Nẵng`}
@@ -1252,12 +1203,6 @@ export default function ProductPricing() {
                 </div>
               </div>
             </section>
-
-            {/* 4. BÀI VIẾT TƯ VẤN & BÁN HÀNG CHI TIẾT (BÀI SALE BẢNG GIÁ) ĐẶT BÊN DƯỚI BẢNG GIÁ */}
-            <div 
-              className="product-article-rendered-stream" 
-              dangerouslySetInnerHTML={{ __html: filterArticleHtml(`${productArticle.introContent || ""}\n${productArticle.outroContent || ""}`) }} 
-            />
           </article>
         ) : (
           <>
