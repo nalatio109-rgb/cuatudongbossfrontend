@@ -1135,143 +1135,7 @@ export default function AdminPriceQuote({ showToast }) {
       {/* ========================================================================= */}
       {activeQuote && (
         <div className="quote-editor-card">
-          {/* 1. THÔNG TIN BẢNG GIÁ & HÌNH ẢNH */}
-          <div className="editor-section-box">
-            <div className="section-header-row">
-              <div className="section-title-wrap">
-                <h3 className="section-title">
-                  <FileSpreadsheet size={18} /> Thông Tin Bảng Giá
-                </h3>
-                {quotesList.length > 1 && (
-                  <select
-                    value={selectedQuoteCode}
-                    onChange={(e) => handleSelectQuote(e.target.value)}
-                    className="quote-switcher-select-inline"
-                    title="Chuyển sang bảng giá khác để chỉnh sửa"
-                  >
-                    {quotesList.map((q) => (
-                      <option key={q.productCode} value={q.productCode}>
-                        {q.productTitle || q.productCode}
-                      </option>
-                    ))}
-                  </select>
-                )}
-              </div>
-              <button
-                type="button"
-                className="btn-delete-this-quote"
-                onClick={handleDeleteActiveQuote}
-                title="Xóa vĩnh viễn bảng giá này khỏi hệ thống"
-              >
-                <Trash2 size={15} /> Xóa Bảng Giá Này
-              </button>
-            </div>
-
-            <div className="quote-simple-form-grid">
-              {/* TÊN BẢNG GIÁ */}
-              <div className="form-field full-width">
-                <label className="required-label">Tên bảng giá:</label>
-                <input
-                  type="text"
-                  className="input-highlight-bold quote-name-input"
-                  value={activeQuote.productTitle || activeQuote.title || ""}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    setActiveQuote((prev) => ({
-                      ...prev,
-                      productTitle: val,
-                      title: val
-                    }));
-                  }}
-                  placeholder="Nhập tên bảng giá (Ví dụ: CỬA KÉO CÔNG NGHỆ ĐỨC, Bảng giá cửa cuốn BossDoor...)"
-                />
-              </div>
-
-              {/* HÌNH ẢNH BẢNG GIÁ (LINK ẢNH HOẶC TẢI TỪ MÁY LOCAL) */}
-              <div className="form-field full-width quote-image-field-wrap">
-                <label>Hình ảnh bảng giá (Link ảnh hoặc tải từ máy local):</label>
-
-                <div className="quote-image-controls-row">
-                  <div className="quote-image-url-box">
-                    <input
-                      type="text"
-                      className="image-url-input"
-                      value={activeQuote.image || activeQuote.imageUrl || ""}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        setActiveQuote((prev) => ({
-                          ...prev,
-                          image: val,
-                          imageUrl: val
-                        }));
-                      }}
-                      placeholder="Dán link ảnh trực tiếp (https://... hoặc /project_1.png)..."
-                    />
-                  </div>
-
-                  <input
-                    type="file"
-                    ref={fileInputRef}
-                    onChange={handleImageUpload}
-                    accept="image/*"
-                    style={{ display: "none" }}
-                  />
-
-                  <button
-                    type="button"
-                    className="btn-upload-local-img"
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={isUploadingImage}
-                  >
-                    {isUploadingImage ? (
-                      <>
-                        <Loader2 size={16} className="spin-icon" /> Đang tải ảnh...
-                      </>
-                    ) : (
-                      <>
-                        <Upload size={16} /> Tải ảnh từ máy local
-                      </>
-                    )}
-                  </button>
-                </div>
-
-                {/* KHUNG XEM TRƯỚC ẢNH NẾU CÓ */}
-                {(activeQuote.image || activeQuote.imageUrl) && (
-                  <div className="quote-image-preview-card">
-                    <div className="quote-img-thumb-wrap">
-                      <img
-                        src={activeQuote.image || activeQuote.imageUrl}
-                        alt="Ảnh bảng giá"
-                        className="quote-preview-thumbnail"
-                        onError={(e) => {
-                          e.target.style.opacity = "0.3";
-                        }}
-                      />
-                    </div>
-                    <div className="quote-img-preview-info">
-                      <span className="preview-label">Ảnh bảng giá hiện tại</span>
-                      <button
-                        type="button"
-                        className="btn-remove-quote-img"
-                        onClick={() => {
-                          setActiveQuote((prev) => ({
-                            ...prev,
-                            image: "",
-                            imageUrl: ""
-                          }));
-                        }}
-                        title="Xóa ảnh này"
-                      >
-                        <X size={14} /> Xóa ảnh
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* 2. BẢNG GIÁ SẢN PHẨM KỸ THUẬT */}
+          {/* 1. BẢNG GIÁ SẢN PHẨM KỸ THUẬT */}
           <div className="editor-section-box">
             <div className="section-header-row">
               <div>
@@ -1282,9 +1146,19 @@ export default function AdminPriceQuote({ showToast }) {
                   Số lượng dòng hiện tại: <strong>{activeQuote.items?.length || 0} dòng</strong>
                 </span>
               </div>
-              <button type="button" className="btn-add-row" onClick={handleAddItem}>
-                <Plus size={15} /> Thêm Dòng Sản Phẩm
-              </button>
+              <div className="section-header-actions">
+                <button type="button" className="btn-add-row" onClick={handleAddItem}>
+                  <Plus size={15} /> Thêm Dòng Sản Phẩm
+                </button>
+                <button
+                  type="button"
+                  className="btn-delete-this-quote"
+                  onClick={handleDeleteActiveQuote}
+                  title="Xóa vĩnh viễn bảng giá này khỏi hệ thống"
+                >
+                  <Trash2 size={15} /> Xóa Bảng Giá Này
+                </button>
+              </div>
             </div>
 
             <div className="admin-table-scroll-wrapper">
