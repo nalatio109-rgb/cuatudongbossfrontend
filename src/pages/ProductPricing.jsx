@@ -893,12 +893,13 @@ export default function ProductPricing() {
                 {priceQuote?.tableHeading || priceQuote?.title || `Bảng giá ${product?.title || ""} tại Đà Nẵng`}
               </h2>
 
-              {/* BÀI VIẾT / GIỚI THIỆU PHÍA TRÊN BẢNG GIÁ */}
-              {priceQuote?.articleAbove && (
-                <div className="pricing-custom-article-box above-quote-article">
-                  <p className="custom-article-paragraph">{priceQuote.articleAbove}</p>
-                </div>
-              )}
+              {/* BÀI VIẾT / GIỚI THIỆU PHÍA TRÊN BẢNG GIÁ (LUÔN ĐỒNG BỘ HIỂN THỊ) */}
+              <div className="pricing-custom-article-box above-quote-article">
+                <p className="custom-article-paragraph">
+                  {priceQuote?.articleAbove?.trim() ||
+                    "BossDoor Đà Nẵng trân trọng gửi đến Quý khách hàng bảng báo giá chi tiết, mới nhất năm 2026. Các dòng sản phẩm được sản xuất trên dây chuyền hiện đại, tiêu chuẩn chất lượng cao, bền bỉ và an toàn tuyệt đối cho mọi công trình."}
+                </p>
+              </div>
 
               {/* BẢNG GIÁ KỸ THUẬT ĐỒNG BỘ 100% VỚI ADMIN */}
               <div className="technical-table-container-card">
@@ -1132,16 +1133,17 @@ export default function ProductPricing() {
                 </div>
               </div>
 
-              {/* BÀI VIẾT CHI TIẾT & TƯ VẤN PHÍA DƯỚI BẢNG GIÁ */}
-              {priceQuote?.articleBelow && (
-                <div className="pricing-custom-article-box below-quote-article">
-                  <div className="custom-article-header">
-                    <Sparkles size={16} className="sparkle-gold-icon" />
-                    <h4>THÔNG TIN CHI TIẾT &amp; TƯ VẤN KỸ THUẬT</h4>
-                  </div>
-                  <p className="custom-article-paragraph">{priceQuote.articleBelow}</p>
+              {/* BÀI VIẾT CHI TIẾT & TƯ VẤN PHÍA DƯỚI BẢNG GIÁ (LUÔN ĐỒNG BỘ HIỂN THỊ) */}
+              <div className="pricing-custom-article-box below-quote-article">
+                <div className="custom-article-header">
+                  <Sparkles size={16} className="sparkle-gold-icon" />
+                  <h4>THÔNG TIN CHI TIẾT &amp; TƯ VẤN KỸ THUẬT</h4>
                 </div>
-              )}
+                <p className="custom-article-paragraph">
+                  {priceQuote?.articleBelow?.trim() ||
+                    "Lưu ý: Báo giá trên áp dụng cho công trình tại khu vực Đà Nẵng và các tỉnh lân cận. Khách hàng lắp đặt số lượng lớn hoặc dự án công trình sẽ nhận được mức chiết khấu ưu đãi đặc biệt. Để được tư vấn chi tiết và khảo sát đo đạc miễn phí tận nơi, Quý khách vui lòng liên hệ Hotline/Zalo kỹ thuật: 0904.678.323."}
+                </p>
+              </div>
 
               {/* 4. KHU VỰC "LỰA CHỌN THÊM" (PHỤ KIỆN & NÂNG CẤP) */}
               <div className="technical-addons-section">
@@ -1273,12 +1275,13 @@ export default function ProductPricing() {
                 </p>
               </div>
 
-              {/* BÀI VIẾT / GIỚI THIỆU PHÍA TRÊN BẢNG GIÁ */}
-              {priceQuote?.articleAbove && (
-                <div className="pricing-custom-article-box above-quote-article">
-                  <p className="custom-article-paragraph">{priceQuote.articleAbove}</p>
-                </div>
-              )}
+              {/* BÀI VIẾT / GIỚI THIỆU PHÍA TRÊN BẢNG GIÁ (LUÔN ĐỒNG BỘ HIỂN THỊ) */}
+              <div className="pricing-custom-article-box above-quote-article">
+                <p className="custom-article-paragraph">
+                  {priceQuote?.articleAbove?.trim() ||
+                    "BossDoor Đà Nẵng trân trọng gửi đến Quý khách hàng bảng báo giá chi tiết, mới nhất năm 2026. Các dòng sản phẩm được sản xuất trên dây chuyền hiện đại, tiêu chuẩn chất lượng cao, bền bỉ và an toàn tuyệt đối cho mọi công trình."}
+                </p>
+              </div>
 
               {/* BẢNG GIÁ KỸ THUẬT ĐỒNG BỘ 100% VỚI ADMIN */}
               <div className="technical-table-container-card">
@@ -1512,16 +1515,17 @@ export default function ProductPricing() {
                 </div>
               </div>
 
-              {/* BÀI VIẾT CHI TIẾT & TƯ VẤN PHÍA DƯỚI BẢNG GIÁ */}
-              {priceQuote?.articleBelow && (
-                <div className="pricing-custom-article-box below-quote-article">
-                  <div className="custom-article-header">
-                    <Sparkles size={16} className="sparkle-gold-icon" />
-                    <h4>THÔNG TIN CHI TIẾT &amp; TƯ VẤN KỸ THUẬT</h4>
-                  </div>
-                  <p className="custom-article-paragraph">{priceQuote.articleBelow}</p>
+              {/* BÀI VIẾT CHI TIẾT & TƯ VẤN PHÍA DƯỚI BẢNG GIÁ (LUÔN ĐỒNG BỘ HIỂN THỊ) */}
+              <div className="pricing-custom-article-box below-quote-article">
+                <div className="custom-article-header">
+                  <Sparkles size={16} className="sparkle-gold-icon" />
+                  <h4>THÔNG TIN CHI TIẾT &amp; TƯ VẤN KỸ THUẬT</h4>
                 </div>
-              )}
+                <p className="custom-article-paragraph">
+                  {priceQuote?.articleBelow?.trim() ||
+                    "Lưu ý: Báo giá trên áp dụng cho công trình tại khu vực Đà Nẵng và các tỉnh lân cận. Khách hàng lắp đặt số lượng lớn hoặc dự án công trình sẽ nhận được mức chiết khấu ưu đãi đặc biệt. Để được tư vấn chi tiết và khảo sát đo đạc miễn phí tận nơi, Quý khách vui lòng liên hệ Hotline/Zalo kỹ thuật: 0904.678.323."}
+                </p>
+              </div>
 
               {/* 4. KHU VỰC "LỰA CHỌN THÊM" (PHỤ KIỆN & NÂNG CẤP) */}
               <div className="technical-addons-section">
