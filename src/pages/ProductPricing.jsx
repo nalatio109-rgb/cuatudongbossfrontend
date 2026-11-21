@@ -23,7 +23,8 @@ import {
   MessageCircle,
   Filter,
   Calendar,
-  List
+  List,
+  FileSpreadsheet
 } from "lucide-react";
 import { DEFAULT_PRICE_QUOTES } from "../data/defaultPriceQuotes";
 import { DEFAULT_PRODUCT_ARTICLES } from "../data/defaultProductArticles";
@@ -44,6 +45,24 @@ const sanitizeSpec = (text) => {
   let s = text.replace(/110\s*năm/gi, "15 năm");
   s = s.replace(/(?<!\d)5\s*năm/gi, "10 năm");
   return s;
+};
+
+// Nhận diện cột hình ảnh đồng bộ với Admin
+const isImageCol = (col) => {
+  if (!col) return false;
+  const k = (col.key || "").toLowerCase();
+  const id = (col.id || "").toLowerCase();
+  const l = (col.label || "").toLowerCase();
+  return (
+    k === "image" ||
+    k === "img" ||
+    id.includes("img") ||
+    id.includes("image") ||
+    l.includes("ảnh") ||
+    l.includes("hình") ||
+    l.includes("image") ||
+    l.includes("photo")
+  );
 };
 
 const PRODUCT_PRICE_RANGES = {
@@ -275,6 +294,82 @@ export default function ProductPricing() {
   });
 
   const [activeAreaFilter, setActiveAreaFilter] = useState("all"); // 'all' | 'over8' | 'from6to8' | 'from4to6'
+
+  // DANH SÁCH TOÀN BỘ BẢNG GIÁ ĐỒNG BỘ 100% VỚI ADMIN
+  const [allPriceQuotes, setAllPriceQuotes] = useState(() => {
+    const local = localStorage.getItem("boss_admin_price_quotes");
+    if (local) {
+      try {
+        const parsed = JSON.parse(local);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      } catch (e) {}
+    }
+    return DEFAULT_PRICE_QUOTES;
+  });
+
+  useEffect(() => {
+    let isMounted = true;
+    const loadAllQuotes = async () => {
+      let loaded = null;
+      if (import.meta.env.VITE_API_URL) {
+        try {
+          const res = await fetch(`${import.meta.env.VITE_API_URL}/api/price-quotes`);
+          const json = await res.json();
+          if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+            loaded = json.data;
+          }
+        } catch (e) {}
+      }
+      if (!loaded) {
+        const local = localStorage.getItem("boss_admin_price_quotes");
+        if (local) {
+          try {
+            const parsed = JSON.parse(local);
+            if (Array.isArray(parsed) && parsed.length > 0) loaded = parsed;
+          } catch (e) {}
+        }
+      }
+      if (isMounted && loaded && loaded.length > 0) {
+        setAllPriceQuotes(loaded);
+      }
+    };
+
+    loadAllQuotes();
+
+    const handleUpdate = () => {
+      const local = localStorage.getItem("boss_admin_price_quotes");
+      if (local) {
+        try {
+          const parsed = JSON.parse(local);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setAllPriceQuotes(parsed);
+          }
+        } catch (e) {}
+      }
+    };
+    window.addEventListener("priceQuotesUpdated", handleUpdate);
+    window.addEventListener("storage", handleUpdate);
+    return () => {
+      isMounted = false;
+      window.removeEventListener("priceQuotesUpdated", handleUpdate);
+      window.removeEventListener("storage", handleUpdate);
+    };
+  }, []);
+
+  // Chuyển đổi bảng giá đang xem khi người dùng bấm pill chọn bảng giá
+  const handleSelectQuote = (targetQuote) => {
+    if (!targetQuote) return;
+    setPriceQuote(targetQuote);
+    if (targetQuote.productTitle) {
+      setProduct((prev) => ({
+        ...(prev || {}),
+        code: targetQuote.productCode,
+        title: targetQuote.productTitle,
+        category: targetQuote.category || prev?.category || "cuacuon",
+        image: targetQuote.image || targetQuote.imageUrl || prev?.image
+      }));
+    }
+  };
 
   // Load price quote matching this product
   useEffect(() => {
@@ -775,6 +870,35 @@ export default function ProductPricing() {
       </nav>
 
       <main className="container pricing-main-container">
+        {/* THANH CHỌN BẢNG GIÁ ĐỒNG BỘ 100% VỚI ADMIN */}
+        {allPriceQuotes && allPriceQuotes.length > 1 && (
+          <div className="pricing-quotes-switcher-card">
+            <div className="quotes-switcher-header">
+              <FileSpreadsheet size={16} className="text-emerald-700" />
+              <span className="switcher-title">Chọn bảng giá để xem:</span>
+            </div>
+            <div className="quotes-switcher-pills">
+              {allPriceQuotes.map((q) => {
+                const isSelected =
+                  (priceQuote?.productCode || "").toUpperCase() === (q.productCode || "").toUpperCase();
+                return (
+                  <button
+                    key={q.productCode}
+                    type="button"
+                    className={`quote-switch-pill ${isSelected ? "active" : ""}`}
+                    onClick={() => handleSelectQuote(q)}
+                    title={`Xem bảng báo giá: ${q.productTitle || q.productCode}`}
+                  >
+                    <Tag size={13} />
+                    <span className="pill-title">{q.productTitle || q.title || q.productCode}</span>
+                    <span className="pill-code">({q.productCode})</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         {productArticle ? (
           <article className="pricing-article-wrapper">
             {/* ARTICLE CONTINUOUS HEADER (Khớp 100% Ảnh 4) */}
@@ -920,23 +1044,49 @@ export default function ProductPricing() {
                   <table className="admin-quote-data-table customer-quote-table">
                     <thead>
                       <tr>
-                        <th style={{ width: "45px", textAlign: "center" }}>STT</th>
-                        <th style={{ width: "95px", textAlign: "center" }}>Mã SP</th>
-                        {quoteTableItems.some((item) => item.image || item.imageUrl) && (
-                          <th style={{ width: "75px", textAlign: "center" }}>Hình ảnh</th>
+                        {priceQuote?.customColumns && priceQuote.customColumns.length > 0 ? (
+                          priceQuote.customColumns.map((col, cIdx) => {
+                            const isImg = isImageCol(col);
+                            const isStt = col.key === "stt" || col.id === "col_1" || col.label?.toLowerCase() === "stt";
+                            const isCode = col.key === "code" || col.id === "col_2" || col.label?.toLowerCase().includes("mã");
+                            const isPrice = col.key?.includes("price") || col.label?.toLowerCase().includes("giá") || col.label?.toLowerCase().includes("đơn giá");
+                            const colWidth = col.width || (isStt ? "50px" : isCode ? "88px" : isImg ? "90px" : "130px");
+
+                            return (
+                              <th
+                                key={col.id || cIdx}
+                                style={{
+                                  width: colWidth,
+                                  minWidth: isStt ? "45px" : isCode ? "75px" : isImg ? "80px" : "110px",
+                                  textAlign: isStt || isCode || isImg ? "center" : isPrice ? "center" : "left"
+                                }}
+                                className={isPrice ? "price-head highlight-head" : ""}
+                              >
+                                {col.label}
+                              </th>
+                            );
+                          })
+                        ) : (
+                          <>
+                            <th style={{ width: "45px", textAlign: "center" }}>STT</th>
+                            <th style={{ width: "95px", textAlign: "center" }}>Mã SP</th>
+                            {quoteTableItems.some((item) => item.image || item.imageUrl) && (
+                              <th style={{ width: "75px", textAlign: "center" }}>Hình ảnh</th>
+                            )}
+                            <th style={{ minWidth: "280px" }}>Diễn giải (Cấu tạo, độ dày, sơn phủ)</th>
+                            <th style={{ width: "65px", textAlign: "center" }}>ĐVT</th>
+                            <th style={{ minWidth: "160px" }}>Màu sắc</th>
+                            <th className={`price-head ${activeAreaFilter === "over8" ? "highlight-head" : ""}`} style={{ width: "135px", textAlign: "center" }}>
+                              Đơn giá (&gt; 8m²)
+                            </th>
+                            <th className={`price-head ${activeAreaFilter === "from6to8" ? "highlight-head" : ""}`} style={{ width: "135px", textAlign: "center" }}>
+                              Đơn giá (6 - &lt; 8m²)
+                            </th>
+                            <th className={`price-head ${activeAreaFilter === "from4to6" ? "highlight-head" : ""}`} style={{ width: "135px", textAlign: "center" }}>
+                              Đơn giá (4 - &lt; 6m²)
+                            </th>
+                          </>
                         )}
-                        <th style={{ minWidth: "280px" }}>Diễn giải (Cấu tạo, độ dày, sơn phủ)</th>
-                        <th style={{ width: "65px", textAlign: "center" }}>ĐVT</th>
-                        <th style={{ minWidth: "160px" }}>Màu sắc</th>
-                        <th className={`price-head ${activeAreaFilter === "over8" ? "highlight-head" : ""}`} style={{ width: "135px", textAlign: "center" }}>
-                          Đơn giá (&gt; 8m²)
-                        </th>
-                        <th className={`price-head ${activeAreaFilter === "from6to8" ? "highlight-head" : ""}`} style={{ width: "135px", textAlign: "center" }}>
-                          Đơn giá (6 - &lt; 8m²)
-                        </th>
-                        <th className={`price-head ${activeAreaFilter === "from4to6" ? "highlight-head" : ""}`} style={{ width: "135px", textAlign: "center" }}>
-                          Đơn giá (4 - &lt; 6m²)
-                        </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -946,6 +1096,94 @@ export default function ProductPricing() {
                           (product.code.toUpperCase() === row?.code?.toUpperCase() || 
                            row?.code?.toUpperCase()?.includes(product.code.toUpperCase()));
                         const hasImg = Boolean(row.image || row.imageUrl);
+
+                        if (priceQuote?.customColumns && priceQuote.customColumns.length > 0) {
+                          return (
+                            <tr key={rIdx} className={isCurrentProduct ? "highlight-current-row" : ""}>
+                              {priceQuote.customColumns.map((col, cIdx) => {
+                                const isImg = isImageCol(col);
+                                const isStt = col.key === "stt" || col.id === "col_1" || col.label?.toLowerCase() === "stt";
+                                const isCode = col.key === "code" || col.id === "col_2" || col.label?.toLowerCase().includes("mã");
+                                const isPrice = col.key?.includes("price") || col.label?.toLowerCase().includes("giá") || col.label?.toLowerCase().includes("đơn giá");
+                                const isUnit = col.key === "unit" || col.id === "col_4" || col.label?.toLowerCase().includes("đvt");
+
+                                let cellVal = "";
+                                if (row.rawGridCells && row.rawGridCells[col.id] !== undefined) {
+                                  cellVal = row.rawGridCells[col.id];
+                                } else if (row[col.id] !== undefined) {
+                                  cellVal = row[col.id];
+                                } else if (col.key && row[col.key] !== undefined) {
+                                  cellVal = row[col.key];
+                                } else if (isStt) {
+                                  cellVal = row.stt || rIdx + 1;
+                                } else if (isCode) {
+                                  cellVal = row.code || "";
+                                } else if (isImg) {
+                                  cellVal = row.image || row.imageUrl || "";
+                                } else if (isUnit) {
+                                  cellVal = row.unit || "m2";
+                                } else if (isPrice) {
+                                  cellVal = row.priceOver8 || row.price || "Liên hệ";
+                                }
+
+                                if (isImg) {
+                                  return (
+                                    <td key={col.id || cIdx} className="text-center">
+                                      {cellVal ? (
+                                        <img
+                                          src={cellVal}
+                                          alt={`SP ${rIdx + 1}`}
+                                          className="tech-table-thumb"
+                                          onError={(e) => { e.target.style.display = "none"; }}
+                                        />
+                                      ) : (
+                                        <span style={{ color: "#94a3b8" }}>—</span>
+                                      )}
+                                    </td>
+                                  );
+                                }
+
+                                if (isStt) {
+                                  return (
+                                    <td key={col.id || cIdx} className="text-center cell-stt font-bold">
+                                      {cellVal || rIdx + 1}
+                                    </td>
+                                  );
+                                }
+
+                                if (isCode) {
+                                  return (
+                                    <td key={col.id || cIdx}>
+                                      <div className="table-box-view code-box">
+                                        <span className="code-text">{cellVal}</span>
+                                        {isCurrentProduct && <span className="viewing-badge">Đang xem</span>}
+                                      </div>
+                                    </td>
+                                  );
+                                }
+
+                                if (isPrice) {
+                                  const displayStr = cellVal ? (cellVal.includes("đ") || isNaN(Number(cellVal.replace(/[,.]/g, ""))) ? cellVal : `${cellVal} đ`) : "Liên hệ";
+                                  return (
+                                    <td key={col.id || cIdx}>
+                                      <div className="table-box-view price-box highlight-price-box">
+                                        <span className="price-bold-red">{displayStr}</span>
+                                      </div>
+                                    </td>
+                                  );
+                                }
+
+                                return (
+                                  <td key={col.id || cIdx} className={isUnit ? "text-center" : ""}>
+                                    <div className={`table-box-view ${isUnit ? "unit-box" : "desc-box"}`}>
+                                      <div className="desc-box-content">{cellVal}</div>
+                                    </div>
+                                  </td>
+                                );
+                              })}
+                            </tr>
+                          );
+                        }
 
                         return (
                           <tr 
@@ -1282,23 +1520,49 @@ export default function ProductPricing() {
                   <table className="admin-quote-data-table customer-quote-table">
                     <thead>
                       <tr>
-                        <th style={{ width: "45px", textAlign: "center" }}>STT</th>
-                        <th style={{ width: "95px", textAlign: "center" }}>Mã SP</th>
-                        {quoteTableItems.some((item) => item.image || item.imageUrl) && (
-                          <th style={{ width: "75px", textAlign: "center" }}>Hình ảnh</th>
+                        {priceQuote?.customColumns && priceQuote.customColumns.length > 0 ? (
+                          priceQuote.customColumns.map((col, cIdx) => {
+                            const isImg = isImageCol(col);
+                            const isStt = col.key === "stt" || col.id === "col_1" || col.label?.toLowerCase() === "stt";
+                            const isCode = col.key === "code" || col.id === "col_2" || col.label?.toLowerCase().includes("mã");
+                            const isPrice = col.key?.includes("price") || col.label?.toLowerCase().includes("giá") || col.label?.toLowerCase().includes("đơn giá");
+                            const colWidth = col.width || (isStt ? "50px" : isCode ? "88px" : isImg ? "90px" : "130px");
+
+                            return (
+                              <th
+                                key={col.id || cIdx}
+                                style={{
+                                  width: colWidth,
+                                  minWidth: isStt ? "45px" : isCode ? "75px" : isImg ? "80px" : "110px",
+                                  textAlign: isStt || isCode || isImg ? "center" : isPrice ? "center" : "left"
+                                }}
+                                className={isPrice ? "price-head highlight-head" : ""}
+                              >
+                                {col.label}
+                              </th>
+                            );
+                          })
+                        ) : (
+                          <>
+                            <th style={{ width: "45px", textAlign: "center" }}>STT</th>
+                            <th style={{ width: "95px", textAlign: "center" }}>Mã SP</th>
+                            {quoteTableItems.some((item) => item.image || item.imageUrl) && (
+                              <th style={{ width: "75px", textAlign: "center" }}>Hình ảnh</th>
+                            )}
+                            <th style={{ minWidth: "280px" }}>Diễn giải (Cấu tạo, độ dày, sơn phủ)</th>
+                            <th style={{ width: "65px", textAlign: "center" }}>ĐVT</th>
+                            <th style={{ minWidth: "160px" }}>Màu sắc</th>
+                            <th className={`price-head ${activeAreaFilter === "over8" ? "highlight-head" : ""}`} style={{ width: "135px", textAlign: "center" }}>
+                              Đơn giá (&gt; 8m²)
+                            </th>
+                            <th className={`price-head ${activeAreaFilter === "from6to8" ? "highlight-head" : ""}`} style={{ width: "135px", textAlign: "center" }}>
+                              Đơn giá (6 - &lt; 8m²)
+                            </th>
+                            <th className={`price-head ${activeAreaFilter === "from4to6" ? "highlight-head" : ""}`} style={{ width: "135px", textAlign: "center" }}>
+                              Đơn giá (4 - &lt; 6m²)
+                            </th>
+                          </>
                         )}
-                        <th style={{ minWidth: "280px" }}>Diễn giải (Cấu tạo, độ dày, sơn phủ)</th>
-                        <th style={{ width: "65px", textAlign: "center" }}>ĐVT</th>
-                        <th style={{ minWidth: "160px" }}>Màu sắc</th>
-                        <th className={`price-head ${activeAreaFilter === "over8" ? "highlight-head" : ""}`} style={{ width: "135px", textAlign: "center" }}>
-                          Đơn giá (&gt; 8m²)
-                        </th>
-                        <th className={`price-head ${activeAreaFilter === "from6to8" ? "highlight-head" : ""}`} style={{ width: "135px", textAlign: "center" }}>
-                          Đơn giá (6 - &lt; 8m²)
-                        </th>
-                        <th className={`price-head ${activeAreaFilter === "from4to6" ? "highlight-head" : ""}`} style={{ width: "135px", textAlign: "center" }}>
-                          Đơn giá (4 - &lt; 6m²)
-                        </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -1308,6 +1572,94 @@ export default function ProductPricing() {
                           (product.code.toUpperCase() === row?.code?.toUpperCase() || 
                            row?.code?.toUpperCase()?.includes(product.code.toUpperCase()));
                         const hasImg = Boolean(row.image || row.imageUrl);
+
+                        if (priceQuote?.customColumns && priceQuote.customColumns.length > 0) {
+                          return (
+                            <tr key={rIdx} className={isCurrentProduct ? "highlight-current-row" : ""}>
+                              {priceQuote.customColumns.map((col, cIdx) => {
+                                const isImg = isImageCol(col);
+                                const isStt = col.key === "stt" || col.id === "col_1" || col.label?.toLowerCase() === "stt";
+                                const isCode = col.key === "code" || col.id === "col_2" || col.label?.toLowerCase().includes("mã");
+                                const isPrice = col.key?.includes("price") || col.label?.toLowerCase().includes("giá") || col.label?.toLowerCase().includes("đơn giá");
+                                const isUnit = col.key === "unit" || col.id === "col_4" || col.label?.toLowerCase().includes("đvt");
+
+                                let cellVal = "";
+                                if (row.rawGridCells && row.rawGridCells[col.id] !== undefined) {
+                                  cellVal = row.rawGridCells[col.id];
+                                } else if (row[col.id] !== undefined) {
+                                  cellVal = row[col.id];
+                                } else if (col.key && row[col.key] !== undefined) {
+                                  cellVal = row[col.key];
+                                } else if (isStt) {
+                                  cellVal = row.stt || rIdx + 1;
+                                } else if (isCode) {
+                                  cellVal = row.code || "";
+                                } else if (isImg) {
+                                  cellVal = row.image || row.imageUrl || "";
+                                } else if (isUnit) {
+                                  cellVal = row.unit || "m2";
+                                } else if (isPrice) {
+                                  cellVal = row.priceOver8 || row.price || "Liên hệ";
+                                }
+
+                                if (isImg) {
+                                  return (
+                                    <td key={col.id || cIdx} className="text-center">
+                                      {cellVal ? (
+                                        <img
+                                          src={cellVal}
+                                          alt={`SP ${rIdx + 1}`}
+                                          className="tech-table-thumb"
+                                          onError={(e) => { e.target.style.display = "none"; }}
+                                        />
+                                      ) : (
+                                        <span style={{ color: "#94a3b8" }}>—</span>
+                                      )}
+                                    </td>
+                                  );
+                                }
+
+                                if (isStt) {
+                                  return (
+                                    <td key={col.id || cIdx} className="text-center cell-stt font-bold">
+                                      {cellVal || rIdx + 1}
+                                    </td>
+                                  );
+                                }
+
+                                if (isCode) {
+                                  return (
+                                    <td key={col.id || cIdx}>
+                                      <div className="table-box-view code-box">
+                                        <span className="code-text">{cellVal}</span>
+                                        {isCurrentProduct && <span className="viewing-badge">Đang xem</span>}
+                                      </div>
+                                    </td>
+                                  );
+                                }
+
+                                if (isPrice) {
+                                  const displayStr = cellVal ? (cellVal.includes("đ") || isNaN(Number(cellVal.replace(/[,.]/g, ""))) ? cellVal : `${cellVal} đ`) : "Liên hệ";
+                                  return (
+                                    <td key={col.id || cIdx}>
+                                      <div className="table-box-view price-box highlight-price-box">
+                                        <span className="price-bold-red">{displayStr}</span>
+                                      </div>
+                                    </td>
+                                  );
+                                }
+
+                                return (
+                                  <td key={col.id || cIdx} className={isUnit ? "text-center" : ""}>
+                                    <div className={`table-box-view ${isUnit ? "unit-box" : "desc-box"}`}>
+                                      <div className="desc-box-content">{cellVal}</div>
+                                    </div>
+                                  </td>
+                                );
+                              })}
+                            </tr>
+                          );
+                        }
 
                         return (
                           <tr 

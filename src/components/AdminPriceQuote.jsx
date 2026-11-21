@@ -683,7 +683,12 @@ export default function AdminPriceQuote({ showToast }) {
       articleBelow: newQuoteArticleBelow.trim(),
       image: newQuoteImage || "",
       imageUrl: newQuoteImage || "",
-      customColumns: gridColumns.map((c) => ({ id: c.id, label: c.label })),
+      customColumns: gridColumns.map((c) => ({
+        id: c.id,
+        key: c.key || c.id,
+        label: c.label,
+        width: c.width || "130px"
+      })),
       items: formattedItems,
       addons: [
         { category: "Phụ kiện đi kèm", name: "Bộ phụ kiện chính hãng đồng bộ", price: "Đồng bộ", unit: "bộ" },
@@ -719,6 +724,7 @@ export default function AdminPriceQuote({ showToast }) {
       setSelectedQuoteCode(code);
       setActiveQuote(newQuoteObj);
       localStorage.setItem("boss_admin_price_quotes", JSON.stringify(updatedList));
+      window.dispatchEvent(new Event("priceQuotesUpdated"));
 
       setShowCreateForm(false);
       triggerToast(`🎉 Đã tạo và lưu thành công bảng giá: "${newQuoteName}" (${formattedItems.length} dòng sản phẩm)!`);
@@ -756,6 +762,7 @@ export default function AdminPriceQuote({ showToast }) {
 
     setQuotesList(remaining);
     localStorage.setItem("boss_admin_price_quotes", JSON.stringify(remaining));
+    window.dispatchEvent(new Event("priceQuotesUpdated"));
     const nextActive = remaining[0];
     setSelectedQuoteCode(nextActive.productCode);
     setActiveQuote(JSON.parse(JSON.stringify(nextActive)));
@@ -997,6 +1004,7 @@ export default function AdminPriceQuote({ showToast }) {
       }
       setQuotesList(updatedList);
       localStorage.setItem("boss_admin_price_quotes", JSON.stringify(updatedList));
+      window.dispatchEvent(new Event("priceQuotesUpdated"));
 
       triggerToast(message, true);
     } catch (err) {
