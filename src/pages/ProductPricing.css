@@ -1,27 +1,69 @@
-
 @keyframes pricingHeroIn {
-  0% { opacity: 0; transform: translateY(24px); }
-  100% { opacity: 1; transform: translateY(0); }
+  0% {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes pulseGoldGlow {
-  0%, 100% { box-shadow: 0 4px 16px rgba(245, 189, 32, 0.35); }
-  50% { box-shadow: 0 8px 24px rgba(245, 189, 32, 0.6), 0 0 12px rgba(245, 189, 32, 0.3); }
+
+  0%,
+  100% {
+    box-shadow: 0 4px 16px rgba(245, 189, 32, 0.35);
+  }
+
+  50% {
+    box-shadow: 0 8px 24px rgba(245, 189, 32, 0.6), 0 0 12px rgba(245, 189, 32, 0.3);
+  }
 }
 
 @keyframes pulseRedRing {
-  0%, 100% { box-shadow: 0 4px 14px rgba(227, 6, 19, 0.3); }
-  50% { box-shadow: 0 6px 20px rgba(227, 6, 19, 0.55), 0 0 0 6px rgba(227, 6, 19, 0.2); }
+
+  0%,
+  100% {
+    box-shadow: 0 4px 14px rgba(227, 6, 19, 0.3);
+  }
+
+  50% {
+    box-shadow: 0 6px 20px rgba(227, 6, 19, 0.55), 0 0 0 6px rgba(227, 6, 19, 0.2);
+  }
 }
 
 @keyframes phoneShake {
-  0%, 100% { transform: rotate(0deg); }
-  15% { transform: rotate(-15deg); }
-  30% { transform: rotate(15deg); }
-  45% { transform: rotate(-10deg); }
-  60% { transform: rotate(10deg); }
-  75% { transform: rotate(-4deg); }
-  90% { transform: rotate(4deg); }
+
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+
+  15% {
+    transform: rotate(-15deg);
+  }
+
+  30% {
+    transform: rotate(15deg);
+  }
+
+  45% {
+    transform: rotate(-10deg);
+  }
+
+  60% {
+    transform: rotate(10deg);
+  }
+
+  75% {
+    transform: rotate(-4deg);
+  }
+
+  90% {
+    transform: rotate(4deg);
+  }
 }
 
 /* ================= DEDICATED PRODUCT PRICING PAGE STYLES ================= */
@@ -85,14 +127,14 @@
 
 /* ================= ARTICLE WRAPPER & RENDERED STREAM ================= */
 .pricing-article-wrapper {
-  background: #ffffff;
-  border-radius: 20px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
-  padding: 36px 40px;
+  background: transparent !important;
+  border-radius: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
   display: flex;
   flex-direction: column;
-  gap: 36px;
+  gap: 28px;
 }
 
 .pricing-article-wrapper .article-continuous-header {
@@ -622,10 +664,12 @@
 /* ================================================================= */
 .mobile-pricing-table-container,
 .mobile-pricing-cards-container {
-  display: none; /* Mặc định ẩn trên Desktop */
+  display: none;
+  /* Mặc định ẩn trên Desktop */
 }
 
 @media (max-width: 768px) {
+
   /* Giao diện điện thoại: Cho sản phẩm nằm trực tiếp trên nền trắng, bỏ viền khung / khuôn bao */
   .product-pricing-page {
     background: #ffffff !important;
@@ -1134,7 +1178,8 @@
     line-height: 1.1;
   }
 
-  .mq-std-tag, .mq-small-tag {
+  .mq-std-tag,
+  .mq-small-tag {
     font-size: 8px;
     color: #64748b;
     font-weight: 600;
@@ -1213,19 +1258,14 @@
 .technical-table-container-card {
   background: #ffffff;
   border: 1px solid #cbd5e1;
-  border-radius: 12px;
+  border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
   margin-bottom: 24px;
 }
 
 .table-section-title-bar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 14px 18px;
-  background: #ffffff;
-  border-bottom: 1px solid #e2e8f0;
+  display: none;
 }
 
 .table-title-group {
@@ -2020,11 +2060,11 @@
 
 /* 3. DETAILED PRICING TABLE */
 .pricing-table-section {
-  background: #ffffff;
-  border-radius: 20px;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
-  padding: 32px;
+  background: transparent !important;
+  border-radius: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
 }
 
 .table-responsive-box {
@@ -2720,7 +2760,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .product-not-found-view {
@@ -2809,7 +2851,9 @@
     width: 100%;
   }
 
-  .btn-cta-quote, .btn-cta-hotline-call, .btn-cta-zalo {
+  .btn-cta-quote,
+  .btn-cta-hotline-call,
+  .btn-cta-zalo {
     width: 100%;
     justify-content: center;
   }
@@ -2994,7 +3038,8 @@
     margin-bottom: 8px;
   }
 
-  .price-big, .price-contact-text {
+  .price-big,
+  .price-contact-text {
     font-size: 18px;
     font-weight: 900;
   }
@@ -3134,7 +3179,8 @@
   }
 
   .form-control {
-    font-size: 16px; /* Ngăn chặn iOS Safari tự phóng to khung nhìn */
+    font-size: 16px;
+    /* Ngăn chặn iOS Safari tự phóng to khung nhìn */
     padding: 9px 12px;
   }
 
@@ -3515,29 +3561,45 @@
 }
 
 /* ================= BÀI VIẾT TÙY CHỌN PHÍA TRÊN & PHÍA DƯỚI BẢNG GIÁ ================= */
+.pricing-table-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 20px 0 10px 0;
+}
+
+.pricing-table-header-row .pricing-section-title {
+  margin: 0;
+}
+
 .pricing-custom-article-box {
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 18px 24px;
-  margin: 18px 0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  line-height: 1.7;
-  font-size: 15px;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  margin: 10px 0 18px 0;
+  box-shadow: none;
+  line-height: 1.75;
+  font-size: 15.5px;
   color: #334155;
   transition: all 0.25s ease;
 }
 
 .pricing-custom-article-box.above-quote-article {
-  background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
-  border: 1.5px solid #a7f3d0;
-  border-left: 5px solid #004d32;
-  margin-bottom: 22px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin-bottom: 18px;
+  box-shadow: none;
 }
 
 .pricing-custom-article-box.below-quote-article {
   background: #f8fafc;
-  border: 1.5px solid #e2e8f0;
-  border-left: 5px solid #059669;
+  border: 1px solid #e2e8f0;
+  border-left: 4px solid #004d32;
+  border-radius: 8px;
+  padding: 18px 22px;
   margin-top: 24px;
 }
 
@@ -3687,5 +3749,3 @@
     flex-shrink: 0;
   }
 }
-
-

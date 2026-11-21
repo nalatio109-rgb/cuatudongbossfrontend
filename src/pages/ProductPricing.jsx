@@ -889,9 +889,14 @@ export default function ProductPricing() {
 
             {/* BẢNG BÁO GIÁ CHÍNH */}
             <section className="pricing-table-section">
-              <h2 id="bang-gia-chi-tiet" className="pricing-section-title">
-                {priceQuote?.tableHeading || priceQuote?.title || `Bảng giá ${product?.title || ""} tại Đà Nẵng`}
-              </h2>
+              <div className="pricing-table-header-row">
+                <h2 id="bang-gia-chi-tiet" className="pricing-section-title">
+                  {priceQuote?.tableHeading || priceQuote?.title || `Bảng giá ${product?.title || ""} tại Đà Nẵng`}
+                </h2>
+                <div className="table-scroll-hint-pill">
+                  ↔ Vuốt ngang để xem đầy đủ các cột giá
+                </div>
+              </div>
 
               {/* BÀI VIẾT / GIỚI THIỆU PHÍA TRÊN BẢNG GIÁ (LUÔN ĐỒNG BỘ HIỂN THỊ) */}
               <div className="pricing-custom-article-box above-quote-article">
@@ -903,18 +908,6 @@ export default function ProductPricing() {
 
               {/* BẢNG GIÁ KỸ THUẬT ĐỒNG BỘ 100% VỚI ADMIN */}
               <div className="technical-table-container-card">
-                <div className="table-section-title-bar">
-                  <div className="table-title-group">
-                    <Tag size={18} className="table-title-tag-icon" />
-                    <h3 className="table-title-heading">
-                      {priceQuote?.title || priceQuote?.productTitle || `BẢNG GIÁ ${product?.title?.toUpperCase() || ""} (CẬP NHẬT 2026 TẠI ĐÀ NẴNG)`}
-                    </h3>
-                  </div>
-                  <div className="table-scroll-hint-pill">
-                    ↔ Vuốt ngang để xem đầy đủ các cột giá
-                  </div>
-                </div>
-
                 <div className="admin-table-scroll-wrapper">
                   <table className="admin-quote-data-table customer-quote-table">
                     <thead>
@@ -1269,18 +1262,6 @@ export default function ProductPricing() {
 
               {/* BẢNG GIÁ KỸ THUẬT ĐỒNG BỘ 100% VỚI ADMIN */}
               <div className="technical-table-container-card">
-                <div className="table-section-title-bar">
-                  <div className="table-title-group">
-                    <Tag size={18} className="table-title-tag-icon" />
-                    <h3 className="table-title-heading">
-                      {priceQuote?.title || priceQuote?.productTitle || `BẢNG GIÁ ${product?.title?.toUpperCase() || ""} (CẬP NHẬT 2026 TẠI ĐÀ NẴNG)`}
-                    </h3>
-                  </div>
-                  <div className="table-scroll-hint-pill">
-                    ↔ Vuốt ngang để xem đầy đủ các cột giá
-                  </div>
-                </div>
-
                 <div className="admin-table-scroll-wrapper">
                   <table className="admin-quote-data-table customer-quote-table">
                     <thead>
