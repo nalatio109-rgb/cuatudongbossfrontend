@@ -5,6 +5,7 @@ import {
   DoorClosed, Cpu, Sliders, Zap, Sparkles, User, LogOut, Shield 
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { DEFAULT_PRICE_QUOTES } from "../data/defaultPriceQuotes";
 
 export const FLYOUT_PRODUCT_NAV_DATA = [
   {
@@ -112,6 +113,44 @@ export default function Navbar() {
     }
   });
 
+  // DANH SÁCH BẢNG GIÁ ĐỒNG BỘ 100% VỚI ADMIN
+  const [navPriceQuotes, setNavPriceQuotes] = useState(() => {
+    try {
+      const local = localStorage.getItem("boss_admin_price_quotes");
+      if (local) {
+        const parsed = JSON.parse(local);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {}
+    return DEFAULT_PRICE_QUOTES;
+  });
+
+  const fetchPriceQuotesForNav = async () => {
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL;
+      if (apiUrl) {
+        const res = await fetch(`${apiUrl}/api/price-quotes`);
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+          setNavPriceQuotes(json.data);
+          try {
+            localStorage.setItem("boss_admin_price_quotes", JSON.stringify(json.data));
+          } catch (e) {}
+          return;
+        }
+      }
+      const local = localStorage.getItem("boss_admin_price_quotes");
+      if (local) {
+        const parsed = JSON.parse(local);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setNavPriceQuotes(parsed);
+        }
+      }
+    } catch (e) {
+      console.log("Navbar price quotes fetch error:", e);
+    }
+  };
+
   const fetchProductsForNav = async () => {
     try {
       const apiUrl = import.meta.env.VITE_API_URL;
@@ -132,6 +171,7 @@ export default function Navbar() {
 
   useEffect(() => {
     fetchProductsForNav();
+    fetchPriceQuotesForNav();
 
     const handleProductsUpdated = (e) => {
       if (e?.detail && Array.isArray(e.detail)) {
@@ -141,11 +181,17 @@ export default function Navbar() {
       }
     };
 
+    const handlePriceQuotesUpdated = () => {
+      fetchPriceQuotesForNav();
+    };
+
     window.addEventListener("boss_products_updated", handleProductsUpdated);
-    window.addEventListener("storage", handleProductsUpdated);
+    window.addEventListener("priceQuotesUpdated", handlePriceQuotesUpdated);
+    window.addEventListener("storage", handlePriceQuotesUpdated);
     return () => {
       window.removeEventListener("boss_products_updated", handleProductsUpdated);
-      window.removeEventListener("storage", handleProductsUpdated);
+      window.removeEventListener("priceQuotesUpdated", handlePriceQuotesUpdated);
+      window.removeEventListener("storage", handlePriceQuotesUpdated);
     };
   }, []);
 
@@ -616,43 +662,51 @@ export default function Navbar() {
               </button>
             </div>
 
-            {/* DESKTOP DROPDOWN CHO BẢNG GIÁ */}
+            {/* DESKTOP DROPDOWN CHO BẢNG GIÁ ĐỒNG BỘ 100% VỚI ADMIN */}
             <div className={`desktop-simple-dropdown-menu ${pricingOpen ? "show" : ""}`}>
               <div className="desktop-dropdown-header-title">BÁO GIÁ CÁC DÒNG CỬA</div>
               <div className="desktop-dropdown-list">
-                {MOBILE_PRICING_MENU_ITEMS.map((item, idx) => (
-                  <Link
-                    key={idx}
-                    to={item.to || `/bang-gia?q=${encodeURIComponent(item.query)}`}
-                    onClick={() => {
-                      setPricingOpen(false);
-                      setMenu(false);
-                    }}
-                    className="desktop-dropdown-item-link"
-                  >
-                    <span>{item.name}</span>
-                    <ChevronRight size={13} className="item-arrow" />
-                  </Link>
-                ))}
+                {navPriceQuotes.map((item, idx) => {
+                  const title = item.productTitle || item.title || item.name || "Bảng giá";
+                  const code = item.productCode || item.code || `quote-${idx}`;
+                  return (
+                    <Link
+                      key={code || idx}
+                      to={`/bang-gia/${code}`}
+                      onClick={() => {
+                        setPricingOpen(false);
+                        setMenu(false);
+                      }}
+                      className="desktop-dropdown-item-link"
+                    >
+                      <span>{title}</span>
+                      <ChevronRight size={13} className="item-arrow" />
+                    </Link>
+                  );
+                })}
               </div>
             </div>
 
-            {/* Danh sách bảng giá xổ xuống trên điện thoại (đầy đủ 10 dòng cửa theo yêu cầu) */}
+            {/* Danh sách bảng giá xổ xuống trên điện thoại đồng bộ với Admin */}
             <div className={`mobile-sub-accordion mobile-pricing-accordion ${mobilePricingExpanded ? "show" : ""}`}>
               <div className="mobile-pricing-list">
-                {MOBILE_PRICING_MENU_ITEMS.map((item, idx) => (
-                  <Link
-                    key={idx}
-                    to={item.to || `/bang-gia?q=${encodeURIComponent(item.query)}`}
-                    onClick={() => {
-                      setMenu(false);
-                      setMobilePricingExpanded(false);
-                    }}
-                    className="mobile-pricing-item-link"
-                  >
-                    <span>{item.name}</span>
-                  </Link>
-                ))}
+                {navPriceQuotes.map((item, idx) => {
+                  const title = item.productTitle || item.title || item.name || "Bảng giá";
+                  const code = item.productCode || item.code || `quote-${idx}`;
+                  return (
+                    <Link
+                      key={code || idx}
+                      to={`/bang-gia/${code}`}
+                      onClick={() => {
+                        setMenu(false);
+                        setMobilePricingExpanded(false);
+                      }}
+                      className="mobile-pricing-item-link"
+                    >
+                      <span>{title}</span>
+                    </Link>
+                  );
+                })}
               </div>
             </div>
           </div>

@@ -17,6 +17,7 @@ import {
   RotateCcw
 } from "lucide-react";
 import { PRICING_ARTICLES } from "../data/pricingArticlesData";
+import { DEFAULT_PRICE_QUOTES } from "../data/defaultPriceQuotes";
 import { matchKeywords } from "../utils/searchHelper";
 import RevealOnScroll from "../components/RevealOnScroll";
 import "./Pricing.css";
@@ -39,16 +40,105 @@ export default function Pricing() {
     window.scrollTo(0, 0);
   }, []);
 
+  const [adminPriceQuotes, setAdminPriceQuotes] = useState(() => {
+    try {
+      const local = localStorage.getItem("boss_admin_price_quotes");
+      if (local) {
+        const parsed = JSON.parse(local);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {}
+    return DEFAULT_PRICE_QUOTES;
+  });
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchQuotes = async () => {
+      if (import.meta.env.VITE_API_URL) {
+        try {
+          const res = await fetch(`${import.meta.env.VITE_API_URL}/api/price-quotes`);
+          const json = await res.json();
+          if (json.success && Array.isArray(json.data) && json.data.length > 0 && isMounted) {
+            setAdminPriceQuotes(json.data);
+            try {
+              localStorage.setItem("boss_admin_price_quotes", JSON.stringify(json.data));
+            } catch (e) {}
+            return;
+          }
+        } catch (e) {}
+      }
+      try {
+        const local = localStorage.getItem("boss_admin_price_quotes");
+        if (local && isMounted) {
+          const parsed = JSON.parse(local);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setAdminPriceQuotes(parsed);
+          }
+        }
+      } catch (e) {}
+    };
+
+    fetchQuotes();
+
+    const handleUpdate = () => {
+      try {
+        const local = localStorage.getItem("boss_admin_price_quotes");
+        if (local) {
+          const parsed = JSON.parse(local);
+          if (Array.isArray(parsed) && parsed.length > 0) setAdminPriceQuotes(parsed);
+        }
+      } catch (e) {}
+    };
+
+    window.addEventListener("priceQuotesUpdated", handleUpdate);
+    window.addEventListener("storage", handleUpdate);
+    return () => {
+      isMounted = false;
+      window.removeEventListener("priceQuotesUpdated", handleUpdate);
+      window.removeEventListener("storage", handleUpdate);
+    };
+  }, []);
+
+  const allArticlesList = useMemo(() => {
+    if (adminPriceQuotes && adminPriceQuotes.length > 0) {
+      return adminPriceQuotes.map((q) => {
+        const title = q.productTitle || q.title || "Bảng giá cửa cuốn BossDoor 2026";
+        const excerpt =
+          q.articleAbove ||
+          q.articleBelow ||
+          "Bảng báo giá kỹ thuật chi tiết phân tầng theo diện tích thi công tại Đà Nẵng.";
+        const thumb =
+          q.image ||
+          q.items?.find((it) => it.image || it.imageUrl)?.image ||
+          q.items?.find((it) => it.image || it.imageUrl)?.imageUrl ||
+          "/project_1.png";
+
+        return {
+          id: q.productCode,
+          title: title,
+          shortTitle: title,
+          excerpt: excerpt,
+          brandCode: q.productCode,
+          category: q.category === "cuakeo" ? "Cửa kéo" : "Cửa cuốn",
+          publishDate: q.effectiveDate || "Năm 2026",
+          image: thumb,
+          path: `/bang-gia/${q.productCode}`
+        };
+      });
+    }
+    return PRICING_ARTICLES;
+  }, [adminPriceQuotes]);
+
   // Lọc danh sách bài viết theo từ khóa tìm kiếm
   const filteredArticles = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
-    if (!q) return PRICING_ARTICLES;
+    if (!q) return allArticlesList;
 
-    return PRICING_ARTICLES.filter((article) => {
+    return allArticlesList.filter((article) => {
       const combinedText = `${article.title} ${article.shortTitle} ${article.excerpt} ${article.brandCode} ${article.category}`;
       return matchKeywords(combinedText, q);
     });
-  }, [searchQuery]);
+  }, [searchQuery, allArticlesList]);
 
   return (
     <div className="pricing-hub-page site-293-style">

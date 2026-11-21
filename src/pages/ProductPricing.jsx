@@ -228,6 +228,34 @@ export default function ProductPricing() {
 
   const [product, setProduct] = useState(() => {
     if (location.state?.product) return location.state.product;
+    // Check if effectiveId matches a price quote in localStorage or DEFAULT_PRICE_QUOTES
+    try {
+      const local = localStorage.getItem("boss_admin_price_quotes");
+      const quotes = local ? JSON.parse(local) : DEFAULT_PRICE_QUOTES;
+      const foundQuote = quotes.find(
+        (q) =>
+          q.productCode?.toLowerCase() === (effectiveId || "").toLowerCase() ||
+          (q.items && q.items.some((it) => it.code?.toLowerCase() === (effectiveId || "").toLowerCase()))
+      );
+      if (foundQuote) {
+        return {
+          id: foundQuote.productCode,
+          code: foundQuote.productCode,
+          title: foundQuote.productTitle || foundQuote.title || "Bảng giá cửa cuốn BossDoor",
+          category: foundQuote.category || "cuacuon",
+          price: foundQuote.items?.[0] ? `${foundQuote.items[0].priceOver8}đ/m²` : "Liên hệ",
+          image: foundQuote.image || "/project_1.png",
+          description: foundQuote.articleAbove || "Bảng báo giá chi tiết BossDoor Đà Nẵng",
+          specs: [
+            "Hợp kim nhôm 6063T5 cao cấp",
+            "Sơn tĩnh điện AkzoNobel CHLB Đức bảo hành 10 năm",
+            "Khóa cơ an toàn chống cạy phá độc quyền",
+            "Vận hành êm ái triệt tiêu tiếng ồn"
+          ]
+        };
+      }
+    } catch (e) {}
+
     if (matchedPricingArticle) {
       const brandQuote = BRAND_PRICE_QUOTES[matchedPricingArticle.brandCode];
       return {
@@ -252,7 +280,16 @@ export default function ProductPricing() {
   const [loading, setLoading] = useState(() => {
     if (location.state?.product) return false;
     if (matchedPricingArticle) return false;
-    return true;
+    try {
+      const local = localStorage.getItem("boss_admin_price_quotes");
+      if (local) {
+        const list = JSON.parse(local);
+        if (list.some((q) => q.productCode?.toLowerCase() === (effectiveId || "").toLowerCase())) {
+          return false;
+        }
+      }
+    } catch (e) {}
+    return false;
   });
   const [allProducts, setAllProducts] = useState([]);
   const [tocOpen, setTocOpen] = useState(true);
@@ -276,6 +313,19 @@ export default function ProductPricing() {
   }, []);
 
   const [priceQuote, setPriceQuote] = useState(() => {
+    try {
+      const local = localStorage.getItem("boss_admin_price_quotes");
+      if (local) {
+        const list = JSON.parse(local);
+        const match = list.find(
+          (q) =>
+            q.productCode?.toLowerCase() === (effectiveId || "").toLowerCase() ||
+            (q.items && q.items.some((it) => it.code?.toLowerCase() === (effectiveId || "").toLowerCase()))
+        );
+        if (match) return match;
+      }
+    } catch (e) {}
+
     if (matchedPricingArticle?.brandCode && BRAND_PRICE_QUOTES[matchedPricingArticle.brandCode]) {
       return BRAND_PRICE_QUOTES[matchedPricingArticle.brandCode];
     }
@@ -620,6 +670,37 @@ export default function ProductPricing() {
             "Vận hành êm ái triệt tiêu tiếng ồn"
           ]
         };
+      }
+
+      // 4. Fallback to price quote from localStorage / DEFAULT_PRICE_QUOTES
+      if (!matched) {
+        try {
+          const local = localStorage.getItem("boss_admin_price_quotes");
+          const quotesList = local ? JSON.parse(local) : DEFAULT_PRICE_QUOTES;
+          const found = quotesList.find(
+            (q) =>
+              q.productCode?.toLowerCase() === searchKey ||
+              (q.items && q.items.some((it) => it.code?.toLowerCase() === searchKey))
+          );
+          if (found) {
+            matched = {
+              id: found.productCode,
+              code: found.productCode,
+              title: found.productTitle || found.title || "Bảng giá cửa cuốn BossDoor",
+              category: found.category || "cuacuon",
+              price: found.items?.[0] ? `${found.items[0].priceOver8}đ/m²` : "Liên hệ",
+              image: found.image || "/project_1.png",
+              description: found.articleAbove || "Bảng báo giá chi tiết BossDoor Đà Nẵng",
+              specs: [
+                "Hợp kim nhôm 6063T5 cao cấp",
+                "Sơn tĩnh điện AkzoNobel CHLB Đức bảo hành 10 năm",
+                "Khóa cơ an toàn chống cạy phá độc quyền",
+                "Vận hành êm ái triệt tiêu tiếng ồn"
+              ]
+            };
+            setPriceQuote(found);
+          }
+        } catch (e) {}
       }
 
       if (matched && isMounted) {
