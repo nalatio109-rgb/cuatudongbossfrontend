@@ -1547,39 +1547,6 @@ export default function AdminPriceQuote({ showToast }) {
       {/* ========================================================================= */}
       {activeQuote && (
         <div className="quote-editor-card">
-          {/* 0. SOẠN THẢO BÀI VIẾT TRÊN & DƯỚI BẢNG GIÁ */}
-          <div className="editor-section-box">
-            <h3 className="section-title">
-              <FileText size={18} /> Bài Viết Sản Phẩm (Phía Trên &amp; Phía Dưới Bảng Giá)
-            </h3>
-            <div className="quote-article-inputs-group">
-              <div className="form-field full-width">
-                <label className="article-field-label">
-                  <span className="label-badge-above">Phía trên bảng giá</span> Đoạn văn bản / Bài viết giới thiệu mở đầu:
-                </label>
-                <textarea
-                  rows={3}
-                  className="quote-article-textarea"
-                  value={activeQuote.articleAbove || ""}
-                  onChange={(e) => handleMetaChange("articleAbove", e.target.value)}
-                  placeholder="Nhập bài viết / giới thiệu mở đầu hiển thị ngay phía trên bảng giá..."
-                />
-              </div>
-              <div className="form-field full-width">
-                <label className="article-field-label">
-                  <span className="label-badge-below">Phía dưới bảng giá</span> Bài viết chi tiết &amp; Tư vấn kỹ thuật:
-                </label>
-                <textarea
-                  rows={4}
-                  className="quote-article-textarea"
-                  value={activeQuote.articleBelow || ""}
-                  onChange={(e) => handleMetaChange("articleBelow", e.target.value)}
-                  placeholder="Nhập bài viết chi tiết, hướng dẫn kỹ thuật, tư vấn báo giá hiển thị phía dưới bảng giá..."
-                />
-              </div>
-            </div>
-          </div>
-
           {/* 1. LỰA CHỌN THÊM (ADD-ONS) */}
           <div className="editor-section-box">
             <div className="section-header-row">
