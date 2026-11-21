@@ -46,14 +46,14 @@ export const isImageCol = (col) => {
 
 // 8 Cột mặc định tiêu chuẩn bao gồm Cột Hình Ảnh theo đúng thực tế ngành cửa tại Đà Nẵng
 const DEFAULT_GRID_COLUMNS = [
-  { id: "col_1", key: "stt", label: "STT", width: "55px" },
-  { id: "col_2", key: "code", label: "Mã SP", width: "105px" },
-  { id: "col_img", key: "image", label: "Hình ảnh", width: "165px" },
+  { id: "col_1", key: "stt", label: "STT", width: "50px" },
+  { id: "col_2", key: "code", label: "Mã SP", width: "95px" },
+  { id: "col_img", key: "image", label: "Hình ảnh", width: "150px" },
   { id: "col_3", key: "name", label: "Tên & Quy cách kỹ thuật", width: "240px" },
-  { id: "col_4", key: "unit", label: "ĐVT", width: "65px" },
-  { id: "col_5", key: "colors", label: "Màu sắc", width: "140px" },
-  { id: "col_6", key: "priceOver8", label: "Đơn giá (> 8m²)", width: "130px" },
-  { id: "col_7", key: "price6to8", label: "Đơn giá (≤ 8m²)", width: "130px" }
+  { id: "col_4", key: "unit", label: "ĐVT", width: "60px" },
+  { id: "col_5", key: "colors", label: "Màu sắc", width: "135px" },
+  { id: "col_6", key: "priceOver8", label: "Đơn giá (> 8m²)", width: "125px" },
+  { id: "col_7", key: "price6to8", label: "Đơn giá (≤ 8m²)", width: "125px" }
 ];
 
 const DEFAULT_7_COLUMNS = DEFAULT_GRID_COLUMNS;
@@ -1224,55 +1224,58 @@ export default function AdminPriceQuote({ showToast }) {
                 <table className="admin-quote-data-table spreadsheet-table">
                   <thead>
                     <tr>
-                      <th style={{ width: "42px", textAlign: "center" }}>#</th>
-                      {gridColumns.map((col, cIdx) => (
-                        <th
-                          key={col.id}
-                          style={{
-                            width: col.width || "130px",
-                            minWidth: "70px",
-                            position: "relative"
-                          }}
-                        >
-                          <div className="col-header-interactive">
-                            <input
-                              type="text"
-                              value={col.label}
-                              onChange={(e) => handleUpdateColLabel(cIdx, e.target.value)}
-                              className="col-label-input"
-                              title="Bấm để đổi tên cột"
-                            />
-                            <div className="col-header-btns">
-                              <button
-                                type="button"
-                                className="btn-insert-col-plus"
-                                onClick={() => handleInsertGridCol(cIdx)}
-                                title={`Chèn thêm 1 cột mới ngay sau cột "${col.label}"`}
-                              >
-                                <Plus size={11} />
-                              </button>
-                              {gridColumns.length > 2 && (
+                      <th style={{ width: "36px", textAlign: "center", padding: "4px" }}>#</th>
+                      {gridColumns.map((col, cIdx) => {
+                        const isSttCol = col.key === "stt" || col.id === "col_1";
+                        return (
+                          <th
+                            key={col.id}
+                            style={{
+                              width: col.width || "120px",
+                              minWidth: isSttCol ? "48px" : "55px",
+                              position: "relative"
+                            }}
+                          >
+                            <div className="col-header-interactive">
+                              <input
+                                type="text"
+                                value={col.label}
+                                onChange={(e) => handleUpdateColLabel(cIdx, e.target.value)}
+                                className="col-label-input"
+                                title="Bấm để đổi tên cột"
+                              />
+                              <div className="col-header-btns">
                                 <button
                                   type="button"
-                                  className="btn-del-col-x"
-                                  onClick={() => handleDeleteGridCol(cIdx)}
-                                  title={`Xóa cột "${col.label}"`}
+                                  className="btn-insert-col-plus"
+                                  onClick={() => handleInsertGridCol(cIdx)}
+                                  title={`Chèn thêm 1 cột mới ngay sau cột "${col.label}"`}
                                 >
-                                  ✕
+                                  <Plus size={9} />
                                 </button>
-                              )}
+                                {!isSttCol && gridColumns.length > 2 && (
+                                  <button
+                                    type="button"
+                                    className="btn-del-col-x"
+                                    onClick={() => handleDeleteGridCol(cIdx)}
+                                    title={`Xóa cột "${col.label}"`}
+                                  >
+                                    ✕
+                                  </button>
+                                )}
+                              </div>
                             </div>
-                          </div>
 
-                          {/* THANH KÉO CO GIÃN ĐỘ RỘNG CỘT (COLUMN RESIZER) */}
-                          <div
-                            className={`col-resize-handle ${resizingColIndex === cIdx ? "active" : ""}`}
-                            onMouseDown={(e) => handleResizeStart(e, cIdx)}
-                            title="Bấm giữ và kéo chuột sang trái/phải để co giãn to nhỏ cột này"
-                          />
-                        </th>
-                      ))}
-                      <th style={{ width: "95px", textAlign: "center" }}>Thao tác</th>
+                            {/* THANH KÉO CO GIÃN ĐỘ RỘNG CỘT (COLUMN RESIZER) */}
+                            <div
+                              className={`col-resize-handle ${resizingColIndex === cIdx ? "active" : ""}`}
+                              onMouseDown={(e) => handleResizeStart(e, cIdx)}
+                              title="Bấm giữ và kéo chuột sang trái/phải để co giãn to nhỏ cột này"
+                            />
+                          </th>
+                        );
+                      })}
+                      <th style={{ width: "88px", textAlign: "center", padding: "4px" }}>Thao tác</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1283,9 +1286,10 @@ export default function AdminPriceQuote({ showToast }) {
                         </td>
                         {gridColumns.map((col) => {
                           const isImage = isImageCol(col);
-                          const isCode = col.key === "code" || col.id === "col_2";
-                          const isNameOrDesc = col.key === "name" || col.id === "col_3";
-                          const isPrice = col.key?.includes("price") || col.id === "col_6" || col.id === "col_7";
+                          const isStt = col.key === "stt" || col.id === "col_1" || col.label?.toLowerCase() === "stt";
+                          const isCode = col.key === "code" || col.id === "col_2" || col.label?.toLowerCase().includes("mã");
+                          const isNameOrDesc = col.key === "name" || col.id === "col_3" || col.label?.toLowerCase().includes("tên");
+                          const isPrice = col.key?.includes("price") || col.id === "col_6" || col.id === "col_7" || col.label?.toLowerCase().includes("giá");
                           const cellVal = row[col.id] || "";
 
                           if (isImage) {
@@ -1322,7 +1326,7 @@ export default function AdminPriceQuote({ showToast }) {
                                       title="Dán link ảnh trực tiếp (https://... hoặc /ảnh.jpg)"
                                     />
                                     <label className="cell-img-upload-btn" title="Tải ảnh từ máy local (PNG, JPG, WEBP)">
-                                      <Upload size={12} />
+                                      <Upload size={11} />
                                       <span className="upload-btn-text">Tải</span>
                                       <input
                                         type="file"
@@ -1341,7 +1345,7 @@ export default function AdminPriceQuote({ showToast }) {
                             <td key={`${col.id}-${rIdx}`} className="spreadsheet-cell">
                               {isNameOrDesc ? (
                                 <textarea
-                                  rows={2}
+                                  rows={1}
                                   className="table-textarea cell-content"
                                   value={cellVal}
                                   onChange={(e) => handleGridCellChange(rIdx, col.id, e.target.value)}
@@ -1350,10 +1354,10 @@ export default function AdminPriceQuote({ showToast }) {
                               ) : (
                                 <input
                                   type="text"
-                                  className={`table-input cell-content ${isCode ? "bold-code" : ""} ${isPrice ? "price-input" : ""}`}
+                                  className={`table-input cell-content ${isStt ? "cell-stt-input" : ""} ${isCode ? "bold-code cell-code-input" : ""} ${isPrice ? "price-input" : ""}`}
                                   value={cellVal}
                                   onChange={(e) => handleGridCellChange(rIdx, col.id, e.target.value)}
-                                  placeholder={isPrice ? "1,200,000" : isCode ? "Mã SP" : "..."}
+                                  placeholder={isPrice ? "1,200,000" : isCode ? "Mã SP" : isStt ? String(rIdx + 1) : "..."}
                                 />
                               )}
                             </td>
