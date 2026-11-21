@@ -864,7 +864,19 @@ export default function ProductPricing() {
                       return (
                         <tr key={rIdx}>
                           <td className="cell-product-name">
-                            <strong className="pname-strong">{row.name || `Cửa ${row.code}`}</strong>
+                            <div className="product-name-with-thumb">
+                              {(row.image || row.imageUrl) && (
+                                <img
+                                  src={row.image || row.imageUrl}
+                                  alt={row.name || row.code}
+                                  className="pricing-table-item-thumb"
+                                  onError={(e) => {
+                                    e.target.style.display = "none";
+                                  }}
+                                />
+                              )}
+                              <strong className="pname-strong">{row.name || `Cửa ${row.code}`}</strong>
+                            </div>
                           </td>
                           <td className="cell-product-specs">
                             {specLines.length > 0 ? (
@@ -903,6 +915,9 @@ export default function ProductPricing() {
                       <tr>
                         <th style={{ width: "45px", textAlign: "center" }}>STT</th>
                         <th style={{ width: "95px", textAlign: "center" }}>Mã SP</th>
+                        {quoteTableItems.some((item) => item.image || item.imageUrl) && (
+                          <th style={{ width: "75px", textAlign: "center" }}>Hình ảnh</th>
+                        )}
                         <th style={{ minWidth: "280px" }}>Diễn giải (Cấu tạo, độ dày, sơn phủ)</th>
                         <th style={{ width: "65px", textAlign: "center" }}>ĐVT</th>
                         <th style={{ minWidth: "160px" }}>Màu sắc</th>
@@ -923,6 +938,7 @@ export default function ProductPricing() {
                           product?.code && 
                           (product.code.toUpperCase() === row?.code?.toUpperCase() || 
                            row?.code?.toUpperCase()?.includes(product.code.toUpperCase()));
+                        const hasImg = Boolean(row.image || row.imageUrl);
 
                         return (
                           <tr 
@@ -940,6 +956,22 @@ export default function ProductPricing() {
                                 )}
                               </div>
                             </td>
+                            {quoteTableItems.some((item) => item.image || item.imageUrl) && (
+                              <td className="text-center">
+                                {hasImg ? (
+                                  <img
+                                    src={row.image || row.imageUrl}
+                                    alt={row.name || row.code}
+                                    className="tech-table-thumb"
+                                    onError={(e) => {
+                                      e.target.style.display = "none";
+                                    }}
+                                  />
+                                ) : (
+                                  <span style={{ color: "#94a3b8" }}>—</span>
+                                )}
+                              </td>
+                            )}
                             <td>
                               <div className="table-box-view desc-box">
                                 {row.name && !row.description?.includes(row.name) && (
@@ -1227,6 +1259,9 @@ export default function ProductPricing() {
                       <tr>
                         <th style={{ width: "45px", textAlign: "center" }}>STT</th>
                         <th style={{ width: "95px", textAlign: "center" }}>Mã SP</th>
+                        {quoteTableItems.some((item) => item.image || item.imageUrl) && (
+                          <th style={{ width: "75px", textAlign: "center" }}>Hình ảnh</th>
+                        )}
                         <th style={{ minWidth: "280px" }}>Diễn giải (Cấu tạo, độ dày, sơn phủ)</th>
                         <th style={{ width: "65px", textAlign: "center" }}>ĐVT</th>
                         <th style={{ minWidth: "160px" }}>Màu sắc</th>
@@ -1247,6 +1282,7 @@ export default function ProductPricing() {
                           product?.code && 
                           (product.code.toUpperCase() === row?.code?.toUpperCase() || 
                            row?.code?.toUpperCase()?.includes(product.code.toUpperCase()));
+                        const hasImg = Boolean(row.image || row.imageUrl);
 
                         return (
                           <tr 
@@ -1264,6 +1300,22 @@ export default function ProductPricing() {
                                 )}
                               </div>
                             </td>
+                            {quoteTableItems.some((item) => item.image || item.imageUrl) && (
+                              <td className="text-center">
+                                {hasImg ? (
+                                  <img
+                                    src={row.image || row.imageUrl}
+                                    alt={row.name || row.code}
+                                    className="tech-table-thumb"
+                                    onError={(e) => {
+                                      e.target.style.display = "none";
+                                    }}
+                                  />
+                                ) : (
+                                  <span style={{ color: "#94a3b8" }}>—</span>
+                                )}
+                              </td>
+                            )}
                             <td>
                               <div className="table-box-view desc-box">
                                 {row.name && !row.description?.includes(row.name) && (

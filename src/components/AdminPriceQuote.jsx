@@ -26,22 +26,44 @@ import {
 import { DEFAULT_PRICE_QUOTES } from "../data/defaultPriceQuotes";
 import "./AdminPriceQuote.css";
 
-// 7 Cột mặc định tiêu chuẩn theo đúng thực tế ngành cửa tại Đà Nẵng
-const DEFAULT_7_COLUMNS = [
-  { id: "col_1", key: "stt", label: "STT", width: "60px" },
-  { id: "col_2", key: "code", label: "Mã SP", width: "110px" },
-  { id: "col_3", key: "name", label: "Tên & Quy cách kỹ thuật", width: "260px" },
-  { id: "col_4", key: "unit", label: "ĐVT", width: "75px" },
-  { id: "col_5", key: "colors", label: "Màu sắc", width: "160px" },
-  { id: "col_6", key: "priceOver8", label: "Đơn giá (> 8m²)", width: "140px" },
-  { id: "col_7", key: "price6to8", label: "Đơn giá (≤ 8m²)", width: "140px" }
+// Nhận diện cột hình ảnh (dựa vào key, id hoặc tiêu đề cột có chữ ảnh/hình/image)
+export const isImageCol = (col) => {
+  if (!col) return false;
+  const k = (col.key || "").toLowerCase();
+  const id = (col.id || "").toLowerCase();
+  const l = (col.label || "").toLowerCase();
+  return (
+    k === "image" ||
+    k === "img" ||
+    id.includes("img") ||
+    id.includes("image") ||
+    l.includes("ảnh") ||
+    l.includes("hình") ||
+    l.includes("image") ||
+    l.includes("photo")
+  );
+};
+
+// 8 Cột mặc định tiêu chuẩn bao gồm Cột Hình Ảnh theo đúng thực tế ngành cửa tại Đà Nẵng
+const DEFAULT_GRID_COLUMNS = [
+  { id: "col_1", key: "stt", label: "STT", width: "55px" },
+  { id: "col_2", key: "code", label: "Mã SP", width: "105px" },
+  { id: "col_img", key: "image", label: "Hình ảnh", width: "165px" },
+  { id: "col_3", key: "name", label: "Tên & Quy cách kỹ thuật", width: "240px" },
+  { id: "col_4", key: "unit", label: "ĐVT", width: "65px" },
+  { id: "col_5", key: "colors", label: "Màu sắc", width: "140px" },
+  { id: "col_6", key: "priceOver8", label: "Đơn giá (> 8m²)", width: "130px" },
+  { id: "col_7", key: "price6to8", label: "Đơn giá (≤ 8m²)", width: "130px" }
 ];
 
-// Khởi tạo sẵn 7 hàng mẫu chuyên nghiệp đúng 7 cột x 7 hàng
+const DEFAULT_7_COLUMNS = DEFAULT_GRID_COLUMNS;
+
+// Khởi tạo sẵn 7 hàng mẫu chuyên nghiệp đúng chuẩn có cột hình ảnh
 const createDefault7Rows = () => [
   {
     col_1: "1",
     col_2: "BD-01",
+    col_img: "/project_1.png",
     col_3: "Cửa cuốn khe thoáng BossDoor tiêu chuẩn, nhôm 6063-T5",
     col_4: "m2",
     col_5: "Ghi sáng, Vàng kem",
@@ -51,6 +73,7 @@ const createDefault7Rows = () => [
   {
     col_1: "2",
     col_2: "BD-02",
+    col_img: "",
     col_3: "Cửa cuốn khe thoáng BossDoor chống bão gia cường kép",
     col_4: "m2",
     col_5: "Ghi sáng, Cafe cháy",
@@ -60,6 +83,7 @@ const createDefault7Rows = () => [
   {
     col_1: "3",
     col_2: "BD-03",
+    col_img: "",
     col_3: "Cửa cuốn BossDoor ECO siêu thoáng, giảm chấn 2 chiều",
     col_4: "m2",
     col_5: "Ghi sần, Cà phê",
@@ -69,6 +93,7 @@ const createDefault7Rows = () => [
   {
     col_1: "4",
     col_2: "BD-04",
+    col_img: "",
     col_3: "Cửa cuốn thế hệ mới khóa cơ an toàn chống cạy",
     col_4: "m2",
     col_5: "Ghi ánh kim",
@@ -78,6 +103,7 @@ const createDefault7Rows = () => [
   {
     col_1: "5",
     col_2: "BD-05",
+    col_img: "",
     col_3: "Cửa cuốn siêu êm tích hợp ron cao su giảm chấn",
     col_4: "m2",
     col_5: "Vàng kem, Nâu cafe",
@@ -87,6 +113,7 @@ const createDefault7Rows = () => [
   {
     col_1: "6",
     col_2: "BD-06",
+    col_img: "",
     col_3: "Cửa cuốn bản nan lớn Luxury sang trọng biệt thự",
     col_4: "m2",
     col_5: "Ghi sần cao cấp",
@@ -96,6 +123,7 @@ const createDefault7Rows = () => [
   {
     col_1: "7",
     col_2: "BD-07",
+    col_img: "",
     col_3: "Cửa cuốn siêu trường chống bão gió giật cấp 12",
     col_4: "m2",
     col_5: "Ghi xám đậm",
@@ -119,11 +147,11 @@ export default function AdminPriceQuote({ showToast }) {
   const [newQuoteTitle, setNewQuoteTitle] = useState("Bảng giá cập nhật cửa cuốn BossDoor 2026 tại Đà Nẵng");
   const [newQuoteEffectiveDate, setNewQuoteEffectiveDate] = useState("Áp dụng từ năm 2026 cho đến khi có thông báo mới");
 
-  // Grid builder: Các cột và các hàng (mặc định 7 cột, 7 hàng)
+  // Grid builder: Các cột và các hàng (mặc định chuẩn 8 cột có cột ảnh, 7 hàng)
   const [gridColumns, setGridColumns] = useState(DEFAULT_7_COLUMNS);
   const [gridRows, setGridRows] = useState(createDefault7Rows);
   const [inputRowsCount, setInputRowsCount] = useState(7);
-  const [inputColsCount, setInputColsCount] = useState(7);
+  const [inputColsCount, setInputColsCount] = useState(8);
 
   const createFormRef = useRef(null);
 
@@ -229,20 +257,20 @@ export default function AdminPriceQuote({ showToast }) {
     setNewQuoteTitle(`Bảng giá cập nhật ${val.trim()} 2026 tại Đà Nẵng`);
   };
 
-  // ================= GRID BUILDER ACTIONS (KHUNG 7 CỘT 7 HÀNG) =================
-  // Tạo nhanh khung 7 cột x 7 hàng
+  // ================= GRID BUILDER ACTIONS (KHUNG BẢNG GIÁ & THÔNG TIN) =================
+  // Tạo nhanh khung chuẩn 8 cột (có cột Hình ảnh) x 7 hàng
   const handleResetTo7x7 = () => {
-    setGridColumns(DEFAULT_7_COLUMNS);
+    setGridColumns(DEFAULT_GRID_COLUMNS);
     setGridRows(createDefault7Rows());
-    setInputColsCount(7);
+    setInputColsCount(DEFAULT_GRID_COLUMNS.length);
     setInputRowsCount(7);
-    triggerToast("⚡ Đã tạo khung chuẩn 7 Cột x 7 Hàng sẵn sàng điền giá và thông tin!");
+    triggerToast("⚡ Đã tạo khung chuẩn 8 Cột (Có Cột Hình Ảnh) x 7 Hàng sẵn sàng điền giá và thông tin!");
   };
 
   // Áp dụng số cột x số hàng tùy biến (ví dụ người dùng nhập 5 hàng x 6 cột, hoặc 8 hàng x 7 cột...)
   const handleApplyCustomGridSize = () => {
     const rowsNum = Math.max(1, Math.min(50, parseInt(inputRowsCount, 10) || 7));
-    const colsNum = Math.max(2, Math.min(15, parseInt(inputColsCount, 10) || 7));
+    const colsNum = Math.max(2, Math.min(15, parseInt(inputColsCount, 10) || 8));
 
     // 1. Tạo hoặc điều chỉnh cột
     let newCols = [...gridColumns];
@@ -267,10 +295,11 @@ export default function AdminPriceQuote({ showToast }) {
         newCols.forEach((col, cIdx) => {
           if (cIdx === 0) rowObj[col.id] = String(r);
           else if (cIdx === 1) rowObj[col.id] = `SP-${String(r).padStart(2, "0")}`;
-          else if (cIdx === 2) rowObj[col.id] = `Quy cách dòng sản phẩm số ${r}`;
-          else if (cIdx === 3) rowObj[col.id] = "m2";
-          else if (cIdx === 4) rowObj[col.id] = "Theo tiêu chuẩn";
-          else if (cIdx === 5) rowObj[col.id] = "Liên hệ";
+          else if (isImageCol(col)) rowObj[col.id] = "";
+          else if (cIdx === 2 || col.key === "name") rowObj[col.id] = `Quy cách dòng sản phẩm số ${r}`;
+          else if (col.key === "unit") rowObj[col.id] = "m2";
+          else if (col.key === "colors") rowObj[col.id] = "Theo tiêu chuẩn";
+          else if (col.key?.includes("price")) rowObj[col.id] = "Liên hệ";
           else rowObj[col.id] = "";
         });
         newRows.push(rowObj);
@@ -290,12 +319,13 @@ export default function AdminPriceQuote({ showToast }) {
       const nextStt = prev.length + 1;
       const newRow = {};
       gridColumns.forEach((col, idx) => {
-        if (idx === 0) newRow[col.id] = String(nextStt);
-        else if (idx === 1) newRow[col.id] = `SP-${String(nextStt).padStart(2, "0")}`;
-        else if (idx === 2) newRow[col.id] = `Dòng sản phẩm mới số ${nextStt}`;
-        else if (idx === 3) newRow[col.id] = "m2";
-        else if (idx === 4) newRow[col.id] = "Ghi sáng, Vàng kem";
-        else if (idx === 5) newRow[col.id] = "1,500,000";
+        if (col.key === "stt" || col.id === "col_1" || idx === 0) newRow[col.id] = String(nextStt);
+        else if (col.key === "code" || col.id === "col_2") newRow[col.id] = `SP-${String(nextStt).padStart(2, "0")}`;
+        else if (isImageCol(col)) newRow[col.id] = "";
+        else if (col.key === "name" || col.id === "col_3") newRow[col.id] = `Dòng sản phẩm mới số ${nextStt}`;
+        else if (col.key === "unit" || col.id === "col_4") newRow[col.id] = "m2";
+        else if (col.key === "colors" || col.id === "col_5") newRow[col.id] = "Ghi sáng, Vàng kem";
+        else if (col.key === "priceOver8" || col.id === "col_6") newRow[col.id] = "1,500,000";
         else newRow[col.id] = "";
       });
       return [...prev, newRow];
@@ -309,12 +339,13 @@ export default function AdminPriceQuote({ showToast }) {
       const newRow = {};
       const nextStt = afterIndex + 2;
       gridColumns.forEach((col, idx) => {
-        if (idx === 0) newRow[col.id] = String(nextStt);
-        else if (idx === 1) newRow[col.id] = `SP-${String(nextStt).padStart(2, "0")}`;
-        else if (idx === 2) newRow[col.id] = `Dòng sản phẩm mới ${nextStt}`;
-        else if (idx === 3) newRow[col.id] = "m2";
-        else if (idx === 4) newRow[col.id] = "Ghi sáng, Vàng kem";
-        else if (idx === 5) newRow[col.id] = "";
+        if (col.key === "stt" || col.id === "col_1" || idx === 0) newRow[col.id] = String(nextStt);
+        else if (col.key === "code" || col.id === "col_2") newRow[col.id] = `SP-${String(nextStt).padStart(2, "0")}`;
+        else if (isImageCol(col)) newRow[col.id] = "";
+        else if (col.key === "name" || col.id === "col_3") newRow[col.id] = `Dòng sản phẩm mới ${nextStt}`;
+        else if (col.key === "unit" || col.id === "col_4") newRow[col.id] = "m2";
+        else if (col.key === "colors" || col.id === "col_5") newRow[col.id] = "Ghi sáng, Vàng kem";
+        else if (col.key === "priceOver8" || col.id === "col_6") newRow[col.id] = "";
         else newRow[col.id] = "";
       });
       const next = [...prev];
@@ -329,6 +360,88 @@ export default function AdminPriceQuote({ showToast }) {
     });
     setInputRowsCount((prev) => prev + 1);
     triggerToast(`✨ Đã chèn 1 hàng mới ngay dưới hàng ${afterIndex + 1}!`);
+  };
+
+  // Tải ảnh từ máy local cho từng ô trong Cột Hình ảnh của bảng
+  const handleCellImageUpload = async (rowIdx, colId, e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      triggerToast("⚠️ Vui lòng chọn tệp hình ảnh hợp lệ (PNG, JPG, WEBP)!", false);
+      return;
+    }
+
+    try {
+      const backendBase = import.meta.env.VITE_API_URL || "";
+      const uploadEndpoint = backendBase ? `${backendBase}/api/upload` : "/api/upload";
+      const formData = new FormData();
+      formData.append("image", file);
+
+      try {
+        const res = await fetch(uploadEndpoint, {
+          method: "POST",
+          body: formData
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.url) {
+            const finalUrl = data.url.startsWith("http") || data.url.startsWith("data:")
+              ? data.url
+              : `${backendBase}${data.url}`;
+            handleGridCellChange(rowIdx, colId, finalUrl);
+            triggerToast("✨ Đã tải ảnh sản phẩm thành công!", true);
+            return;
+          }
+        }
+      } catch (uploadErr) {
+        // Fallback to FileReader Base64
+      }
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64Data = event.target.result;
+        handleGridCellChange(rowIdx, colId, base64Data);
+        triggerToast("✨ Đã tải ảnh từ máy tính vào bảng!", true);
+      };
+      reader.onerror = () => {
+        triggerToast("❌ Không thể đọc file ảnh từ máy tính!", false);
+      };
+      reader.readAsDataURL(file);
+    } catch (err) {
+      console.error("Cell image upload error:", err);
+      triggerToast("❌ Lỗi khi chọn ảnh!", false);
+    } finally {
+      if (e.target) e.target.value = "";
+    }
+  };
+
+  // Thêm 1 cột Hình ảnh vào bảng
+  const handleAddImageCol = () => {
+    const newColId = `col_img_${Date.now()}`;
+    const newCol = {
+      id: newColId,
+      key: "image",
+      label: "Hình ảnh",
+      width: "165px"
+    };
+    // Chèn sau cột Mã SP nếu có, không thì chèn vị trí thứ 2
+    const codeIdx = gridColumns.findIndex((c) => c.key === "code" || c.id === "col_2" || c.label.toLowerCase().includes("mã"));
+    const insertIdx = codeIdx >= 0 ? codeIdx + 1 : 2;
+
+    setGridColumns((prev) => {
+      const next = [...prev];
+      next.splice(insertIdx, 0, newCol);
+      return next;
+    });
+    setGridRows((prev) =>
+      prev.map((r) => ({
+        ...r,
+        [newColId]: ""
+      }))
+    );
+    setInputColsCount((prev) => prev + 1);
+    triggerToast('✨ Đã thêm cột "Hình ảnh" vào bảng giá!');
   };
 
   // Xóa 1 hàng
@@ -477,20 +590,31 @@ export default function AdminPriceQuote({ showToast }) {
 
     setLoading(true);
 
-    // Chuyển đổi dữ liệu 7 cột x 7 hàng sang cấu trúc items chuẩn
+    // Chuyển đổi dữ liệu bảng sang cấu trúc items chuẩn
+    const sttCol = gridColumns.find((c) => c.key === "stt" || c.id === "col_1" || c.label.toLowerCase() === "stt") || gridColumns[0];
+    const codeCol = gridColumns.find((c) => c.key === "code" || c.id === "col_2" || c.label.toLowerCase().includes("mã")) || gridColumns[1];
+    const imgCol = gridColumns.find(isImageCol);
+    const nameCol = gridColumns.find((c) => c.key === "name" || c.id === "col_3" || c.label.toLowerCase().includes("tên") || c.label.toLowerCase().includes("quy cách")) || gridColumns[2];
+    const unitCol = gridColumns.find((c) => c.key === "unit" || c.id === "col_4" || c.label.toLowerCase().includes("đvt") || c.label.toLowerCase().includes("đơn vị")) || gridColumns[3];
+    const colorCol = gridColumns.find((c) => c.key === "colors" || c.id === "col_5" || c.label.toLowerCase().includes("màu")) || gridColumns[4];
+    const priceCols = gridColumns.filter((c) => c.key?.includes("price") || c.id === "col_6" || c.id === "col_7" || c.label.toLowerCase().includes("đơn giá") || c.label.toLowerCase().includes("giá"));
+
     const formattedItems = gridRows.map((row, rIdx) => {
-      const sttVal = row[gridColumns[0]?.id] || rIdx + 1;
-      const codeVal = row[gridColumns[1]?.id] || `${code}-${rIdx + 1}`;
-      const nameVal = row[gridColumns[2]?.id] || `Dòng sản phẩm ${rIdx + 1}`;
-      const unitVal = row[gridColumns[3]?.id] || "m2";
-      const colorsVal = row[gridColumns[4]?.id] || "Theo tiêu chuẩn";
-      const price1Val = row[gridColumns[5]?.id] || "Liên hệ";
-      const price2Val = row[gridColumns[6]?.id] || price1Val;
-      const price3Val = gridColumns[7] ? row[gridColumns[7]?.id] : price2Val;
+      const sttVal = (sttCol && row[sttCol.id]) || rIdx + 1;
+      const codeVal = (codeCol && row[codeCol.id]) || `${code}-${rIdx + 1}`;
+      const imgVal = (imgCol && row[imgCol.id]) || row.image || row.imageUrl || "";
+      const nameVal = (nameCol && row[nameCol.id]) || `Dòng sản phẩm ${rIdx + 1}`;
+      const unitVal = (unitCol && row[unitCol.id]) || "m2";
+      const colorsVal = (colorCol && row[colorCol.id]) || "Theo tiêu chuẩn";
+      const price1Val = (priceCols[0] && row[priceCols[0].id]) || "Liên hệ";
+      const price2Val = (priceCols[1] && row[priceCols[1].id]) || price1Val;
+      const price3Val = (priceCols[2] && row[priceCols[2].id]) || price2Val;
 
       return {
         stt: isNaN(Number(sttVal)) ? rIdx + 1 : Number(sttVal),
         code: String(codeVal).trim(),
+        image: String(imgVal).trim(),
+        imageUrl: String(imgVal).trim(),
         name: String(nameVal).trim(),
         description: String(nameVal).trim(),
         unit: String(unitVal).trim(),
@@ -1051,9 +1175,9 @@ export default function AdminPriceQuote({ showToast }) {
                     type="button"
                     className="btn-preset-7x7"
                     onClick={handleResetTo7x7}
-                    title="Khởi tạo chuẩn 7 Cột x 7 Hàng có sẵn mẫu"
+                    title="Khởi tạo chuẩn 8 Cột (kèm Cột Ảnh) x 7 Hàng có sẵn mẫu"
                   >
-                    <Sparkles size={14} /> Khung Chuẩn 7 Cột × 7 Hàng
+                    <Sparkles size={14} /> Khung Chuẩn 8 Cột × 7 Hàng (Có Ảnh)
                   </button>
 
                   <div className="dimension-input-group">
@@ -1158,9 +1282,60 @@ export default function AdminPriceQuote({ showToast }) {
                           {rIdx + 1}
                         </td>
                         {gridColumns.map((col) => {
+                          const isImage = isImageCol(col);
                           const isCode = col.key === "code" || col.id === "col_2";
                           const isNameOrDesc = col.key === "name" || col.id === "col_3";
                           const isPrice = col.key?.includes("price") || col.id === "col_6" || col.id === "col_7";
+                          const cellVal = row[col.id] || "";
+
+                          if (isImage) {
+                            return (
+                              <td key={`${col.id}-${rIdx}`} className="spreadsheet-cell cell-image-type">
+                                <div className={`table-img-cell-box ${cellVal ? "has-image" : ""}`}>
+                                  {cellVal && (
+                                    <div className="cell-img-thumb-container" title="Ảnh sản phẩm">
+                                      <img
+                                        src={cellVal}
+                                        alt={`SP ${rIdx + 1}`}
+                                        className="cell-img-thumb"
+                                        onError={(e) => {
+                                          e.target.style.opacity = "0.3";
+                                        }}
+                                      />
+                                      <button
+                                        type="button"
+                                        className="btn-remove-cell-img"
+                                        onClick={() => handleGridCellChange(rIdx, col.id, "")}
+                                        title="Gỡ ảnh này"
+                                      >
+                                        ✕
+                                      </button>
+                                    </div>
+                                  )}
+                                  <div className="cell-img-action-group">
+                                    <input
+                                      type="text"
+                                      className="table-input cell-img-url-input"
+                                      value={cellVal}
+                                      onChange={(e) => handleGridCellChange(rIdx, col.id, e.target.value)}
+                                      placeholder="Dán link ảnh..."
+                                      title="Dán link ảnh trực tiếp (https://... hoặc /ảnh.jpg)"
+                                    />
+                                    <label className="cell-img-upload-btn" title="Tải ảnh từ máy local (PNG, JPG, WEBP)">
+                                      <Upload size={12} />
+                                      <span className="upload-btn-text">Tải</span>
+                                      <input
+                                        type="file"
+                                        accept="image/*"
+                                        style={{ display: "none" }}
+                                        onChange={(e) => handleCellImageUpload(rIdx, col.id, e)}
+                                      />
+                                    </label>
+                                  </div>
+                                </div>
+                              </td>
+                            );
+                          }
 
                           return (
                             <td key={`${col.id}-${rIdx}`} className="spreadsheet-cell">
@@ -1168,7 +1343,7 @@ export default function AdminPriceQuote({ showToast }) {
                                 <textarea
                                   rows={2}
                                   className="table-textarea cell-content"
-                                  value={row[col.id] || ""}
+                                  value={cellVal}
                                   onChange={(e) => handleGridCellChange(rIdx, col.id, e.target.value)}
                                   placeholder="Nhập tên, quy cách..."
                                 />
@@ -1176,7 +1351,7 @@ export default function AdminPriceQuote({ showToast }) {
                                 <input
                                   type="text"
                                   className={`table-input cell-content ${isCode ? "bold-code" : ""} ${isPrice ? "price-input" : ""}`}
-                                  value={row[col.id] || ""}
+                                  value={cellVal}
                                   onChange={(e) => handleGridCellChange(rIdx, col.id, e.target.value)}
                                   placeholder={isPrice ? "1,200,000" : isCode ? "Mã SP" : "..."}
                                 />
@@ -1223,6 +1398,14 @@ export default function AdminPriceQuote({ showToast }) {
                   onClick={handleAddGridCol}
                 >
                   <Plus size={15} /> Thêm 1 Cột Mới
+                </button>
+                <button
+                  type="button"
+                  className="btn-append-img-col"
+                  onClick={handleAddImageCol}
+                  title="Thêm 1 cột chuyên dụng để dán link ảnh hoặc tải ảnh từ máy tính"
+                >
+                  <ImageIcon size={15} /> Thêm Cột Hình Ảnh
                 </button>
               </div>
             </div>
