@@ -1062,9 +1062,7 @@ export default function AdminPriceQuote({ showToast }) {
             <tr>
               <th style={{ width: 85 }}>Hình ảnh</th>
               <th>Tiêu đề bảng giá &amp; Mã</th>
-              <th>Ngày áp dụng</th>
-              <th>Tóm tắt nội dung</th>
-              <th style={{ textAlign: "center", width: 100 }}>Thao tác</th>
+              <th style={{ textAlign: "center", width: 120 }}>Thao tác</th>
             </tr>
           </thead>
           <tbody>
@@ -1104,23 +1102,6 @@ export default function AdminPriceQuote({ showToast }) {
                         🏷️ Mã: <strong>{q.productCode}</strong>
                       </div>
                     </td>
-                    <td style={{ color: "#cbd5e1", fontSize: "0.88rem" }}>
-                      {q.effectiveDate || "Năm 2026"}
-                    </td>
-                    <td style={{ maxWidth: 320, fontSize: "0.85rem", color: "#94a3b8" }}>
-                      <div
-                        style={{
-                          display: "-webkit-box",
-                          WebkitLineClamp: 2,
-                          WebkitBoxOrient: "vertical",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          lineHeight: 1.4
-                        }}
-                      >
-                        {q.articleAbove || q.articleBelow || q.description || "Bảng báo giá chi tiết BossDoor"}
-                      </div>
-                    </td>
                     <td>
                       <div style={{ display: "flex", gap: "6px", justifyContent: "center" }}>
                         <button
@@ -1144,7 +1125,7 @@ export default function AdminPriceQuote({ showToast }) {
               })
             ) : (
               <tr>
-                <td colSpan={5} style={{ textAlign: "center", padding: "36px", color: "#94a3b8" }}>
+                <td colSpan={3} style={{ textAlign: "center", padding: "36px", color: "#94a3b8" }}>
                   Không tìm thấy bảng giá nào phù hợp với từ khóa "{searchQuery}"!
                 </td>
               </tr>
