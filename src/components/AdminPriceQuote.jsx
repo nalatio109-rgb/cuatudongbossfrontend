@@ -21,7 +21,8 @@ import {
   Info,
   Upload,
   Image as ImageIcon,
-  Loader2
+  Loader2,
+  FileText
 } from "lucide-react";
 import { DEFAULT_PRICE_QUOTES } from "../data/defaultPriceQuotes";
 import "./AdminPriceQuote.css";
@@ -146,6 +147,14 @@ export default function AdminPriceQuote({ showToast }) {
   const [newQuoteCategory, setNewQuoteCategory] = useState("cuacuon");
   const [newQuoteTitle, setNewQuoteTitle] = useState("Bảng giá cập nhật cửa cuốn BossDoor 2026 tại Đà Nẵng");
   const [newQuoteEffectiveDate, setNewQuoteEffectiveDate] = useState("Áp dụng từ năm 2026 cho đến khi có thông báo mới");
+
+  // Bài viết phía trên và phía dưới bảng giá
+  const [newQuoteArticleAbove, setNewQuoteArticleAbove] = useState(
+    "BossDoor Đà Nẵng trân trọng gửi đến Quý khách hàng bảng báo giá chi tiết, mới nhất năm 2026. Các dòng sản phẩm được sản xuất trên dây chuyền hiện đại, tiêu chuẩn chất lượng cao, bền bỉ và an toàn tuyệt đối cho mọi công trình."
+  );
+  const [newQuoteArticleBelow, setNewQuoteArticleBelow] = useState(
+    "Lưu ý: Báo giá trên áp dụng cho công trình tại khu vực Đà Nẵng và các tỉnh lân cận. Khách hàng lắp đặt số lượng lớn hoặc dự án công trình sẽ nhận được mức chiết khấu ưu đãi đặc biệt. Để được tư vấn chi tiết và khảo sát đo đạc miễn phí tận nơi, Quý khách vui lòng liên hệ Hotline/Zalo kỹ thuật: 0904.678.323."
+  );
 
   // Grid builder: Các cột và các hàng (mặc định chuẩn 8 cột có cột ảnh, 7 hàng)
   const [gridColumns, setGridColumns] = useState(DEFAULT_7_COLUMNS);
@@ -670,6 +679,8 @@ export default function AdminPriceQuote({ showToast }) {
       category: newQuoteCategory,
       title: newQuoteTitle.trim() || `Bảng giá cập nhật ${newQuoteName.trim()} 2026 tại Đà Nẵng`,
       effectiveDate: newQuoteEffectiveDate.trim() || "Áp dụng từ năm 2026 cho đến khi có thông báo mới",
+      articleAbove: newQuoteArticleAbove.trim(),
+      articleBelow: newQuoteArticleBelow.trim(),
       image: newQuoteImage || "",
       imageUrl: newQuoteImage || "",
       customColumns: gridColumns.map((c) => ({ id: c.id, label: c.label })),
@@ -1256,6 +1267,25 @@ export default function AdminPriceQuote({ showToast }) {
                 </span>
               </div>
 
+              {/* KHU VỰC BÀI VIẾT / GIỚI THIỆU PHÍA TRÊN BẢNG GIÁ */}
+              <div className="quote-article-block above-table-article">
+                <div className="article-block-header">
+                  <span className="article-block-badge">
+                    <FileText size={14} /> Bài Viết / Giới Thiệu (Phía Trên Bảng Giá)
+                  </span>
+                  <span className="article-block-hint">
+                    Đoạn văn bản giới thiệu mở đầu hiển thị ngay phía trên bảng giá
+                  </span>
+                </div>
+                <textarea
+                  rows={3}
+                  className="quote-article-textarea"
+                  value={newQuoteArticleAbove}
+                  onChange={(e) => setNewQuoteArticleAbove(e.target.value)}
+                  placeholder="Nhập đoạn văn bản / bài viết giới thiệu mở đầu phía trên bảng giá..."
+                />
+              </div>
+
               {/* BẢNG SPREADSHEET ĐIỀN THÔNG TIN TRỰC TIẾP */}
               <div className="admin-table-scroll-wrapper spreadsheet-wrapper">
                 <table className="admin-quote-data-table spreadsheet-table">
@@ -1457,6 +1487,25 @@ export default function AdminPriceQuote({ showToast }) {
                   <ImageIcon size={15} /> Thêm Cột Hình Ảnh
                 </button>
               </div>
+
+              {/* KHU VỰC BÀI VIẾT CHI TIẾT & TƯ VẤN PHÍA DƯỚI BẢNG GIÁ */}
+              <div className="quote-article-block below-table-article">
+                <div className="article-block-header">
+                  <span className="article-block-badge">
+                    <FileText size={14} /> Bài Viết Chi Tiết &amp; Tư Vấn Kỹ Thuật (Phía Dưới Bảng Giá)
+                  </span>
+                  <span className="article-block-hint">
+                    Nội dung bài viết chi tiết, hướng dẫn kỹ thuật, lưu ý thi công hiển thị phía dưới bảng giá
+                  </span>
+                </div>
+                <textarea
+                  rows={4}
+                  className="quote-article-textarea"
+                  value={newQuoteArticleBelow}
+                  onChange={(e) => setNewQuoteArticleBelow(e.target.value)}
+                  placeholder="Gõ bài viết chi tiết, hướng dẫn kỹ thuật, tư vấn báo giá đặt phía dưới bảng giá..."
+                />
+              </div>
             </div>
 
             {/* CẢNH BÁO BẮT BUỘC ĐIỀN ĐỦ Ô TRỐNG */}
@@ -1498,6 +1547,39 @@ export default function AdminPriceQuote({ showToast }) {
       {/* ========================================================================= */}
       {activeQuote && (
         <div className="quote-editor-card">
+          {/* 0. SOẠN THẢO BÀI VIẾT TRÊN & DƯỚI BẢNG GIÁ */}
+          <div className="editor-section-box">
+            <h3 className="section-title">
+              <FileText size={18} /> Bài Viết Sản Phẩm (Phía Trên &amp; Phía Dưới Bảng Giá)
+            </h3>
+            <div className="quote-article-inputs-group">
+              <div className="form-field full-width">
+                <label className="article-field-label">
+                  <span className="label-badge-above">Phía trên bảng giá</span> Đoạn văn bản / Bài viết giới thiệu mở đầu:
+                </label>
+                <textarea
+                  rows={3}
+                  className="quote-article-textarea"
+                  value={activeQuote.articleAbove || ""}
+                  onChange={(e) => handleMetaChange("articleAbove", e.target.value)}
+                  placeholder="Nhập bài viết / giới thiệu mở đầu hiển thị ngay phía trên bảng giá..."
+                />
+              </div>
+              <div className="form-field full-width">
+                <label className="article-field-label">
+                  <span className="label-badge-below">Phía dưới bảng giá</span> Bài viết chi tiết &amp; Tư vấn kỹ thuật:
+                </label>
+                <textarea
+                  rows={4}
+                  className="quote-article-textarea"
+                  value={activeQuote.articleBelow || ""}
+                  onChange={(e) => handleMetaChange("articleBelow", e.target.value)}
+                  placeholder="Nhập bài viết chi tiết, hướng dẫn kỹ thuật, tư vấn báo giá hiển thị phía dưới bảng giá..."
+                />
+              </div>
+            </div>
+          </div>
+
           {/* 1. LỰA CHỌN THÊM (ADD-ONS) */}
           <div className="editor-section-box">
             <div className="section-header-row">

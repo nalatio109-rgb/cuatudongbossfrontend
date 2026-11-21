@@ -3541,3 +3541,74 @@
   vertical-align: middle;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
+
+/* ================= BÀI VIẾT TÙY CHỌN PHÍA TRÊN & PHÍA DƯỚI BẢNG GIÁ ================= */
+.pricing-custom-article-box {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 18px 24px;
+  margin: 18px 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  line-height: 1.7;
+  font-size: 15px;
+  color: #334155;
+  transition: all 0.25s ease;
+}
+
+.pricing-custom-article-box.above-quote-article {
+  background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
+  border: 1.5px solid #a7f3d0;
+  border-left: 5px solid #004d32;
+  margin-bottom: 22px;
+}
+
+.pricing-custom-article-box.below-quote-article {
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-left: 5px solid #059669;
+  margin-top: 24px;
+}
+
+.pricing-custom-article-box .custom-article-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px dashed #cbd5e1;
+}
+
+.pricing-custom-article-box .custom-article-header h4 {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: #065f46;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.pricing-custom-article-box .sparkle-gold-icon {
+  color: #f59e0b;
+}
+
+.pricing-custom-article-box .custom-article-paragraph {
+  margin: 0;
+  white-space: pre-line;
+  font-size: 15px;
+  color: #1e293b;
+  line-height: 1.75;
+}
+
+@media (max-width: 768px) {
+  .pricing-custom-article-box {
+    padding: 14px 16px;
+    font-size: 14px;
+    border-radius: 10px;
+  }
+
+  .pricing-custom-article-box .custom-article-paragraph {
+    font-size: 14px;
+    line-height: 1.65;
+  }
+}
+

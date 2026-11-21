@@ -847,6 +847,13 @@ export default function ProductPricing() {
                 {priceQuote?.tableHeading || priceQuote?.title || `Bảng giá ${product?.title || ""} tại Đà Nẵng`}
               </h2>
 
+              {/* BÀI VIẾT / GIỚI THIỆU PHÍA TRÊN BẢNG GIÁ */}
+              {priceQuote?.articleAbove && (
+                <div className="pricing-custom-article-box above-quote-article">
+                  <p className="custom-article-paragraph">{priceQuote.articleAbove}</p>
+                </div>
+              )}
+
               <div className="primary-quote-table-container">
                 <table className="customer-quote-spec-table">
                   <thead>
@@ -1013,6 +1020,17 @@ export default function ProductPricing() {
                 </div>
               </div>
 
+              {/* BÀI VIẾT CHI TIẾT & TƯ VẤN PHÍA DƯỚI BẢNG GIÁ */}
+              {priceQuote?.articleBelow && (
+                <div className="pricing-custom-article-box below-quote-article">
+                  <div className="custom-article-header">
+                    <Sparkles size={16} className="sparkle-gold-icon" />
+                    <h4>THÔNG TIN CHI TIẾT &amp; TƯ VẤN KỸ THUẬT</h4>
+                  </div>
+                  <p className="custom-article-paragraph">{priceQuote.articleBelow}</p>
+                </div>
+              )}
+
               {/* 4. KHU VỰC "LỰA CHỌN THÊM" (PHỤ KIỆN & NÂNG CẤP) */}
               <div className="technical-addons-section">
                 <div className="addons-section-title-bar">
@@ -1148,6 +1166,13 @@ export default function ProductPricing() {
                   Bảng giá niêm yết theo quy chuẩn kỹ thuật nhà sản xuất, phân cấp chi tiết theo từng khoảng diện tích m² thi công:
                 </p>
               </div>
+
+              {/* BÀI VIẾT / GIỚI THIỆU PHÍA TRÊN BẢNG GIÁ */}
+              {priceQuote?.articleAbove && (
+                <div className="pricing-custom-article-box above-quote-article">
+                  <p className="custom-article-paragraph">{priceQuote.articleAbove}</p>
+                </div>
+              )}
 
               {/* Bộ lọc chọn nhanh diện tích cho Mobile & Desktop */}
               <div className="area-filter-row">
@@ -1356,6 +1381,17 @@ export default function ProductPricing() {
                   </table>
                 </div>
               </div>
+
+              {/* BÀI VIẾT CHI TIẾT & TƯ VẤN PHÍA DƯỚI BẢNG GIÁ */}
+              {priceQuote?.articleBelow && (
+                <div className="pricing-custom-article-box below-quote-article">
+                  <div className="custom-article-header">
+                    <Sparkles size={16} className="sparkle-gold-icon" />
+                    <h4>THÔNG TIN CHI TIẾT &amp; TƯ VẤN KỸ THUẬT</h4>
+                  </div>
+                  <p className="custom-article-paragraph">{priceQuote.articleBelow}</p>
+                </div>
+              )}
 
               {/* 4. KHU VỰC "LỰA CHỌN THÊM" (PHỤ KIỆN & NÂNG CẤP) */}
               <div className="technical-addons-section">

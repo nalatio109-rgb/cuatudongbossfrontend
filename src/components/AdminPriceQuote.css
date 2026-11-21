@@ -1493,3 +1493,126 @@
   color: #ffffff;
 }
 
+/* ================= KHU VỰC BÀI VIẾT PHÍA TRÊN & DƯỚI BẢNG GIÁ ================= */
+.quote-article-block {
+  background: #ffffff;
+  border: 1.5px solid #d1fae5;
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin: 14px 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+  transition: all 0.2s ease;
+}
+
+.quote-article-block:hover {
+  border-color: #10b981;
+  box-shadow: 0 3px 10px rgba(16, 185, 129, 0.08);
+}
+
+.quote-article-block.above-table-article {
+  border-left: 4px solid #059669;
+  background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 100%);
+}
+
+.quote-article-block.below-table-article {
+  border-left: 4px solid #004d32;
+  background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%);
+  margin-top: 18px;
+}
+
+.article-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.article-block-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #004d32;
+  color: #ffffff;
+  font-size: 12.5px;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 20px;
+  letter-spacing: 0.3px;
+}
+
+.article-block-hint {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+  font-style: italic;
+}
+
+.quote-article-textarea {
+  width: 100%;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #0f172a;
+  background: #ffffff;
+  font-family: inherit;
+  resize: vertical;
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+
+.quote-article-textarea:focus {
+  outline: none;
+  border-color: #004d32;
+  box-shadow: 0 0 0 3px rgba(0, 77, 50, 0.12);
+  background: #ffffff;
+}
+
+.quote-article-textarea::placeholder {
+  color: #94a3b8;
+  font-size: 13px;
+}
+
+/* Trong Trình Chỉnh Sửa Active Quote */
+.quote-article-inputs-group {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.article-field-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 6px;
+}
+
+.label-badge-above {
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 12px;
+  text-transform: uppercase;
+}
+
+.label-badge-below {
+  background: #f1f5f9;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 12px;
+  text-transform: uppercase;
+}
+
+
