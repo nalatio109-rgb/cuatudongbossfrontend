@@ -1054,8 +1054,8 @@ export default function ProductPricing() {
             <section className="pricing-product-hero">
               <div className="hero-image-column">
                 <div className="pricing-img-wrapper">
-                  <img src={product.image} alt={product.title} />
-                  <span className="pricing-code-pill">MÃ: {product.code}</span>
+                  <img src={priceQuote?.image || priceQuote?.imageUrl || product?.image} alt={product?.title || priceQuote?.productTitle || "Bảng giá"} />
+                  <span className="pricing-code-pill">MÃ: {product?.code || priceQuote?.productCode}</span>
                 </div>
               </div>
 

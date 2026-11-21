@@ -18,7 +18,10 @@ import {
   Rows,
   Sparkles,
   ArrowDown,
-  Info
+  Info,
+  Upload,
+  Image as ImageIcon,
+  Loader2
 } from "lucide-react";
 import { DEFAULT_PRICE_QUOTES } from "../data/defaultPriceQuotes";
 import "./AdminPriceQuote.css";
@@ -123,6 +126,14 @@ export default function AdminPriceQuote({ showToast }) {
   const [inputColsCount, setInputColsCount] = useState(7);
 
   const createFormRef = useRef(null);
+
+  // Tải ảnh từ máy local & Link ảnh (Active Quote & New Quote)
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const fileInputRef = useRef(null);
+
+  const [newQuoteImage, setNewQuoteImage] = useState("");
+  const [isUploadingNewImage, setIsUploadingNewImage] = useState(false);
+  const newFileInputRef = useRef(null);
 
   // Load quotes from API or localStorage
   useEffect(() => {
@@ -409,6 +420,8 @@ export default function AdminPriceQuote({ showToast }) {
       category: newQuoteCategory,
       title: newQuoteTitle.trim() || `Bảng giá cập nhật ${newQuoteName.trim()} 2026 tại Đà Nẵng`,
       effectiveDate: newQuoteEffectiveDate.trim() || "Áp dụng từ năm 2026 cho đến khi có thông báo mới",
+      image: newQuoteImage || "",
+      imageUrl: newQuoteImage || "",
       customColumns: gridColumns.map((c) => ({ id: c.id, label: c.label })),
       items: formattedItems,
       addons: [
@@ -492,6 +505,123 @@ export default function AdminPriceQuote({ showToast }) {
   // Field change on active quote
   const handleMetaChange = (field, value) => {
     setActiveQuote((prev) => ({ ...prev, [field]: value }));
+  };
+
+  // Upload ảnh trực tiếp từ máy local cho Bảng giá đang chọn
+  const handleImageUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      triggerToast("⚠️ Vui lòng chọn tệp hình ảnh hợp lệ (PNG, JPG, WEBP)!", false);
+      return;
+    }
+
+    setIsUploadingImage(true);
+    try {
+      const backendBase = import.meta.env.VITE_API_URL || "";
+      const uploadEndpoint = backendBase ? `${backendBase}/api/upload` : "/api/upload";
+      const formData = new FormData();
+      formData.append("image", file);
+
+      try {
+        const res = await fetch(uploadEndpoint, {
+          method: "POST",
+          body: formData
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.url) {
+            const finalUrl = data.url.startsWith("http") || data.url.startsWith("data:")
+              ? data.url
+              : `${backendBase}${data.url}`;
+            setActiveQuote((prev) => ({ ...prev, image: finalUrl, imageUrl: finalUrl }));
+            triggerToast("✨ Đã tải ảnh lên thành công!", true);
+            setIsUploadingImage(false);
+            return;
+          }
+        }
+      } catch (uploadErr) {
+        console.warn("Upload API failed, fallback to FileReader Base64:", uploadErr);
+      }
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64Data = event.target.result;
+        setActiveQuote((prev) => ({ ...prev, image: base64Data, imageUrl: base64Data }));
+        triggerToast("✨ Đã tải ảnh từ máy tính thành công!", true);
+        setIsUploadingImage(false);
+      };
+      reader.onerror = () => {
+        triggerToast("❌ Không thể đọc file ảnh từ máy tính!", false);
+        setIsUploadingImage(false);
+      };
+      reader.readAsDataURL(file);
+    } catch (err) {
+      console.error("Image upload error:", err);
+      triggerToast("❌ Lỗi khi chọn ảnh!", false);
+      setIsUploadingImage(false);
+    } finally {
+      if (e.target) e.target.value = "";
+    }
+  };
+
+  // Upload ảnh cho Form Thêm bảng giá mới
+  const handleNewQuoteImageUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      triggerToast("⚠️ Vui lòng chọn tệp hình ảnh hợp lệ (PNG, JPG, WEBP)!", false);
+      return;
+    }
+
+    setIsUploadingNewImage(true);
+    try {
+      const backendBase = import.meta.env.VITE_API_URL || "";
+      const uploadEndpoint = backendBase ? `${backendBase}/api/upload` : "/api/upload";
+      const formData = new FormData();
+      formData.append("image", file);
+
+      try {
+        const res = await fetch(uploadEndpoint, {
+          method: "POST",
+          body: formData
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.url) {
+            const finalUrl = data.url.startsWith("http") || data.url.startsWith("data:")
+              ? data.url
+              : `${backendBase}${data.url}`;
+            setNewQuoteImage(finalUrl);
+            triggerToast("✨ Đã tải ảnh lên thành công!", true);
+            setIsUploadingNewImage(false);
+            return;
+          }
+        }
+      } catch (uploadErr) {
+        console.warn("Upload API failed, fallback to FileReader Base64:", uploadErr);
+      }
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setNewQuoteImage(event.target.result);
+        triggerToast("✨ Đã tải ảnh từ máy tính thành công!", true);
+        setIsUploadingNewImage(false);
+      };
+      reader.onerror = () => {
+        triggerToast("❌ Không thể đọc file ảnh từ máy tính!", false);
+        setIsUploadingNewImage(false);
+      };
+      reader.readAsDataURL(file);
+    } catch (err) {
+      console.error("New quote image upload error:", err);
+      triggerToast("❌ Lỗi khi chọn ảnh!", false);
+      setIsUploadingNewImage(false);
+    } finally {
+      if (e.target) e.target.value = "";
+    }
   };
 
   const handlePolicyChange = (field, value) => {
@@ -710,60 +840,90 @@ export default function AdminPriceQuote({ showToast }) {
           </div>
 
           <div className="builder-card-body">
-            {/* PHẦN 1: THÔNG TIN BẢNG GIÁ */}
+            {/* PHẦN 1: THÔNG TIN BẢNG GIÁ & HÌNH ẢNH */}
             <div className="builder-section-group">
               <h4 className="builder-group-title">
                 <FileSpreadsheet size={16} /> 1. Thông Tin Nhận Diện Bảng Giá
               </h4>
-              <div className="form-grid-3">
-                <div className="form-field span-2">
+              <div className="quote-simple-form-grid">
+                <div className="form-field full-width">
                   <label className="required-label">
                     Tên bảng giá <span className="text-red">*</span>:
                   </label>
                   <input
                     type="text"
-                    className="input-highlight-bold"
+                    className="input-highlight-bold quote-name-input"
                     value={newQuoteName}
                     onChange={(e) => handleNewQuoteNameChange(e.target.value)}
-                    placeholder="Ví dụ: Bảng giá Cửa cuốn BossDoor Luxury 2026, Bảng giá Cửa cuốn Austdoor..."
-                    required
-                  />
-                </div>
-                <div className="form-field">
-                  <label className="required-label">
-                    Mã sản phẩm / Mã bảng giá <span className="text-red">*</span>:
-                  </label>
-                  <input
-                    type="text"
-                    className="input-code-bold"
-                    value={newQuoteCode}
-                    onChange={(e) => setNewQuoteCode(e.target.value.toUpperCase())}
-                    placeholder="Ví dụ: BD-LUX, BD-900, CK-DE..."
+                    placeholder="Ví dụ: Bảng giá Cửa cuốn BossDoor Luxury 2026, Cửa kéo công nghệ Đức..."
                     required
                   />
                 </div>
 
-                <div className="form-field">
-                  <label>Danh mục phân loại:</label>
-                  <select
-                    value={newQuoteCategory}
-                    onChange={(e) => setNewQuoteCategory(e.target.value)}
-                  >
-                    <option value="cuacuon">Cửa cuốn</option>
-                    <option value="cuakeo">Cửa kéo</option>
-                    <option value="phukien">Phụ kiện &amp; Mô tơ</option>
-                    <option value="cuatudong">Cổng &amp; Cửa tự động</option>
-                    <option value="nhomkinh">Nhôm kính</option>
-                  </select>
-                </div>
-                <div className="form-field span-2">
-                  <label>Tiêu đề hiển thị đầu bảng giá:</label>
-                  <input
-                    type="text"
-                    value={newQuoteTitle}
-                    onChange={(e) => setNewQuoteTitle(e.target.value)}
-                    placeholder="Ví dụ: Bảng giá cập nhật cửa cuốn BossDoor 2026 tại Đà Nẵng"
-                  />
+                <div className="form-field full-width quote-image-field-wrap">
+                  <label>Hình ảnh bảng giá (Link ảnh hoặc tải từ máy local):</label>
+                  <div className="quote-image-controls-row">
+                    <div className="quote-image-url-box">
+                      <input
+                        type="text"
+                        className="image-url-input"
+                        value={newQuoteImage}
+                        onChange={(e) => setNewQuoteImage(e.target.value)}
+                        placeholder="Dán link ảnh trực tiếp (https://... hoặc /project_1.png)..."
+                      />
+                    </div>
+
+                    <input
+                      type="file"
+                      ref={newFileInputRef}
+                      onChange={handleNewQuoteImageUpload}
+                      accept="image/*"
+                      style={{ display: "none" }}
+                    />
+
+                    <button
+                      type="button"
+                      className="btn-upload-local-img"
+                      onClick={() => newFileInputRef.current?.click()}
+                      disabled={isUploadingNewImage}
+                    >
+                      {isUploadingNewImage ? (
+                        <>
+                          <Loader2 size={16} className="spin-icon" /> Đang tải ảnh...
+                        </>
+                      ) : (
+                        <>
+                          <Upload size={16} /> Tải ảnh từ máy local
+                        </>
+                      )}
+                    </button>
+                  </div>
+
+                  {newQuoteImage && (
+                    <div className="quote-image-preview-card">
+                      <div className="quote-img-thumb-wrap">
+                        <img
+                          src={newQuoteImage}
+                          alt="Ảnh bảng giá mới"
+                          className="quote-preview-thumbnail"
+                          onError={(e) => {
+                            e.target.style.opacity = "0.3";
+                          }}
+                        />
+                      </div>
+                      <div className="quote-img-preview-info">
+                        <span className="preview-label">Ảnh đã chọn</span>
+                        <button
+                          type="button"
+                          className="btn-remove-quote-img"
+                          onClick={() => setNewQuoteImage("")}
+                          title="Xóa ảnh này"
+                        >
+                          <X size={14} /> Xóa ảnh
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -983,11 +1143,11 @@ export default function AdminPriceQuote({ showToast }) {
       {/* ========================================================================= */}
       {activeQuote && (
         <div className="quote-editor-card">
-          {/* 1. THÔNG TIN CHUNG */}
+          {/* 1. THÔNG TIN BẢNG GIÁ & HÌNH ẢNH */}
           <div className="editor-section-box">
             <div className="section-header-row">
               <h3 className="section-title">
-                <FileSpreadsheet size={18} /> Thông Tin Nhận Diện Bảng Giá
+                <FileSpreadsheet size={18} /> Thông Tin Bảng Giá
               </h3>
               <button
                 type="button"
@@ -998,54 +1158,107 @@ export default function AdminPriceQuote({ showToast }) {
                 <Trash2 size={15} /> Xóa Bảng Giá Này
               </button>
             </div>
-            <div className="form-grid-3">
-              <div className="form-field">
-                <label>Mã sản phẩm (Code):</label>
+
+            <div className="quote-simple-form-grid">
+              {/* TÊN BẢNG GIÁ */}
+              <div className="form-field full-width">
+                <label className="required-label">Tên bảng giá:</label>
                 <input
                   type="text"
-                  value={activeQuote.productCode || ""}
-                  onChange={(e) => handleMetaChange("productCode", e.target.value.toUpperCase())}
-                  required
+                  className="input-highlight-bold quote-name-input"
+                  value={activeQuote.productTitle || activeQuote.title || ""}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setActiveQuote((prev) => ({
+                      ...prev,
+                      productTitle: val,
+                      title: val
+                    }));
+                  }}
+                  placeholder="Nhập tên bảng giá (Ví dụ: CỬA KÉO CÔNG NGHỆ ĐỨC, Bảng giá cửa cuốn BossDoor...)"
                 />
               </div>
-              <div className="form-field span-2">
-                <label>Tên sản phẩm đại diện:</label>
-                <input
-                  type="text"
-                  value={activeQuote.productTitle || ""}
-                  onChange={(e) => handleMetaChange("productTitle", e.target.value)}
-                />
-              </div>
-              <div className="form-field">
-                <label>Danh mục sản phẩm:</label>
-                <select
-                  value={activeQuote.category || "cuakeo"}
-                  onChange={(e) => handleMetaChange("category", e.target.value)}
-                >
-                  <option value="cuakeo">Cửa kéo</option>
-                  <option value="cuacuon">Cửa cuốn</option>
-                  <option value="phukien">Phụ kiện cửa</option>
-                  <option value="cuatudong">Cổng &amp; Cửa tự động</option>
-                  <option value="nhomkinh">Nhôm kính</option>
-                </select>
-              </div>
-              <div className="form-field span-2">
-                <label>Tiêu đề bảng giá (Hiển thị đầu bảng):</label>
-                <input
-                  type="text"
-                  value={activeQuote.title || ""}
-                  onChange={(e) => handleMetaChange("title", e.target.value)}
-                  placeholder="Ví dụ: Bảng giá cập nhật cửa cuốn BossDoor 2026 tại Đà Nẵng"
-                />
-              </div>
-              <div className="form-field span-3">
-                <label>Thời gian áp dụng bảng giá:</label>
-                <input
-                  type="text"
-                  value={activeQuote.effectiveDate || ""}
-                  onChange={(e) => handleMetaChange("effectiveDate", e.target.value)}
-                  placeholder="Ví dụ: Áp dụng từ năm 2026 cho đến khi có thông báo mới"
-                />
+
+              {/* HÌNH ẢNH BẢNG GIÁ (LINK ẢNH HOẶC TẢI TỪ MÁY LOCAL) */}
+              <div className="form-field full-width quote-image-field-wrap">
+                <label>Hình ảnh bảng giá (Link ảnh hoặc tải từ máy local):</label>
+
+                <div className="quote-image-controls-row">
+                  <div className="quote-image-url-box">
+                    <input
+                      type="text"
+                      className="image-url-input"
+                      value={activeQuote.image || activeQuote.imageUrl || ""}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setActiveQuote((prev) => ({
+                          ...prev,
+                          image: val,
+                          imageUrl: val
+                        }));
+                      }}
+                      placeholder="Dán link ảnh trực tiếp (https://... hoặc /project_1.png)..."
+                    />
+                  </div>
+
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleImageUpload}
+                    accept="image/*"
+                    style={{ display: "none" }}
+                  />
+
+                  <button
+                    type="button"
+                    className="btn-upload-local-img"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={isUploadingImage}
+                  >
+                    {isUploadingImage ? (
+                      <>
+                        <Loader2 size={16} className="spin-icon" /> Đang tải ảnh...
+                      </>
+                    ) : (
+                      <>
+                        <Upload size={16} /> Tải ảnh từ máy local
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                {/* KHUNG XEM TRƯỚC ẢNH NẾU CÓ */}
+                {(activeQuote.image || activeQuote.imageUrl) && (
+                  <div className="quote-image-preview-card">
+                    <div className="quote-img-thumb-wrap">
+                      <img
+                        src={activeQuote.image || activeQuote.imageUrl}
+                        alt="Ảnh bảng giá"
+                        className="quote-preview-thumbnail"
+                        onError={(e) => {
+                          e.target.style.opacity = "0.3";
+                        }}
+                      />
+                    </div>
+                    <div className="quote-img-preview-info">
+                      <span className="preview-label">Ảnh bảng giá hiện tại</span>
+                      <button
+                        type="button"
+                        className="btn-remove-quote-img"
+                        onClick={() => {
+                          setActiveQuote((prev) => ({
+                            ...prev,
+                            image: "",
+                            imageUrl: ""
+                          }));
+                        }}
+                        title="Xóa ảnh này"
+                      >
+                        <X size={14} /> Xóa ảnh
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
