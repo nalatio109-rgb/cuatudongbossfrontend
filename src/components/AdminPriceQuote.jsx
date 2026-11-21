@@ -1062,8 +1062,6 @@ export default function AdminPriceQuote({ showToast }) {
             <tr>
               <th style={{ width: 85 }}>Hình ảnh</th>
               <th>Tiêu đề bảng giá &amp; Mã</th>
-              <th>Chuyên mục</th>
-              <th>Quy cách khung</th>
               <th>Ngày áp dụng</th>
               <th>Tóm tắt nội dung</th>
               <th style={{ textAlign: "center", width: 100 }}>Thao tác</th>
@@ -1072,8 +1070,6 @@ export default function AdminPriceQuote({ showToast }) {
           <tbody>
             {filteredQuotes.length > 0 ? (
               filteredQuotes.map((q) => {
-                const colsCount = q.customColumns?.length || DEFAULT_GRID_COLUMNS.length;
-                const rowsCount = q.items?.length || 7;
                 const firstItemWithImg = q.items?.find((it) => it.image || it.imageUrl);
                 const thumbImg =
                   q.image ||
@@ -1108,42 +1104,10 @@ export default function AdminPriceQuote({ showToast }) {
                         🏷️ Mã: <strong>{q.productCode}</strong>
                       </div>
                     </td>
-                    <td>
-                      <span
-                        className="admin-badge-category"
-                        style={{
-                          background: "rgba(16, 185, 129, 0.15)",
-                          color: "#10b981",
-                          border: "1px solid rgba(16, 185, 129, 0.3)"
-                        }}
-                      >
-                        {q.category === "cuacuon"
-                          ? "Cửa cuốn"
-                          : q.category === "cuakeo"
-                          ? "Cửa kéo"
-                          : q.category || "Cửa cuốn"}
-                      </span>
-                    </td>
-                    <td>
-                      <span
-                        style={{
-                          display: "inline-block",
-                          padding: "4px 8px",
-                          borderRadius: "6px",
-                          background: "rgba(56, 189, 248, 0.12)",
-                          color: "#38bdf8",
-                          fontSize: "0.82rem",
-                          fontWeight: 600,
-                          border: "1px solid rgba(56, 189, 248, 0.25)"
-                        }}
-                      >
-                        {colsCount} Cột × {rowsCount} Hàng
-                      </span>
-                    </td>
                     <td style={{ color: "#cbd5e1", fontSize: "0.88rem" }}>
                       {q.effectiveDate || "Năm 2026"}
                     </td>
-                    <td style={{ maxWidth: 260, fontSize: "0.85rem", color: "#94a3b8" }}>
+                    <td style={{ maxWidth: 320, fontSize: "0.85rem", color: "#94a3b8" }}>
                       <div
                         style={{
                           display: "-webkit-box",
@@ -1180,7 +1144,7 @@ export default function AdminPriceQuote({ showToast }) {
               })
             ) : (
               <tr>
-                <td colSpan={7} style={{ textAlign: "center", padding: "36px", color: "#94a3b8" }}>
+                <td colSpan={5} style={{ textAlign: "center", padding: "36px", color: "#94a3b8" }}>
                   Không tìm thấy bảng giá nào phù hợp với từ khóa "{searchQuery}"!
                 </td>
               </tr>
