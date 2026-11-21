@@ -1309,37 +1309,7 @@ export default function AdminPriceQuote({ showToast }) {
                 />
               </div>
 
-              <div className="form-field">
-                <label>Mã bảng giá (Mã SP):</label>
-                <input
-                  type="text"
-                  value={editingQuote.productCode || ""}
-                  onChange={(e) => handleQuoteFieldChange("productCode", e.target.value)}
-                  placeholder="BD-2026, CK-DE, BEC.5810..."
-                />
-              </div>
 
-              <div className="form-field">
-                <label>Chuyên mục phân loại:</label>
-                <select
-                  value={editingQuote.category || "cuacuon"}
-                  onChange={(e) => handleQuoteFieldChange("category", e.target.value)}
-                >
-                  <option value="cuacuon">Cửa cuốn BossDoor</option>
-                  <option value="cuakeo">Cửa kéo công nghệ Đức</option>
-                  <option value="khac">Khác / Phụ kiện</option>
-                </select>
-              </div>
-
-              <div className="form-field full-width">
-                <label>Ngày áp dụng &amp; ghi chú thời hiệu:</label>
-                <input
-                  type="text"
-                  value={editingQuote.effectiveDate || ""}
-                  onChange={(e) => handleQuoteFieldChange("effectiveDate", e.target.value)}
-                  placeholder="Áp dụng từ năm 2026 cho đến khi có thông báo mới..."
-                />
-              </div>
 
               {/* HÌNH ẢNH ĐẠI DIỆN BẢNG GIÁ */}
               <div className="form-field full-width quote-image-field-wrap">
