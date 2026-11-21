@@ -1061,7 +1061,7 @@ export default function AdminPriceQuote({ showToast }) {
           <thead>
             <tr>
               <th style={{ width: 85 }}>Hình ảnh</th>
-              <th>Tiêu đề bảng giá &amp; Mã</th>
+              <th>Tiêu đề bảng giá</th>
               <th style={{ textAlign: "center", width: 120 }}>Thao tác</th>
             </tr>
           </thead>
@@ -1097,9 +1097,6 @@ export default function AdminPriceQuote({ showToast }) {
                     <td style={{ fontWeight: 600 }}>
                       <div style={{ color: "#f8fafc", fontSize: "0.95rem" }}>
                         {q.productTitle || q.title || q.name || "Bảng giá cửa cuốn BossDoor"}
-                      </div>
-                      <div style={{ fontSize: "0.78rem", color: "#38bdf8", marginTop: 4 }}>
-                        🏷️ Mã: <strong>{q.productCode}</strong>
                       </div>
                     </td>
                     <td>
