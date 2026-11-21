@@ -1097,6 +1097,52 @@
   border-style: solid;
 }
 
+/* ================= VALIDATION BẮT BUỘC ĐIỀN ĐỦ Ô TRỐNG ================= */
+.cell-input-error {
+  border-color: #ef4444 !important;
+  background-color: #fef2f2 !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.25) !important;
+  animation: pulseError 1.5s infinite alternate ease-in-out;
+}
+
+.table-img-cell-box.cell-input-error {
+  border: 1.5px dashed #ef4444 !important;
+  padding: 3px !important;
+  border-radius: 6px !important;
+  background-color: #fef2f2 !important;
+}
+
+@keyframes pulseError {
+  0% {
+    box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.3);
+  }
+  100% {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.5);
+  }
+}
+
+.table-validation-warning {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fef2f2;
+  border: 1.5px solid #fecaca;
+  color: #b91c1c;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 14px;
+  margin-bottom: 6px;
+  line-height: 1.4;
+  box-shadow: 0 2px 6px rgba(239, 68, 68, 0.08);
+}
+
+.table-validation-warning .warn-icon {
+  flex-shrink: 0;
+  color: #ef4444;
+}
+
 /* BUILDER ACTION FOOTER */
 .builder-action-footer {
   display: flex;

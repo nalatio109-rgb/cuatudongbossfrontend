@@ -152,6 +152,7 @@ export default function AdminPriceQuote({ showToast }) {
   const [gridRows, setGridRows] = useState(createDefault7Rows);
   const [inputRowsCount, setInputRowsCount] = useState(7);
   const [inputColsCount, setInputColsCount] = useState(8);
+  const [emptyCellsHighlight, setEmptyCellsHighlight] = useState(new Set());
 
   const createFormRef = useRef(null);
 
@@ -577,6 +578,13 @@ export default function AdminPriceQuote({ showToast }) {
       updated[rowIdx] = { ...updated[rowIdx], [colId]: value };
       return updated;
     });
+    if (emptyCellsHighlight.size > 0 && String(value).trim() !== "") {
+      setEmptyCellsHighlight((prev) => {
+        const next = new Set(prev);
+        next.delete(`${rowIdx}_${colId}`);
+        return next;
+      });
+    }
   };
 
   // ================= XÁC NHẬN TẠO VÀ LƯU BẢNG BÁO GIÁ MỚI =================
@@ -588,6 +596,32 @@ export default function AdminPriceQuote({ showToast }) {
     const code = (newQuoteCode || "BD-NEW").trim().toUpperCase();
     if (quotesList.some((q) => q.productCode.toUpperCase() === code)) {
       alert(`Mã bảng giá "${code}" đã tồn tại! Vui lòng chọn mã khác.`);
+      return;
+    }
+
+    // KIỂM TRA BẮT BUỘC: PHẢI ĐIỀN ĐẦY ĐỦ HẾT TẤT CẢ CÁC Ô TRỐNG TRONG BẢNG
+    const emptyCells = [];
+    gridRows.forEach((row, rIdx) => {
+      gridColumns.forEach((col) => {
+        const val = row[col.id];
+        if (val === undefined || val === null || String(val).trim() === "") {
+          emptyCells.push({
+            rowIdx: rIdx,
+            rowNum: rIdx + 1,
+            colId: col.id,
+            colLabel: col.label || `Cột ${col.id}`
+          });
+        }
+      });
+    });
+
+    if (emptyCells.length > 0) {
+      const errorSet = new Set(emptyCells.map((e) => `${e.rowIdx}_${e.colId}`));
+      setEmptyCellsHighlight(errorSet);
+      const first = emptyCells[0];
+      const msg = `⚠️ Bắt buộc phải điền hết tất cả các ô trong bảng! Hiện còn ${emptyCells.length} ô đang để trống (Ví dụ: Dòng ${first.rowNum}, Cột "${first.colLabel}").`;
+      alert(msg);
+      triggerToast(msg, false);
       return;
     }
 
@@ -1218,7 +1252,7 @@ export default function AdminPriceQuote({ showToast }) {
               <div className="matrix-quick-hint">
                 <Info size={15} />
                 <span>
-                  💡 <strong>Kéo thả viền mép cột</strong> để co giãn to/nhỏ độ rộng cột. Bấm dấu <strong>+</strong> trên tiêu đề cột hoặc nút <strong>+ Chèn</strong> trên từng hàng để <strong>thêm cột / hàng vào bất cứ chỗ nào</strong> bạn muốn!
+                  💡 <strong>Kéo thả viền mép cột</strong> để co giãn độ rộng cột. Bấm dấu <strong>+</strong> trên tiêu đề cột hoặc nút <strong>+ Chèn</strong> trên từng hàng để <strong>thêm cột / hàng vào bất cứ chỗ nào</strong> bạn muốn! 📌 <strong>Bắt buộc:</strong> Bạn phải điền đầy đủ tất cả các ô trong bảng (không được để trống ô nào).
                 </span>
               </div>
 
@@ -1301,11 +1335,12 @@ export default function AdminPriceQuote({ showToast }) {
                           const isNameOrDesc = col.key === "name" || col.id === "col_3" || col.label?.toLowerCase().includes("tên");
                           const isPrice = col.key?.includes("price") || col.id === "col_6" || col.id === "col_7" || col.label?.toLowerCase().includes("giá");
                           const cellVal = row[col.id] || "";
+                          const isCellEmptyError = emptyCellsHighlight.has(`${rIdx}_${col.id}`);
 
                           if (isImage) {
                             return (
                               <td key={`${col.id}-${rIdx}`} className="spreadsheet-cell cell-image-type">
-                                <div className={`table-img-cell-box ${cellVal ? "has-image" : ""}`}>
+                                <div className={`table-img-cell-box ${cellVal ? "has-image" : ""} ${isCellEmptyError && !cellVal ? "cell-input-error" : ""}`}>
                                   {cellVal && (
                                     <div className="cell-img-thumb-container" title="Ảnh sản phẩm">
                                       <img
@@ -1329,7 +1364,7 @@ export default function AdminPriceQuote({ showToast }) {
                                   <div className="cell-img-action-group">
                                     <input
                                       type="text"
-                                      className="table-input cell-img-url-input"
+                                      className={`table-input cell-img-url-input ${isCellEmptyError && !cellVal ? "cell-input-error" : ""}`}
                                       value={cellVal}
                                       onChange={(e) => handleGridCellChange(rIdx, col.id, e.target.value)}
                                       placeholder="Dán link ảnh..."
@@ -1356,7 +1391,7 @@ export default function AdminPriceQuote({ showToast }) {
                               {isNameOrDesc ? (
                                 <textarea
                                   rows={2}
-                                  className="table-textarea cell-content"
+                                  className={`table-textarea cell-content ${isCellEmptyError && !cellVal.trim() ? "cell-input-error" : ""}`}
                                   value={cellVal}
                                   onChange={(e) => handleGridCellChange(rIdx, col.id, e.target.value)}
                                   placeholder="Nhập tên, quy cách..."
@@ -1364,7 +1399,7 @@ export default function AdminPriceQuote({ showToast }) {
                               ) : (
                                 <input
                                   type="text"
-                                  className={`table-input cell-content ${isStt ? "cell-stt-input" : ""} ${isCode ? "bold-code cell-code-input" : ""} ${isPrice ? "price-input" : ""}`}
+                                  className={`table-input cell-content ${isStt ? "cell-stt-input" : ""} ${isCode ? "bold-code cell-code-input" : ""} ${isPrice ? "price-input" : ""} ${isCellEmptyError && !cellVal.trim() ? "cell-input-error" : ""}`}
                                   value={cellVal}
                                   onChange={(e) => handleGridCellChange(rIdx, col.id, e.target.value)}
                                   placeholder={isPrice ? "1,200,000" : isCode ? "Mã SP" : isStt ? String(rIdx + 1) : "..."}
@@ -1423,6 +1458,16 @@ export default function AdminPriceQuote({ showToast }) {
                 </button>
               </div>
             </div>
+
+            {/* CẢNH BÁO BẮT BUỘC ĐIỀN ĐỦ Ô TRỐNG */}
+            {emptyCellsHighlight.size > 0 && (
+              <div className="table-validation-warning">
+                <AlertCircle size={18} className="warn-icon" />
+                <span>
+                  ⚠️ <strong>Chưa thể lưu bảng giá:</strong> Bạn bắt buộc phải điền đầy đủ tất cả các ô trong bảng! Hiện còn <strong>{emptyCellsHighlight.size} ô</strong> đang để trống (được tô màu đỏ).
+                </span>
+              </div>
+            )}
 
             {/* THANH NÚT LƯU BẢNG BÁO GIÁ */}
             <div className="builder-action-footer">
