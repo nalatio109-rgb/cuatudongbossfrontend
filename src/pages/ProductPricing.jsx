@@ -870,35 +870,6 @@ export default function ProductPricing() {
       </nav>
 
       <main className="container pricing-main-container">
-        {/* THANH CHỌN BẢNG GIÁ ĐỒNG BỘ 100% VỚI ADMIN */}
-        {allPriceQuotes && allPriceQuotes.length > 1 && (
-          <div className="pricing-quotes-switcher-card">
-            <div className="quotes-switcher-header">
-              <FileSpreadsheet size={16} className="text-emerald-700" />
-              <span className="switcher-title">Chọn bảng giá để xem:</span>
-            </div>
-            <div className="quotes-switcher-pills">
-              {allPriceQuotes.map((q) => {
-                const isSelected =
-                  (priceQuote?.productCode || "").toUpperCase() === (q.productCode || "").toUpperCase();
-                return (
-                  <button
-                    key={q.productCode}
-                    type="button"
-                    className={`quote-switch-pill ${isSelected ? "active" : ""}`}
-                    onClick={() => handleSelectQuote(q)}
-                    title={`Xem bảng báo giá: ${q.productTitle || q.productCode}`}
-                  >
-                    <Tag size={13} />
-                    <span className="pill-title">{q.productTitle || q.title || q.productCode}</span>
-                    <span className="pill-code">({q.productCode})</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
         {productArticle ? (
           <article className="pricing-article-wrapper">
             {/* ARTICLE CONTINUOUS HEADER (Khớp 100% Ảnh 4) */}
