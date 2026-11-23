@@ -683,9 +683,14 @@
   }
 
   .pricing-breadcrumb .container {
-    padding: 0 16px;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding: 0 10px !important;
     font-size: 11.5px !important;
     gap: 5px !important;
+    box-sizing: border-box !important;
   }
 
   .pricing-breadcrumb a,
@@ -694,10 +699,16 @@
     line-height: 1.4 !important;
   }
 
+  main.pricing-main-container,
   .pricing-main-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
     margin-top: 14px !important;
-    padding: 0 16px !important;
-    gap: 28px !important;
+    padding: 0 10px !important;
+    gap: 24px !important;
+    box-sizing: border-box !important;
   }
 
   .pricing-article-wrapper,
@@ -709,14 +720,21 @@
     box-shadow: none !important;
     border-radius: 0 !important;
     padding: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    width: 100% !important;
   }
 
   .pricing-article-wrapper {
     gap: 16px !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
   }
 
   .pricing-article-wrapper .article-continuous-header {
     padding-bottom: 12px !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
   }
 
   .pricing-article-wrapper .article-header-tag {
@@ -731,16 +749,21 @@
     color: #004d32 !important;
     line-height: 1.35 !important;
     margin-bottom: 6px !important;
+    padding-left: 0 !important;
+    margin-left: 0 !important;
   }
 
   .technical-main-title,
-  .section-head-bar h2 {
+  .section-head-bar h2,
+  .pricing-section-title {
     font-size: 18.5px !important;
     font-weight: 800 !important;
     color: #004d32 !important;
     line-height: 1.35 !important;
     margin-bottom: 6px !important;
     letter-spacing: -0.2px !important;
+    padding-left: 0 !important;
+    margin-left: 0 !important;
   }
 
   .pricing-accessories-section .section-head-bar h2 {
@@ -764,18 +787,20 @@
   .pricing-article-wrapper .product-article-rendered-stream {
     font-size: 13.5px !important;
     line-height: 1.65 !important;
+    padding-left: 0 !important;
   }
 
   .pricing-article-wrapper .product-article-rendered-stream h1 {
     font-size: 18px !important;
     margin: 20px 0 10px !important;
+    padding-left: 0 !important;
   }
 
   .pricing-article-wrapper .product-article-rendered-stream h2 {
     font-size: 15.5px !important;
-    margin: 22px 0 10px !important;
-    padding-left: 10px !important;
-    border-left-width: 3px !important;
+    margin: 18px 0 8px !important;
+    padding-left: 0 !important;
+    border-left: none !important;
   }
 
   .pricing-article-wrapper .product-article-rendered-stream h3 {
@@ -4227,20 +4252,15 @@
 }
 
 @media (max-width: 768px) {
-  .pricing-custom-article-box.above-quote-article {
-    padding: 0 !important;
-    font-size: 13.5px !important;
-    background: transparent !important;
-    border: none !important;
-    margin-bottom: 12px !important;
-  }
-
-  /* BÀI VIẾT GIỚI THIỆU PHÍA TRÊN BẢNG GIÁ - FONT VỪA VẶN, DỄ ĐỌC TRÊN ĐIỆN THOẠI */
+  /* BÀI VIẾT GIỚI THIỆU PHÍA TRÊN BẢNG GIÁ - FONT VỪA VẶN, NẰM SÁT LỀ TRÁI GỌN GÀNG TRÊN ĐIỆN THOẠI */
   .pricing-custom-article-box.above-quote-article {
     padding: 0 !important;
     background: transparent !important;
     border: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
     margin-bottom: 12px !important;
+    width: 100% !important;
   }
 
   .pricing-custom-article-box.above-quote-article,
@@ -4252,9 +4272,12 @@
     font-size: 13px !important;
     line-height: 1.6 !important;
     color: #334155 !important;
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+    text-indent: 0 !important;
   }
 
-  /* BÀI VIẾT PHÍA DƯỚI BẢNG GIÁ NẰM TRỰC TIẾP TRÊN NỀN TRẮNG, BỎ HOÀN TOÀN KHUNG */
+  /* BÀI VIẾT PHÍA DƯỚI BẢNG GIÁ NẰM TRỰC TIẾP TRÊN NỀN TRẮNG, BỎ HOÀN TOÀN KHUNG, CHỮ ĐẦU DÒNG SÁT LỀ TRÁI */
   .pricing-custom-article-box.below-quote-article {
     background: transparent !important;
     border: none !important;
@@ -4262,14 +4285,19 @@
     border-radius: 0 !important;
     box-shadow: none !important;
     padding: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
     margin-top: 18px !important;
     margin-bottom: 24px !important;
+    width: 100% !important;
     font-size: 13.5px !important;
   }
 
   .pricing-custom-article-box.below-quote-article .custom-article-header {
     border-bottom: none !important;
     padding-bottom: 0 !important;
+    padding-left: 0 !important;
+    margin-left: 0 !important;
     margin-bottom: 10px !important;
     gap: 6px !important;
   }
@@ -4280,6 +4308,8 @@
     color: #004d32 !important;
     letter-spacing: 0.2px !important;
     line-height: 1.35 !important;
+    padding-left: 0 !important;
+    margin-left: 0 !important;
   }
 
   .pricing-custom-article-box.below-quote-article .custom-article-paragraph,
@@ -4287,6 +4317,8 @@
     font-size: 13.5px !important;
     line-height: 1.7 !important;
     color: #334155 !important;
+    padding-left: 0 !important;
+    margin-left: 0 !important;
   }
 
   .pricing-custom-article-box.below-quote-article .custom-article-rendered-html h1,
@@ -4295,22 +4327,47 @@
     font-weight: 800 !important;
     color: #004d32 !important;
     margin: 16px 0 8px 0 !important;
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+    border-left: none !important;
     line-height: 1.4 !important;
+    text-indent: 0 !important;
   }
 
-  .pricing-custom-article-box.below-quote-article .custom-article-rendered-html h3 {
+  .pricing-custom-article-box.below-quote-article .custom-article-rendered-html h3,
+  .pricing-custom-article-box.below-quote-article .plain-article-heading {
     font-size: 14.5px !important;
     font-weight: 700 !important;
-    color: #1e293b !important;
+    color: #004d32 !important;
     margin: 14px 0 6px 0 !important;
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+    border-left: none !important;
+    text-indent: 0 !important;
   }
 
   .pricing-custom-article-box.below-quote-article .custom-article-rendered-html p,
+  .pricing-custom-article-box.below-quote-article .plain-article-line {
+    font-size: 13.5px !important;
+    line-height: 1.7 !important;
+    color: #334155 !important;
+    margin-bottom: 8px !important;
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+    text-indent: 0 !important;
+  }
+
   .pricing-custom-article-box.below-quote-article .custom-article-rendered-html li {
     font-size: 13.5px !important;
     line-height: 1.7 !important;
     color: #334155 !important;
     margin-bottom: 8px !important;
+  }
+
+  .pricing-custom-article-box .custom-article-rendered-html ul,
+  .pricing-custom-article-box .custom-article-rendered-html ol {
+    margin: 6px 0 10px 18px !important;
+    padding-left: 0 !important;
   }
 }
 
