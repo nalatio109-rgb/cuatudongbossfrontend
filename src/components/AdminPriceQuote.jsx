@@ -1012,10 +1012,10 @@ export default function AdminPriceQuote({ showToast }) {
       productCode: (editingQuote.productCode || "").trim() || `BD-${Date.now().toString().slice(-4)}`,
       productTitle: rawTitle.trim(),
       category: editingQuote.category || "cuacuon",
-      title: editingQuote.title || `Bảng giá cập nhật ${rawTitle.trim()} 2026 tại Đà Nẵng`,
+      title: (editingQuote.title && editingQuote.title.trim()) || `Bảng giá cập nhật ${rawTitle.trim()} 2026 tại Đà Nẵng`,
       effectiveDate: editingQuote.effectiveDate || "Áp dụng từ năm 2026 cho đến khi có thông báo mới",
-      articleAbove: (editingQuote.articleAbove && editingQuote.articleAbove.trim()) || DEFAULT_NEW_QUOTE_TEMPLATE.articleAbove,
-      articleBelow: (editingQuote.articleBelow && editingQuote.articleBelow.trim()) || DEFAULT_NEW_QUOTE_TEMPLATE.articleBelow,
+      articleAbove: editingQuote.articleAbove !== undefined ? editingQuote.articleAbove : DEFAULT_NEW_QUOTE_TEMPLATE.articleAbove,
+      articleBelow: editingQuote.articleBelow !== undefined ? editingQuote.articleBelow : DEFAULT_NEW_QUOTE_TEMPLATE.articleBelow,
       image: editingQuote.image || (formattedItems.find((it) => it.image)?.image) || "/project_1.png",
       customColumns: gridColumns.map((c) => ({
         id: c.id,
@@ -1382,6 +1382,20 @@ export default function AdminPriceQuote({ showToast }) {
                   onChange={(e) => handleQuoteNameChange(e.target.value)}
                   placeholder="Ví dụ: Bảng giá Cửa cuốn BossDoor Luxury 2026, Cửa kéo công nghệ Đức..."
                   required
+                />
+              </div>
+
+              {/* TIÊU ĐỀ BẢNG GIÁ HIỂN THỊ TRÊN WEBSITE */}
+              <div className="form-field full-width">
+                <label>
+                  Tiêu đề bài viết / Bảng giá hiển thị trên website:
+                </label>
+                <input
+                  type="text"
+                  className="input-highlight-bold quote-name-input"
+                  value={editingQuote.title || ""}
+                  onChange={(e) => handleQuoteFieldChange("title", e.target.value)}
+                  placeholder="Ví dụ: Bảng giá cập nhật cửa cuốn BossDoor 2026 tại Đà Nẵng..."
                 />
               </div>
 

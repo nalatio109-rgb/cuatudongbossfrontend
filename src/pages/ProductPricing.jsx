@@ -65,28 +65,42 @@ const isImageCol = (col) => {
   );
 };
 
-// Helper tìm kiếm bảng giá thông minh khớp với URL slug hoặc mã sản phẩm
+// Helper tìm kiếm bảng giá thông minh khớp với ID, URL slug hoặc mã sản phẩm
 const findQuoteInList = (list, searchCode) => {
   if (!Array.isArray(list) || list.length === 0) return null;
   const s = String(searchCode || "").toLowerCase().trim();
   if (!s) return null;
 
-  // 1. Khớp chính xác productCode
-  let found = list.find((q) => q.productCode?.toLowerCase() === s);
+  // 1. Khớp chính xác ID hoặc _id
+  let found = list.find((q) => (q.id && String(q.id).toLowerCase() === s) || (q._id && String(q._id).toLowerCase() === s));
   if (found) return found;
 
-  // 2. Khớp trong danh sách mã SP của items
-  found = list.find((q) => q.items && q.items.some((it) => it.code?.toLowerCase() === s));
+  // 2. Khớp chính xác productCode
+  found = list.find((q) => q.productCode && q.productCode.toLowerCase() === s);
   if (found) return found;
 
-  // 3. Khớp alias slug thông dụng (ví dụ cua-cuon-bossdoor khớp với BD-2026 hoặc bảng cửa cuốn đầu tiên)
-  if (s.includes("cua-cuon-bossdoor") || s === "bossdoor") {
+  // 3. Khớp trong danh sách mã SP của items
+  found = list.find((q) => q.items && q.items.some((it) => it.code && it.code.toLowerCase() === s));
+  if (found) return found;
+
+  // 4. Khớp theo productTitle hoặc title
+  found = list.find((q) => {
+    const t = (q.productTitle || q.title || "").toLowerCase();
+    return t && (t === s || t.includes(s) || s.includes(t));
+  });
+  if (found) return found;
+
+  // 5. Khớp alias slug thông dụng (ví dụ cua-cuon-bossdoor)
+  if (s.includes("cua-cuon-bossdoor") || s === "bossdoor" || s === "bang-gia" || s === "cuacuon") {
     found = list.find(
       (q) =>
+        (q.productTitle && q.productTitle.toLowerCase().includes("bossdoor")) ||
+        (q.title && q.title.toLowerCase().includes("bossdoor")) ||
         q.productCode?.toLowerCase() === "bd-2026" ||
-        q.productCode?.toLowerCase() === "bossdoor" ||
-        q.category === "cuacuon"
+        q.productCode?.toLowerCase() === "bossdoor"
     );
+    if (found) return found;
+    found = list.find((q) => q.category === "cuacuon");
     if (found) return found;
   }
   return null;
@@ -410,6 +424,21 @@ export default function ProductPricing() {
           const parsed = JSON.parse(local);
           if (Array.isArray(parsed) && parsed.length > 0) {
             setAllPriceQuotes(parsed);
+            const currentKey = priceQuote?.id || priceQuote?._id || priceQuote?.productCode || product?.code || effectiveId;
+            const updatedMatch =
+              findQuoteInList(parsed, currentKey) ||
+              findQuoteInList(parsed, effectiveId) ||
+              parsed[0];
+            if (updatedMatch) {
+              setPriceQuote(updatedMatch);
+              setProduct((prev) => ({
+                ...(prev || {}),
+                code: updatedMatch.productCode || prev?.code,
+                title: updatedMatch.productTitle || updatedMatch.title || prev?.title,
+                image: updatedMatch.image || prev?.image,
+                description: updatedMatch.articleAbove || prev?.description
+              }));
+            }
           }
         } catch (e) {}
       }
@@ -1023,6 +1052,41 @@ export default function ProductPricing() {
 
             {/* BẢNG BÁO GIÁ CHÍNH */}
             <section className="pricing-table-section">
+              {/* THANH CHỌN BẢNG BÁO GIÁ ĐỒNG BỘ TỪ ADMIN */}
+              {allPriceQuotes && allPriceQuotes.length > 1 && (
+                <div className="pricing-quick-quote-switcher" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "8px", marginBottom: "16px", padding: "10px 14px", background: "rgba(15, 23, 42, 0.6)", borderRadius: "12px", border: "1px solid rgba(255, 255, 255, 0.08)" }}>
+                  <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "#38bdf8", display: "flex", alignItems: "center", gap: "6px" }}>
+                    <FileSpreadsheet size={15} /> Bảng giá:
+                  </span>
+                  {allPriceQuotes.map((q, qIdx) => {
+                    const qKey = q.id || q._id || q.productCode || `q_${qIdx}`;
+                    const isSelected = (priceQuote?.id && q.id && priceQuote.id === q.id) ||
+                                       (priceQuote?.productCode && q.productCode && priceQuote.productCode === q.productCode) ||
+                                       (priceQuote?.productTitle && q.productTitle && priceQuote.productTitle === q.productTitle);
+                    return (
+                      <button
+                        key={qKey}
+                        type="button"
+                        onClick={() => handleSelectQuote(q)}
+                        style={{
+                          background: isSelected ? "#047857" : "rgba(255, 255, 255, 0.06)",
+                          border: isSelected ? "1px solid #10b981" : "1px solid rgba(255, 255, 255, 0.12)",
+                          color: isSelected ? "#ffffff" : "#cbd5e1",
+                          padding: "6px 14px",
+                          borderRadius: "20px",
+                          fontSize: "0.82rem",
+                          fontWeight: isSelected ? 700 : 500,
+                          cursor: "pointer",
+                          transition: "all 0.2s"
+                        }}
+                      >
+                        {q.productTitle || q.title || `Bảng giá ${qIdx + 1}`}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+
               <div className="pricing-table-header-row">
                 <h2 id="bang-gia-chi-tiet" className="pricing-section-title">
                   {priceQuote?.tableHeading || priceQuote?.title || `Bảng giá ${product?.title || ""} tại Đà Nẵng`}
@@ -1331,6 +1395,41 @@ export default function ProductPricing() {
 
             {/* 3. BẢNG BÁO GIÁ KỸ THUẬT CHUYÊN NGHIỆP */}
             <section className="pricing-table-section">
+              {/* THANH CHỌN BẢNG BÁO GIÁ ĐỒNG BỘ TỪ ADMIN */}
+              {allPriceQuotes && allPriceQuotes.length > 1 && (
+                <div className="pricing-quick-quote-switcher" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "8px", marginBottom: "16px", padding: "10px 14px", background: "rgba(15, 23, 42, 0.6)", borderRadius: "12px", border: "1px solid rgba(255, 255, 255, 0.08)" }}>
+                  <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "#38bdf8", display: "flex", alignItems: "center", gap: "6px" }}>
+                    <FileSpreadsheet size={15} /> Bảng giá:
+                  </span>
+                  {allPriceQuotes.map((q, qIdx) => {
+                    const qKey = q.id || q._id || q.productCode || `q_${qIdx}`;
+                    const isSelected = (priceQuote?.id && q.id && priceQuote.id === q.id) ||
+                                       (priceQuote?.productCode && q.productCode && priceQuote.productCode === q.productCode) ||
+                                       (priceQuote?.productTitle && q.productTitle && priceQuote.productTitle === q.productTitle);
+                    return (
+                      <button
+                        key={qKey}
+                        type="button"
+                        onClick={() => handleSelectQuote(q)}
+                        style={{
+                          background: isSelected ? "#047857" : "rgba(255, 255, 255, 0.06)",
+                          border: isSelected ? "1px solid #10b981" : "1px solid rgba(255, 255, 255, 0.12)",
+                          color: isSelected ? "#ffffff" : "#cbd5e1",
+                          padding: "6px 14px",
+                          borderRadius: "20px",
+                          fontSize: "0.82rem",
+                          fontWeight: isSelected ? 700 : 500,
+                          cursor: "pointer",
+                          transition: "all 0.2s"
+                        }}
+                      >
+                        {q.productTitle || q.title || `Bảng giá ${qIdx + 1}`}
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+
               <div className="section-head-bar">
                 <div className="head-badge">BẢNG BÁO GIÁ KỸ THUẬT CHÍNH THỨC</div>
                 <h2 className="technical-main-title">
