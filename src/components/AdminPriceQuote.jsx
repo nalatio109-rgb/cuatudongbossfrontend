@@ -418,18 +418,18 @@ export default function AdminPriceQuote({ showToast }) {
   };
 
   // ================= 2. QUẢN LÝ DANH SÁCH BẢNG GIÁ (LIST VIEW) =================
-  const handleDeleteQuote = async (quoteOrCode) => {
+  const handleDeleteQuote = async (quoteOrKey) => {
     if (quotesList.length <= 1) {
       alert("Hệ thống cần giữ lại tối thiểu 1 bảng giá!");
       return;
     }
     const target = quotesList.find(
       (q) =>
-        q.id === quoteOrCode ||
-        q._id === quoteOrCode ||
-        q.productCode === quoteOrCode
+        (q.id && q.id === quoteOrKey) ||
+        (q._id && q._id === quoteOrKey) ||
+        (q.productCode && q.productCode === quoteOrKey)
     );
-    const targetName = target?.productTitle || target?.title || quoteOrCode;
+    const targetName = target?.productTitle || target?.title || target?.productCode || quoteOrKey;
 
     const confirmDelete = window.confirm(
       `Bạn có chắc chắn muốn XÓA VĨNH VIỄN bảng giá "${targetName}" khỏi hệ thống?`
@@ -437,12 +437,12 @@ export default function AdminPriceQuote({ showToast }) {
     if (!confirmDelete) return;
 
     setLoading(true);
-    const remaining = quotesList.filter(
-      (q) =>
-        q.id !== quoteOrCode &&
-        q._id !== quoteOrCode &&
-        q.productCode !== quoteOrCode
-    );
+    const remaining = quotesList.filter((q) => {
+      if (target?.id && q.id) return q.id !== target.id;
+      if (target?._id && q._id) return q._id !== target._id;
+      if (target?.productCode && q.productCode) return q.productCode !== target.productCode;
+      return true;
+    });
 
     if (import.meta.env.VITE_API_URL && target?._id) {
       try {
@@ -1291,7 +1291,32 @@ export default function AdminPriceQuote({ showToast }) {
           </h2>
         </div>
 
-        <div style={{ display: "flex", gap: "10px" }}>
+        <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+          {viewMode === "edit" && (
+            <button
+              type="button"
+              className="btn-delete-quote-current"
+              onClick={() => handleDeleteQuote(editingQuote.id || editingOriginalKey || editingQuote.productCode)}
+              disabled={loading}
+              style={{
+                background: "rgba(239, 68, 68, 0.12)",
+                border: "1px solid rgba(239, 68, 68, 0.35)",
+                color: "#fca5a5",
+                padding: "9px 16px",
+                borderRadius: "10px",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                fontWeight: 600,
+                fontSize: "0.85rem",
+                transition: "all 0.2s"
+              }}
+              title="Xóa vĩnh viễn bảng giá này khỏi hệ thống"
+            >
+              <Trash2 size={16} /> XÓA BẢNG GIÁ NÀY
+            </button>
+          )}
           <button
             type="button"
             className="btn-add-new"
@@ -1824,6 +1849,30 @@ export default function AdminPriceQuote({ showToast }) {
               <Check size={18} />
               <span>{loading ? "Đang xử lý..." : "XÁC NHẬN LƯU BẢNG BÁO GIÁ"}</span>
             </button>
+
+            {viewMode === "edit" && (
+              <button
+                type="button"
+                className="btn-danger-outline"
+                onClick={() => handleDeleteQuote(editingQuote.id || editingOriginalKey || editingQuote.productCode)}
+                disabled={loading}
+                style={{
+                  background: "rgba(239, 68, 68, 0.1)",
+                  border: "1px solid rgba(239, 68, 68, 0.35)",
+                  color: "#fca5a5",
+                  padding: "11px 20px",
+                  borderRadius: "12px",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  fontWeight: 600,
+                  fontSize: "0.9rem"
+                }}
+              >
+                <Trash2 size={16} /> Xóa Bảng Giá Này
+              </button>
+            )}
 
             <button
               type="button"
