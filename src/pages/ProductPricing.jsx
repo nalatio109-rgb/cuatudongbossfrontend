@@ -1052,41 +1052,6 @@ export default function ProductPricing() {
 
             {/* BẢNG BÁO GIÁ CHÍNH */}
             <section className="pricing-table-section">
-              {/* THANH CHỌN BẢNG BÁO GIÁ ĐỒNG BỘ TỪ ADMIN */}
-              {allPriceQuotes && allPriceQuotes.length > 1 && (
-                <div className="pricing-quick-quote-switcher" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "8px", marginBottom: "16px", padding: "10px 14px", background: "rgba(15, 23, 42, 0.6)", borderRadius: "12px", border: "1px solid rgba(255, 255, 255, 0.08)" }}>
-                  <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "#38bdf8", display: "flex", alignItems: "center", gap: "6px" }}>
-                    <FileSpreadsheet size={15} /> Bảng giá:
-                  </span>
-                  {allPriceQuotes.map((q, qIdx) => {
-                    const qKey = q.id || q._id || q.productCode || `q_${qIdx}`;
-                    const isSelected = (priceQuote?.id && q.id && priceQuote.id === q.id) ||
-                                       (priceQuote?.productCode && q.productCode && priceQuote.productCode === q.productCode) ||
-                                       (priceQuote?.productTitle && q.productTitle && priceQuote.productTitle === q.productTitle);
-                    return (
-                      <button
-                        key={qKey}
-                        type="button"
-                        onClick={() => handleSelectQuote(q)}
-                        style={{
-                          background: isSelected ? "#047857" : "rgba(255, 255, 255, 0.06)",
-                          border: isSelected ? "1px solid #10b981" : "1px solid rgba(255, 255, 255, 0.12)",
-                          color: isSelected ? "#ffffff" : "#cbd5e1",
-                          padding: "6px 14px",
-                          borderRadius: "20px",
-                          fontSize: "0.82rem",
-                          fontWeight: isSelected ? 700 : 500,
-                          cursor: "pointer",
-                          transition: "all 0.2s"
-                        }}
-                      >
-                        {q.productTitle || q.title || `Bảng giá ${qIdx + 1}`}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-
               <div className="pricing-table-header-row">
                 <h2 id="bang-gia-chi-tiet" className="pricing-section-title">
                   {priceQuote?.tableHeading || priceQuote?.title || `Bảng giá ${product?.title || ""} tại Đà Nẵng`}
@@ -1395,41 +1360,6 @@ export default function ProductPricing() {
 
             {/* 3. BẢNG BÁO GIÁ KỸ THUẬT CHUYÊN NGHIỆP */}
             <section className="pricing-table-section">
-              {/* THANH CHỌN BẢNG BÁO GIÁ ĐỒNG BỘ TỪ ADMIN */}
-              {allPriceQuotes && allPriceQuotes.length > 1 && (
-                <div className="pricing-quick-quote-switcher" style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "8px", marginBottom: "16px", padding: "10px 14px", background: "rgba(15, 23, 42, 0.6)", borderRadius: "12px", border: "1px solid rgba(255, 255, 255, 0.08)" }}>
-                  <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "#38bdf8", display: "flex", alignItems: "center", gap: "6px" }}>
-                    <FileSpreadsheet size={15} /> Bảng giá:
-                  </span>
-                  {allPriceQuotes.map((q, qIdx) => {
-                    const qKey = q.id || q._id || q.productCode || `q_${qIdx}`;
-                    const isSelected = (priceQuote?.id && q.id && priceQuote.id === q.id) ||
-                                       (priceQuote?.productCode && q.productCode && priceQuote.productCode === q.productCode) ||
-                                       (priceQuote?.productTitle && q.productTitle && priceQuote.productTitle === q.productTitle);
-                    return (
-                      <button
-                        key={qKey}
-                        type="button"
-                        onClick={() => handleSelectQuote(q)}
-                        style={{
-                          background: isSelected ? "#047857" : "rgba(255, 255, 255, 0.06)",
-                          border: isSelected ? "1px solid #10b981" : "1px solid rgba(255, 255, 255, 0.12)",
-                          color: isSelected ? "#ffffff" : "#cbd5e1",
-                          padding: "6px 14px",
-                          borderRadius: "20px",
-                          fontSize: "0.82rem",
-                          fontWeight: isSelected ? 700 : 500,
-                          cursor: "pointer",
-                          transition: "all 0.2s"
-                        }}
-                      >
-                        {q.productTitle || q.title || `Bảng giá ${qIdx + 1}`}
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
-
               <div className="section-head-bar">
                 <div className="head-badge">BẢNG BÁO GIÁ KỸ THUẬT CHÍNH THỨC</div>
                 <h2 className="technical-main-title">
