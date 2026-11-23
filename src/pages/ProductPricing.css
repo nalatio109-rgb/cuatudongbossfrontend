@@ -4252,32 +4252,8 @@
 }
 
 @media (max-width: 768px) {
-  /* BÀI VIẾT GIỚI THIỆU PHÍA TRÊN BẢNG GIÁ - FONT VỪA VẶN, NẰM SÁT LỀ TRÁI GỌN GÀNG TRÊN ĐIỆN THOẠI */
-  .pricing-custom-article-box.above-quote-article {
-    padding: 0 !important;
-    background: transparent !important;
-    border: none !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    margin-bottom: 12px !important;
-    width: 100% !important;
-  }
-
+  /* ================= BÀI VIẾT PHÍA TRÊN & PHÍA DƯỚI BẢNG GIÁ ĐỒNG BỘ 100% FONT CHỮ VÀ BỐ CỤC TRÊN ĐIỆN THOẠI ================= */
   .pricing-custom-article-box.above-quote-article,
-  .pricing-custom-article-box.above-quote-article .custom-article-paragraph,
-  .pricing-custom-article-box.above-quote-article .custom-article-rendered-html,
-  .pricing-custom-article-box.above-quote-article p,
-  .pricing-custom-article-box.above-quote-article span,
-  .pricing-custom-article-box.above-quote-article div {
-    font-size: 13px !important;
-    line-height: 1.6 !important;
-    color: #334155 !important;
-    padding-left: 0 !important;
-    margin-left: 0 !important;
-    text-indent: 0 !important;
-  }
-
-  /* BÀI VIẾT PHÍA DƯỚI BẢNG GIÁ NẰM TRỰC TIẾP TRÊN NỀN TRẮNG, BỎ HOÀN TOÀN KHUNG, CHỮ ĐẦU DÒNG SÁT LỀ TRÁI */
   .pricing-custom-article-box.below-quote-article {
     background: transparent !important;
     border: none !important;
@@ -4287,9 +4263,17 @@
     padding: 0 !important;
     margin-left: 0 !important;
     margin-right: 0 !important;
+    width: 100% !important;
+  }
+
+  .pricing-custom-article-box.above-quote-article {
+    margin-top: 6px !important;
+    margin-bottom: 14px !important;
+  }
+
+  .pricing-custom-article-box.below-quote-article {
     margin-top: 18px !important;
     margin-bottom: 24px !important;
-    width: 100% !important;
     font-size: 13.5px !important;
   }
 
@@ -4312,15 +4296,37 @@
     margin-left: 0 !important;
   }
 
+  /* ĐỒNG BỘ ĐOẠN VĂN: CẢ 2 PHẦN TRÊN & DƯỚI ĐỀU BẰNG NHAU 13.5PX, LINE-HEIGHT 1.7 */
+  .pricing-custom-article-box.above-quote-article .custom-article-paragraph,
+  .pricing-custom-article-box.above-quote-article .custom-article-rendered-html,
   .pricing-custom-article-box.below-quote-article .custom-article-paragraph,
-  .pricing-custom-article-box.below-quote-article .custom-article-rendered-html {
+  .pricing-custom-article-box.below-quote-article .custom-article-rendered-html,
+  .pricing-custom-article-box.above-quote-article p,
+  .pricing-custom-article-box.below-quote-article p,
+  .pricing-custom-article-box.above-quote-article .plain-article-line,
+  .pricing-custom-article-box.below-quote-article .plain-article-line,
+  .pricing-custom-article-box.above-quote-article span,
+  .pricing-custom-article-box.below-quote-article span,
+  .pricing-custom-article-box.above-quote-article div,
+  .pricing-custom-article-box.below-quote-article div {
     font-size: 13.5px !important;
     line-height: 1.7 !important;
     color: #334155 !important;
     padding-left: 0 !important;
     margin-left: 0 !important;
+    text-indent: 0 !important;
   }
 
+  .pricing-custom-article-box.above-quote-article .custom-article-rendered-html p,
+  .pricing-custom-article-box.below-quote-article .custom-article-rendered-html p,
+  .pricing-custom-article-box.above-quote-article .plain-article-line,
+  .pricing-custom-article-box.below-quote-article .plain-article-line {
+    margin-bottom: 8px !important;
+  }
+
+  /* ĐỒNG BỘ TIÊU ĐỀ LỚN H1/H2: 16PX */
+  .pricing-custom-article-box.above-quote-article .custom-article-rendered-html h1,
+  .pricing-custom-article-box.above-quote-article .custom-article-rendered-html h2,
   .pricing-custom-article-box.below-quote-article .custom-article-rendered-html h1,
   .pricing-custom-article-box.below-quote-article .custom-article-rendered-html h2 {
     font-size: 16px !important;
@@ -4334,6 +4340,9 @@
     text-indent: 0 !important;
   }
 
+  /* ĐỒNG BỘ TIÊU ĐỀ MỤC NHỎ H3 / PLAIN-ARTICLE-HEADING: 14.5PX */
+  .pricing-custom-article-box.above-quote-article .custom-article-rendered-html h3,
+  .pricing-custom-article-box.above-quote-article .plain-article-heading,
   .pricing-custom-article-box.below-quote-article .custom-article-rendered-html h3,
   .pricing-custom-article-box.below-quote-article .plain-article-heading {
     font-size: 14.5px !important;
@@ -4343,20 +4352,11 @@
     padding-left: 0 !important;
     margin-left: 0 !important;
     border-left: none !important;
+    line-height: 1.4 !important;
     text-indent: 0 !important;
   }
 
-  .pricing-custom-article-box.below-quote-article .custom-article-rendered-html p,
-  .pricing-custom-article-box.below-quote-article .plain-article-line {
-    font-size: 13.5px !important;
-    line-height: 1.7 !important;
-    color: #334155 !important;
-    margin-bottom: 8px !important;
-    padding-left: 0 !important;
-    margin-left: 0 !important;
-    text-indent: 0 !important;
-  }
-
+  .pricing-custom-article-box.above-quote-article .custom-article-rendered-html li,
   .pricing-custom-article-box.below-quote-article .custom-article-rendered-html li {
     font-size: 13.5px !important;
     line-height: 1.7 !important;
