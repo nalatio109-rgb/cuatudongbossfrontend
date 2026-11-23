@@ -229,6 +229,57 @@ export const getActiveRows = (quote, cols) => {
   });
 };
 
+// Component Textarea tự động co giãn chiều cao theo độ dài nội dung chữ (chữ dài tới đâu hộp to tới đó)
+const AutoResizeTextarea = ({
+  value,
+  onChange,
+  placeholder,
+  className = "quote-article-textarea",
+  minHeight = 90,
+  style = {},
+  ...props
+}) => {
+  const textareaRef = useRef(null);
+
+  const adjustHeight = () => {
+    const el = textareaRef.current;
+    if (el) {
+      el.style.height = "auto";
+      const newHeight = Math.max(el.scrollHeight, minHeight);
+      el.style.height = `${newHeight}px`;
+    }
+  };
+
+  useEffect(() => {
+    adjustHeight();
+  }, [value]);
+
+  useEffect(() => {
+    window.addEventListener("resize", adjustHeight);
+    return () => window.removeEventListener("resize", adjustHeight);
+  }, []);
+
+  return (
+    <textarea
+      ref={textareaRef}
+      value={value || ""}
+      onChange={(e) => {
+        if (onChange) onChange(e);
+        adjustHeight();
+      }}
+      placeholder={placeholder}
+      className={className}
+      style={{
+        overflowY: "hidden",
+        minHeight: `${minHeight}px`,
+        boxSizing: "border-box",
+        ...style
+      }}
+      {...props}
+    />
+  );
+};
+
 const DEFAULT_NEW_QUOTE_TEMPLATE = {
   productCode: "BD-2026",
   productTitle: "Bảng giá cửa cuốn BossDoor 2026",
@@ -1570,8 +1621,8 @@ export default function AdminPriceQuote({ showToast }) {
                   Đoạn văn bản giới thiệu mở đầu hiển thị ngay phía trên bảng giá ngoài trang web
                 </span>
               </div>
-              <textarea
-                rows={3}
+              <AutoResizeTextarea
+                minHeight={80}
                 className="quote-article-textarea"
                 value={editingQuote.articleAbove || ""}
                 onChange={(e) => handleQuoteFieldChange("articleAbove", e.target.value)}
@@ -1715,8 +1766,8 @@ export default function AdminPriceQuote({ showToast }) {
                             className={`spreadsheet-cell ${isStt ? "cell-stt-cell" : ""} ${isCode ? "cell-code-cell" : ""} ${isHighlighted ? "cell-highlight-empty" : ""}`}
                           >
                             {isNameOrDesc ? (
-                              <textarea
-                                rows={2}
+                              <AutoResizeTextarea
+                                minHeight={42}
                                 className="table-textarea cell-content"
                                 value={cellVal}
                                 onChange={(e) => handleGridCellChange(rIdx, col.id, e.target.value)}
@@ -1796,8 +1847,8 @@ export default function AdminPriceQuote({ showToast }) {
                   Nội dung bài viết chi tiết, hướng dẫn kỹ thuật, lưu ý thi công hiển thị phía dưới bảng giá
                 </span>
               </div>
-              <textarea
-                rows={4}
+              <AutoResizeTextarea
+                minHeight={100}
                 className="quote-article-textarea"
                 value={editingQuote.articleBelow || ""}
                 onChange={(e) => handleQuoteFieldChange("articleBelow", e.target.value)}
