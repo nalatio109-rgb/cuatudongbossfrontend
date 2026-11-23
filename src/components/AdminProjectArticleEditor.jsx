@@ -6,6 +6,10 @@ import {
   Upload,
   Image as ImageIcon,
   Plus,
+  Minus,
+  AlignLeft,
+  AlignCenter,
+  AlignRight,
   Trash2,
   Sparkles,
   Bold,
@@ -109,6 +113,12 @@ export default function AdminProjectArticleEditor({
   const [insertImageUrl, setInsertImageUrl] = useState("");
   const [insertImageCaption, setInsertImageCaption] = useState("");
   const [isUploadingInsertImg, setIsUploadingInsertImg] = useState(false);
+  const [insertImgWidth, setInsertImgWidth] = useState("100%");
+
+  // Image resizer & align controller
+  const [selectedImgEl, setSelectedImgEl] = useState(null);
+  const [selectedImgSize, setSelectedImgSize] = useState("100%");
+  const [imgToolbarPos, setImgToolbarPos] = useState(null);
 
   // Trạng thái gắn link liên kết (Hyperlink) vào chữ
   const [showLinkPopover, setShowLinkPopover] = useState(false);
@@ -392,6 +402,20 @@ export default function AdminProjectArticleEditor({
   useEffect(() => {
     const handleScrollOrResize = () => {
       if (hoveredLink) setHoveredLink(null);
+      if (selectedImgEl) {
+        const rect = selectedImgEl.getBoundingClientRect();
+        if (rect.bottom < 0 || rect.top > window.innerHeight) {
+          selectedImgEl.classList.remove("img-selected");
+          selectedImgEl.removeAttribute("data-selected");
+          setSelectedImgEl(null);
+          setImgToolbarPos(null);
+        } else {
+          setImgToolbarPos({
+            top: Math.max(10, rect.top - 52),
+            left: rect.left + rect.width / 2
+          });
+        }
+      }
     };
     window.addEventListener("scroll", handleScrollOrResize, true);
     window.addEventListener("resize", handleScrollOrResize);
@@ -399,7 +423,7 @@ export default function AdminProjectArticleEditor({
       window.removeEventListener("scroll", handleScrollOrResize, true);
       window.removeEventListener("resize", handleScrollOrResize);
     };
-  }, [hoveredLink]);
+  }, [hoveredLink, selectedImgEl]);
 
   // Tự động gán title cho tất cả thẻ a trong editor nếu thiếu
   useEffect(() => {
@@ -587,9 +611,10 @@ export default function AdminProjectArticleEditor({
     }
 
     const captionText = insertImageCaption.trim() || "Hình ảnh thi công thực tế tại công trình";
+    const chosenWidth = insertImgWidth || "100%";
     const figureHtml = `
-<figure class="project-article-figure" style="text-align: center; margin: 24px 0;">
-  <img src="${insertImageUrl.trim()}" alt="${captionText}" style="max-width: 100%; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.12); border: 1px solid #e2e8f0;" />
+<figure class="project-article-figure" style="text-align: center; margin: 24px auto;">
+  <img src="${insertImageUrl.trim()}" alt="${captionText}" style="width: ${chosenWidth}; max-width: 100%; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.12); border: 1px solid #e2e8f0; display: block; margin: 0 auto;" />
   <figcaption style="margin-top: 8px; font-size: 0.88rem; color: #64748b; font-style: italic; text-align: center;">${captionText}</figcaption>
 </figure><p><br></p>`;
 
@@ -624,6 +649,97 @@ export default function AdminProjectArticleEditor({
     setShowImageInserter(false);
 
     if (showToast) showToast("📷 Đã chèn hình ảnh và chú thích vào bài viết thành công!");
+  };
+
+  // Lắng nghe click vào ảnh để bật thanh điều khiển kích thước ảnh
+  const handleEditorClick = (e) => {
+    const target = e.target;
+    if (target && target.tagName === "IMG") {
+      e.stopPropagation();
+      if (selectedImgEl && selectedImgEl !== target) {
+        selectedImgEl.classList.remove("img-selected");
+        selectedImgEl.removeAttribute("data-selected");
+      }
+      target.classList.add("img-selected");
+      target.setAttribute("data-selected", "true");
+      setSelectedImgEl(target);
+      const rect = target.getBoundingClientRect();
+      const currentWidth = target.style.width || "100%";
+      setSelectedImgSize(currentWidth);
+      setImgToolbarPos({
+        top: Math.max(10, rect.top - 52),
+        left: rect.left + rect.width / 2
+      });
+    } else {
+      if (selectedImgEl && !e.target.closest(".editor-image-control-toolbar")) {
+        selectedImgEl.classList.remove("img-selected");
+        selectedImgEl.removeAttribute("data-selected");
+        setSelectedImgEl(null);
+        setImgToolbarPos(null);
+      }
+    }
+  };
+
+  const handleSetImageSize = (sizePercent) => {
+    if (!selectedImgEl) return;
+    selectedImgEl.style.width = sizePercent;
+    selectedImgEl.style.maxWidth = "100%";
+    selectedImgEl.style.height = "auto";
+    if (!selectedImgEl.style.margin) {
+      selectedImgEl.style.margin = "16px auto";
+      selectedImgEl.style.display = "block";
+    }
+    setSelectedImgSize(sizePercent);
+    setTimeout(() => {
+      if (selectedImgEl) {
+        const rect = selectedImgEl.getBoundingClientRect();
+        setImgToolbarPos({
+          top: Math.max(10, rect.top - 52),
+          left: rect.left + rect.width / 2
+        });
+      }
+    }, 50);
+    handleContentInput();
+  };
+
+  const handleStepImageSize = (deltaPercent) => {
+    if (!selectedImgEl) return;
+    let currentVal = parseInt(selectedImgEl.style.width || "100", 10);
+    if (isNaN(currentVal)) currentVal = 100;
+    let nextVal = Math.min(100, Math.max(20, currentVal + deltaPercent));
+    handleSetImageSize(`${nextVal}%`);
+  };
+
+  const handleSetImageAlign = (align) => {
+    if (!selectedImgEl) return;
+    if (align === "center") {
+      selectedImgEl.style.display = "block";
+      selectedImgEl.style.margin = "16px auto";
+      selectedImgEl.style.float = "none";
+    } else if (align === "left") {
+      selectedImgEl.style.display = "inline-block";
+      selectedImgEl.style.margin = "10px 18px 10px 0";
+      selectedImgEl.style.float = "left";
+    } else if (align === "right") {
+      selectedImgEl.style.display = "inline-block";
+      selectedImgEl.style.margin = "10px 0 10px 18px";
+      selectedImgEl.style.float = "right";
+    }
+    handleContentInput();
+  };
+
+  const handleDeleteSelectedImg = () => {
+    if (!selectedImgEl) return;
+    const parent = selectedImgEl.parentElement;
+    if (parent && parent.tagName === "FIGURE") {
+      parent.remove();
+    } else {
+      selectedImgEl.remove();
+    }
+    setSelectedImgEl(null);
+    setImgToolbarPos(null);
+    handleContentInput();
+    if (showToast) showToast("🗑️ Đã xóa hình ảnh khỏi bài viết");
   };
 
   // Clear article content
@@ -928,6 +1044,24 @@ export default function AdminProjectArticleEditor({
                   </div>
                 </div>
 
+                <div className="inserter-row">
+                  <div className="inserter-field">
+                    <label>Kích thước hiển thị của ảnh khi ra web:</label>
+                    <div className="img-insert-size-presets">
+                      {["100%", "80%", "60%", "40%"].map((sz) => (
+                        <button
+                          key={sz}
+                          type="button"
+                          className={`size-preset-pill ${insertImgWidth === sz ? "active" : ""}`}
+                          onClick={() => setInsertImgWidth(sz)}
+                        >
+                          {sz === "100%" ? "Toàn khung (100%)" : sz === "80%" ? "Lớn (80%)" : sz === "60%" ? "Vừa (60%)" : "Nhỏ (40%)"}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
                 {insertImageUrl && (
                   <div className="inserter-preview-box">
                     <img src={insertImageUrl} alt="Xem trước ảnh chèn" />
@@ -1177,8 +1311,48 @@ export default function AdminProjectArticleEditor({
                 </div>
               </div>
             )}
+            {/* FLOATING IMAGE RESIZER & ALIGN TOOLBAR KHI CLICK VÀO ẢNH */}
+            {selectedImgEl && imgToolbarPos && (
+              <div
+                className="editor-image-control-toolbar"
+                style={{
+                  position: "fixed",
+                  top: `${Math.max(10, imgToolbarPos.top)}px`,
+                  left: `${Math.max(12, Math.min(window.innerWidth - 320, imgToolbarPos.left))}px`,
+                  transform: "translateX(-50%)",
+                  zIndex: 999999
+                }}
+              >
+                <div className="img-toolbar-label">
+                  <span>📐 Cỡ ảnh:</span>
+                </div>
+                <div className="img-size-buttons">
+                  {["35%", "60%", "80%", "100%"].map((sz) => (
+                    <button
+                      key={sz}
+                      type="button"
+                      className={`size-pill-btn ${selectedImgSize === sz || (sz === "100%" && !selectedImgEl.style.width) ? "active" : ""}`}
+                      onClick={() => handleSetImageSize(sz)}
+                    >
+                      {sz}
+                    </button>
+                  ))}
+                </div>
+                <div className="img-adjust-group">
+                  <button type="button" className="img-btn-adjust" onClick={() => handleStepImageSize(-10)} title="Thu nhỏ 10%"><Minus size={13} /></button>
+                  <span className="img-current-percent">{selectedImgEl.style.width || "100%"}</span>
+                  <button type="button" className="img-btn-adjust" onClick={() => handleStepImageSize(10)} title="Phóng to 10%"><Plus size={13} /></button>
+                </div>
+                <div className="img-align-group">
+                  <button type="button" className="img-btn-align" onClick={() => handleSetImageAlign("left")} title="Căn trái"><AlignLeft size={13} /></button>
+                  <button type="button" className="img-btn-align" onClick={() => handleSetImageAlign("center")} title="Căn giữa"><AlignCenter size={13} /></button>
+                  <button type="button" className="img-btn-align" onClick={() => handleSetImageAlign("right")} title="Căn phải"><AlignRight size={13} /></button>
+                </div>
+                <button type="button" className="img-btn-delete" onClick={handleDeleteSelectedImg} title="Xóa ảnh"><Trash2 size={13} /></button>
+              </div>
+            )}
             {editorMode === "wysiwyg" && (
-              <div className="article-wysiwyg-wrapper">
+              <div className="article-wysiwyg-wrapper" onClick={handleEditorClick}>
                 <div
                   ref={editorRef}
                   className="article-content-editable"
