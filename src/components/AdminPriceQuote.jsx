@@ -36,7 +36,10 @@ import {
   Highlighter,
   Code,
   Type,
-  RemoveFormatting
+  RemoveFormatting,
+  ZoomIn,
+  ExternalLink,
+  Link2
 } from "lucide-react";
 import { DEFAULT_PRICE_QUOTES } from "../data/defaultPriceQuotes";
 import "./AdminPriceQuote.css";
@@ -237,6 +240,7 @@ export const getActiveRows = (quote, cols) => {
         rowObj[col.id] = "";
       }
     });
+    rowObj.productLink = String(item.productLink || item.url || (item.rawGridCells && item.rawGridCells.productLink) || "");
     return rowObj;
   });
 };
@@ -754,6 +758,21 @@ export default function AdminPriceQuote({ showToast }) {
   const [inputColsCount, setInputColsCount] = useState(8);
   const [inputRowsCount, setInputRowsCount] = useState(7);
   const [emptyCellsHighlight, setEmptyCellsHighlight] = useState(new Set());
+  const [zoomModalImg, setZoomModalImg] = useState(null); // { url, title }
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") setZoomModalImg(null);
+    };
+    if (zoomModalImg) {
+      window.addEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "hidden";
+    }
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "";
+    };
+  }, [zoomModalImg]);
 
   // RESIZE COLUMN STATE
   const [resizingColIndex, setResizingColIndex] = useState(null);
@@ -1495,6 +1514,7 @@ export default function AdminPriceQuote({ showToast }) {
         priceOver8: String(price1Val).trim(),
         price6to8: String(price2Val).trim(),
         price4to6: String(price3Val).trim(),
+        productLink: String(row.productLink || "").trim(),
         note: `Sản phẩm ${codeVal}`,
         rawGridCells: { ...row }
       };
@@ -2124,45 +2144,72 @@ export default function AdminPriceQuote({ showToast }) {
                           return (
                             <td key={`${col.id}-${rIdx}`} className="spreadsheet-cell cell-image-type">
                               <div className={`table-img-cell-box ${cellVal ? "has-image" : ""}`}>
-                                {cellVal && (
-                                  <div className="cell-img-thumb-container" title="Ảnh sản phẩm">
-                                    <img
-                                      src={cellVal}
-                                      alt={`SP ${rIdx + 1}`}
-                                      className="cell-img-thumb"
-                                      onError={(e) => {
-                                        e.target.style.opacity = "0.3";
-                                      }}
-                                    />
-                                    <button
-                                      type="button"
-                                      className="btn-remove-cell-img"
-                                      onClick={() => handleGridCellChange(rIdx, col.id, "")}
-                                      title="Gỡ ảnh này"
+                                <div className="table-img-main-row">
+                                  {cellVal && (
+                                    <div
+                                      className="cell-img-thumb-container"
+                                      title="Nhấn để phóng to ảnh xem chi tiết"
+                                      onClick={() =>
+                                        setZoomModalImg({
+                                          url: cellVal,
+                                          title: row.name || `Sản phẩm dòng ${rIdx + 1}`
+                                        })
+                                      }
                                     >
-                                      ✕
-                                    </button>
+                                      <img
+                                        src={cellVal}
+                                        alt={`SP ${rIdx + 1}`}
+                                        className="cell-img-thumb"
+                                        onError={(e) => {
+                                          e.target.style.opacity = "0.3";
+                                        }}
+                                      />
+                                      <span className="cell-img-zoom-hover" title="Phóng to">
+                                        <ZoomIn size={11} />
+                                      </span>
+                                      <button
+                                        type="button"
+                                        className="btn-remove-cell-img"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleGridCellChange(rIdx, col.id, "");
+                                        }}
+                                        title="Gỡ ảnh này"
+                                      >
+                                        ✕
+                                      </button>
+                                    </div>
+                                  )}
+                                  <div className="cell-img-action-group">
+                                    <input
+                                      type="text"
+                                      className="table-input cell-img-url-input"
+                                      value={cellVal}
+                                      onChange={(e) => handleGridCellChange(rIdx, col.id, e.target.value)}
+                                      placeholder="Dán link ảnh..."
+                                      title="Dán link ảnh trực tiếp (https://... hoặc /ảnh.jpg)"
+                                    />
+                                    <label className="cell-img-upload-btn" title="Tải ảnh từ máy local (PNG, JPG, WEBP)">
+                                      <Upload size={11} />
+                                      <span className="upload-btn-text">Tải</span>
+                                      <input
+                                        type="file"
+                                        accept="image/*"
+                                        style={{ display: "none" }}
+                                        onChange={(e) => handleCellImageUpload(rIdx, col.id, e)}
+                                      />
+                                    </label>
                                   </div>
-                                )}
-                                <div className="cell-img-action-group">
+                                </div>
+                                <div className="cell-prod-link-row">
                                   <input
                                     type="text"
-                                    className="table-input cell-img-url-input"
-                                    value={cellVal}
-                                    onChange={(e) => handleGridCellChange(rIdx, col.id, e.target.value)}
-                                    placeholder="Dán link ảnh..."
-                                    title="Dán link ảnh trực tiếp (https://... hoặc /ảnh.jpg)"
+                                    className="table-input cell-prod-link-input"
+                                    value={row.productLink || ""}
+                                    onChange={(e) => handleGridCellChange(rIdx, "productLink", e.target.value)}
+                                    placeholder="🔗 Link SP riêng (tùy chọn: /san-pham/...)"
+                                    title="Đường link dẫn đến trang sản phẩm riêng (ví dụ: /san-pham/bd-01). Để trống sẽ tự động tạo link theo mã SP."
                                   />
-                                  <label className="cell-img-upload-btn" title="Tải ảnh từ máy local (PNG, JPG, WEBP)">
-                                    <Upload size={11} />
-                                    <span className="upload-btn-text">Tải</span>
-                                    <input
-                                      type="file"
-                                      accept="image/*"
-                                      style={{ display: "none" }}
-                                      onChange={(e) => handleCellImageUpload(rowIdx, col.id, e)}
-                                    />
-                                  </label>
                                 </div>
                               </div>
                             </td>
@@ -2379,6 +2426,38 @@ export default function AdminPriceQuote({ showToast }) {
           </div>
         </div>
       </section>
+
+      {/* MODAL PHÓNG TO HÌNH ẢNH TRONG ADMIN */}
+      {zoomModalImg && (
+        <div
+          className="admin-zoom-modal-backdrop"
+          onClick={() => setZoomModalImg(null)}
+        >
+          <div
+            className="admin-zoom-modal-content"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="btn-close-zoom-modal"
+              onClick={() => setZoomModalImg(null)}
+              title="Đóng (Esc)"
+            >
+              ✕
+            </button>
+            <div className="zoom-modal-header">
+              <h3 className="zoom-modal-title">{zoomModalImg.title || "Xem ảnh phóng to"}</h3>
+            </div>
+            <div className="zoom-modal-image-wrapper">
+              <img
+                src={zoomModalImg.url}
+                alt={zoomModalImg.title || "Xem ảnh"}
+                className="zoom-modal-img"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

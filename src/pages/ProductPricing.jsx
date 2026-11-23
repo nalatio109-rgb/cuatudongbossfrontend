@@ -24,7 +24,10 @@ import {
   Filter,
   Calendar,
   List,
-  FileSpreadsheet
+  FileSpreadsheet,
+  ZoomIn,
+  ExternalLink,
+  X
 } from "lucide-react";
 import { DEFAULT_PRICE_QUOTES } from "../data/defaultPriceQuotes";
 import { DEFAULT_PRODUCT_ARTICLES } from "../data/defaultProductArticles";
@@ -112,6 +115,25 @@ const isImageCol = (col) => {
     l.includes("image") ||
     l.includes("photo")
   );
+};
+
+// Đường dẫn đến trang chi tiết sản phẩm riêng biệt của từng hàng trong bảng giá
+const getProductDetailUrl = (row) => {
+  if (!row) return "/san-pham";
+  if (row.productLink && String(row.productLink).trim() !== "") {
+    return row.productLink.trim();
+  }
+  if (row.url && String(row.url).trim() !== "") {
+    return row.url.trim();
+  }
+  const code = (row.code || "").trim();
+  const name = (row.name || row.title || "").trim();
+  const slug = getProductSlug({
+    slug: row.slug,
+    title: name,
+    code: code
+  });
+  return `/san-pham/${slug || code || "cua-cuon"}`;
 };
 
 // Helper tìm kiếm bảng giá thông minh khớp với ID, URL slug hoặc mã sản phẩm
@@ -435,6 +457,21 @@ export default function ProductPricing() {
   });
 
   const [activeAreaFilter, setActiveAreaFilter] = useState("all"); // 'all' | 'over8' | 'from6to8' | 'from4to6'
+  const [zoomImage, setZoomImage] = useState(null); // { url, title, code, link }
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") setZoomImage(null);
+    };
+    if (zoomImage) {
+      window.addEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "hidden";
+    }
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "";
+    };
+  }, [zoomImage]);
 
   // DANH SÁCH TOÀN BỘ BẢNG GIÁ ĐỒNG BỘ 100% VỚI ADMIN
   const [allPriceQuotes, setAllPriceQuotes] = useState(() => {
@@ -1221,18 +1258,47 @@ export default function ProductPricing() {
                               }
 
                               if (isImg) {
+                                const prodLink = getProductDetailUrl(row);
                                 return (
                                   <td key={col.id || cIdx} className="cell-client-img text-center">
-                                    {cellVal ? (
-                                      <img
-                                        src={cellVal}
-                                        alt={`SP ${rIdx + 1}`}
-                                        className="client-table-thumb"
-                                        onError={(e) => { e.target.style.display = "none"; }}
-                                      />
-                                    ) : (
-                                      <span className="cell-empty-dash">—</span>
-                                    )}
+                                    <div className="table-img-with-link-wrapper">
+                                      {cellVal ? (
+                                        <div
+                                          className="client-table-thumb-box"
+                                          onClick={() =>
+                                            setZoomImage({
+                                              url: cellVal,
+                                              title: row.name || `Sản phẩm ${row.code || rIdx + 1}`,
+                                              code: row.code,
+                                              link: prodLink
+                                            })
+                                          }
+                                          title="Nhấn để phóng to ảnh xem chi tiết"
+                                        >
+                                          <img
+                                            src={cellVal}
+                                            alt={row.name || `SP ${rIdx + 1}`}
+                                            className="client-table-thumb"
+                                            onError={(e) => {
+                                              e.target.style.display = "none";
+                                            }}
+                                          />
+                                          <span className="thumb-zoom-badge" title="Phóng to">
+                                            <ZoomIn size={13} />
+                                          </span>
+                                        </div>
+                                      ) : (
+                                        <span className="cell-empty-dash">—</span>
+                                      )}
+                                      <Link
+                                        to={prodLink}
+                                        className="table-item-detail-link"
+                                        title={`Xem trang chi tiết sản phẩm ${row.code || row.name || ""}`}
+                                      >
+                                        <ExternalLink size={11} />
+                                        <span>Xem SP</span>
+                                      </Link>
+                                    </div>
                                   </td>
                                 );
                               }
@@ -1540,18 +1606,47 @@ export default function ProductPricing() {
                               }
 
                               if (isImg) {
+                                const prodLink = getProductDetailUrl(row);
                                 return (
                                   <td key={col.id || cIdx} className="cell-client-img text-center">
-                                    {cellVal ? (
-                                      <img
-                                        src={cellVal}
-                                        alt={`SP ${rIdx + 1}`}
-                                        className="client-table-thumb"
-                                        onError={(e) => { e.target.style.display = "none"; }}
-                                      />
-                                    ) : (
-                                      <span className="cell-empty-dash">—</span>
-                                    )}
+                                    <div className="table-img-with-link-wrapper">
+                                      {cellVal ? (
+                                        <div
+                                          className="client-table-thumb-box"
+                                          onClick={() =>
+                                            setZoomImage({
+                                              url: cellVal,
+                                              title: row.name || `Sản phẩm ${row.code || rIdx + 1}`,
+                                              code: row.code,
+                                              link: prodLink
+                                            })
+                                          }
+                                          title="Nhấn để phóng to ảnh xem chi tiết"
+                                        >
+                                          <img
+                                            src={cellVal}
+                                            alt={row.name || `SP ${rIdx + 1}`}
+                                            className="client-table-thumb"
+                                            onError={(e) => {
+                                              e.target.style.display = "none";
+                                            }}
+                                          />
+                                          <span className="thumb-zoom-badge" title="Phóng to">
+                                            <ZoomIn size={13} />
+                                          </span>
+                                        </div>
+                                      ) : (
+                                        <span className="cell-empty-dash">—</span>
+                                      )}
+                                      <Link
+                                        to={prodLink}
+                                        className="table-item-detail-link"
+                                        title={`Xem trang chi tiết sản phẩm ${row.code || row.name || ""}`}
+                                      >
+                                        <ExternalLink size={11} />
+                                        <span>Xem SP</span>
+                                      </Link>
+                                    </div>
                                   </td>
                                 );
                               }
@@ -1804,6 +1899,61 @@ export default function ProductPricing() {
         </section>
 
       </main>
+
+      {/* MODAL PHÓNG TO HÌNH ẢNH SẢN PHẨM (IMAGE LIGHTBOX ZOOM) */}
+      {zoomImage && (
+        <div
+          className="product-table-zoom-modal-backdrop"
+          onClick={() => setZoomImage(null)}
+        >
+          <div
+            className="product-table-zoom-modal-content"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="btn-close-zoom-modal"
+              onClick={() => setZoomImage(null)}
+              title="Đóng (Esc)"
+            >
+              <X size={20} />
+            </button>
+
+            <div className="zoom-modal-header">
+              {zoomImage.code && (
+                <span className="zoom-modal-code">MÃ SP: {zoomImage.code}</span>
+              )}
+              <h3 className="zoom-modal-title">{zoomImage.title}</h3>
+            </div>
+
+            <div className="zoom-modal-image-wrapper">
+              <img
+                src={zoomImage.url}
+                alt={zoomImage.title || "Ảnh sản phẩm phóng to"}
+                className="zoom-modal-img"
+              />
+            </div>
+
+            <div className="zoom-modal-footer">
+              <Link
+                to={zoomImage.link}
+                className="btn-zoom-view-detail"
+                onClick={() => setZoomImage(null)}
+              >
+                <ExternalLink size={16} />
+                <span>Xem Trang Chi Tiết Sản Phẩm Này</span>
+              </Link>
+              <button
+                type="button"
+                className="btn-zoom-cancel"
+                onClick={() => setZoomImage(null)}
+              >
+                Đóng lại
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
