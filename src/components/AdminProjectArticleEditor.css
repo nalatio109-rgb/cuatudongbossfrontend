@@ -600,7 +600,10 @@ a.project-article-link:hover {
 
 /* ================= EDITOR DOCUMENT SHEET ================= */
 .article-sheet-container {
-  width: 100%;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  overflow: hidden !important;
   margin-top: 4px;
 }
 
@@ -613,6 +616,10 @@ a.project-article-link:hover {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
   border: 1px solid #cbd5e1;
   cursor: text;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  overflow-x: hidden !important; /* KHÓA CỐ ĐỊNH CHIỀU NGANG, KHÔNG CHO BỊ PHÌNH TO */
 }
 
 .article-content-editable {
@@ -622,6 +629,88 @@ a.project-article-link:hover {
   line-height: 1.8;
   color: #334155;
   font-family: inherit;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  white-space: normal !important;
+}
+
+/* KHÓA CỐ ĐỊNH TẤT CẢ PHẦN TỬ CON BÊN TRONG KHUNG SOẠN THẢO */
+.article-content-editable *,
+.article-wysiwyg-wrapper * {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* HÌNH ẢNH DÁN VÀO TỰ ĐỘNG CO VỪA KHÍT 100% KHUNG - KHÔNG BAO GIỜ TRÀN */
+.article-content-editable img,
+.article-wysiwyg-wrapper img,
+.preview-article-canvas img,
+.project-article-rendered-content img,
+.news-detail-content img {
+  max-width: 100% !important;
+  width: auto;
+  height: auto !important;
+  display: block;
+  margin: 16px auto !important;
+  border-radius: 8px;
+  box-sizing: border-box !important;
+}
+
+/* BẢNG BIỂU DÁN VÀO TỰ ĐỘNG CỐ ĐỊNH CHIỀU RỘNG TRONG KHUNG */
+.article-content-editable table,
+.article-wysiwyg-wrapper table,
+.preview-article-canvas table,
+.project-article-rendered-content table,
+.news-detail-content table {
+  max-width: 100% !important;
+  width: 100% !important;
+  table-layout: fixed !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  box-sizing: border-box !important;
+  border-collapse: collapse !important;
+  margin: 16px 0 !important;
+}
+
+.article-content-editable table td,
+.article-content-editable table th,
+.article-wysiwyg-wrapper table td,
+.article-wysiwyg-wrapper table th {
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  max-width: 320px;
+  box-sizing: border-box !important;
+}
+
+/* KHỐI FIGURE, VIDEO, IFRAME, PRE DÁN VÀO KHÔNG BỊ TRÀN */
+.article-content-editable figure,
+.article-wysiwyg-wrapper figure,
+.preview-article-canvas figure {
+  max-width: 100% !important;
+  margin: 16px auto !important;
+  box-sizing: border-box !important;
+}
+
+.article-content-editable iframe,
+.article-content-editable video,
+.article-wysiwyg-wrapper iframe,
+.article-wysiwyg-wrapper video {
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.article-content-editable pre,
+.article-content-editable blockquote,
+.article-wysiwyg-wrapper pre,
+.article-wysiwyg-wrapper blockquote {
+  max-width: 100% !important;
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+  box-sizing: border-box !important;
 }
 
 .article-content-editable:empty:before {
@@ -652,11 +741,15 @@ a.project-article-link:hover {
 }
 
 .article-code-wrapper {
-  width: 100%;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
 }
 
 .article-code-textarea {
-  width: 100%;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
   background: #0f172a;
   color: #38bdf8;
   font-family: "Fira Code", monospace, Consolas, sans-serif;

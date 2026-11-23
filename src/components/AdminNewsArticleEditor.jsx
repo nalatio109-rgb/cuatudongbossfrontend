@@ -599,6 +599,29 @@ export default function AdminNewsArticleEditor({
     }
   };
 
+  // Xử lý khi dán (Paste): Tự động co mọi hình ảnh và bảng vừa khít 100% chiều ngang khung
+  const handleEditorPaste = () => {
+    setTimeout(() => {
+      if (editorRef.current) {
+        const imgs = editorRef.current.querySelectorAll("img");
+        imgs.forEach((img) => {
+          img.style.maxWidth = "100%";
+          img.style.height = "auto";
+          img.removeAttribute("width");
+          img.removeAttribute("height");
+        });
+        const tables = editorRef.current.querySelectorAll("table");
+        tables.forEach((tbl) => {
+          tbl.style.maxWidth = "100%";
+          tbl.style.width = "100%";
+          tbl.style.tableLayout = "fixed";
+          tbl.removeAttribute("width");
+        });
+        handleContentInput();
+      }
+    }, 50);
+  };
+
   return (
     <div className="project-article-unified-editor">
       <form onSubmit={handleFormSubmit}>
@@ -1115,6 +1138,7 @@ export default function AdminNewsArticleEditor({
                   contentEditable
                   suppressContentEditableWarning
                   onInput={handleContentInput}
+                  onPaste={handleEditorPaste}
                   onKeyDown={(e) => {
                     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
                       e.preventDefault();
