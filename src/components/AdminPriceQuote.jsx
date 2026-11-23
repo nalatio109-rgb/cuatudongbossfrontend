@@ -158,31 +158,43 @@ export const getActiveRows = (quote, cols) => {
         c.key?.toLowerCase().includes("price") ||
         c.id === "col_6" ||
         c.id === "col_7" ||
+        c.id === "col_8" ||
         c.label?.toLowerCase().includes("giá") ||
         c.label?.toLowerCase().includes("đơn giá")
     );
 
     cols.forEach((col) => {
-      // 1. Đọc trực tiếp từ rawGridCells nếu có
+      // 1. Nếu là cột hình ảnh: ưu tiên đọc từ rawGridCells, item[col.id], item.image hoặc item.imageUrl
+      if (isImageCol(col)) {
+        const imgVal =
+          (item.rawGridCells && item.rawGridCells[col.id]) ||
+          item[col.id] ||
+          item.image ||
+          item.imageUrl ||
+          "";
+        rowObj[col.id] = String(imgVal);
+        return;
+      }
+
+      // 2. Đọc trực tiếp từ rawGridCells nếu có
       if (item.rawGridCells && item.rawGridCells[col.id] !== undefined && item.rawGridCells[col.id] !== "") {
         rowObj[col.id] = String(item.rawGridCells[col.id]);
         return;
       }
-      // 2. Đọc từ thuộc tính phẳng item[col.id] nếu có
+      // 3. Đọc từ thuộc tính phẳng item[col.id] nếu có
       if (item[col.id] !== undefined && item[col.id] !== "") {
         rowObj[col.id] = String(item[col.id]);
         return;
       }
-      // 3. Đọc từ col.key nếu có
+      // 4. Đọc từ col.key nếu có
       if (col.key && item[col.key] !== undefined && item[col.key] !== "") {
         rowObj[col.id] = String(item[col.key]);
         return;
       }
 
-      // 4. Fallback theo từng loại cột
+      // 5. Fallback theo từng loại cột
       const isStt = col.key === "stt" || col.id === "col_1" || col.label?.toLowerCase() === "stt";
       const isCode = col.key === "code" || col.id === "col_2" || col.label?.toLowerCase().includes("mã");
-      const isImg = isImageCol(col);
       const isName = col.key === "name" || col.id === "col_3" || col.label?.toLowerCase().includes("tên") || col.label?.toLowerCase().includes("quy cách");
       const isUnit = col.key === "unit" || col.id === "col_4" || col.label?.toLowerCase().includes("đvt");
       const isColor = col.key === "colors" || col.id === "col_5" || col.label?.toLowerCase().includes("màu");
@@ -192,8 +204,6 @@ export const getActiveRows = (quote, cols) => {
         rowObj[col.id] = String(item.stt || rIdx + 1);
       } else if (isCode) {
         rowObj[col.id] = String(item.code || "");
-      } else if (isImg) {
-        rowObj[col.id] = String(item.image || item.imageUrl || "");
       } else if (isName) {
         rowObj[col.id] = String(item.name || item.description || "");
       } else if (isUnit) {
@@ -330,14 +340,26 @@ export default function AdminPriceQuote({ showToast }) {
       loaded = DEFAULT_PRICE_QUOTES;
     }
 
-    // Đảm bảo mỗi bảng giá luôn có ID định danh và không bị rỗng ảnh/bài viết mặc định
-    const normalized = loaded.map((q, idx) => ({
-      ...q,
-      id: q.id || q._id || q.productCode || `quote_${idx}`,
-      articleAbove: q.articleAbove || DEFAULT_NEW_QUOTE_TEMPLATE.articleAbove,
-      articleBelow: q.articleBelow || DEFAULT_NEW_QUOTE_TEMPLATE.articleBelow,
-      image: q.image || "/project_1.png"
-    }));
+    // Chuẩn hóa và gán ID duy nhất tuyệt đối cho từng bảng giá (tránh trùng lặp key)
+    const seenIds = new Set();
+    const normalized = [];
+
+    loaded.forEach((q, idx) => {
+      const stableId = q.id || q._id || `quote_${q.productCode || "bd"}_${idx}`;
+      if (!seenIds.has(stableId)) {
+        seenIds.add(stableId);
+        normalized.push({
+          ...q,
+          id: stableId,
+          productCode: q.productCode || `BD-${String(idx + 1).padStart(2, "0")}`,
+          productTitle: q.productTitle || q.title || "Bảng giá cửa cuốn BossDoor 2026",
+          title: q.title || `Bảng giá cập nhật ${q.productTitle || "cửa cuốn BossDoor"} 2026 tại Đà Nẵng`,
+          articleAbove: q.articleAbove !== undefined ? q.articleAbove : DEFAULT_NEW_QUOTE_TEMPLATE.articleAbove,
+          articleBelow: q.articleBelow !== undefined ? q.articleBelow : DEFAULT_NEW_QUOTE_TEMPLATE.articleBelow,
+          image: q.image || "/project_1.png"
+        });
+      }
+    });
 
     setQuotesList(normalized);
     setLoading(false);
@@ -369,39 +391,45 @@ export default function AdminPriceQuote({ showToast }) {
   };
 
   const handleStartEditQuote = (quote) => {
-    // 1. Lưu key gốc duy nhất của quote cần sửa
-    const quoteKey = quote.id || quote._id || quote.productCode;
+    // 1. Lưu key ID gốc duy nhất của quote cần sửa
+    const quoteKey = quote.id || quote._id;
     setEditingOriginalKey(quoteKey);
 
-    // 2. Luôn ưu tiên lấy bản data mới nhất từ quotesList hoặc localStorage
+    // 2. Tìm bản data chuẩn nhất: tìm trong quotesList hiện tại theo ID trước, nếu không có mới tìm trong localStorage
     let target = quote;
-    try {
-      const local = localStorage.getItem("boss_admin_price_quotes");
-      if (local) {
-        const parsed = JSON.parse(local);
-        const match = parsed.find(
-          (q) =>
-            (quote.id && q.id === quote.id) ||
-            (quote._id && q._id === quote._id) ||
-            (quoteKey && (q.id === quoteKey || q._id === quoteKey)) ||
-            (quote.productCode && q.productCode && q.productCode.toLowerCase() === quote.productCode.toLowerCase())
-        );
-        if (match) target = match;
-      }
-    } catch (e) {}
+    const foundInList = quotesList.find(
+      (q) => (quote.id && q.id === quote.id) || (quote._id && q._id === quote._id) || (quoteKey && q.id === quoteKey)
+    );
+    if (foundInList) {
+      target = foundInList;
+    } else {
+      try {
+        const local = localStorage.getItem("boss_admin_price_quotes");
+        if (local) {
+          const parsed = JSON.parse(local);
+          const match = parsed.find(
+            (q) =>
+              (quote.id && q.id === quote.id) ||
+              (quote._id && q._id === quote._id) ||
+              (quoteKey && q.id === quoteKey)
+          );
+          if (match) target = match;
+        }
+      } catch (e) {}
+    }
 
     const cloned = JSON.parse(JSON.stringify(target));
     // Đảm bảo bảo toàn ID duy nhất của bảng giá
     cloned.id = cloned.id || cloned._id || quoteKey;
 
-    // Đảm bảo bài viết và ảnh đại diện không bị rỗng
-    if (!cloned.articleAbove || !cloned.articleAbove.trim()) {
+    // Giữ nguyên bài viết người dùng đã gõ (kể cả chữ ngắn như 'ok')
+    if (cloned.articleAbove === undefined) {
       cloned.articleAbove = DEFAULT_NEW_QUOTE_TEMPLATE.articleAbove;
     }
-    if (!cloned.articleBelow || !cloned.articleBelow.trim()) {
+    if (cloned.articleBelow === undefined) {
       cloned.articleBelow = DEFAULT_NEW_QUOTE_TEMPLATE.articleBelow;
     }
-    if (!cloned.image || !cloned.image.trim()) {
+    if (!cloned.image) {
       cloned.image = "/project_1.png";
     }
 
@@ -1054,14 +1082,14 @@ export default function AdminPriceQuote({ showToast }) {
         }
       }
 
-      // Cập nhật danh sách: tìm đúng vị trí của bảng giá đang sửa theo editingOriginalKey, id hoặc productCode
+      // Cập nhật danh sách: tìm đúng vị trí của bảng giá đang sửa theo ID duy nhất (KHÔNG tìm theo productCode để tránh ghi đè nhầm bản ghi khác)
       let updatedList = [...quotesList];
+      const targetId = editingOriginalKey || quoteToSave.id || quoteToSave._id;
       const existIdx = updatedList.findIndex(
         (q) =>
-          (editingOriginalKey && (q.id === editingOriginalKey || q._id === editingOriginalKey || q.productCode === editingOriginalKey)) ||
+          (targetId && (q.id === targetId || q._id === targetId)) ||
           (quoteToSave.id && q.id === quoteToSave.id) ||
-          (quoteToSave._id && q._id === quoteToSave._id) ||
-          (quoteToSave.productCode && q.productCode && q.productCode.toLowerCase() === quoteToSave.productCode.toLowerCase())
+          (quoteToSave._id && q._id === quoteToSave._id)
       );
 
       if (existIdx >= 0) {
