@@ -260,11 +260,15 @@ const Services = () => {
               <img src={formatImgSrc(selectedService.img)} alt={selectedService.title} />
             </div>
             <div className="modal-body-text">
-              <p className="modal-desc">{selectedService.desc}</p>
-              <div className="modal-detail-content">
-                {(selectedService.content || '').split('\n').map((line, idx) => (
-                  <p key={idx}>{line}</p>
-                ))}
+              {selectedService.desc && <p className="modal-desc">{selectedService.desc}</p>}
+              <div className="modal-detail-content project-article-rendered-content">
+                {selectedService.content && selectedService.content.includes('<') ? (
+                  <div dangerouslySetInnerHTML={{ __html: selectedService.content }} />
+                ) : (
+                  (selectedService.content || '').split('\n').map((line, idx) => (
+                    <p key={idx}>{line}</p>
+                  ))
+                )}
               </div>
             </div>
             <div className="modal-footer">

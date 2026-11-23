@@ -12,6 +12,7 @@ import AdminPriceQuote from "../components/AdminPriceQuote";
 import AdminProductArticleEditor from "../components/AdminProductArticleEditor";
 import AdminProjectArticleEditor, { SAMPLE_PROJECT_TEMPLATE } from "../components/AdminProjectArticleEditor";
 import AdminNewsArticleEditor, { SAMPLE_NEWS_TEMPLATE } from "../components/AdminNewsArticleEditor";
+import AdminServiceArticleEditor, { SAMPLE_SERVICE_TEMPLATE } from "../components/AdminServiceArticleEditor";
 import AdminProductQuickInfoCard from "../components/AdminProductQuickInfoCard";
 import { getProductCardDescription } from "../utils/productDescriptionHelper";
 import { formatProductPrice } from "../utils/priceFormatter";
@@ -168,8 +169,9 @@ export default function Admin() {
   const [editingNews, setEditingNews] = useState(null);
   const newsFormRef = useRef(null);
 
-  const [showServiceModal, setShowServiceModal] = useState(false);
+  const [showServiceForm, setShowServiceForm] = useState(false);
   const [editingService, setEditingService] = useState(null);
+  const serviceFormRef = useRef(null);
   const [isUploadingServiceImg, setIsUploadingServiceImg] = useState(false);
   const [isUploadingProductImg, setIsUploadingProductImg] = useState(false);
   const [isUploadingProjectImg, setIsUploadingProjectImg] = useState(false);
@@ -1292,21 +1294,44 @@ export default function Admin() {
       order: services.length + 1,
       phone: "0904.678.323"
     });
-    setShowServiceModal(true);
+    setShowServiceForm(true);
+    setTimeout(() => {
+      serviceFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      const container = serviceFormRef.current?.closest(".admin-table-container");
+      if (container) container.scrollLeft = 0;
+      window.scrollTo({ left: 0 });
+    }, 100);
   };
 
   const handleOpenEditService = (service) => {
     setEditingService(service);
+    let currentContent = service.content || "";
+    // Nếu service cũ chỉ có text thuần nhiều dòng thì bọc vào thẻ <p> đẹp mắt
+    if (currentContent && !currentContent.includes("<") && currentContent.includes("\n")) {
+      currentContent = currentContent
+        .split("\n")
+        .map((line) => line.trim())
+        .filter((line) => line.length > 0)
+        .map((line) => `<p style="line-height: 1.8; color: #334155; margin-bottom: 12px;">${line}</p>`)
+        .join("\n");
+    }
+
     setServiceForm({
       title: service.title || "",
       date: service.date || new Date().toLocaleDateString("vi-VN"),
       img: service.img || "/service_repair_247.png",
       desc: service.desc || "",
-      content: service.content || "",
+      content: currentContent,
       order: service.order ?? 0,
       phone: service.phone || "0904.678.323"
     });
-    setShowServiceModal(true);
+    setShowServiceForm(true);
+    setTimeout(() => {
+      serviceFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      const container = serviceFormRef.current?.closest(".admin-table-container");
+      if (container) container.scrollLeft = 0;
+      window.scrollTo({ left: 0 });
+    }, 100);
   };
 
   const handleUploadServiceImage = async (e) => {
@@ -1464,15 +1489,19 @@ export default function Admin() {
     }
   };
 
-  const handleServiceSubmit = async (e) => {
-    e.preventDefault();
+  const handleServiceSubmit = async (e, directContent) => {
+    if (e && e.preventDefault) e.preventDefault();
+    const finalForm = {
+      ...serviceForm,
+      content: typeof directContent === "string" ? directContent : serviceForm.content
+    };
     try {
       let res, data;
       if (editingService) {
         res = await fetch(`${import.meta.env.VITE_API_URL}/api/services/${editingService._id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(serviceForm)
+          body: JSON.stringify(finalForm)
         });
         data = await res.json();
         if (data.success) {
@@ -1485,7 +1514,7 @@ export default function Admin() {
         res = await fetch(`${import.meta.env.VITE_API_URL}/api/services`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(serviceForm)
+          body: JSON.stringify(finalForm)
         });
         data = await res.json();
         if (data.success) {
@@ -1496,40 +1525,25 @@ export default function Admin() {
         }
       }
 
-      if (data && data.success) {
-        setShowServiceModal(false);
-      } else {
-        // Fallback for offline mode
-        if (editingService) {
-          const updated = services.map(s => s._id === editingService._id ? { ...serviceForm, _id: editingService._id } : s);
-          setServices(updated);
-          localStorage.setItem("boss_admin_services", JSON.stringify(updated));
-          setShowServiceModal(false);
-          showToast("✨ Đã lưu cập nhật dịch vụ!");
-        } else {
-          const newLocal = { ...serviceForm, _id: `local_svc_${Date.now()}` };
-          const updated = [...services, newLocal];
-          setServices(updated);
-          localStorage.setItem("boss_admin_services", JSON.stringify(updated));
-          setShowServiceModal(false);
-          showToast("🎉 Đã lưu dịch vụ mới!");
-        }
-      }
+      setShowServiceForm(false);
+      setEditingService(null);
     } catch (err) {
       console.error("Service Submit Error:", err);
       // Fallback local save
       if (editingService) {
-        const updated = services.map(s => s._id === editingService._id ? { ...serviceForm, _id: editingService._id } : s);
+        const updated = services.map(s => s._id === editingService._id ? { ...finalForm, _id: editingService._id } : s);
         setServices(updated);
         localStorage.setItem("boss_admin_services", JSON.stringify(updated));
-        setShowServiceModal(false);
+        setShowServiceForm(false);
+        setEditingService(null);
         showToast("✨ Đã lưu cập nhật dịch vụ vào hệ thống!");
       } else {
-        const newLocal = { ...serviceForm, _id: `local_svc_${Date.now()}` };
+        const newLocal = { ...finalForm, _id: `local_svc_${Date.now()}` };
         const updated = [...services, newLocal];
         setServices(updated);
         localStorage.setItem("boss_admin_services", JSON.stringify(updated));
-        setShowServiceModal(false);
+        setShowServiceForm(false);
+        setEditingService(null);
         showToast("🎉 Đã lưu dịch vụ mới vào hệ thống!");
       }
     }
@@ -2929,11 +2943,71 @@ export default function Admin() {
                     <RotateCcw size={14} className={seedingServices ? "spin" : ""} />
                     {seedingServices ? "Đang nạp..." : "Nạp 8 Dịch Vụ Mẫu"}
                   </button>
-                  <button className="btn-add-new" onClick={handleOpenAddService}>
-                    <Plus size={16} /> THÊM DỊCH VỤ MỚI
+                  <button 
+                    className="btn-add-new" 
+                    onClick={showServiceForm && !editingService ? () => { setShowServiceForm(false); setEditingService(null); } : handleOpenAddService}
+                    style={showServiceForm && !editingService ? { background: "rgba(239, 68, 68, 0.2)", color: "#f87171", border: "1px solid rgba(239, 68, 68, 0.4)" } : {}}
+                  >
+                    {showServiceForm && !editingService ? (
+                      <>
+                        <X size={16} /> ĐÓNG KHUNG NHẬP
+                      </>
+                    ) : (
+                      <>
+                        <Plus size={16} /> THÊM DỊCH VỤ MỚI
+                      </>
+                    )}
                   </button>
                 </div>
               </div>
+
+              {/* KHUNG BIỂU MẪU THÊM / SỬA DỊCH VỤ NẰM TRỰC TIẾP TRÊN TRANG (INLINE FORM KHÔNG BỊ MODAL CHE NỀN) */}
+              {showServiceForm && (
+                <div className="admin-inline-form-card" ref={serviceFormRef}>
+                  <div className="inline-form-header">
+                    <div className="inline-form-title">
+                      <h3>
+                        {editingService ? (
+                          <>
+                            <span>✏️ Chỉnh Sửa Dịch Vụ:</span>
+                            <span className="highlight-text">{editingService.title}</span>
+                          </>
+                        ) : (
+                          <>
+                            <span>➕ Thêm Dịch Vụ Mới Vào Hệ Thống</span>
+                          </>
+                        )}
+                      </h3>
+                      <p className="inline-form-desc">
+                        {editingService 
+                          ? "Cập nhật tiêu đề, mô tả và bài viết giới thiệu quy trình dịch vụ chi tiết bên dưới." 
+                          : "Nhập thông tin dịch vụ, thứ tự ưu tiên và soạn bài viết giới thiệu dịch vụ chuyên nghiệp."}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      className="btn-close-inline-form"
+                      onClick={() => { setShowServiceForm(false); setEditingService(null); }}
+                      title="Đóng biểu mẫu"
+                    >
+                      <X size={16} />
+                      <span>Đóng</span>
+                    </button>
+                  </div>
+
+                  <AdminServiceArticleEditor
+                    serviceForm={serviceForm}
+                    setServiceForm={setServiceForm}
+                    editingService={editingService}
+                    onSave={handleServiceSubmit}
+                    onCancel={() => { setShowServiceForm(false); setEditingService(null); }}
+                    showToast={showToast}
+                    compressImage={compressImage}
+                    isUploading={isUploadingServiceImg}
+                    setIsUploading={setIsUploadingServiceImg}
+                  />
+                </div>
+              )}
               <div className="admin-table-scroll-wrapper">
                 <div className="table-scroll-hint"><span>⇄ Vuốt sang ngang để xem đầy đủ cột</span></div>
                 <table className="admin-table">
@@ -3585,156 +3659,6 @@ export default function Admin() {
                     {editingProduct ? "Cập Nhật Sản Phẩm" : "Lưu Sản Phẩm"}
                   </button>
                 </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-
-      {/* MODAL THÊM / SỬA DỊCH VỤ */}
-      {showServiceModal && (
-        <div className="admin-modal-overlay">
-          <div className="admin-modal-card">
-            <div className="modal-header">
-              <h3>{editingService ? "✏️ Chỉnh Sửa Dịch Vụ BOSS" : "➕ Thêm Dịch Vụ Mới Vào Hệ Thống"}</h3>
-              <button
-                type="button"
-                style={{ background: "none", border: "none", color: "white", cursor: "pointer" }}
-                onClick={() => setShowServiceModal(false)}
-              >
-                <X size={20} />
-              </button>
-            </div>
-            <form onSubmit={handleServiceSubmit}>
-              <div className="admin-form-group">
-                <label>Tiêu đề dịch vụ *</label>
-                <input
-                  type="text"
-                  value={serviceForm.title}
-                  onChange={(e) => setServiceForm({ ...serviceForm, title: e.target.value })}
-                  required
-                  placeholder="Ví dụ: SỬA CHỮA CỬA CUỐN 24/24 TẠI ĐÀ NẴNG"
-                />
-              </div>
-
-              <div className="admin-form-grid-3">
-                <div className="admin-form-group">
-                  <label>Ngày đăng</label>
-                  <input
-                    type="text"
-                    value={serviceForm.date}
-                    onChange={(e) => setServiceForm({ ...serviceForm, date: e.target.value })}
-                    placeholder="DD/MM/YYYY"
-                  />
-                </div>
-                <div className="admin-form-group">
-                  <label>Thứ tự hiển thị</label>
-                  <input
-                    type="number"
-                    value={serviceForm.order}
-                    onChange={(e) => setServiceForm({ ...serviceForm, order: Number(e.target.value) })}
-                    placeholder="1, 2, 3..."
-                  />
-                </div>
-                <div className="admin-form-group">
-                  <label>Hotline hỗ trợ</label>
-                  <input
-                    type="text"
-                    value={serviceForm.phone}
-                    onChange={(e) => setServiceForm({ ...serviceForm, phone: e.target.value })}
-                    placeholder="0904.678.323"
-                  />
-                </div>
-              </div>
-
-              <div className="admin-form-group">
-                <label>Hình ảnh đại diện dịch vụ *</label>
-                <div className="service-img-input-row" style={{ display: "flex", gap: "10px", alignItems: "center", marginBottom: "8px" }}>
-                  <input
-                    type="text"
-                    value={serviceForm.img}
-                    onChange={(e) => setServiceForm({ ...serviceForm, img: e.target.value })}
-                    required
-                    placeholder="Đường dẫn ảnh: /service_repair_247.png hoặc URL"
-                    style={{ flex: 1 }}
-                  />
-                  <label className="btn-upload-file-label" style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "6px",
-                    background: "rgba(212, 175, 55, 0.2)",
-                    color: "#f5d77f",
-                    border: "1px solid rgba(212, 175, 55, 0.4)",
-                    padding: "9px 14px",
-                    borderRadius: "6px",
-                    cursor: "pointer",
-                    fontSize: "0.85rem",
-                    fontWeight: "600",
-                    whiteSpace: "nowrap"
-                  }}>
-                    <Upload size={15} />
-                    {isUploadingServiceImg ? "Đang tải..." : "Tải ảnh từ máy"}
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleUploadServiceImage}
-                      disabled={isUploadingServiceImg}
-                      style={{ display: "none" }}
-                    />
-                  </label>
-                </div>
-
-                {/* Preview Thumbnail */}
-                {serviceForm.img && (
-                  <div className="service-img-preview-box" style={{
-                    marginTop: "6px",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "12px",
-                    background: "rgba(0,0,0,0.3)",
-                    padding: "8px 12px",
-                    borderRadius: "6px",
-                    border: "1px dashed rgba(212,175,55,0.3)"
-                  }}>
-                    <img
-                      src={formatImgSrc(serviceForm.img)}
-                      alt="Preview"
-                      style={{ width: "70px", height: "50px", objectFit: "cover", borderRadius: "4px" }}
-                      onError={(e) => { e.target.style.display = 'none'; }}
-                    />
-                    <span style={{ fontSize: "0.8rem", color: "#94a3b8" }}>
-                      Xem trước hình ảnh đại diện dịch vụ
-                    </span>
-                  </div>
-                )}
-              </div>
-
-              <div className="admin-form-group">
-                <label>Mô tả tóm tắt (hiển thị trên thẻ dịch vụ)</label>
-                <textarea
-                  rows="2"
-                  value={serviceForm.desc}
-                  onChange={(e) => setServiceForm({ ...serviceForm, desc: e.target.value })}
-                  placeholder="Mô tả ngắn gọn về dịch vụ này..."
-                ></textarea>
-              </div>
-
-              <div className="admin-form-group">
-                <label>Nội dung chi tiết dịch vụ (khi bấm 'Xem chi tiết')</label>
-                <textarea
-                  rows="6"
-                  value={serviceForm.content}
-                  onChange={(e) => setServiceForm({ ...serviceForm, content: e.target.value })}
-                  placeholder="Nội dung chi tiết từng gạch đầu dòng, quy trình, cam kết bảo hành..."
-                ></textarea>
-              </div>
-
-              <div className="modal-footer">
-                <button type="button" className="btn-cancel" onClick={() => setShowServiceModal(false)}>Hủy</button>
-                <button type="submit" className="btn-save">
-                  {editingService ? "Cập Nhật Dịch Vụ" : "Lưu Dịch Vụ Mới"}
-                </button>
               </div>
             </form>
           </div>
