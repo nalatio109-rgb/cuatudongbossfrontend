@@ -1328,34 +1328,44 @@ export default function ProductPricing() {
                 </div>
               </div>
 
-              {/* 6. KHU VỰC LIÊN HỆ BÁO GIÁ (CTA NỔI BẬT) */}
+              {/* 6. KHU VỰC LIÊN HỆ BÁO GIÁ (CTA NỔI BẬT & BỐ CỤC ĐẸP) */}
               <div className="pricing-cta-highlight-banner">
                 <div className="cta-banner-content">
-                  <div className="cta-badge">TƯ VẤN &amp; KHẢO SÁT TẬN CÔNG TRÌNH</div>
+                  <div className="cta-badge">
+                    <Sparkles size={13} className="cta-badge-icon" /> TƯ VẤN &amp; KHẢO SÁT TẬN CÔNG TRÌNH
+                  </div>
                   <h2>Bạn cần báo giá chính xác cho công trình của mình?</h2>
                   <p>
-                    Kỹ sư Boss Đà Nẵng sẵn sàng đến trực tiếp công trình đo đạc thực tế và lên bảng dự toán trọn gói hoàn toàn <strong>MIỄN PHÍ</strong>.
+                    Kỹ sư BossDoor Đà Nẵng sẵn sàng đến trực tiếp công trình đo đạc thực tế, tư vấn kỹ thuật và lên bảng dự toán trọn gói hoàn toàn <strong>MIỄN PHÍ</strong>.
                   </p>
-                  <div className="cta-buttons-group">
+                  <div className="pricing-cta-buttons-row">
+                    <a 
+                      href="tel:0904678323" 
+                      className="btn-pricing-cta-hotline"
+                    >
+                      <PhoneCall size={18} className="cta-btn-icon" />
+                      <span>GỌI TƯ VẤN: 0904.678.323</span>
+                    </a>
                     <a 
                       href="https://zalo.me/0904678323" 
                       target="_blank" 
                       rel="noopener noreferrer" 
-                      className="btn-cta-quote"
+                      className="btn-pricing-cta-zalo"
                     >
-                      <MessageCircle size={18} /> YÊU CẦU BÁO GIÁ ZALO
+                      <MessageCircle size={18} className="cta-btn-icon" />
+                      <span>NHẬN BÁO GIÁ QUA ZALO</span>
                     </a>
-                    <a href="tel:0904678323" className="btn-cta-hotline-call">
-                      <PhoneCall size={18} /> GỌI TƯ VẤN: 0904.678.323
-                    </a>
-                    <a 
-                      href="https://zalo.me/0904678323" 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="btn-cta-zalo"
-                    >
-                      <MessageCircle size={18} /> LIÊN HỆ ZALO
-                    </a>
+                  </div>
+                  <div className="cta-trust-badges-row">
+                    <span className="cta-trust-badge">
+                      <CheckCircle2 size={14} /> Khảo sát tận nơi trong 30 phút
+                    </span>
+                    <span className="cta-trust-badge">
+                      <CheckCircle2 size={14} /> Báo giá minh bạch, không phát sinh
+                    </span>
+                    <span className="cta-trust-badge">
+                      <CheckCircle2 size={14} /> Chiết khấu ưu đãi cho dự án
+                    </span>
                   </div>
                 </div>
               </div>
@@ -1637,34 +1647,44 @@ export default function ProductPricing() {
                 </div>
               </div>
 
-              {/* 6. KHU VỰC LIÊN HỆ BÁO GIÁ (CTA NỔI BẬT) */}
+              {/* 6. KHU VỰC LIÊN HỆ BÁO GIÁ (CTA NỔI BẬT & BỐ CỤC ĐẸP) */}
               <div className="pricing-cta-highlight-banner">
                 <div className="cta-banner-content">
-                  <div className="cta-badge">TƯ VẤN &amp; KHẢO SÁT TẬN CÔNG TRÌNH</div>
+                  <div className="cta-badge">
+                    <Sparkles size={13} className="cta-badge-icon" /> TƯ VẤN &amp; KHẢO SÁT TẬN CÔNG TRÌNH
+                  </div>
                   <h2>Bạn cần báo giá chính xác cho công trình của mình?</h2>
                   <p>
-                    Kỹ sư Boss Đà Nẵng sẵn sàng đến trực tiếp công trình đo đạc thực tế và lên bảng dự toán trọn gói hoàn toàn <strong>MIỄN PHÍ</strong>.
+                    Kỹ sư BossDoor Đà Nẵng sẵn sàng đến trực tiếp công trình đo đạc thực tế, tư vấn kỹ thuật và lên bảng dự toán trọn gói hoàn toàn <strong>MIỄN PHÍ</strong>.
                   </p>
-                  <div className="cta-buttons-group">
+                  <div className="pricing-cta-buttons-row">
+                    <a 
+                      href="tel:0904678323" 
+                      className="btn-pricing-cta-hotline"
+                    >
+                      <PhoneCall size={18} className="cta-btn-icon" />
+                      <span>GỌI TƯ VẤN: 0904.678.323</span>
+                    </a>
                     <a 
                       href="https://zalo.me/0904678323" 
                       target="_blank" 
                       rel="noopener noreferrer" 
-                      className="btn-cta-quote"
+                      className="btn-pricing-cta-zalo"
                     >
-                      <MessageCircle size={18} /> YÊU CẦU BÁO GIÁ ZALO
+                      <MessageCircle size={18} className="cta-btn-icon" />
+                      <span>NHẬN BÁO GIÁ QUA ZALO</span>
                     </a>
-                    <a href="tel:0904678323" className="btn-cta-hotline-call">
-                      <PhoneCall size={18} /> GỌI TƯ VẤN: 0904.678.323
-                    </a>
-                    <a 
-                      href="https://zalo.me/0904678323" 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      className="btn-cta-zalo"
-                    >
-                      <MessageCircle size={18} /> LIÊN HỆ ZALO
-                    </a>
+                  </div>
+                  <div className="cta-trust-badges-row">
+                    <span className="cta-trust-badge">
+                      <CheckCircle2 size={14} /> Khảo sát tận nơi trong 30 phút
+                    </span>
+                    <span className="cta-trust-badge">
+                      <CheckCircle2 size={14} /> Báo giá minh bạch, không phát sinh
+                    </span>
+                    <span className="cta-trust-badge">
+                      <CheckCircle2 size={14} /> Chiết khấu ưu đãi cho dự án
+                    </span>
                   </div>
                 </div>
               </div>

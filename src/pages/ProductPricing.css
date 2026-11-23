@@ -1591,47 +1591,196 @@
   color: #065f46;
 }
 
-/* 6. CTA HIGHLIGHT BANNER */
+/* 6. CTA HIGHLIGHT BANNER - BỐ CỤC ĐẲNG CẤP & CÂN ĐỐI */
 .pricing-cta-highlight-banner {
-  background: linear-gradient(135deg, #004d32 0%, #002b1c 100%);
-  border-radius: 16px;
-  padding: 36px 30px;
+  background: linear-gradient(135deg, #004d32 0%, #003322 55%, #012217 100%);
+  border-radius: 20px;
+  padding: 40px 32px 34px;
   color: #ffffff;
   text-align: center;
-  box-shadow: 0 10px 30px rgba(0, 77, 50, 0.25);
-  margin-bottom: 10px;
+  box-shadow: 0 16px 36px rgba(0, 45, 29, 0.28), 0 2px 6px rgba(0, 0, 0, 0.08);
+  margin: 30px 0 16px;
+  border: 1.5px solid rgba(255, 255, 255, 0.14);
+  position: relative;
+  overflow: hidden;
+}
+
+.pricing-cta-highlight-banner::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(245, 189, 24, 0.08) 0%, transparent 70%);
+  pointer-events: none;
 }
 
 .cta-banner-content {
-  max-width: 750px;
+  max-width: 800px;
   margin: 0 auto;
+  position: relative;
+  z-index: 2;
 }
 
 .cta-badge {
-  display: inline-block;
-  background: rgba(245, 189, 24, 0.2);
-  color: #f5bd20;
-  border: 1px solid rgba(245, 189, 24, 0.4);
-  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(245, 189, 24, 0.16);
+  color: #fcd34d;
+  border: 1px solid rgba(245, 189, 24, 0.35);
+  font-size: 11.5px;
   font-weight: 800;
-  padding: 4px 14px;
-  border-radius: 20px;
-  letter-spacing: 1px;
-  margin-bottom: 12px;
+  padding: 5px 16px;
+  border-radius: 30px;
+  letter-spacing: 0.8px;
+  margin-bottom: 14px;
+  text-transform: uppercase;
+}
+
+.cta-badge-icon {
+  color: #f59e0b;
 }
 
 .cta-banner-content h2 {
-  font-size: 24px;
-  font-weight: 900;
+  font-size: 26px;
+  font-weight: 800;
   color: #ffffff;
-  margin: 0 0 10px;
+  margin: 0 0 12px;
+  line-height: 1.35;
+  letter-spacing: -0.2px;
 }
 
 .cta-banner-content p {
-  font-size: 14.5px;
-  color: rgba(255, 255, 255, 0.88);
-  margin: 0 0 24px;
-  line-height: 1.55;
+  font-size: 15px;
+  color: rgba(241, 245, 249, 0.92);
+  margin: 0 auto 26px;
+  line-height: 1.65;
+  max-width: 680px;
+}
+
+.cta-banner-content p strong {
+  color: #fcd34d;
+}
+
+/* Hàng nút bấm dàn ngang cân đối, không bị xung đột CSS cột */
+.pricing-cta-buttons-row {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-wrap: wrap !important;
+  gap: 16px !important;
+  margin-bottom: 24px;
+}
+
+.btn-pricing-cta-hotline,
+.btn-pricing-cta-zalo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 800;
+  padding: 14px 28px;
+  border-radius: 12px;
+  text-decoration: none;
+  letter-spacing: 0.3px;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  min-width: 250px;
+}
+
+.btn-pricing-cta-hotline {
+  background: linear-gradient(135deg, #e30613 0%, #b91c1c 100%);
+  color: #ffffff !important;
+  border: none;
+  box-shadow: 0 6px 20px rgba(227, 6, 19, 0.4);
+}
+
+.btn-pricing-cta-hotline:hover {
+  background: linear-gradient(135deg, #f01421 0%, #c51d1d 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(227, 6, 19, 0.5);
+  color: #ffffff !important;
+}
+
+.btn-pricing-cta-zalo {
+  background: linear-gradient(135deg, #0068ff 0%, #0052cc 100%);
+  color: #ffffff !important;
+  border: none;
+  box-shadow: 0 6px 20px rgba(0, 104, 255, 0.35);
+}
+
+.btn-pricing-cta-zalo:hover {
+  background: linear-gradient(135deg, #1a7bff 0%, #0045b0 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(0, 104, 255, 0.45);
+  color: #ffffff !important;
+}
+
+.cta-btn-icon {
+  flex-shrink: 0;
+}
+
+/* Hàng huy hiệu uy tín / cam kết */
+.cta-trust-badges-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 22px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.cta-trust-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13.5px;
+  color: rgba(226, 232, 240, 0.9);
+  font-weight: 500;
+}
+
+.cta-trust-badge svg {
+  color: #34d399;
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .pricing-cta-highlight-banner {
+    padding: 30px 18px 24px;
+    border-radius: 16px;
+  }
+
+  .cta-banner-content h2 {
+    font-size: 20px;
+  }
+
+  .cta-banner-content p {
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  .pricing-cta-buttons-row {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+
+  .btn-pricing-cta-hotline,
+  .btn-pricing-cta-zalo {
+    width: 100%;
+    min-width: 0;
+    padding: 13px 20px;
+    font-size: 14px;
+  }
+
+  .cta-trust-badges-row {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
 }
 
 .cta-buttons-group {
