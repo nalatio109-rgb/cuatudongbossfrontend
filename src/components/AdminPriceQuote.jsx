@@ -267,6 +267,9 @@ export default function AdminPriceQuote({ showToast }) {
   const [loading, setLoading] = useState(false);
   const [saveStatus, setSaveStatus] = useState(null);
 
+  // KEY CỦA BẢNG GIÁ ĐANG CHỈNH SỬA ĐỂ BẢO ĐẢM GHI ĐÈ ĐÚNG ITEM
+  const [editingOriginalKey, setEditingOriginalKey] = useState(null);
+
   // STATE FOR EDITOR (THÊM HOẶC SỬA BẢNG GIÁ)
   const [editingQuote, setEditingQuote] = useState(() => JSON.parse(JSON.stringify(DEFAULT_NEW_QUOTE_TEMPLATE)));
   const [gridColumns, setGridColumns] = useState(DEFAULT_GRID_COLUMNS);
@@ -327,19 +330,34 @@ export default function AdminPriceQuote({ showToast }) {
       loaded = DEFAULT_PRICE_QUOTES;
     }
 
-    setQuotesList(loaded);
+    // Đảm bảo mỗi bảng giá luôn có ID định danh và không bị rỗng ảnh/bài viết mặc định
+    const normalized = loaded.map((q, idx) => ({
+      ...q,
+      id: q.id || q._id || q.productCode || `quote_${idx}`,
+      articleAbove: q.articleAbove || DEFAULT_NEW_QUOTE_TEMPLATE.articleAbove,
+      articleBelow: q.articleBelow || DEFAULT_NEW_QUOTE_TEMPLATE.articleBelow,
+      image: q.image || "/project_1.png"
+    }));
+
+    setQuotesList(normalized);
     setLoading(false);
   };
 
   // ================= 1. HÀM ĐIỀU HƯỚNG VÀ CHUYỂN CHẾ ĐỘ =================
   const handleStartCreateNew = () => {
+    const freshId = `quote_${Date.now()}`;
     const freshCode = `BD-${Date.now().toString().slice(-4)}`;
     const newQuote = {
       ...JSON.parse(JSON.stringify(DEFAULT_NEW_QUOTE_TEMPLATE)),
+      id: freshId,
       productCode: freshCode,
       productTitle: "Bảng giá cửa cuốn BossDoor 2026",
-      title: "Bảng giá cập nhật cửa cuốn BossDoor 2026 tại Đà Nẵng"
+      title: "Bảng giá cập nhật cửa cuốn BossDoor 2026 tại Đà Nẵng",
+      image: "/project_1.png",
+      articleAbove: DEFAULT_NEW_QUOTE_TEMPLATE.articleAbove,
+      articleBelow: DEFAULT_NEW_QUOTE_TEMPLATE.articleBelow
     };
+    setEditingOriginalKey(freshId);
     setEditingQuote(newQuote);
     setGridColumns(DEFAULT_GRID_COLUMNS);
     setGridRows(createDefault7Rows());
@@ -351,20 +369,42 @@ export default function AdminPriceQuote({ showToast }) {
   };
 
   const handleStartEditQuote = (quote) => {
-    // Luôn ưu tiên lấy bản data mới nhất từ quotesList hoặc localStorage
+    // 1. Lưu key gốc duy nhất của quote cần sửa
+    const quoteKey = quote.id || quote._id || quote.productCode;
+    setEditingOriginalKey(quoteKey);
+
+    // 2. Luôn ưu tiên lấy bản data mới nhất từ quotesList hoặc localStorage
     let target = quote;
     try {
       const local = localStorage.getItem("boss_admin_price_quotes");
       if (local) {
         const parsed = JSON.parse(local);
         const match = parsed.find(
-          (q) => (quote._id && q._id === quote._id) || (q.productCode && q.productCode === quote.productCode)
+          (q) =>
+            (quote.id && q.id === quote.id) ||
+            (quote._id && q._id === quote._id) ||
+            (quoteKey && (q.id === quoteKey || q._id === quoteKey)) ||
+            (quote.productCode && q.productCode && q.productCode.toLowerCase() === quote.productCode.toLowerCase())
         );
         if (match) target = match;
       }
     } catch (e) {}
 
     const cloned = JSON.parse(JSON.stringify(target));
+    // Đảm bảo bảo toàn ID duy nhất của bảng giá
+    cloned.id = cloned.id || cloned._id || quoteKey;
+
+    // Đảm bảo bài viết và ảnh đại diện không bị rỗng
+    if (!cloned.articleAbove || !cloned.articleAbove.trim()) {
+      cloned.articleAbove = DEFAULT_NEW_QUOTE_TEMPLATE.articleAbove;
+    }
+    if (!cloned.articleBelow || !cloned.articleBelow.trim()) {
+      cloned.articleBelow = DEFAULT_NEW_QUOTE_TEMPLATE.articleBelow;
+    }
+    if (!cloned.image || !cloned.image.trim()) {
+      cloned.image = "/project_1.png";
+    }
+
     setEditingQuote(cloned);
     const cols = getActiveColumns(cloned);
     const rows = getActiveRows(cloned, cols);
@@ -378,13 +418,18 @@ export default function AdminPriceQuote({ showToast }) {
   };
 
   // ================= 2. QUẢN LÝ DANH SÁCH BẢNG GIÁ (LIST VIEW) =================
-  const handleDeleteQuote = async (code) => {
+  const handleDeleteQuote = async (quoteOrCode) => {
     if (quotesList.length <= 1) {
       alert("Hệ thống cần giữ lại tối thiểu 1 bảng giá!");
       return;
     }
-    const target = quotesList.find((q) => q.productCode === code);
-    const targetName = target?.productTitle || target?.title || code;
+    const target = quotesList.find(
+      (q) =>
+        q.id === quoteOrCode ||
+        q._id === quoteOrCode ||
+        q.productCode === quoteOrCode
+    );
+    const targetName = target?.productTitle || target?.title || quoteOrCode;
 
     const confirmDelete = window.confirm(
       `Bạn có chắc chắn muốn XÓA VĨNH VIỄN bảng giá "${targetName}" khỏi hệ thống?`
@@ -392,7 +437,12 @@ export default function AdminPriceQuote({ showToast }) {
     if (!confirmDelete) return;
 
     setLoading(true);
-    const remaining = quotesList.filter((q) => q.productCode !== code);
+    const remaining = quotesList.filter(
+      (q) =>
+        q.id !== quoteOrCode &&
+        q._id !== quoteOrCode &&
+        q.productCode !== quoteOrCode
+    );
 
     if (import.meta.env.VITE_API_URL && target?._id) {
       try {
@@ -407,6 +457,7 @@ export default function AdminPriceQuote({ showToast }) {
     setQuotesList(remaining);
     localStorage.setItem("boss_admin_price_quotes", JSON.stringify(remaining));
     window.dispatchEvent(new Event("priceQuotesUpdated"));
+    window.dispatchEvent(new Event("storage"));
     triggerToast(`✨ Đã xóa bảng giá "${targetName}" thành công!`);
     setLoading(false);
     if (viewMode !== "list") {
@@ -954,15 +1005,17 @@ export default function AdminPriceQuote({ showToast }) {
       };
     });
 
+    const quoteId = editingQuote.id || editingQuote._id || editingOriginalKey || `quote_${Date.now()}`;
     const quoteToSave = {
       ...editingQuote,
+      id: quoteId,
       productCode: (editingQuote.productCode || "").trim() || `BD-${Date.now().toString().slice(-4)}`,
       productTitle: rawTitle.trim(),
       category: editingQuote.category || "cuacuon",
       title: editingQuote.title || `Bảng giá cập nhật ${rawTitle.trim()} 2026 tại Đà Nẵng`,
       effectiveDate: editingQuote.effectiveDate || "Áp dụng từ năm 2026 cho đến khi có thông báo mới",
-      articleAbove: editingQuote.articleAbove || "",
-      articleBelow: editingQuote.articleBelow || "",
+      articleAbove: (editingQuote.articleAbove && editingQuote.articleAbove.trim()) || DEFAULT_NEW_QUOTE_TEMPLATE.articleAbove,
+      articleBelow: (editingQuote.articleBelow && editingQuote.articleBelow.trim()) || DEFAULT_NEW_QUOTE_TEMPLATE.articleBelow,
       image: editingQuote.image || (formattedItems.find((it) => it.image)?.image) || "/project_1.png",
       customColumns: gridColumns.map((c) => ({
         id: c.id,
@@ -992,33 +1045,35 @@ export default function AdminPriceQuote({ showToast }) {
           if (json.success) {
             success = true;
             message = json.message || message;
+            if (json.data?._id) {
+              quoteToSave._id = json.data._id;
+            }
           }
         } catch (e) {
           console.warn("API save error, fallback to local:", e);
         }
       }
 
-      let updatedList;
-      if (viewMode === "create") {
-        const existIdx = quotesList.findIndex((q) => q.productCode === quoteToSave.productCode);
-        if (existIdx >= 0) {
-          updatedList = [...quotesList];
-          updatedList[existIdx] = quoteToSave;
-        } else {
-          updatedList = [quoteToSave, ...quotesList];
-        }
+      // Cập nhật danh sách: tìm đúng vị trí của bảng giá đang sửa theo editingOriginalKey, id hoặc productCode
+      let updatedList = [...quotesList];
+      const existIdx = updatedList.findIndex(
+        (q) =>
+          (editingOriginalKey && (q.id === editingOriginalKey || q._id === editingOriginalKey || q.productCode === editingOriginalKey)) ||
+          (quoteToSave.id && q.id === quoteToSave.id) ||
+          (quoteToSave._id && q._id === quoteToSave._id) ||
+          (quoteToSave.productCode && q.productCode && q.productCode.toLowerCase() === quoteToSave.productCode.toLowerCase())
+      );
+
+      if (existIdx >= 0) {
+        updatedList[existIdx] = quoteToSave;
       } else {
-        updatedList = quotesList.map((q) =>
-          q.productCode === quoteToSave.productCode ? quoteToSave : q
-        );
-        if (!updatedList.some((q) => q.productCode === quoteToSave.productCode)) {
-          updatedList.push(quoteToSave);
-        }
+        updatedList = [quoteToSave, ...updatedList];
       }
 
       setQuotesList(updatedList);
       localStorage.setItem("boss_admin_price_quotes", JSON.stringify(updatedList));
       window.dispatchEvent(new Event("priceQuotesUpdated"));
+      window.dispatchEvent(new Event("storage"));
 
       triggerToast(`🎉 ${message}`);
       // Sau khi lưu bảng giá, tự động quay trở về danh sách bảng giá ngoài Admin!
@@ -1117,7 +1172,8 @@ export default function AdminPriceQuote({ showToast }) {
           </thead>
           <tbody>
             {filteredQuotes.length > 0 ? (
-              filteredQuotes.map((q) => {
+              filteredQuotes.map((q, qIdx) => {
+                const quoteUniqueKey = q.id || q._id || q.productCode || `q_${qIdx}`;
                 const firstItemWithImg = q.items?.find((it) => it.image || it.imageUrl);
                 const thumbImg =
                   q.image ||
@@ -1126,7 +1182,7 @@ export default function AdminPriceQuote({ showToast }) {
                   "/project_1.png";
 
                 return (
-                  <tr key={q.productCode}>
+                  <tr key={quoteUniqueKey}>
                     <td>
                       <img
                         src={thumbImg}
@@ -1148,6 +1204,9 @@ export default function AdminPriceQuote({ showToast }) {
                       <div style={{ color: "#f8fafc", fontSize: "0.95rem" }}>
                         {q.productTitle || q.title || q.name || "Bảng giá cửa cuốn BossDoor"}
                       </div>
+                      <div style={{ fontSize: "0.8rem", color: "#64748b", marginTop: "2px" }}>
+                        {q.customColumns?.length || 8} Cột × {q.items?.length || 7} Hàng
+                      </div>
                     </td>
                     <td>
                       <div style={{ display: "flex", gap: "6px", justifyContent: "center" }}>
@@ -1160,7 +1219,7 @@ export default function AdminPriceQuote({ showToast }) {
                         </button>
                         <button
                           className="btn-action-icon delete"
-                          onClick={() => handleDeleteQuote(q.productCode)}
+                          onClick={() => handleDeleteQuote(quoteUniqueKey)}
                           title="Xóa bảng giá này"
                         >
                           <Trash2 size={16} />
