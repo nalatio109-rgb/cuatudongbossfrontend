@@ -445,6 +445,14 @@ body.admin-mode {
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
   animation: adminScaleIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.admin-table-scroll-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .table-action-header {
@@ -1105,14 +1113,21 @@ body.admin-mode {
     letter-spacing: 0.2px;
   }
 
-  /* Table styling on mobile */
+  /* Table styling on mobile - Container giữ nguyên 100% để header và form không bị trôi lệch, chỉ bảng con cuộn ngang */
   .admin-table-container {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    overflow-x: visible !important;
     border-radius: 14px;
     background: #0f172a;
     border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .admin-table-scroll-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .table-action-header {

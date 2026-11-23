@@ -723,6 +723,9 @@ export default function Admin() {
     setShowProjectForm(true);
     setTimeout(() => {
       projectFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      const container = projectFormRef.current?.closest(".admin-table-container");
+      if (container) container.scrollLeft = 0;
+      window.scrollTo({ left: 0 });
     }, 100);
   };
 
@@ -768,6 +771,9 @@ export default function Admin() {
     setShowProjectForm(true);
     setTimeout(() => {
       projectFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      const container = projectFormRef.current?.closest(".admin-table-container");
+      if (container) container.scrollLeft = 0;
+      window.scrollTo({ left: 0 });
     }, 100);
   };
 
@@ -1114,6 +1120,9 @@ export default function Admin() {
     setShowNewsForm(true);
     setTimeout(() => {
       newsFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      const container = newsFormRef.current?.closest(".admin-table-container");
+      if (container) container.scrollLeft = 0;
+      window.scrollTo({ left: 0 });
     }, 100);
   };
 
@@ -1132,6 +1141,9 @@ export default function Admin() {
     setShowNewsForm(true);
     setTimeout(() => {
       newsFormRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      const container = newsFormRef.current?.closest(".admin-table-container");
+      if (container) container.scrollLeft = 0;
+      window.scrollTo({ left: 0 });
     }, 100);
   };
 
@@ -2667,62 +2679,65 @@ export default function Admin() {
                   />
                 </div>
               )}
-              <div className="table-scroll-hint"><span>⇄ Vuốt sang ngang để xem đầy đủ cột</span></div>
-              <table className="admin-table">
-                <thead>
-                  <tr>
-                    <th>Hình ảnh</th>
-                    <th>Tên công trình</th>
-                    <th>Hạng mục</th>
-                    <th>Địa điểm</th>
-                    <th>Ngày thi công</th>
-                    <th>Mô tả</th>
-                    <th>Thao tác</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredProjects.length > 0 ? (
-                    filteredProjects.map((pr) => (
-                      <tr key={pr._id}>
-                        <td>
-                          <img src={formatImgSrc(pr.image)} alt={pr.title} style={{ width: 60, height: 40, objectFit: "cover", borderRadius: 6 }} />
-                        </td>
-                        <td style={{ fontWeight: 600 }}>{pr.title}</td>
-                        <td><span className="admin-badge-category">{pr.category}</span></td>
-                        <td>{pr.location}</td>
-                        <td>
-                          <span style={{ fontSize: "0.85rem", color: "#07522f", fontWeight: 600, background: "rgba(7, 82, 47, 0.08)", padding: "3px 8px", borderRadius: "5px", whiteSpace: "nowrap" }}>
-                            {pr.completedDate || (pr.createdAt ? new Date(pr.createdAt).toLocaleDateString("vi-VN") : "—")}
-                          </span>
-                        </td>
-                        <td style={{ maxWidth: 280, fontSize: "0.85rem", color: "#94a3b8" }}>{pr.description}</td>
-                        <td>
-                          <button
-                            className="btn-action-icon edit"
-                            onClick={() => handleOpenEditProject(pr)}
-                            title="Sửa công trình"
-                          >
-                            <Edit size={16} />
-                          </button>
-                          <button
-                            className="btn-action-icon delete"
-                            onClick={() => handleDeleteProject(pr._id)}
-                            title="Xóa công trình"
-                          >
-                            <Trash2 size={16} />
-                          </button>
+              {/* BẢNG DỮ LIỆU CUỘN NGANG ĐỘC LẬP - BẢO VỆ HEADER VÀ FORM KHÔNG BỊ TRÀN LỆCH */}
+              <div className="admin-table-scroll-wrapper">
+                <div className="table-scroll-hint"><span>⇄ Vuốt sang ngang để xem đầy đủ cột</span></div>
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Hình ảnh</th>
+                      <th>Tên công trình</th>
+                      <th>Hạng mục</th>
+                      <th>Địa điểm</th>
+                      <th>Ngày thi công</th>
+                      <th>Mô tả</th>
+                      <th>Thao tác</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredProjects.length > 0 ? (
+                      filteredProjects.map((pr) => (
+                        <tr key={pr._id}>
+                          <td>
+                            <img src={formatImgSrc(pr.image)} alt={pr.title} style={{ width: 60, height: 40, objectFit: "cover", borderRadius: 6 }} />
+                          </td>
+                          <td style={{ fontWeight: 600 }}>{pr.title}</td>
+                          <td><span className="admin-badge-category">{pr.category}</span></td>
+                          <td>{pr.location}</td>
+                          <td>
+                            <span style={{ fontSize: "0.85rem", color: "#07522f", fontWeight: 600, background: "rgba(7, 82, 47, 0.08)", padding: "3px 8px", borderRadius: "5px", whiteSpace: "nowrap" }}>
+                              {pr.completedDate || (pr.createdAt ? new Date(pr.createdAt).toLocaleDateString("vi-VN") : "—")}
+                            </span>
+                          </td>
+                          <td style={{ maxWidth: 280, fontSize: "0.85rem", color: "#94a3b8" }}>{pr.description}</td>
+                          <td>
+                            <button
+                              className="btn-action-icon edit"
+                              onClick={() => handleOpenEditProject(pr)}
+                              title="Sửa công trình"
+                            >
+                              <Edit size={16} />
+                            </button>
+                            <button
+                              className="btn-action-icon delete"
+                              onClick={() => handleDeleteProject(pr._id)}
+                              title="Xóa công trình"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="6" style={{ textAlign: "center", padding: "2rem" }}>
+                          Chưa có công trình nào phù hợp với tìm kiếm.
                         </td>
                       </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="6" style={{ textAlign: "center", padding: "2rem" }}>
-                        Chưa có công trình nào phù hợp với tìm kiếm.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
 
@@ -2806,69 +2821,72 @@ export default function Admin() {
                 </div>
               )}
 
-              <div className="table-scroll-hint"><span>⇄ Vuốt sang ngang để xem đầy đủ cột</span></div>
-              <table className="admin-table">
-                <thead>
-                  <tr>
-                    <th>Hình ảnh</th>
-                    <th>Tiêu đề bài viết</th>
-                    <th>Chuyên mục</th>
-                    <th>Ngày đăng</th>
-                    <th>Tác giả</th>
-                    <th>Tóm tắt ngắn</th>
-                    <th>Thao tác</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredNews.length > 0 ? (
-                    filteredNews.map((n) => (
-                      <tr key={n._id || n.id}>
-                        <td>
-                          <img src={n.image || "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=120&q=80"} alt={n.title} style={{ width: 60, height: 40, objectFit: "cover", borderRadius: 6 }} />
-                        </td>
-                        <td style={{ fontWeight: 600 }}>
-                          <div>{n.title}</div>
-                          <div style={{ fontSize: "0.78rem", color: "#38bdf8", marginTop: 4 }}>
-                            <Link to={`/tin-tuc/${n.slug || slugify(n.title)}`} target="_blank" style={{ color: "#38bdf8", textDecoration: "none" }}>
-                              🔗 /tin-tuc/{n.slug || slugify(n.title)}
-                            </Link>
-                          </div>
-                        </td>
-                        <td>
-                          <span className="admin-badge-category" style={{ background: "rgba(16, 185, 129, 0.15)", color: "#10b981", border: "1px solid rgba(16, 185, 129, 0.3)" }}>
-                            {n.category || "Tư vấn"}
-                          </span>
-                        </td>
-                        <td>{n.date}</td>
-                        <td><span className="admin-badge-category">{n.author || "BOSS"}</span></td>
-                        <td style={{ maxWidth: 260, fontSize: "0.85rem", color: "#94a3b8" }}>{n.summary}</td>
-                        <td>
-                          <button
-                            className="btn-action-icon edit"
-                            onClick={() => handleOpenEditNews(n)}
-                            title="Sửa bài viết"
-                          >
-                            <Edit size={16} />
-                          </button>
-                          <button
-                            className="btn-action-icon delete"
-                            onClick={() => handleDeleteNews(n._id || n.id)}
-                            title="Xóa bài viết"
-                          >
-                            <Trash2 size={16} />
-                          </button>
+              {/* BẢNG DỮ LIỆU CUỘN NGANG ĐỘC LẬP - BẢO VỆ HEADER VÀ FORM KHÔNG BỊ TRÀN LỆCH */}
+              <div className="admin-table-scroll-wrapper">
+                <div className="table-scroll-hint"><span>⇄ Vuốt sang ngang để xem đầy đủ cột</span></div>
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Hình ảnh</th>
+                      <th>Tiêu đề bài viết</th>
+                      <th>Chuyên mục</th>
+                      <th>Ngày đăng</th>
+                      <th>Tác giả</th>
+                      <th>Tóm tắt ngắn</th>
+                      <th>Thao tác</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredNews.length > 0 ? (
+                      filteredNews.map((n) => (
+                        <tr key={n._id || n.id}>
+                          <td>
+                            <img src={n.image || "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=120&q=80"} alt={n.title} style={{ width: 60, height: 40, objectFit: "cover", borderRadius: 6 }} />
+                          </td>
+                          <td style={{ fontWeight: 600 }}>
+                            <div>{n.title}</div>
+                            <div style={{ fontSize: "0.78rem", color: "#38bdf8", marginTop: 4 }}>
+                              <Link to={`/tin-tuc/${n.slug || slugify(n.title)}`} target="_blank" style={{ color: "#38bdf8", textDecoration: "none" }}>
+                                🔗 /tin-tuc/{n.slug || slugify(n.title)}
+                              </Link>
+                            </div>
+                          </td>
+                          <td>
+                            <span className="admin-badge-category" style={{ background: "rgba(16, 185, 129, 0.15)", color: "#10b981", border: "1px solid rgba(16, 185, 129, 0.3)" }}>
+                              {n.category || "Tư vấn"}
+                            </span>
+                          </td>
+                          <td>{n.date}</td>
+                          <td><span className="admin-badge-category">{n.author || "BOSS"}</span></td>
+                          <td style={{ maxWidth: 260, fontSize: "0.85rem", color: "#94a3b8" }}>{n.summary}</td>
+                          <td>
+                            <button
+                              className="btn-action-icon edit"
+                              onClick={() => handleOpenEditNews(n)}
+                              title="Sửa bài viết"
+                            >
+                              <Edit size={16} />
+                            </button>
+                            <button
+                              className="btn-action-icon delete"
+                              onClick={() => handleDeleteNews(n._id || n.id)}
+                              title="Xóa bài viết"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="7" style={{ textAlign: "center", padding: "2rem" }}>
+                          Chưa có bài viết tin tức nào.
                         </td>
                       </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="7" style={{ textAlign: "center", padding: "2rem" }}>
-                        Chưa có bài viết tin tức nào.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
 
@@ -2916,97 +2934,99 @@ export default function Admin() {
                   </button>
                 </div>
               </div>
-              <div className="table-scroll-hint"><span>⇄ Vuốt sang ngang để xem đầy đủ cột</span></div>
-              <table className="admin-table">
-                <thead>
-                  <tr>
-                    <th>Hình ảnh</th>
-                    <th>Tiêu đề dịch vụ</th>
-                    <th>Ngày đăng</th>
-                    <th>Thứ tự</th>
-                    <th>Mô tả tóm tắt</th>
-                    <th>Thao tác</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredServices.length > 0 ? (
-                    filteredServices.map((s, idx) => (
-                      <tr key={s._id || s.id || idx}>
-                        <td>
-                          <img
-                            src={formatImgSrc(s.img)}
-                            alt={s.title}
-                            style={{ width: 64, height: 44, objectFit: "cover", borderRadius: 6, border: "1px solid rgba(212,175,55,0.3)" }}
-                          />
-                        </td>
-                        <td style={{ fontWeight: 600 }}>
-                          <div style={{ color: "#f8fafc" }}>{s.title}</div>
-                          <div style={{ fontSize: "0.78rem", color: "#38bdf8", marginTop: 4, display: "flex", alignItems: "center", gap: 8 }}>
-                            <span>📞 Hotline: {s.phone || "0904.678.323"}</span>
-                            <span>•</span>
-                            <Link to="/dich-vu" target="_blank" style={{ color: "#38bdf8", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 3 }}>
-                              <ExternalLink size={12} /> Xem trên web
-                            </Link>
+              <div className="admin-table-scroll-wrapper">
+                <div className="table-scroll-hint"><span>⇄ Vuốt sang ngang để xem đầy đủ cột</span></div>
+                <table className="admin-table">
+                  <thead>
+                    <tr>
+                      <th>Hình ảnh</th>
+                      <th>Tiêu đề dịch vụ</th>
+                      <th>Ngày đăng</th>
+                      <th>Thứ tự</th>
+                      <th>Mô tả tóm tắt</th>
+                      <th>Thao tác</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredServices.length > 0 ? (
+                      filteredServices.map((s, idx) => (
+                        <tr key={s._id || s.id || idx}>
+                          <td>
+                            <img
+                              src={formatImgSrc(s.img)}
+                              alt={s.title}
+                              style={{ width: 64, height: 44, objectFit: "cover", borderRadius: 6, border: "1px solid rgba(212,175,55,0.3)" }}
+                            />
+                          </td>
+                          <td style={{ fontWeight: 600 }}>
+                            <div style={{ color: "#f8fafc" }}>{s.title}</div>
+                            <div style={{ fontSize: "0.78rem", color: "#38bdf8", marginTop: 4, display: "flex", alignItems: "center", gap: 8 }}>
+                              <span>📞 Hotline: {s.phone || "0904.678.323"}</span>
+                              <span>•</span>
+                              <Link to="/dich-vu" target="_blank" style={{ color: "#38bdf8", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 3 }}>
+                                <ExternalLink size={12} /> Xem trên web
+                              </Link>
+                            </div>
+                          </td>
+                          <td>{s.date}</td>
+                          <td>
+                            <span className="admin-badge-category" style={{ background: "rgba(212,175,55,0.15)", color: "#d4af37", fontWeight: 700 }}>
+                              #{s.order ?? (idx + 1)}
+                            </span>
+                          </td>
+                          <td style={{ maxWidth: 280, fontSize: "0.85rem", color: "#94a3b8" }}>
+                            {s.desc}
+                          </td>
+                          <td>
+                            <button
+                              className="btn-action-icon edit"
+                              onClick={() => handleOpenEditService(s)}
+                              title="Sửa dịch vụ"
+                            >
+                              <Edit size={16} />
+                            </button>
+                            <button
+                              className="btn-action-icon delete"
+                              onClick={() => handleDeleteService(s._id)}
+                              title="Xóa dịch vụ"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="6" style={{ textAlign: "center", padding: "3rem 1.5rem" }}>
+                          <div style={{ maxWidth: 500, margin: "0 auto", color: "#94a3b8" }}>
+                            <Wrench size={40} style={{ color: "#d4af37", margin: "0 auto 12px", display: "block" }} />
+                            <h3 style={{ color: "#f8fafc", fontSize: "1.1rem", marginBottom: 8, fontWeight: 700 }}>
+                              Chưa có dịch vụ nào trong cơ sở dữ liệu
+                            </h3>
+                            <p style={{ fontSize: "0.85rem", marginBottom: 20, color: "#94a3b8", lineHeight: 1.5 }}>
+                              Hệ thống hiện chưa có bản ghi dịch vụ nào. Bạn có thể tự tạo dịch vụ mới hoặc nạp sẵn 8 dịch vụ tiêu chuẩn (cửa cuốn, sửa chữa 24/7, cửa kéo, phụ kiện...).
+                            </p>
+                            <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+                              <button
+                                className="btn-add-new"
+                                onClick={() => handleSeedDefaultServices(false)}
+                                disabled={seedingServices}
+                                style={{ background: "linear-gradient(135deg, #d4af37 0%, #b8972e 100%)", color: "#000", fontWeight: 700 }}
+                              >
+                                {seedingServices ? <Loader2 size={16} className="spin" /> : <RotateCcw size={16} />}
+                                {seedingServices ? "Đang nạp dữ liệu..." : "⚡ Nạp 8 Dịch Vụ Mẫu Vào Admin"}
+                              </button>
+                              <button className="btn-add-new" onClick={handleOpenAddService}>
+                                <Plus size={16} /> Thêm Dịch Vụ Mới
+                              </button>
+                            </div>
                           </div>
-                        </td>
-                        <td>{s.date}</td>
-                        <td>
-                          <span className="admin-badge-category" style={{ background: "rgba(212,175,55,0.15)", color: "#d4af37", fontWeight: 700 }}>
-                            #{s.order ?? (idx + 1)}
-                          </span>
-                        </td>
-                        <td style={{ maxWidth: 280, fontSize: "0.85rem", color: "#94a3b8" }}>
-                          {s.desc}
-                        </td>
-                        <td>
-                          <button
-                            className="btn-action-icon edit"
-                            onClick={() => handleOpenEditService(s)}
-                            title="Sửa dịch vụ"
-                          >
-                            <Edit size={16} />
-                          </button>
-                          <button
-                            className="btn-action-icon delete"
-                            onClick={() => handleDeleteService(s._id)}
-                            title="Xóa dịch vụ"
-                          >
-                            <Trash2 size={16} />
-                          </button>
                         </td>
                       </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="6" style={{ textAlign: "center", padding: "3rem 1.5rem" }}>
-                        <div style={{ maxWidth: 500, margin: "0 auto", color: "#94a3b8" }}>
-                          <Wrench size={40} style={{ color: "#d4af37", margin: "0 auto 12px", display: "block" }} />
-                          <h3 style={{ color: "#f8fafc", fontSize: "1.1rem", marginBottom: 8, fontWeight: 700 }}>
-                            Chưa có dịch vụ nào trong cơ sở dữ liệu
-                          </h3>
-                          <p style={{ fontSize: "0.85rem", marginBottom: 20, color: "#94a3b8", lineHeight: 1.5 }}>
-                            Hệ thống hiện chưa có bản ghi dịch vụ nào. Bạn có thể tự tạo dịch vụ mới hoặc nạp sẵn 8 dịch vụ tiêu chuẩn (cửa cuốn, sửa chữa 24/7, cửa kéo, phụ kiện...).
-                          </p>
-                          <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-                            <button
-                              className="btn-add-new"
-                              onClick={() => handleSeedDefaultServices(false)}
-                              disabled={seedingServices}
-                              style={{ background: "linear-gradient(135deg, #d4af37 0%, #b8972e 100%)", color: "#000", fontWeight: 700 }}
-                            >
-                              {seedingServices ? <Loader2 size={16} className="spin" /> : <RotateCcw size={16} />}
-                              {seedingServices ? "Đang nạp dữ liệu..." : "⚡ Nạp 8 Dịch Vụ Mẫu Vào Admin"}
-                            </button>
-                            <button className="btn-add-new" onClick={handleOpenAddService}>
-                              <Plus size={16} /> Thêm Dịch Vụ Mới
-                            </button>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
 
@@ -3092,7 +3112,8 @@ export default function Admin() {
               </div>
 
               {/* BẢNG DESKTOP */}
-              <table className="admin-table">
+              <div className="admin-table-scroll-wrapper">
+                <table className="admin-table">
                 <thead>
                   <tr>
                     <th style={{ width: "45px" }}>STT</th>
@@ -3211,6 +3232,7 @@ export default function Admin() {
                   )}
                 </tbody>
               </table>
+              </div>
 
               {/* DANH SÁCH THẺ MOBILE */}
               <div className="admin-mobile-review-cards">
