@@ -822,39 +822,71 @@
     display: none !important;
   }
 
-  /* HIỂN THỊ BẢNG GIÁ KỸ THUẬT ĐỒNG BỘ 100% VỚI ADMIN TRÊN ĐIỆN THOẠI */
+  /* BẢNG GIÁ NẰM TRỰC TIẾP TRÊN NỀN, KHÔNG BỎ TRONG KHUNG */
   .technical-table-container-card {
     display: block !important;
     width: 100% !important;
     margin: 16px 0 24px 0 !important;
-    background: #ffffff !important;
-    border-radius: 12px !important;
-    border: 1px solid #e2e8f0 !important;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05) !important;
-    overflow: hidden !important;
+    background: transparent !important;
+    border-radius: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    overflow: visible !important;
+    padding: 0 !important;
   }
 
   .admin-table-scroll-wrapper {
     width: 100% !important;
     overflow-x: auto !important;
     -webkit-overflow-scrolling: touch !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
   }
 
   .customer-quote-table {
     min-width: 680px !important;
     font-size: 13px !important;
     width: 100% !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    background: transparent !important;
+    border-collapse: collapse !important;
   }
 
   .customer-quote-table thead th {
     padding: 11px 10px !important;
     font-size: 12.5px !important;
     white-space: nowrap !important;
+    background: #004d32 !important;
+    color: #ffffff !important;
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-bottom: 2px solid #00281b !important;
+    border-radius: 0 !important;
   }
 
   .customer-quote-table tbody td {
     padding: 10px 8px !important;
     font-size: 12.5px !important;
+    border-top: none !important;
+    border-left: none !important;
+    border-right: none !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    background: #ffffff !important;
+    border-radius: 0 !important;
+  }
+
+  .customer-quote-table th:nth-child(1),
+  .customer-quote-table td:nth-child(1),
+  .customer-quote-table th:nth-child(2),
+  .customer-quote-table td:nth-child(2) {
+    position: static !important;
+    box-shadow: none !important;
   }
 
   .pricing-table-header-row {
