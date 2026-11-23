@@ -822,129 +822,60 @@
     display: none !important;
   }
 
-  /* Hiển thị bảng giá 3 cột gọn gàng chuẩn Ảnh 2 trên điện thoại */
-  .mobile-pricing-table-container {
-    display: block !important;
-    width: 100%;
-    margin-bottom: 24px;
-    background: #ffffff;
-  }
-
-  .mobile-spec-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: #ffffff;
-    border: 1px solid #d1d5db;
-    table-layout: fixed;
-  }
-
-  .mobile-spec-table th {
-    background-color: #f3f4f6;
-    color: #111827;
-    font-size: 13.5px;
-    font-weight: 700;
-    text-align: center;
-    vertical-align: middle;
-    padding: 10px 6px;
-    border: 1px solid #d1d5db;
-    line-height: 1.35;
-  }
-
-  .mobile-spec-table th.th-name {
-    width: 32%;
-  }
-
-  .mobile-spec-table th.th-specs {
-    width: 48%;
-  }
-
-  .mobile-spec-table th.th-price {
-    width: 20%;
-  }
-
-  .mobile-spec-table td {
-    border: 1px solid #d1d5db;
-    padding: 10px 8px;
-    vertical-align: top;
-    background: #ffffff;
-  }
-
-  .mobile-spec-table tr.highlight-active-row td {
-    background: #f0fdf4;
-  }
-
-  .mobile-spec-table tr.highlight-active-row td.cell-product-name .mobile-pname-text {
-    color: #004d32;
-    font-weight: 700;
-  }
-
-  /* Cột 1: Tên sản phẩm - chữ xanh, (xem ảnh) bên dưới */
-  .cell-product-name {
-    text-align: left;
-  }
-
-  .mobile-pname-text {
-    color: #0284c7;
-    font-size: 13px;
-    font-weight: 600;
-    line-height: 1.4;
-    word-break: break-word;
-  }
-
-  .mobile-view-photo-btn {
-    background: none;
-    border: none;
-    padding: 0;
-    margin-top: 3px;
-    color: #0284c7;
-    font-size: 12px;
-    font-weight: 500;
-    cursor: pointer;
-    display: inline-block;
-    text-align: left;
-    text-decoration: none;
-  }
-
-  .mobile-view-photo-btn:hover {
-    text-decoration: underline;
-    color: #0369a1;
-  }
-
-  /* Cột 2: Chi tiết - các gạch đầu dòng */
-  .cell-product-specs {
-    text-align: left;
-  }
-
-  .spec-item-line {
-    font-size: 12px;
-    line-height: 1.5;
-    color: #1f2937;
-    margin-bottom: 3px;
-    word-break: break-word;
-  }
-
-  .spec-item-line:last-child {
-    margin-bottom: 0;
-  }
-
-  /* Cột 3: Giá bán - in đậm, căn giữa, định dạng 4,110k */
-  .cell-product-price {
-    text-align: center;
-    vertical-align: top;
-    padding: 12px 4px !important;
-  }
-
-  .cell-product-price .price-bold {
-    font-size: 14.5px;
-    font-weight: 700;
-    color: #111827;
-    display: block;
-    line-height: 1.3;
-  }
-
-  /* Ẩn bảng kỹ thuật gốc trên điện thoại (đã được hiển thị qua bảng 3 cột phía trên) */
+  /* HIỂN THỊ BẢNG GIÁ KỸ THUẬT ĐỒNG BỘ 100% VỚI ADMIN TRÊN ĐIỆN THOẠI */
   .technical-table-container-card {
-    display: none !important;
+    display: block !important;
+    width: 100% !important;
+    margin: 16px 0 24px 0 !important;
+    background: #ffffff !important;
+    border-radius: 12px !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05) !important;
+    overflow: hidden !important;
+  }
+
+  .admin-table-scroll-wrapper {
+    width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .customer-quote-table {
+    min-width: 680px !important;
+    font-size: 13px !important;
+    width: 100% !important;
+  }
+
+  .customer-quote-table thead th {
+    padding: 11px 10px !important;
+    font-size: 12.5px !important;
+    white-space: nowrap !important;
+  }
+
+  .customer-quote-table tbody td {
+    padding: 10px 8px !important;
+    font-size: 12.5px !important;
+  }
+
+  .pricing-table-header-row {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+    margin-bottom: 12px !important;
+  }
+
+  .table-scroll-hint-pill {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    font-size: 12px !important;
+    padding: 5px 12px !important;
+    background: #ecfdf5 !important;
+    color: #065f46 !important;
+    border: 1px solid #a7f3d0 !important;
+    border-radius: 20px !important;
+    font-weight: 700 !important;
   }
 
   /* Ẩn khu vực "LỰA CHỌN THÊM" trên điện thoại theo yêu cầu */

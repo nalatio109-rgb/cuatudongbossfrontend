@@ -24,15 +24,22 @@ export function slugify(text) {
 export function getProductSlug(product) {
   if (!product) return "";
   if (product.slug && typeof product.slug === "string" && product.slug.trim().length > 0) {
-    return product.slug.trim();
+    const s = product.slug.trim().toLowerCase();
+    return s.replace(/^(san-pham-)+/gi, "");
   }
   if (product.title && typeof product.title === "string") {
-    return slugify(product.title);
+    let raw = product.title.trim();
+    // Bỏ tiền tố "Sản phẩm " nếu có để tránh vòng lặp slugify san-pham-
+    if (/^sản phẩm\s+/i.test(raw)) {
+      raw = raw.replace(/^sản phẩm\s+/i, "");
+    }
+    const s = slugify(raw);
+    return s.replace(/^(san-pham-)+/gi, "");
   }
   if (product.code && typeof product.code === "string") {
-    return slugify(product.code);
+    return slugify(product.code).replace(/^(san-pham-)+/gi, "");
   }
-  return String(product.id || "").toLowerCase();
+  return String(product.id || "").toLowerCase().replace(/^(san-pham-)+/gi, "");
 }
 
 /**

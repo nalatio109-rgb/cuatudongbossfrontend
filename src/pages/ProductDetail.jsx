@@ -22,7 +22,8 @@ import {
 } from "lucide-react";
 import { getProductExtendedDetails } from "../data/productDetailsData";
 import { DEFAULT_PRODUCT_ARTICLES } from "../data/defaultProductArticles";
-import { getProductSlug } from "../utils/slug.js";
+import { DEFAULT_PRICE_QUOTES } from "../data/defaultPriceQuotes";
+import { getProductSlug, slugify } from "../utils/slug.js";
 import { formatProductPrice } from "../utils/priceFormatter";
 import { useAuth } from "../context/AuthContext";
 import "./ProductDetail.css";
@@ -64,6 +65,19 @@ export default function ProductDetail() {
     }
   }, [currentUser]);
 
+  // Dọn dẹp id nếu bị dính chuỗi lặp lỗi (ví dụ: san-pham-san-pham-...)
+  const cleanId = useMemo(() => {
+    if (!id) return "";
+    return id.replace(/^(san-pham-)+/gi, "");
+  }, [id]);
+
+  // Nếu URL bị dính chuỗi lặp thừa, chuyển hướng ngay về cleanId chuẩn
+  useEffect(() => {
+    if (id && cleanId && id !== cleanId) {
+      navigate(`/san-pham/${cleanId}`, { replace: true, state: location.state });
+    }
+  }, [id, cleanId, navigate, location.state]);
+
   // Reset and update product on route change or when navigation state changes
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -72,25 +86,78 @@ export default function ProductDetail() {
 
     if (location.state?.product) {
       setProduct(location.state.product);
-    } else if (id && allProducts.length > 0) {
+      return;
+    }
+
+    const targetId = cleanId || id;
+    if (!targetId) return;
+
+    // 1. Tìm trong allProducts nếu đã có
+    if (allProducts.length > 0) {
       const match = allProducts.find(
         (p) =>
-          String(p.id) === String(id) ||
-          p.code?.toLowerCase() === id.toLowerCase() ||
-          getProductSlug(p) === id
+          String(p.id) === String(targetId) ||
+          p.code?.toLowerCase() === targetId.toLowerCase() ||
+          getProductSlug(p) === targetId
       );
       if (match) {
         setProduct(match);
+        return;
       }
     }
-  }, [id, location.key, location.state, allProducts]);
+
+    // 2. Tìm kiếm trong danh sách bảng báo giá (Admin / LocalStorage / Default)
+    try {
+      const local = localStorage.getItem("boss_admin_price_quotes");
+      const quotesList = local ? JSON.parse(local) : DEFAULT_PRICE_QUOTES;
+      if (Array.isArray(quotesList)) {
+        for (const q of quotesList) {
+          const rows = q.rows || q.items || [];
+          for (const r of rows) {
+            const rCode = (r.code || "").trim().toLowerCase();
+            const rName = (r.name || r.title || "").trim();
+            const rSlug = getProductSlug({ slug: r.slug, title: rName, code: r.code });
+            if (
+              (rCode && rCode === targetId.toLowerCase()) ||
+              (rSlug && rSlug === targetId.toLowerCase()) ||
+              (rName && slugify(rName) === targetId.toLowerCase())
+            ) {
+              const img = r.image || r.imageUrl || (r.rawGridCells && (r.rawGridCells.image || r.rawGridCells.imageUrl)) || q.image || "";
+              setProduct({
+                id: r.code || rSlug || targetId,
+                code: r.code || targetId,
+                title: rName || `Sản phẩm ${r.code || targetId}`,
+                category: q.category || "cuacuon",
+                price: r.priceOver8 || r.price6to8 || r.price4to6 || r.price || "Liên hệ",
+                image: img,
+                images: img ? [img] : [],
+                gallery: img ? [img] : [],
+                description: r.description || rName,
+                quickSpecs: [
+                  { label: "Mã sản phẩm", value: r.code || targetId.toUpperCase() },
+                  { label: "Tên dòng sản phẩm", value: rName },
+                  { label: "Màu sắc", value: r.colors || r.color || "Ghi sáng, Vàng kem, Cà phê" },
+                  { label: "Đơn vị tính", value: r.unit || "m²" },
+                  { label: "Bảo hành", value: "5 - 10 năm chính hãng Boss Đà Nẵng" }
+                ]
+              });
+              return;
+            }
+          }
+        }
+      }
+    } catch (e) {
+      console.warn("Could not find product in price quotes:", e);
+    }
+  }, [id, cleanId, location.key, location.state, allProducts]);
 
   // Load product from API if not passed via location state
   useEffect(() => {
     if (import.meta.env.VITE_API_URL) {
+      const targetId = cleanId || id;
       // 1. Fetch current product if missing
-      if (!product && id) {
-        fetch(`${import.meta.env.VITE_API_URL}/api/products/${id}`)
+      if (!product && targetId) {
+        fetch(`${import.meta.env.VITE_API_URL}/api/products/${targetId}`)
           .then((res) => res.json())
           .then((data) => {
             if (data.success && data.data) {
@@ -107,12 +174,12 @@ export default function ProductDetail() {
           .then((data) => {
             if (data.success && data.data) {
               setAllProducts(data.data);
-              if (!product && id) {
+              if (!product && targetId) {
                 const match = data.data.find(
                   (p) =>
-                    String(p.id) === String(id) ||
-                    p.code?.toLowerCase() === id.toLowerCase() ||
-                    getProductSlug(p) === id
+                    String(p.id) === String(targetId) ||
+                    p.code?.toLowerCase() === targetId.toLowerCase() ||
+                    getProductSlug(p) === targetId
                 );
                 if (match) setProduct(match);
               }
@@ -121,27 +188,39 @@ export default function ProductDetail() {
           .catch((err) => console.log("All products fetch error:", err));
       }
     }
-  }, [id, product, allProducts.length]);
+  }, [id, cleanId, product, allProducts.length]);
 
   // Combine product with extended technical and commercial details
   const extendedDetails = useMemo(() => {
+    const targetId = cleanId || id;
     const initialProduct = product || {
-      id: id,
-      code: id,
-      title: `Sản phẩm ${id}`
+      id: targetId,
+      code: targetId,
+      slug: targetId,
+      title: targetId ? targetId.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase()) : "Sản phẩm BossDoor"
     };
     return getProductExtendedDetails(initialProduct);
-  }, [product, id]);
+  }, [product, id, cleanId]);
 
-  // Tự động đồng bộ hoá URL trên thanh địa chỉ sang dạng Slug không dấu chuẩn SEO (ví dụ: /san-pham/cua-cuon-khe-thoang-duc-bossdoor-bd-900)
+  // Tự động đồng bộ hoá URL trên thanh địa chỉ sang dạng Slug không dấu chuẩn SEO (chỉ khi là id số/mã ngắn và product đã có)
   useEffect(() => {
-    if (extendedDetails) {
-      const canonicalSlug = getProductSlug(extendedDetails);
-      if (canonicalSlug && id !== canonicalSlug) {
-        navigate(`/san-pham/${canonicalSlug}`, { replace: true, state: location.state });
-      }
+    if (!product) return; // Tuyệt đối KHÔNG redirect nếu chưa có product thật
+
+    const canonicalSlug = getProductSlug(product);
+    if (!canonicalSlug) return;
+
+    // Ngăn chặn vòng lặp và lỗi đệ quy chuỗi "san-pham"
+    if (canonicalSlug.includes("san-pham-san-pham")) return;
+
+    const targetId = cleanId || id;
+    if (targetId === canonicalSlug) return;
+
+    // Chỉ redirect nếu URL hiện tại là ID số thuần túy hoặc mã ngắn (dưới 8 ký tự, không chứa gạch ngang)
+    const isShortCodeOrId = /^[0-9]+$/.test(targetId) || (targetId && targetId.length <= 8 && !targetId.includes("-"));
+    if (isShortCodeOrId && canonicalSlug !== targetId) {
+      navigate(`/san-pham/${canonicalSlug}`, { replace: true, state: location.state });
     }
-  }, [id, extendedDetails, navigate, location.state]);
+  }, [id, cleanId, product, navigate, location.state]);
 
   // Load product article from API, localStorage, or fallback
   useEffect(() => {

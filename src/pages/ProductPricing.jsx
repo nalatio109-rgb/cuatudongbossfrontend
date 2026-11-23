@@ -121,10 +121,12 @@ const isImageCol = (col) => {
 const getProductDetailUrl = (row) => {
   if (!row) return "/san-pham";
   if (row.productLink && String(row.productLink).trim() !== "") {
-    return row.productLink.trim();
+    const l = row.productLink.trim();
+    return l.startsWith("http") || l.startsWith("/") ? l : `/san-pham/${l}`;
   }
   if (row.url && String(row.url).trim() !== "") {
-    return row.url.trim();
+    const u = row.url.trim();
+    return u.startsWith("http") || u.startsWith("/") ? u : `/san-pham/${u}`;
   }
   const code = (row.code || "").trim();
   const name = (row.name || row.title || "").trim();
@@ -133,7 +135,42 @@ const getProductDetailUrl = (row) => {
     title: name,
     code: code
   });
-  return `/san-pham/${slug || code || "cua-cuon"}`;
+  const cleanSlug = (slug || code || "cua-cuon").replace(/^(san-pham-)+/gi, "");
+  return `/san-pham/${cleanSlug}`;
+};
+
+// Helper khởi tạo dữ liệu chi tiết sản phẩm cho hàng trong bảng giá (để truyền vào trang ProductDetail)
+const buildRowProductState = (row, cellVal, quoteCategory) => {
+  if (!row) return null;
+  const name = (row.name || row.title || (row.code ? `Sản phẩm ${row.code}` : "Sản phẩm BossDoor")).trim();
+  const code = (row.code || "").trim();
+  const img = cellVal || row.image || row.imageUrl || "";
+  const price = row.priceOver8 || row.price6to8 || row.price4to6 || row.price || "Liên hệ";
+  return {
+    id: code || slugify(name),
+    code: code,
+    title: name,
+    category: quoteCategory || "cuacuon",
+    price: price,
+    image: img,
+    images: img ? [img] : [],
+    gallery: img ? [img] : [],
+    description: name,
+    details: name,
+    quickSpecs: [
+      { label: "Mã sản phẩm", value: code || "TIÊU CHUẨN" },
+      { label: "Tên dòng sản phẩm", value: name },
+      { label: "Màu sắc", value: row.colors || row.color || "Ghi sáng, Vàng kem, Cà phê" },
+      { label: "Đơn vị tính", value: row.unit || "m²" },
+      { label: "Bảo hành", value: "5 - 10 năm chính hãng Boss Đà Nẵng" }
+    ],
+    specs: [
+      code ? `Mã sản phẩm: ${code}` : null,
+      name ? `Quy cách: ${name}` : null,
+      row.colors || row.color ? `Màu sắc: ${row.colors || row.color}` : null,
+      row.unit ? `Đơn vị tính: ${row.unit}` : null
+    ].filter(Boolean)
+  };
 };
 
 // Helper tìm kiếm bảng giá thông minh khớp với ID, URL slug hoặc mã sản phẩm
@@ -1151,7 +1188,9 @@ export default function ProductPricing() {
             <section className="pricing-table-section">
               <div className="pricing-table-header-row">
                 <h2 id="bang-gia-chi-tiet" className="pricing-section-title">
-                  {priceQuote?.tableHeading || priceQuote?.title || `Bảng giá ${product?.title || ""} tại Đà Nẵng`}
+                  {priceQuote?.tableHeading && priceQuote.tableHeading !== priceQuote.title
+                    ? priceQuote.tableHeading
+                    : "Bảng báo giá chi tiết từng dòng sản phẩm"}
                 </h2>
                 <div className="table-scroll-hint-pill">
                   ↔ Vuốt ngang để xem đầy đủ các cột giá
@@ -1259,6 +1298,7 @@ export default function ProductPricing() {
 
                               if (isImg) {
                                 const prodLink = getProductDetailUrl(row);
+                                const rowProduct = buildRowProductState(row, cellVal, priceQuote?.category);
                                 return (
                                   <td key={col.id || cIdx} className="cell-client-img text-center">
                                     <div className="table-img-with-link-wrapper">
@@ -1270,7 +1310,8 @@ export default function ProductPricing() {
                                               url: cellVal,
                                               title: row.name || `Sản phẩm ${row.code || rIdx + 1}`,
                                               code: row.code,
-                                              link: prodLink
+                                              link: prodLink,
+                                              productData: rowProduct
                                             })
                                           }
                                           title="Nhấn để phóng to ảnh xem chi tiết"
@@ -1292,6 +1333,7 @@ export default function ProductPricing() {
                                       )}
                                       <Link
                                         to={prodLink}
+                                        state={{ product: rowProduct }}
                                         className="table-item-detail-link"
                                         title={`Xem trang chi tiết sản phẩm ${row.code || row.name || ""}`}
                                       >
@@ -1607,6 +1649,7 @@ export default function ProductPricing() {
 
                               if (isImg) {
                                 const prodLink = getProductDetailUrl(row);
+                                const rowProduct = buildRowProductState(row, cellVal, priceQuote?.category);
                                 return (
                                   <td key={col.id || cIdx} className="cell-client-img text-center">
                                     <div className="table-img-with-link-wrapper">
@@ -1618,7 +1661,8 @@ export default function ProductPricing() {
                                               url: cellVal,
                                               title: row.name || `Sản phẩm ${row.code || rIdx + 1}`,
                                               code: row.code,
-                                              link: prodLink
+                                              link: prodLink,
+                                              productData: rowProduct
                                             })
                                           }
                                           title="Nhấn để phóng to ảnh xem chi tiết"
@@ -1640,6 +1684,7 @@ export default function ProductPricing() {
                                       )}
                                       <Link
                                         to={prodLink}
+                                        state={{ product: rowProduct }}
                                         className="table-item-detail-link"
                                         title={`Xem trang chi tiết sản phẩm ${row.code || row.name || ""}`}
                                       >
@@ -1937,6 +1982,7 @@ export default function ProductPricing() {
             <div className="zoom-modal-footer">
               <Link
                 to={zoomImage.link}
+                state={{ product: zoomImage.productData }}
                 className="btn-zoom-view-detail"
                 onClick={() => setZoomImage(null)}
               >

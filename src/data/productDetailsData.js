@@ -683,7 +683,8 @@ export function getProductExtendedDetails(product) {
     else if (cat === "phukien") fallbackKey = "BEC.5810";
 
     const template = EXTENDED_PRODUCT_MAP[fallbackKey] || EXTENDED_PRODUCT_MAP["CK-SR1"];
-    const resolvedSlug = product.slug || slugify(product.title || product.code || template.title);
+    let resolvedSlug = product.slug || slugify(product.title || product.code || template.title);
+    resolvedSlug = (resolvedSlug || "").replace(/^(san-pham-)+/gi, "");
     const primaryImg =
       (Array.isArray(product.images) && product.images[0]) ||
       product.image ||
@@ -717,6 +718,13 @@ export function getProductExtendedDetails(product) {
       resolvedGallery = [primaryImg || "https://bossdoordanang.com.vn/wp-content/uploads/2024/11/cua-cuon-bossdoor-eco-bec-5810-bossdoordanang.jpg"];
     }
 
+    const defaultQuickSpecs = [
+      { label: "Mã sản phẩm", value: product.code || template.code || "TIÊU CHUẨN" },
+      { label: "Tên dòng sản phẩm", value: product.title || template.title },
+      { label: "Đặc điểm nổi bật", value: product.description || "Chính hãng Boss Đà Nẵng, công nghệ Đức cao cấp" },
+      { label: "Bảo hành", value: "5 - 10 năm chính hãng Boss Đà Nẵng" }
+    ];
+
     return {
       ...template,
       ...product,
@@ -726,12 +734,9 @@ export function getProductExtendedDetails(product) {
       price: product.price || template.price,
       image: primaryImg,
       gallery: resolvedGallery,
-      quickSpecs: [
-        { label: "Mã sản phẩm", value: product.code || "TIÊU CHUẨN" },
-        { label: "Tên dòng sản phẩm", value: product.title },
-        { label: "Đặc điểm nổi bật", value: product.description || "Chính hãng Boss Đà Nẵng" },
-        { label: "Bảo hành", value: "2 - 10 năm chính hãng" }
-      ],
+      quickSpecs: (Array.isArray(product.quickSpecs) && product.quickSpecs.length > 0)
+        ? product.quickSpecs
+        : defaultQuickSpecs,
       sectionA: {
         intro: product.details || product.description || template.sectionA.intro,
         origin: "Chính hãng Boss Đà Nẵng phân phối và bảo hành tận nơi.",
@@ -784,13 +789,22 @@ export function getProductExtendedDetails(product) {
     resolvedGallery = [primaryImg || "https://bossdoordanang.com.vn/wp-content/uploads/2024/11/cua-cuon-bossdoor-eco-bec-5810-bossdoordanang.jpg"];
   }
 
+  const matchedQuickSpecs = (Array.isArray(product.quickSpecs) && product.quickSpecs.length > 0)
+    ? product.quickSpecs
+    : (matched.quickSpecs || [
+        { label: "Mã sản phẩm", value: product.code || matched.code },
+        { label: "Tên dòng sản phẩm", value: product.title || matched.title },
+        { label: "Bảo hành", value: "5 - 10 năm chính hãng Boss Đà Nẵng" }
+      ]);
+
   return {
     ...matched,
     ...product,
+    quickSpecs: matchedQuickSpecs,
     image: primaryImg,
     gallery: resolvedGallery,
-    slug: matched.slug || inputSlug,
-    code: matched.code || product.code,
+    slug: (matched.slug || inputSlug || "").replace(/^(san-pham-)+/gi, ""),
+    code: product.code || matched.code,
     title: product.title || matched.title,
     price: product.price || matched.price
   };
