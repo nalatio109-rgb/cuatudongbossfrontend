@@ -678,10 +678,20 @@
   .pricing-breadcrumb {
     box-shadow: none;
     border-bottom: 1px solid #f1f5f9;
+    padding: 8px 0 !important;
+    font-size: 11.5px !important;
   }
 
   .pricing-breadcrumb .container {
     padding: 0 16px;
+    font-size: 11.5px !important;
+    gap: 5px !important;
+  }
+
+  .pricing-breadcrumb a,
+  .pricing-breadcrumb span {
+    font-size: 11.5px !important;
+    line-height: 1.4 !important;
   }
 
   .pricing-main-container {
@@ -702,34 +712,34 @@
   }
 
   .pricing-article-wrapper {
-    gap: 20px !important;
+    gap: 16px !important;
   }
 
   .pricing-article-wrapper .article-continuous-header {
-    padding-bottom: 16px !important;
+    padding-bottom: 12px !important;
   }
 
   .pricing-article-wrapper .article-header-tag {
     font-size: 11px !important;
-    padding: 4px 10px !important;
-    margin-bottom: 10px !important;
+    padding: 3px 8px !important;
+    margin-bottom: 8px !important;
   }
 
   .pricing-article-wrapper .article-main-title {
-    font-size: 22px !important;
-    font-weight: 900 !important;
+    font-size: 18.5px !important;
+    font-weight: 800 !important;
     color: #004d32 !important;
     line-height: 1.35 !important;
-    margin-bottom: 8px !important;
+    margin-bottom: 6px !important;
   }
 
   .technical-main-title,
   .section-head-bar h2 {
-    font-size: 22px !important;
-    font-weight: 900 !important;
+    font-size: 18.5px !important;
+    font-weight: 800 !important;
     color: #004d32 !important;
     line-height: 1.35 !important;
-    margin-bottom: 8px !important;
+    margin-bottom: 6px !important;
     letter-spacing: -0.2px !important;
   }
 
@@ -4225,9 +4235,22 @@
     margin-bottom: 12px !important;
   }
 
-  .pricing-custom-article-box.above-quote-article .custom-article-paragraph {
-    font-size: 13.5px !important;
-    line-height: 1.65 !important;
+  /* BÀI VIẾT GIỚI THIỆU PHÍA TRÊN BẢNG GIÁ - FONT VỪA VẶN, DỄ ĐỌC TRÊN ĐIỆN THOẠI */
+  .pricing-custom-article-box.above-quote-article {
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    margin-bottom: 12px !important;
+  }
+
+  .pricing-custom-article-box.above-quote-article,
+  .pricing-custom-article-box.above-quote-article .custom-article-paragraph,
+  .pricing-custom-article-box.above-quote-article .custom-article-rendered-html,
+  .pricing-custom-article-box.above-quote-article p,
+  .pricing-custom-article-box.above-quote-article span,
+  .pricing-custom-article-box.above-quote-article div {
+    font-size: 13px !important;
+    line-height: 1.6 !important;
     color: #334155 !important;
   }
 
