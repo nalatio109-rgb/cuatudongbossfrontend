@@ -153,32 +153,66 @@ export const getActiveRows = (quote, cols) => {
   }
   return quote.items.map((item, rIdx) => {
     const rowObj = {};
-    cols.forEach((col) => {
-      if (item.rawGridCells && item.rawGridCells[col.id] !== undefined) {
-        rowObj[col.id] = String(item.rawGridCells[col.id] ?? "");
-      } else if (item[col.id] !== undefined) {
-        rowObj[col.id] = String(item[col.id] ?? "");
-      } else if (col.key && item[col.key] !== undefined) {
-        rowObj[col.id] = String(item[col.key] ?? "");
-      } else {
-        const isStt = col.key === "stt" || col.id === "col_1" || col.label?.toLowerCase() === "stt";
-        const isCode = col.key === "code" || col.id === "col_2" || col.label?.toLowerCase().includes("mã");
-        const isImg = isImageCol(col);
-        const isName = col.key === "name" || col.id === "col_3" || col.label?.toLowerCase().includes("tên") || col.label?.toLowerCase().includes("quy cách");
-        const isUnit = col.key === "unit" || col.id === "col_4" || col.label?.toLowerCase().includes("đvt");
-        const isColor = col.key === "colors" || col.id === "col_5" || col.label?.toLowerCase().includes("màu");
-        const isPrice1 = col.key === "priceOver8" || col.id === "col_6" || col.label?.toLowerCase().includes("> 8m");
-        const isPrice2 = col.key === "price6to8" || col.id === "col_7" || col.label?.toLowerCase().includes("≤ 8m") || col.label?.toLowerCase().includes("< 8m");
+    const priceCols = cols.filter(
+      (c) =>
+        c.key?.toLowerCase().includes("price") ||
+        c.id === "col_6" ||
+        c.id === "col_7" ||
+        c.label?.toLowerCase().includes("giá") ||
+        c.label?.toLowerCase().includes("đơn giá")
+    );
 
-        if (isStt) rowObj[col.id] = String(item.stt || rIdx + 1);
-        else if (isCode) rowObj[col.id] = String(item.code || "");
-        else if (isImg) rowObj[col.id] = String(item.image || item.imageUrl || "");
-        else if (isName) rowObj[col.id] = String(item.name || item.description || "");
-        else if (isUnit) rowObj[col.id] = String(item.unit || "m2");
-        else if (isColor) rowObj[col.id] = String(item.colors || "Theo tiêu chuẩn");
-        else if (isPrice1) rowObj[col.id] = String(item.priceOver8 || item.price || "");
-        else if (isPrice2) rowObj[col.id] = String(item.price6to8 || item.priceOver8 || item.price || "");
-        else rowObj[col.id] = "";
+    cols.forEach((col) => {
+      // 1. Đọc trực tiếp từ rawGridCells nếu có
+      if (item.rawGridCells && item.rawGridCells[col.id] !== undefined && item.rawGridCells[col.id] !== "") {
+        rowObj[col.id] = String(item.rawGridCells[col.id]);
+        return;
+      }
+      // 2. Đọc từ thuộc tính phẳng item[col.id] nếu có
+      if (item[col.id] !== undefined && item[col.id] !== "") {
+        rowObj[col.id] = String(item[col.id]);
+        return;
+      }
+      // 3. Đọc từ col.key nếu có
+      if (col.key && item[col.key] !== undefined && item[col.key] !== "") {
+        rowObj[col.id] = String(item[col.key]);
+        return;
+      }
+
+      // 4. Fallback theo từng loại cột
+      const isStt = col.key === "stt" || col.id === "col_1" || col.label?.toLowerCase() === "stt";
+      const isCode = col.key === "code" || col.id === "col_2" || col.label?.toLowerCase().includes("mã");
+      const isImg = isImageCol(col);
+      const isName = col.key === "name" || col.id === "col_3" || col.label?.toLowerCase().includes("tên") || col.label?.toLowerCase().includes("quy cách");
+      const isUnit = col.key === "unit" || col.id === "col_4" || col.label?.toLowerCase().includes("đvt");
+      const isColor = col.key === "colors" || col.id === "col_5" || col.label?.toLowerCase().includes("màu");
+      const isPrice = priceCols.some((pc) => pc.id === col.id);
+
+      if (isStt) {
+        rowObj[col.id] = String(item.stt || rIdx + 1);
+      } else if (isCode) {
+        rowObj[col.id] = String(item.code || "");
+      } else if (isImg) {
+        rowObj[col.id] = String(item.image || item.imageUrl || "");
+      } else if (isName) {
+        rowObj[col.id] = String(item.name || item.description || "");
+      } else if (isUnit) {
+        rowObj[col.id] = String(item.unit || "m2");
+      } else if (isColor) {
+        rowObj[col.id] = String(item.colors || "Theo tiêu chuẩn");
+      } else if (isPrice) {
+        const pIdx = priceCols.findIndex((pc) => pc.id === col.id);
+        if (pIdx === 0) {
+          rowObj[col.id] = String(item.priceOver8 || item.price || "");
+        } else if (pIdx === 1) {
+          rowObj[col.id] = String(item.price6to8 || "");
+        } else if (pIdx === 2) {
+          rowObj[col.id] = String(item.price4to6 || "");
+        } else {
+          rowObj[col.id] = "";
+        }
+      } else {
+        rowObj[col.id] = "";
       }
     });
     return rowObj;
@@ -317,7 +351,20 @@ export default function AdminPriceQuote({ showToast }) {
   };
 
   const handleStartEditQuote = (quote) => {
-    const cloned = JSON.parse(JSON.stringify(quote));
+    // Luôn ưu tiên lấy bản data mới nhất từ quotesList hoặc localStorage
+    let target = quote;
+    try {
+      const local = localStorage.getItem("boss_admin_price_quotes");
+      if (local) {
+        const parsed = JSON.parse(local);
+        const match = parsed.find(
+          (q) => (quote._id && q._id === quote._id) || (q.productCode && q.productCode === quote.productCode)
+        );
+        if (match) target = match;
+      }
+    } catch (e) {}
+
+    const cloned = JSON.parse(JSON.stringify(target));
     setEditingQuote(cloned);
     const cols = getActiveColumns(cloned);
     const rows = getActiveRows(cloned, cols);
@@ -876,7 +923,7 @@ export default function AdminPriceQuote({ showToast }) {
     const nameCol = gridColumns.find((c) => c.key === "name" || c.id === "col_3" || c.label?.toLowerCase().includes("tên") || c.label?.toLowerCase().includes("quy cách")) || gridColumns[2];
     const unitCol = gridColumns.find((c) => c.key === "unit" || c.id === "col_4" || c.label?.toLowerCase().includes("đvt") || c.label?.toLowerCase().includes("đơn vị")) || gridColumns[3];
     const colorCol = gridColumns.find((c) => c.key === "colors" || c.id === "col_5" || c.label?.toLowerCase().includes("màu")) || gridColumns[4];
-    const priceCols = gridColumns.filter((c) => c.key?.includes("price") || c.id === "col_6" || c.id === "col_7" || c.label?.toLowerCase().includes("giá"));
+    const priceCols = gridColumns.filter((c) => c.key?.toLowerCase().includes("price") || c.id === "col_6" || c.id === "col_7" || c.label?.toLowerCase().includes("giá") || c.label?.toLowerCase().includes("đơn giá"));
 
     const formattedItems = gridRows.map((row, rIdx) => {
       const sttVal = (sttCol && row[sttCol.id]) || rIdx + 1;
@@ -885,11 +932,12 @@ export default function AdminPriceQuote({ showToast }) {
       const nameVal = (nameCol && row[nameCol.id]) || `Dòng sản phẩm ${rIdx + 1}`;
       const unitVal = (unitCol && row[unitCol.id]) || "m2";
       const colorsVal = (colorCol && row[colorCol.id]) || "Theo tiêu chuẩn";
-      const price1Val = (priceCols[0] && row[priceCols[0].id]) || "Liên hệ";
-      const price2Val = (priceCols[1] && row[priceCols[1].id]) || price1Val;
-      const price3Val = (priceCols[2] && row[priceCols[2].id]) || price2Val;
+      const price1Val = (priceCols[0] && row[priceCols[0].id]) || "";
+      const price2Val = (priceCols[1] && row[priceCols[1].id]) || "";
+      const price3Val = (priceCols[2] && row[priceCols[2].id]) || "";
 
       return {
+        ...row,
         stt: isNaN(Number(sttVal)) ? rIdx + 1 : Number(sttVal),
         code: String(codeVal).trim(),
         image: String(imgVal).trim(),

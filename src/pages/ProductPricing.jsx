@@ -65,6 +65,33 @@ const isImageCol = (col) => {
   );
 };
 
+// Helper tìm kiếm bảng giá thông minh khớp với URL slug hoặc mã sản phẩm
+const findQuoteInList = (list, searchCode) => {
+  if (!Array.isArray(list) || list.length === 0) return null;
+  const s = String(searchCode || "").toLowerCase().trim();
+  if (!s) return null;
+
+  // 1. Khớp chính xác productCode
+  let found = list.find((q) => q.productCode?.toLowerCase() === s);
+  if (found) return found;
+
+  // 2. Khớp trong danh sách mã SP của items
+  found = list.find((q) => q.items && q.items.some((it) => it.code?.toLowerCase() === s));
+  if (found) return found;
+
+  // 3. Khớp alias slug thông dụng (ví dụ cua-cuon-bossdoor khớp với BD-2026 hoặc bảng cửa cuốn đầu tiên)
+  if (s.includes("cua-cuon-bossdoor") || s === "bossdoor") {
+    found = list.find(
+      (q) =>
+        q.productCode?.toLowerCase() === "bd-2026" ||
+        q.productCode?.toLowerCase() === "bossdoor" ||
+        q.category === "cuacuon"
+    );
+    if (found) return found;
+  }
+  return null;
+};
+
 const PRODUCT_PRICE_RANGES = {
   "CK-DE": "980.000 - 1.230.000đ/m²",
   "BEC.5810": "1.500.000 - 1.750.000đ/m²",
@@ -232,11 +259,7 @@ export default function ProductPricing() {
     try {
       const local = localStorage.getItem("boss_admin_price_quotes");
       const quotes = local ? JSON.parse(local) : DEFAULT_PRICE_QUOTES;
-      const foundQuote = quotes.find(
-        (q) =>
-          q.productCode?.toLowerCase() === (effectiveId || "").toLowerCase() ||
-          (q.items && q.items.some((it) => it.code?.toLowerCase() === (effectiveId || "").toLowerCase()))
-      );
+      const foundQuote = findQuoteInList(quotes, effectiveId);
       if (foundQuote) {
         return {
           id: foundQuote.productCode,
@@ -317,11 +340,7 @@ export default function ProductPricing() {
       const local = localStorage.getItem("boss_admin_price_quotes");
       if (local) {
         const list = JSON.parse(local);
-        const match = list.find(
-          (q) =>
-            q.productCode?.toLowerCase() === (effectiveId || "").toLowerCase() ||
-            (q.items && q.items.some((it) => it.code?.toLowerCase() === (effectiveId || "").toLowerCase()))
-        );
+        const match = findQuoteInList(list, effectiveId);
         if (match) return match;
       }
     } catch (e) {}
@@ -329,9 +348,7 @@ export default function ProductPricing() {
     if (matchedPricingArticle?.brandCode && BRAND_PRICE_QUOTES[matchedPricingArticle.brandCode]) {
       return BRAND_PRICE_QUOTES[matchedPricingArticle.brandCode];
     }
-    return DEFAULT_PRICE_QUOTES.find(
-      (q) => q.productCode?.toLowerCase() === (effectiveId || "CK-DE").toLowerCase()
-    ) || DEFAULT_PRICE_QUOTES.find((q) => q.productCode === "CK-DE") || null;
+    return findQuoteInList(DEFAULT_PRICE_QUOTES, effectiveId) || DEFAULT_PRICE_QUOTES[0] || null;
   });
 
   const [productArticle, setProductArticle] = useState(() => {
@@ -450,11 +467,7 @@ export default function ProductPricing() {
         if (local) {
           try {
             const list = JSON.parse(local);
-            foundQuote = list.find(
-              (q) =>
-                q.productCode.toLowerCase() === code.toLowerCase() ||
-                (q.items && q.items.some((it) => it.code.toLowerCase() === code.toLowerCase()))
-            );
+            foundQuote = findQuoteInList(list, code) || findQuoteInList(list, effectiveId);
           } catch (e) {
             console.error(e);
           }
@@ -468,11 +481,7 @@ export default function ProductPricing() {
 
       // 4. Fallback to DEFAULT_PRICE_QUOTES
       if (!foundQuote) {
-        foundQuote = DEFAULT_PRICE_QUOTES.find(
-          (q) =>
-            q.productCode.toLowerCase() === code.toLowerCase() ||
-            (q.items && q.items.some((it) => it.code.toLowerCase() === code.toLowerCase()))
-        );
+        foundQuote = findQuoteInList(DEFAULT_PRICE_QUOTES, code) || findQuoteInList(DEFAULT_PRICE_QUOTES, effectiveId);
       }
 
       // 4. Fallback based on category
@@ -888,6 +897,50 @@ export default function ProductPricing() {
           price4to6: t.price
         }));
 
+  // Chuẩn hóa danh sách cột hiển thị cho bảng giá (Đồng bộ 100% với Admin & Dữ liệu)
+  const activeColumns = useMemo(() => {
+    if (priceQuote?.customColumns && priceQuote.customColumns.length > 0) {
+      return priceQuote.customColumns;
+    }
+    // Nếu quote chưa có customColumns, tự động phát hiện số lượng cột giá và cột ảnh từ items
+    const hasImg = quoteTableItems.some((it) => it.image || it.imageUrl);
+    const hasPrice3 = quoteTableItems.some(
+      (it) => it.price4to6 && it.price4to6 !== it.price6to8 && it.price4to6 !== it.priceOver8
+    );
+    const hasPrice2 = quoteTableItems.some(
+      (it) => it.price6to8 && it.price6to8 !== it.priceOver8
+    );
+
+    const cols = [
+      { id: "col_1", key: "stt", label: "STT", width: "50px" },
+      { id: "col_2", key: "code", label: "Mã SP", width: "88px" }
+    ];
+    if (hasImg) {
+      cols.push({ id: "col_img", key: "image", label: "Hình ảnh", width: "90px" });
+    }
+    cols.push(
+      { id: "col_3", key: "name", label: "Diễn giải (Cấu tạo, độ dày, sơn phủ)", width: "260px" },
+      { id: "col_4", key: "unit", label: "ĐVT", width: "65px" },
+      { id: "col_5", key: "colors", label: "Màu sắc", width: "140px" }
+    );
+
+    if (hasPrice3) {
+      cols.push(
+        { id: "col_6", key: "priceOver8", label: "Đơn giá (> 8m²)", width: "130px" },
+        { id: "col_7", key: "price6to8", label: "Đơn giá (6 - < 8m²)", width: "130px" },
+        { id: "col_8", key: "price4to6", label: "Đơn giá (4 - < 6m²)", width: "130px" }
+      );
+    } else if (hasPrice2) {
+      cols.push(
+        { id: "col_6", key: "priceOver8", label: "Đơn giá (> 8m²)", width: "130px" },
+        { id: "col_7", key: "price6to8", label: "Đơn giá (≤ 8m²)", width: "130px" }
+      );
+    } else {
+      cols.push({ id: "col_6", key: "priceOver8", label: "Đơn giá (> 8m²)", width: "130px" });
+    }
+    return cols;
+  }, [priceQuote, quoteTableItems]);
+
   // Danh sách các bài viết bảng giá liên quan của các dòng cửa khác (lấy động 100% từ allProducts trong DB)
   const relatedPriceQuotes = useMemo(() => {
     const currentCode = (product?.code || "CK-DE").toUpperCase();
@@ -993,49 +1046,33 @@ export default function ProductPricing() {
                   <table className="admin-quote-data-table customer-quote-table">
                     <thead>
                       <tr>
-                        {priceQuote?.customColumns && priceQuote.customColumns.length > 0 ? (
-                          priceQuote.customColumns.map((col, cIdx) => {
-                            const isImg = isImageCol(col);
-                            const isStt = col.key === "stt" || col.id === "col_1" || col.label?.toLowerCase() === "stt";
-                            const isCode = col.key === "code" || col.id === "col_2" || col.label?.toLowerCase().includes("mã");
-                            const isPrice = col.key?.includes("price") || col.label?.toLowerCase().includes("giá") || col.label?.toLowerCase().includes("đơn giá");
-                            const colWidth = col.width || (isStt ? "50px" : isCode ? "88px" : isImg ? "90px" : "130px");
+                        {activeColumns.map((col, cIdx) => {
+                          const isImg = isImageCol(col);
+                          const isStt = col.key === "stt" || col.id === "col_1" || col.label?.toLowerCase() === "stt";
+                          const isCode = col.key === "code" || col.id === "col_2" || col.label?.toLowerCase().includes("mã");
+                          const isPrice =
+                            col.key?.toLowerCase().includes("price") ||
+                            col.id === "col_6" ||
+                            col.id === "col_7" ||
+                            col.id === "col_8" ||
+                            col.label?.toLowerCase().includes("giá") ||
+                            col.label?.toLowerCase().includes("đơn giá");
+                          const colWidth = col.width || (isStt ? "50px" : isCode ? "88px" : isImg ? "90px" : "130px");
 
-                            return (
-                              <th
-                                key={col.id || cIdx}
-                                style={{
-                                  width: colWidth,
-                                  minWidth: isStt ? "45px" : isCode ? "75px" : isImg ? "80px" : "110px",
-                                  textAlign: isStt || isCode || isImg ? "center" : isPrice ? "center" : "left"
-                                }}
-                                className={isPrice ? "price-head highlight-head" : ""}
-                              >
-                                {col.label}
-                              </th>
-                            );
-                          })
-                        ) : (
-                          <>
-                            <th style={{ width: "45px", textAlign: "center" }}>STT</th>
-                            <th style={{ width: "95px", textAlign: "center" }}>Mã SP</th>
-                            {quoteTableItems.some((item) => item.image || item.imageUrl) && (
-                              <th style={{ width: "75px", textAlign: "center" }}>Hình ảnh</th>
-                            )}
-                            <th style={{ minWidth: "280px" }}>Diễn giải (Cấu tạo, độ dày, sơn phủ)</th>
-                            <th style={{ width: "65px", textAlign: "center" }}>ĐVT</th>
-                            <th style={{ minWidth: "160px" }}>Màu sắc</th>
-                            <th className={`price-head ${activeAreaFilter === "over8" ? "highlight-head" : ""}`} style={{ width: "135px", textAlign: "center" }}>
-                              Đơn giá (&gt; 8m²)
+                          return (
+                            <th
+                              key={col.id || cIdx}
+                              style={{
+                                width: colWidth,
+                                minWidth: isStt ? "45px" : isCode ? "75px" : isImg ? "80px" : "110px",
+                                textAlign: isStt || isCode || isImg ? "center" : isPrice ? "center" : "left"
+                              }}
+                              className={isPrice ? "price-head highlight-head" : ""}
+                            >
+                              {col.label}
                             </th>
-                            <th className={`price-head ${activeAreaFilter === "from6to8" ? "highlight-head" : ""}`} style={{ width: "135px", textAlign: "center" }}>
-                              Đơn giá (6 - &lt; 8m²)
-                            </th>
-                            <th className={`price-head ${activeAreaFilter === "from4to6" ? "highlight-head" : ""}`} style={{ width: "135px", textAlign: "center" }}>
-                              Đơn giá (4 - &lt; 6m²)
-                            </th>
-                          </>
-                        )}
+                          );
+                        })}
                       </tr>
                     </thead>
                     <tbody>
@@ -1044,145 +1081,116 @@ export default function ProductPricing() {
                           product?.code && 
                           (product.code.toUpperCase() === row?.code?.toUpperCase() || 
                            row?.code?.toUpperCase()?.includes(product.code.toUpperCase()));
-                        const hasImg = Boolean(row.image || row.imageUrl);
-
-                        if (priceQuote?.customColumns && priceQuote.customColumns.length > 0) {
-                          return (
-                            <tr key={rIdx} className={isCurrentProduct ? "highlight-current-row" : ""}>
-                              {priceQuote.customColumns.map((col, cIdx) => {
-                                const isImg = isImageCol(col);
-                                const isStt = col.key === "stt" || col.id === "col_1" || col.label?.toLowerCase() === "stt";
-                                const isCode = col.key === "code" || col.id === "col_2" || col.label?.toLowerCase().includes("mã");
-                                const isPrice = col.key?.includes("price") || col.label?.toLowerCase().includes("giá") || col.label?.toLowerCase().includes("đơn giá");
-                                const isUnit = col.key === "unit" || col.id === "col_4" || col.label?.toLowerCase().includes("đvt");
-
-                                let cellVal = "";
-                                if (row.rawGridCells && row.rawGridCells[col.id] !== undefined) {
-                                  cellVal = row.rawGridCells[col.id];
-                                } else if (row[col.id] !== undefined) {
-                                  cellVal = row[col.id];
-                                } else if (col.key && row[col.key] !== undefined) {
-                                  cellVal = row[col.key];
-                                } else if (isStt) {
-                                  cellVal = row.stt || rIdx + 1;
-                                } else if (isCode) {
-                                  cellVal = row.code || "";
-                                } else if (isImg) {
-                                  cellVal = row.image || row.imageUrl || "";
-                                } else if (isUnit) {
-                                  cellVal = row.unit || "m2";
-                                } else if (isPrice) {
-                                  cellVal = row.priceOver8 || row.price || "Liên hệ";
-                                }
-
-                                if (isImg) {
-                                  return (
-                                    <td key={col.id || cIdx} className="cell-client-img text-center">
-                                      {cellVal ? (
-                                        <img
-                                          src={cellVal}
-                                          alt={`SP ${rIdx + 1}`}
-                                          className="client-table-thumb"
-                                          onError={(e) => { e.target.style.display = "none"; }}
-                                        />
-                                      ) : (
-                                        <span className="cell-empty-dash">—</span>
-                                      )}
-                                    </td>
-                                  );
-                                }
-
-                                if (isStt) {
-                                  return (
-                                    <td key={col.id || cIdx} className="cell-client-stt text-center font-bold">
-                                      {cellVal || rIdx + 1}
-                                    </td>
-                                  );
-                                }
-
-                                if (isCode) {
-                                  return (
-                                    <td key={col.id || cIdx} className="cell-client-code text-center">
-                                      <span className="client-code-badge">{cellVal}</span>
-                                    </td>
-                                  );
-                                }
-
-                                if (isPrice) {
-                                  const displayStr = cellVal ? (cellVal.includes("đ") || isNaN(Number(cellVal.replace(/[,.]/g, ""))) ? cellVal : `${cellVal} đ/m²`) : "Liên hệ";
-                                  return (
-                                    <td key={col.id || cIdx} className="cell-client-price text-center">
-                                      <span className="client-price-text">{displayStr}</span>
-                                    </td>
-                                  );
-                                }
-
-                                if (isUnit) {
-                                  return (
-                                    <td key={col.id || cIdx} className="cell-client-unit text-center">
-                                      <span className="client-unit-text">{cellVal}</span>
-                                    </td>
-                                  );
-                                }
-
-                                return (
-                                  <td key={col.id || cIdx} className="cell-client-desc">
-                                    <div className="client-desc-text">{cellVal}</div>
-                                  </td>
-                                );
-                              })}
-                            </tr>
-                          );
-                        }
 
                         return (
-                          <tr 
-                            key={rIdx} 
-                            className={isCurrentProduct ? "highlight-current-row" : ""}
-                          >
-                            <td className="cell-client-stt text-center font-bold">
-                              {row.stt || rIdx + 1}
-                            </td>
-                            <td className="cell-client-code text-center">
-                              <span className="client-code-badge">{row.code}</span>
-                            </td>
-                            {quoteTableItems.some((item) => item.image || item.imageUrl) && (
-                              <td className="cell-client-img text-center">
-                                {hasImg ? (
-                                  <img
-                                    src={row.image || row.imageUrl}
-                                    alt={row.name || row.code}
-                                    className="client-table-thumb"
-                                    onError={(e) => {
-                                      e.target.style.display = "none";
-                                    }}
-                                  />
-                                ) : (
-                                  <span className="cell-empty-dash">—</span>
-                                )}
-                              </td>
-                            )}
-                            <td className="cell-client-desc">
-                              {row.name && !row.description?.includes(row.name) && (
-                                <strong className="client-desc-title">{row.name}</strong>
-                              )}
-                              <div className="client-desc-text">{row.description}</div>
-                            </td>
-                            <td className="cell-client-unit text-center">
-                              <span className="client-unit-text">{row.unit || "m2"}</span>
-                            </td>
-                            <td className="cell-client-color">
-                              {row.colors || "Theo tiêu chuẩn"}
-                            </td>
-                            <td className="cell-client-price text-center">
-                              <span className="client-price-text">{row.priceOver8 ? (row.priceOver8.includes("đ") ? row.priceOver8 : `${row.priceOver8} đ/m²`) : "Liên hệ"}</span>
-                            </td>
-                            <td className="cell-client-price text-center">
-                              <span className="client-price-text">{row.price6to8 ? (row.price6to8.includes("đ") ? row.price6to8 : `${row.price6to8} đ/m²`) : "Liên hệ"}</span>
-                            </td>
-                            <td className="cell-client-price text-center">
-                              <span className="client-price-text">{row.price4to6 ? (row.price4to6.includes("đ") ? row.price4to6 : `${row.price4to6} đ/m²`) : "Liên hệ"}</span>
-                            </td>
+                          <tr key={rIdx} className={isCurrentProduct ? "highlight-current-row" : ""}>
+                            {activeColumns.map((col, cIdx) => {
+                              const isImg = isImageCol(col);
+                              const isStt = col.key === "stt" || col.id === "col_1" || col.label?.toLowerCase() === "stt";
+                              const isCode = col.key === "code" || col.id === "col_2" || col.label?.toLowerCase().includes("mã");
+                              const isPrice =
+                                col.key?.toLowerCase().includes("price") ||
+                                col.id === "col_6" ||
+                                col.id === "col_7" ||
+                                col.id === "col_8" ||
+                                col.label?.toLowerCase().includes("giá") ||
+                                col.label?.toLowerCase().includes("đơn giá");
+                              const isUnit = col.key === "unit" || col.id === "col_4" || col.label?.toLowerCase().includes("đvt");
+
+                              let cellVal = "";
+                              if (row.rawGridCells && row.rawGridCells[col.id] !== undefined && row.rawGridCells[col.id] !== "") {
+                                cellVal = row.rawGridCells[col.id];
+                              } else if (row[col.id] !== undefined && row[col.id] !== "") {
+                                cellVal = row[col.id];
+                              } else if (col.key && row[col.key] !== undefined && row[col.key] !== "") {
+                                cellVal = row[col.key];
+                              } else if (isStt) {
+                                cellVal = row.stt || rIdx + 1;
+                              } else if (isCode) {
+                                cellVal = row.code || "";
+                              } else if (isImg) {
+                                cellVal = row.image || row.imageUrl || "";
+                              } else if (isUnit) {
+                                cellVal = row.unit || "m2";
+                              } else if (isPrice) {
+                                const priceCols = activeColumns.filter(
+                                  (c) =>
+                                    c.key?.toLowerCase().includes("price") ||
+                                    c.id === "col_6" ||
+                                    c.id === "col_7" ||
+                                    c.id === "col_8" ||
+                                    c.label?.toLowerCase().includes("giá") ||
+                                    c.label?.toLowerCase().includes("đơn giá")
+                                );
+                                const pIdx = priceCols.findIndex((c) => c.id === col.id);
+                                if (pIdx === 0) cellVal = row.priceOver8 || row.price || "Liên hệ";
+                                else if (pIdx === 1) cellVal = row.price6to8 || "Liên hệ";
+                                else if (pIdx === 2) cellVal = row.price4to6 || "Liên hệ";
+                                else cellVal = row[col.id] || "Liên hệ";
+                              } else {
+                                cellVal = row.name || row.description || "";
+                              }
+
+                              if (isImg) {
+                                return (
+                                  <td key={col.id || cIdx} className="cell-client-img text-center">
+                                    {cellVal ? (
+                                      <img
+                                        src={cellVal}
+                                        alt={`SP ${rIdx + 1}`}
+                                        className="client-table-thumb"
+                                        onError={(e) => { e.target.style.display = "none"; }}
+                                      />
+                                    ) : (
+                                      <span className="cell-empty-dash">—</span>
+                                    )}
+                                  </td>
+                                );
+                              }
+
+                              if (isStt) {
+                                return (
+                                  <td key={col.id || cIdx} className="cell-client-stt text-center font-bold">
+                                    {cellVal || rIdx + 1}
+                                  </td>
+                                );
+                              }
+
+                              if (isCode) {
+                                return (
+                                  <td key={col.id || cIdx} className="cell-client-code text-center">
+                                    <span className="client-code-badge">{cellVal}</span>
+                                  </td>
+                                );
+                              }
+
+                              if (isPrice) {
+                                const displayStr = cellVal
+                                  ? cellVal.includes("đ") || isNaN(Number(cellVal.replace(/[,.]/g, "")))
+                                    ? cellVal
+                                    : `${cellVal} đ/m²`
+                                  : "Liên hệ";
+                                return (
+                                  <td key={col.id || cIdx} className="cell-client-price text-center">
+                                    <span className="client-price-text">{displayStr}</span>
+                                  </td>
+                                );
+                              }
+
+                              if (isUnit) {
+                                return (
+                                  <td key={col.id || cIdx} className="cell-client-unit text-center">
+                                    <span className="client-unit-text">{cellVal}</span>
+                                  </td>
+                                );
+                              }
+
+                              return (
+                                <td key={col.id || cIdx} className="cell-client-desc">
+                                  <div className="client-desc-text">{cellVal}</div>
+                                </td>
+                              );
+                            })}
                           </tr>
                         );
                       })}
@@ -1347,49 +1355,33 @@ export default function ProductPricing() {
                   <table className="admin-quote-data-table customer-quote-table">
                     <thead>
                       <tr>
-                        {priceQuote?.customColumns && priceQuote.customColumns.length > 0 ? (
-                          priceQuote.customColumns.map((col, cIdx) => {
-                            const isImg = isImageCol(col);
-                            const isStt = col.key === "stt" || col.id === "col_1" || col.label?.toLowerCase() === "stt";
-                            const isCode = col.key === "code" || col.id === "col_2" || col.label?.toLowerCase().includes("mã");
-                            const isPrice = col.key?.includes("price") || col.label?.toLowerCase().includes("giá") || col.label?.toLowerCase().includes("đơn giá");
-                            const colWidth = col.width || (isStt ? "50px" : isCode ? "88px" : isImg ? "90px" : "130px");
+                        {activeColumns.map((col, cIdx) => {
+                          const isImg = isImageCol(col);
+                          const isStt = col.key === "stt" || col.id === "col_1" || col.label?.toLowerCase() === "stt";
+                          const isCode = col.key === "code" || col.id === "col_2" || col.label?.toLowerCase().includes("mã");
+                          const isPrice =
+                            col.key?.toLowerCase().includes("price") ||
+                            col.id === "col_6" ||
+                            col.id === "col_7" ||
+                            col.id === "col_8" ||
+                            col.label?.toLowerCase().includes("giá") ||
+                            col.label?.toLowerCase().includes("đơn giá");
+                          const colWidth = col.width || (isStt ? "50px" : isCode ? "88px" : isImg ? "90px" : "130px");
 
-                            return (
-                              <th
-                                key={col.id || cIdx}
-                                style={{
-                                  width: colWidth,
-                                  minWidth: isStt ? "45px" : isCode ? "75px" : isImg ? "80px" : "110px",
-                                  textAlign: isStt || isCode || isImg ? "center" : isPrice ? "center" : "left"
-                                }}
-                                className={isPrice ? "price-head highlight-head" : ""}
-                              >
-                                {col.label}
-                              </th>
-                            );
-                          })
-                        ) : (
-                          <>
-                            <th style={{ width: "45px", textAlign: "center" }}>STT</th>
-                            <th style={{ width: "95px", textAlign: "center" }}>Mã SP</th>
-                            {quoteTableItems.some((item) => item.image || item.imageUrl) && (
-                              <th style={{ width: "75px", textAlign: "center" }}>Hình ảnh</th>
-                            )}
-                            <th style={{ minWidth: "280px" }}>Diễn giải (Cấu tạo, độ dày, sơn phủ)</th>
-                            <th style={{ width: "65px", textAlign: "center" }}>ĐVT</th>
-                            <th style={{ minWidth: "160px" }}>Màu sắc</th>
-                            <th className={`price-head ${activeAreaFilter === "over8" ? "highlight-head" : ""}`} style={{ width: "135px", textAlign: "center" }}>
-                              Đơn giá (&gt; 8m²)
+                          return (
+                            <th
+                              key={col.id || cIdx}
+                              style={{
+                                width: colWidth,
+                                minWidth: isStt ? "45px" : isCode ? "75px" : isImg ? "80px" : "110px",
+                                textAlign: isStt || isCode || isImg ? "center" : isPrice ? "center" : "left"
+                              }}
+                              className={isPrice ? "price-head highlight-head" : ""}
+                            >
+                              {col.label}
                             </th>
-                            <th className={`price-head ${activeAreaFilter === "from6to8" ? "highlight-head" : ""}`} style={{ width: "135px", textAlign: "center" }}>
-                              Đơn giá (6 - &lt; 8m²)
-                            </th>
-                            <th className={`price-head ${activeAreaFilter === "from4to6" ? "highlight-head" : ""}`} style={{ width: "135px", textAlign: "center" }}>
-                              Đơn giá (4 - &lt; 6m²)
-                            </th>
-                          </>
-                        )}
+                          );
+                        })}
                       </tr>
                     </thead>
                     <tbody>
@@ -1398,145 +1390,116 @@ export default function ProductPricing() {
                           product?.code && 
                           (product.code.toUpperCase() === row?.code?.toUpperCase() || 
                            row?.code?.toUpperCase()?.includes(product.code.toUpperCase()));
-                        const hasImg = Boolean(row.image || row.imageUrl);
-
-                        if (priceQuote?.customColumns && priceQuote.customColumns.length > 0) {
-                          return (
-                            <tr key={rIdx} className={isCurrentProduct ? "highlight-current-row" : ""}>
-                              {priceQuote.customColumns.map((col, cIdx) => {
-                                const isImg = isImageCol(col);
-                                const isStt = col.key === "stt" || col.id === "col_1" || col.label?.toLowerCase() === "stt";
-                                const isCode = col.key === "code" || col.id === "col_2" || col.label?.toLowerCase().includes("mã");
-                                const isPrice = col.key?.includes("price") || col.label?.toLowerCase().includes("giá") || col.label?.toLowerCase().includes("đơn giá");
-                                const isUnit = col.key === "unit" || col.id === "col_4" || col.label?.toLowerCase().includes("đvt");
-
-                                let cellVal = "";
-                                if (row.rawGridCells && row.rawGridCells[col.id] !== undefined) {
-                                  cellVal = row.rawGridCells[col.id];
-                                } else if (row[col.id] !== undefined) {
-                                  cellVal = row[col.id];
-                                } else if (col.key && row[col.key] !== undefined) {
-                                  cellVal = row[col.key];
-                                } else if (isStt) {
-                                  cellVal = row.stt || rIdx + 1;
-                                } else if (isCode) {
-                                  cellVal = row.code || "";
-                                } else if (isImg) {
-                                  cellVal = row.image || row.imageUrl || "";
-                                } else if (isUnit) {
-                                  cellVal = row.unit || "m2";
-                                } else if (isPrice) {
-                                  cellVal = row.priceOver8 || row.price || "Liên hệ";
-                                }
-
-                                if (isImg) {
-                                  return (
-                                    <td key={col.id || cIdx} className="cell-client-img text-center">
-                                      {cellVal ? (
-                                        <img
-                                          src={cellVal}
-                                          alt={`SP ${rIdx + 1}`}
-                                          className="client-table-thumb"
-                                          onError={(e) => { e.target.style.display = "none"; }}
-                                        />
-                                      ) : (
-                                        <span className="cell-empty-dash">—</span>
-                                      )}
-                                    </td>
-                                  );
-                                }
-
-                                if (isStt) {
-                                  return (
-                                    <td key={col.id || cIdx} className="cell-client-stt text-center font-bold">
-                                      {cellVal || rIdx + 1}
-                                    </td>
-                                  );
-                                }
-
-                                if (isCode) {
-                                  return (
-                                    <td key={col.id || cIdx} className="cell-client-code text-center">
-                                      <span className="client-code-badge">{cellVal}</span>
-                                    </td>
-                                  );
-                                }
-
-                                if (isPrice) {
-                                  const displayStr = cellVal ? (cellVal.includes("đ") || isNaN(Number(cellVal.replace(/[,.]/g, ""))) ? cellVal : `${cellVal} đ/m²`) : "Liên hệ";
-                                  return (
-                                    <td key={col.id || cIdx} className="cell-client-price text-center">
-                                      <span className="client-price-text">{displayStr}</span>
-                                    </td>
-                                  );
-                                }
-
-                                if (isUnit) {
-                                  return (
-                                    <td key={col.id || cIdx} className="cell-client-unit text-center">
-                                      <span className="client-unit-text">{cellVal}</span>
-                                    </td>
-                                  );
-                                }
-
-                                return (
-                                  <td key={col.id || cIdx} className="cell-client-desc">
-                                    <div className="client-desc-text">{cellVal}</div>
-                                  </td>
-                                );
-                              })}
-                            </tr>
-                          );
-                        }
 
                         return (
-                          <tr 
-                            key={rIdx} 
-                            className={isCurrentProduct ? "highlight-current-row" : ""}
-                          >
-                            <td className="cell-client-stt text-center font-bold">
-                              {row.stt || rIdx + 1}
-                            </td>
-                            <td className="cell-client-code text-center">
-                              <span className="client-code-badge">{row.code}</span>
-                            </td>
-                            {quoteTableItems.some((item) => item.image || item.imageUrl) && (
-                              <td className="cell-client-img text-center">
-                                {hasImg ? (
-                                  <img
-                                    src={row.image || row.imageUrl}
-                                    alt={row.name || row.code}
-                                    className="client-table-thumb"
-                                    onError={(e) => {
-                                      e.target.style.display = "none";
-                                    }}
-                                  />
-                                ) : (
-                                  <span className="cell-empty-dash">—</span>
-                                )}
-                              </td>
-                            )}
-                            <td className="cell-client-desc">
-                              {row.name && !row.description?.includes(row.name) && (
-                                <strong className="client-desc-title">{row.name}</strong>
-                              )}
-                              <div className="client-desc-text">{row.description}</div>
-                            </td>
-                            <td className="cell-client-unit text-center">
-                              <span className="client-unit-text">{row.unit || "m2"}</span>
-                            </td>
-                            <td className="cell-client-color">
-                              {row.colors || "Theo tiêu chuẩn"}
-                            </td>
-                            <td className="cell-client-price text-center">
-                              <span className="client-price-text">{row.priceOver8 ? (row.priceOver8.includes("đ") ? row.priceOver8 : `${row.priceOver8} đ/m²`) : "Liên hệ"}</span>
-                            </td>
-                            <td className="cell-client-price text-center">
-                              <span className="client-price-text">{row.price6to8 ? (row.price6to8.includes("đ") ? row.price6to8 : `${row.price6to8} đ/m²`) : "Liên hệ"}</span>
-                            </td>
-                            <td className="cell-client-price text-center">
-                              <span className="client-price-text">{row.price4to6 ? (row.price4to6.includes("đ") ? row.price4to6 : `${row.price4to6} đ/m²`) : "Liên hệ"}</span>
-                            </td>
+                          <tr key={rIdx} className={isCurrentProduct ? "highlight-current-row" : ""}>
+                            {activeColumns.map((col, cIdx) => {
+                              const isImg = isImageCol(col);
+                              const isStt = col.key === "stt" || col.id === "col_1" || col.label?.toLowerCase() === "stt";
+                              const isCode = col.key === "code" || col.id === "col_2" || col.label?.toLowerCase().includes("mã");
+                              const isPrice =
+                                col.key?.toLowerCase().includes("price") ||
+                                col.id === "col_6" ||
+                                col.id === "col_7" ||
+                                col.id === "col_8" ||
+                                col.label?.toLowerCase().includes("giá") ||
+                                col.label?.toLowerCase().includes("đơn giá");
+                              const isUnit = col.key === "unit" || col.id === "col_4" || col.label?.toLowerCase().includes("đvt");
+
+                              let cellVal = "";
+                              if (row.rawGridCells && row.rawGridCells[col.id] !== undefined && row.rawGridCells[col.id] !== "") {
+                                cellVal = row.rawGridCells[col.id];
+                              } else if (row[col.id] !== undefined && row[col.id] !== "") {
+                                cellVal = row[col.id];
+                              } else if (col.key && row[col.key] !== undefined && row[col.key] !== "") {
+                                cellVal = row[col.key];
+                              } else if (isStt) {
+                                cellVal = row.stt || rIdx + 1;
+                              } else if (isCode) {
+                                cellVal = row.code || "";
+                              } else if (isImg) {
+                                cellVal = row.image || row.imageUrl || "";
+                              } else if (isUnit) {
+                                cellVal = row.unit || "m2";
+                              } else if (isPrice) {
+                                const priceCols = activeColumns.filter(
+                                  (c) =>
+                                    c.key?.toLowerCase().includes("price") ||
+                                    c.id === "col_6" ||
+                                    c.id === "col_7" ||
+                                    c.id === "col_8" ||
+                                    c.label?.toLowerCase().includes("giá") ||
+                                    c.label?.toLowerCase().includes("đơn giá")
+                                );
+                                const pIdx = priceCols.findIndex((c) => c.id === col.id);
+                                if (pIdx === 0) cellVal = row.priceOver8 || row.price || "Liên hệ";
+                                else if (pIdx === 1) cellVal = row.price6to8 || "Liên hệ";
+                                else if (pIdx === 2) cellVal = row.price4to6 || "Liên hệ";
+                                else cellVal = row[col.id] || "Liên hệ";
+                              } else {
+                                cellVal = row.name || row.description || "";
+                              }
+
+                              if (isImg) {
+                                return (
+                                  <td key={col.id || cIdx} className="cell-client-img text-center">
+                                    {cellVal ? (
+                                      <img
+                                        src={cellVal}
+                                        alt={`SP ${rIdx + 1}`}
+                                        className="client-table-thumb"
+                                        onError={(e) => { e.target.style.display = "none"; }}
+                                      />
+                                    ) : (
+                                      <span className="cell-empty-dash">—</span>
+                                    )}
+                                  </td>
+                                );
+                              }
+
+                              if (isStt) {
+                                return (
+                                  <td key={col.id || cIdx} className="cell-client-stt text-center font-bold">
+                                    {cellVal || rIdx + 1}
+                                  </td>
+                                );
+                              }
+
+                              if (isCode) {
+                                return (
+                                  <td key={col.id || cIdx} className="cell-client-code text-center">
+                                    <span className="client-code-badge">{cellVal}</span>
+                                  </td>
+                                );
+                              }
+
+                              if (isPrice) {
+                                const displayStr = cellVal
+                                  ? cellVal.includes("đ") || isNaN(Number(cellVal.replace(/[,.]/g, "")))
+                                    ? cellVal
+                                    : `${cellVal} đ/m²`
+                                  : "Liên hệ";
+                                return (
+                                  <td key={col.id || cIdx} className="cell-client-price text-center">
+                                    <span className="client-price-text">{displayStr}</span>
+                                  </td>
+                                );
+                              }
+
+                              if (isUnit) {
+                                return (
+                                  <td key={col.id || cIdx} className="cell-client-unit text-center">
+                                    <span className="client-unit-text">{cellVal}</span>
+                                  </td>
+                                );
+                              }
+
+                              return (
+                                <td key={col.id || cIdx} className="cell-client-desc">
+                                  <div className="client-desc-text">{cellVal}</div>
+                                </td>
+                              );
+                            })}
                           </tr>
                         );
                       })}
