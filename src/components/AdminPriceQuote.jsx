@@ -346,6 +346,9 @@ const RichArticleEditor = ({
     if (editorRef.current) {
       editorRef.current.focus();
     }
+    try {
+      document.execCommand("styleWithCSS", false, true);
+    } catch (e) {}
     document.execCommand(command, false, val);
     handleInput();
   };

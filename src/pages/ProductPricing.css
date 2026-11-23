@@ -3790,13 +3790,14 @@
   word-break: break-word;
 }
 
+/* Tiêu đề mặc định có màu xanh BossDoor nếu người dùng chưa chọn màu khác */
 .custom-article-rendered-html h1,
 .custom-article-rendered-html h2,
 .custom-article-rendered-html h3,
 .custom-article-rendered-html h4,
 .custom-article-rendered-html h5,
 .plain-article-heading {
-  color: #004d32 !important; /* Luôn chuẩn màu xanh thương hiệu BossDoor */
+  color: #004d32; /* Không dùng !important để người dùng đổi màu nào (đỏ, vàng, cam...) thì hiện đúng màu đó */
   font-weight: 700;
   line-height: 1.4;
 }
@@ -3828,21 +3829,47 @@
   margin-bottom: 0;
 }
 
-/* Cho phép chữ in đậm kế thừa màu sắc (xanh Boss, đỏ giá...) đã chọn từ thanh công cụ */
+/* Cho phép chữ in đậm kế thừa màu sắc đã chọn từ thanh công cụ */
 .custom-article-rendered-html strong,
 .custom-article-rendered-html b {
   font-weight: 700;
   color: inherit;
 }
 
-/* Đảm bảo màu sắc người dùng chọn từ thanh công cụ luôn hiển thị chính xác */
-.custom-article-rendered-html font[color] {
-  color: attr(color, color);
+/* Đảm bảo màu sắc người dùng chọn từ thanh công cụ luôn được ưu tiên tuyệt đối */
+.custom-article-rendered-html [style*="color"] {
+  /* Giữ nguyên màu style inline */
 }
 
-.custom-article-rendered-html font[color] *,
-.custom-article-rendered-html [style*="color"] * {
+.custom-article-rendered-html [style*="color"] *,
+.custom-article-rendered-html font[color] * {
   color: inherit !important;
+}
+
+/* Hỗ trợ chuẩn xác các mã màu thẻ font và style */
+.custom-article-rendered-html font[color="#e30613"],
+.custom-article-rendered-html font[color="rgb(227, 6, 19)"] {
+  color: #e30613 !important;
+}
+
+.custom-article-rendered-html font[color="#004d32"],
+.custom-article-rendered-html font[color="rgb(0, 77, 50)"] {
+  color: #004d32 !important;
+}
+
+.custom-article-rendered-html font[color="#1d4ed8"],
+.custom-article-rendered-html font[color="rgb(29, 78, 216)"] {
+  color: #1d4ed8 !important;
+}
+
+.custom-article-rendered-html font[color="#d97706"],
+.custom-article-rendered-html font[color="rgb(217, 119, 6)"] {
+  color: #d97706 !important;
+}
+
+.custom-article-rendered-html font[color="#0f172a"],
+.custom-article-rendered-html font[color="rgb(15, 23, 42)"] {
+  color: #0f172a !important;
 }
 
 .custom-article-rendered-html ul,
