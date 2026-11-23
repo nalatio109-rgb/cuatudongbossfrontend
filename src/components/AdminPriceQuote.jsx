@@ -24,7 +24,19 @@ import {
   Upload,
   Image as ImageIcon,
   Loader2,
-  FileText
+  FileText,
+  Bold,
+  Italic,
+  Underline,
+  List,
+  ListOrdered,
+  AlignLeft,
+  AlignCenter,
+  Palette,
+  Highlighter,
+  Code,
+  Type,
+  RemoveFormatting
 } from "lucide-react";
 import { DEFAULT_PRICE_QUOTES } from "../data/defaultPriceQuotes";
 import "./AdminPriceQuote.css";
@@ -277,6 +289,407 @@ const AutoResizeTextarea = ({
       }}
       {...props}
     />
+  );
+};
+
+// Component Trình Soạn Thảo Văn Bản Phong Phú (Rich Text Editor) Trực Quan Kiểu Word/Docs
+const RichArticleEditor = ({
+  value,
+  onChange,
+  placeholder,
+  minHeight = 120,
+  badgeText = "Bài Viết Chi Tiết",
+  hintText = "Nội dung bài viết chi tiết, hướng dẫn kỹ thuật"
+}) => {
+  const editorRef = useRef(null);
+  const lastHtmlRef = useRef("");
+  const [isCodeView, setIsCodeView] = useState(false);
+  const [codeValue, setCodeValue] = useState("");
+  const [showImgModal, setShowImgModal] = useState(false);
+  const [imgUrl, setImgUrl] = useState("");
+  const [imgCaption, setImgCaption] = useState("");
+  const fileInputRef = useRef(null);
+
+  // Chuẩn hóa nội dung ban đầu (nếu là plain text có dấu xuống dòng \n -> chuyển thành thẻ <p>)
+  const toHtml = (val) => {
+    if (!val) return "<p><br></p>";
+    if (/<[a-z][\s\S]*>/i.test(val)) return val;
+    return val
+      .split(/\r?\n/)
+      .map((line) => {
+        const trimmed = line.trim();
+        return trimmed ? `<p>${trimmed}</p>` : "<p><br></p>";
+      })
+      .join("");
+  };
+
+  useEffect(() => {
+    const formatted = toHtml(value);
+    if (editorRef.current && formatted !== lastHtmlRef.current) {
+      editorRef.current.innerHTML = formatted;
+      lastHtmlRef.current = formatted;
+      setCodeValue(formatted);
+    }
+  }, [value]);
+
+  const handleInput = () => {
+    if (editorRef.current) {
+      const html = editorRef.current.innerHTML;
+      lastHtmlRef.current = html;
+      setCodeValue(html);
+      onChange(html);
+    }
+  };
+
+  const exec = (command, val = null) => {
+    if (isCodeView) return;
+    if (editorRef.current) {
+      editorRef.current.focus();
+    }
+    document.execCommand(command, false, val);
+    handleInput();
+  };
+
+  const handleInsertCallout = () => {
+    const calloutHtml = `
+      <div class="editor-callout-box" style="background: #f0fdf4; border: 1.5px solid #86efac; border-left: 5px solid #004d32; border-radius: 8px; padding: 12px 18px; margin: 14px 0;">
+        <strong style="color: #004d32; display: block; margin-bottom: 4px; font-size: 14px;">💡 Điểm nhấn / Lưu ý kỹ thuật:</strong>
+        <p style="margin: 0; color: #1e293b; font-size: 14px;">Kích thước cửa cuốn = Kích thước ô cửa + 200mm (phần nan cửa cuốn chìm xuống)...</p>
+      </div><p><br></p>
+    `;
+    exec("insertHTML", calloutHtml);
+  };
+
+  const handleInsertImage = () => {
+    if (!imgUrl.trim()) {
+      alert("Vui lòng nhập link ảnh hoặc chọn ảnh từ máy!");
+      return;
+    }
+    const caption = imgCaption.trim() || "Hình ảnh minh họa sản phẩm";
+    const figureHtml = `
+      <figure style="text-align: center; margin: 18px 0;">
+        <img src="${imgUrl.trim()}" alt="${caption}" style="max-width: 100%; max-height: 400px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; object-fit: contain;" />
+        <figcaption style="margin-top: 6px; font-size: 13px; color: #64748b; font-style: italic;">${caption}</figcaption>
+      </figure><p><br></p>
+    `;
+    exec("insertHTML", figureHtml);
+    setImgUrl("");
+    setImgCaption("");
+    setShowImgModal(false);
+  };
+
+  const handleUploadImgFile = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      setImgUrl(ev.target.result);
+    };
+    reader.readAsDataURL(file);
+    e.target.value = "";
+  };
+
+  const handleToggleCodeView = () => {
+    if (isCodeView) {
+      if (editorRef.current) {
+        editorRef.current.innerHTML = codeValue;
+      }
+      lastHtmlRef.current = codeValue;
+      onChange(codeValue);
+      setIsCodeView(false);
+    } else {
+      if (editorRef.current) {
+        setCodeValue(editorRef.current.innerHTML);
+      }
+      setIsCodeView(true);
+    }
+  };
+
+  return (
+    <div className="rich-article-editor-card">
+      {/* HEADER CỦA BLOCK */}
+      <div className="article-block-header">
+        <span className="article-block-badge">
+          <FileText size={14} /> {badgeText}
+        </span>
+        <span className="article-block-hint">{hintText}</span>
+      </div>
+
+      {/* THANH CÔNG CỤ TOOLBAR */}
+      <div className="rich-editor-toolbar">
+        {/* Nhóm Tiêu đề Headings */}
+        <div className="toolbar-group">
+          <select
+            className="toolbar-select"
+            defaultValue="p"
+            onChange={(e) => {
+              const val = e.target.value;
+              if (val === "h2") exec("formatBlock", "<h2>");
+              else if (val === "h3") exec("formatBlock", "<h3>");
+              else if (val === "h4") exec("formatBlock", "<h4>");
+              else exec("formatBlock", "<p>");
+              e.target.value = "p";
+            }}
+            title="Chọn định dạng đoạn văn hoặc tiêu đề"
+          >
+            <option value="p">Đoạn văn (Thường)</option>
+            <option value="h2">Tiêu đề chính (H2)</option>
+            <option value="h3">Tiêu đề mục (H3)</option>
+            <option value="h4">Tiêu đề nhỏ (H4)</option>
+          </select>
+        </div>
+
+        <div className="toolbar-sep" />
+
+        {/* Nhóm In đậm, Nghiêng, Gạch chân */}
+        <div className="toolbar-group">
+          <button
+            type="button"
+            className="tb-btn"
+            onMouseDown={(e) => { e.preventDefault(); exec("bold"); }}
+            title="In đậm (Ctrl+B)"
+          >
+            <Bold size={15} />
+          </button>
+          <button
+            type="button"
+            className="tb-btn"
+            onMouseDown={(e) => { e.preventDefault(); exec("italic"); }}
+            title="In nghiêng (Ctrl+I)"
+          >
+            <Italic size={15} />
+          </button>
+          <button
+            type="button"
+            className="tb-btn"
+            onMouseDown={(e) => { e.preventDefault(); exec("underline"); }}
+            title="Gạch chân (Ctrl+U)"
+          >
+            <Underline size={15} />
+          </button>
+        </div>
+
+        <div className="toolbar-sep" />
+
+        {/* Nhóm Màu chữ nhanh & Highlight */}
+        <div className="toolbar-group">
+          <button
+            type="button"
+            className="tb-color-chip chip-green"
+            onMouseDown={(e) => { e.preventDefault(); exec("foreColor", "#004d32"); }}
+            title="Màu xanh BossDoor (#004d32)"
+          />
+          <button
+            type="button"
+            className="tb-color-chip chip-red"
+            onMouseDown={(e) => { e.preventDefault(); exec("foreColor", "#e30613"); }}
+            title="Màu đỏ điểm nhấn (#e30613)"
+          />
+          <button
+            type="button"
+            className="tb-color-chip chip-blue"
+            onMouseDown={(e) => { e.preventDefault(); exec("foreColor", "#1d4ed8"); }}
+            title="Màu xanh dương (#1d4ed8)"
+          />
+          <button
+            type="button"
+            className="tb-color-chip chip-orange"
+            onMouseDown={(e) => { e.preventDefault(); exec("foreColor", "#d97706"); }}
+            title="Màu vàng cam (#d97706)"
+          />
+          <button
+            type="button"
+            className="tb-color-chip chip-dark"
+            onMouseDown={(e) => { e.preventDefault(); exec("foreColor", "#0f172a"); }}
+            title="Màu đen chữ thường (#0f172a)"
+          />
+
+          <label className="tb-color-picker-label" title="Tùy chọn màu chữ bất kỳ">
+            <Palette size={14} />
+            <input
+              type="color"
+              className="tb-hidden-color-input"
+              onChange={(e) => exec("foreColor", e.target.value)}
+            />
+          </label>
+
+          <button
+            type="button"
+            className="tb-btn tb-highlight-btn"
+            onMouseDown={(e) => { e.preventDefault(); exec("hiliteColor", "#fef08a"); }}
+            title="Tô màu nền Highlight vàng nhạt"
+          >
+            <Highlighter size={14} />
+          </button>
+        </div>
+
+        <div className="toolbar-sep" />
+
+        {/* Nhóm Danh sách & Căn lề */}
+        <div className="toolbar-group">
+          <button
+            type="button"
+            className="tb-btn"
+            onMouseDown={(e) => { e.preventDefault(); exec("insertUnorderedList"); }}
+            title="Danh sách gạch đầu dòng"
+          >
+            <List size={15} />
+          </button>
+          <button
+            type="button"
+            className="tb-btn"
+            onMouseDown={(e) => { e.preventDefault(); exec("insertOrderedList"); }}
+            title="Danh sách số thứ tự (1, 2, 3)"
+          >
+            <ListOrdered size={15} />
+          </button>
+          <button
+            type="button"
+            className="tb-btn"
+            onMouseDown={(e) => { e.preventDefault(); exec("justifyLeft"); }}
+            title="Căn trái"
+          >
+            <AlignLeft size={15} />
+          </button>
+          <button
+            type="button"
+            className="tb-btn"
+            onMouseDown={(e) => { e.preventDefault(); exec("justifyCenter"); }}
+            title="Căn giữa"
+          >
+            <AlignCenter size={15} />
+          </button>
+        </div>
+
+        <div className="toolbar-sep" />
+
+        {/* Nhóm Tiện ích: Callout Box, Chèn ảnh */}
+        <div className="toolbar-group">
+          <button
+            type="button"
+            className="tb-btn-special"
+            onMouseDown={(e) => { e.preventDefault(); handleInsertCallout(); }}
+            title="Chèn khung điểm nhấn / ghi chú kỹ thuật viền xanh nổi bật"
+          >
+            <Sparkles size={13} /> <span>Khung điểm nhấn</span>
+          </button>
+          <button
+            type="button"
+            className="tb-btn-special"
+            onClick={() => setShowImgModal(!showImgModal)}
+            title="Chèn hình ảnh minh họa vào bài viết"
+          >
+            <ImageIcon size={13} /> <span>Chèn ảnh</span>
+          </button>
+        </div>
+
+        {/* Nhóm Xem Mã & Xóa định dạng */}
+        <div className="toolbar-group ml-auto">
+          <button
+            type="button"
+            className="tb-btn"
+            onMouseDown={(e) => { e.preventDefault(); exec("removeFormat"); }}
+            title="Xóa định dạng chữ"
+          >
+            <RemoveFormatting size={14} />
+          </button>
+          <button
+            type="button"
+            className={`tb-btn ${isCodeView ? "active" : ""}`}
+            onClick={handleToggleCodeView}
+            title={isCodeView ? "Quay về trình soạn thảo trực quan" : "Chỉnh sửa mã HTML"}
+          >
+            <Code size={14} /> <span>{isCodeView ? "Trực quan" : "Mã HTML"}</span>
+          </button>
+        </div>
+      </div>
+
+      {/* POPUP CHÈN ẢNH VÀO BÀI VIẾT NẾU MỞ */}
+      {showImgModal && (
+        <div className="rich-img-modal-popover">
+          <div className="popover-title-row">
+            <span>📷 Chèn hình ảnh vào bài viết</span>
+            <button type="button" onClick={() => setShowImgModal(false)}>✕</button>
+          </div>
+          <div className="popover-body">
+            <div className="popover-field">
+              <label>Đường dẫn link ảnh (URL hoặc chọn từ máy):</label>
+              <div style={{ display: "flex", gap: "6px" }}>
+                <input
+                  type="text"
+                  placeholder="https://... hoặc /project_1.png"
+                  value={imgUrl}
+                  onChange={(e) => setImgUrl(e.target.value)}
+                  style={{ flex: 1 }}
+                />
+                <button
+                  type="button"
+                  className="btn-choose-file"
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  <Upload size={13} /> Tải từ máy
+                </button>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  onChange={handleUploadImgFile}
+                />
+              </div>
+            </div>
+            <div className="popover-field">
+              <label>Chú thích hiển thị dưới chân ảnh:</label>
+              <input
+                type="text"
+                placeholder="Ví dụ: Hình ảnh kỹ thuật viên đo đạc kích thước cửa..."
+                value={imgCaption}
+                onChange={(e) => setImgCaption(e.target.value)}
+              />
+            </div>
+            {imgUrl && (
+              <div className="popover-preview">
+                <img src={imgUrl} alt="preview" onError={(e) => { e.target.style.display = "none"; }} />
+              </div>
+            )}
+            <div className="popover-actions">
+              <button type="button" className="btn-cancel" onClick={() => setShowImgModal(false)}>
+                Hủy
+              </button>
+              <button type="button" className="btn-confirm" onClick={handleInsertImage}>
+                <Check size={14} /> Chèn vào bài viết ngay
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* VÙNG SOẠN THẢO CHÍNH (TỰ ĐỘNG CO GIÃN THEO ĐỘ DÀI CHỮ) */}
+      {isCodeView ? (
+        <textarea
+          className="rich-editor-code-view"
+          style={{ minHeight: `${minHeight}px` }}
+          value={codeValue}
+          onChange={(e) => {
+            setCodeValue(e.target.value);
+            lastHtmlRef.current = e.target.value;
+            onChange(e.target.value);
+          }}
+          placeholder="Nhập mã HTML bài viết tại đây..."
+        />
+      ) : (
+        <div
+          ref={editorRef}
+          contentEditable
+          className="rich-article-content-editable"
+          style={{ minHeight: `${minHeight}px` }}
+          onInput={handleInput}
+          onBlur={handleInput}
+          placeholder={placeholder}
+          data-placeholder={placeholder}
+        />
+      )}
+    </div>
   );
 };
 
@@ -1613,20 +2026,13 @@ export default function AdminPriceQuote({ showToast }) {
 
             {/* KHU VỰC BÀI VIẾT PHÍA TRÊN BẢNG GIÁ */}
             <div className="quote-article-block above-table-article">
-              <div className="article-block-header">
-                <span className="article-block-badge">
-                  <FileText size={14} /> Bài Viết / Giới Thiệu (Phía Trên Bảng Giá)
-                </span>
-                <span className="article-block-hint">
-                  Đoạn văn bản giới thiệu mở đầu hiển thị ngay phía trên bảng giá ngoài trang web
-                </span>
-              </div>
-              <AutoResizeTextarea
-                minHeight={80}
-                className="quote-article-textarea"
+              <RichArticleEditor
                 value={editingQuote.articleAbove || ""}
-                onChange={(e) => handleQuoteFieldChange("articleAbove", e.target.value)}
+                onChange={(val) => handleQuoteFieldChange("articleAbove", val)}
                 placeholder="Nhập đoạn văn bản / bài viết giới thiệu mở đầu phía trên bảng giá..."
+                minHeight={80}
+                badgeText="Bài Viết / Giới Thiệu (Phía Trên Bảng Giá)"
+                hintText="Đoạn văn bản giới thiệu mở đầu hiển thị ngay phía trên bảng giá ngoài trang web"
               />
             </div>
 
@@ -1839,20 +2245,13 @@ export default function AdminPriceQuote({ showToast }) {
 
             {/* KHU VỰC BÀI VIẾT PHÍA DƯỚI BẢNG GIÁ */}
             <div className="quote-article-block below-table-article">
-              <div className="article-block-header">
-                <span className="article-block-badge">
-                  <FileText size={14} /> Bài Viết Chi Tiết &amp; Tư Vấn Kỹ Thuật (Phía Dưới Bảng Giá)
-                </span>
-                <span className="article-block-hint">
-                  Nội dung bài viết chi tiết, hướng dẫn kỹ thuật, lưu ý thi công hiển thị phía dưới bảng giá
-                </span>
-              </div>
-              <AutoResizeTextarea
-                minHeight={100}
-                className="quote-article-textarea"
+              <RichArticleEditor
                 value={editingQuote.articleBelow || ""}
-                onChange={(e) => handleQuoteFieldChange("articleBelow", e.target.value)}
+                onChange={(val) => handleQuoteFieldChange("articleBelow", val)}
                 placeholder="Gõ bài viết chi tiết, hướng dẫn kỹ thuật, tư vấn báo giá đặt phía dưới bảng giá..."
+                minHeight={120}
+                badgeText="Bài Viết Chi Tiết & Tư Vấn Kỹ Thuật (Phía Dưới Bảng Giá)"
+                hintText="Nội dung bài viết chi tiết, hướng dẫn kỹ thuật, lưu ý thi công hiển thị phía dưới bảng giá"
               />
             </div>
           </div>

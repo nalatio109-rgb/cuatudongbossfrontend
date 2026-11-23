@@ -47,6 +47,30 @@ const sanitizeSpec = (text) => {
   return s;
 };
 
+// Loại bỏ thẻ HTML khi cần lấy chuỗi văn bản thuần (ví dụ mô tả meta tóm tắt)
+const stripHtml = (html) => {
+  if (!html) return "";
+  return html.replace(/<[^>]*>?/gm, " ").replace(/\s+/g, " ").trim();
+};
+
+// Render nội dung bài viết tùy biến (hỗ trợ cả định dạng HTML từ Rich Text Editor và văn bản thô)
+const renderArticleContent = (content, defaultText) => {
+  const text =
+    content !== undefined && content !== null && String(content).trim() !== ""
+      ? content
+      : defaultText;
+  if (!text) return null;
+  if (/<[a-z][\s\S]*>/i.test(text)) {
+    return (
+      <div
+        className="custom-article-rendered-html"
+        dangerouslySetInnerHTML={{ __html: text }}
+      />
+    );
+  }
+  return <p className="custom-article-paragraph">{text}</p>;
+};
+
 // Nhận diện cột hình ảnh đồng bộ với Admin
 const isImageCol = (col) => {
   if (!col) return false;
@@ -293,7 +317,7 @@ export default function ProductPricing() {
           category: foundQuote.category || "cuacuon",
           price: foundQuote.items?.[0] ? `${foundQuote.items[0].priceOver8}đ/m²` : "Liên hệ",
           image: foundQuote.image || "/project_1.png",
-          description: foundQuote.articleAbove || "Bảng báo giá chi tiết BossDoor Đà Nẵng",
+          description: stripHtml(foundQuote.articleAbove) || "Bảng báo giá chi tiết BossDoor Đà Nẵng",
           specs: [
             "Hợp kim nhôm 6063T5 cao cấp",
             "Sơn tĩnh điện AkzoNobel CHLB Đức bảo hành 10 năm",
@@ -447,7 +471,7 @@ export default function ProductPricing() {
                 code: updatedMatch.productCode || prev?.code,
                 title: updatedMatch.productTitle || updatedMatch.title || prev?.title,
                 image: updatedMatch.image || prev?.image,
-                description: updatedMatch.articleAbove || prev?.description
+                description: stripHtml(updatedMatch.articleAbove) || prev?.description
               }));
             }
           }
@@ -739,7 +763,7 @@ export default function ProductPricing() {
               category: found.category || "cuacuon",
               price: found.items?.[0] ? `${found.items[0].priceOver8}đ/m²` : "Liên hệ",
               image: found.image || "/project_1.png",
-              description: found.articleAbove || "Bảng báo giá chi tiết BossDoor Đà Nẵng",
+              description: stripHtml(found.articleAbove) || "Bảng báo giá chi tiết BossDoor Đà Nẵng",
               specs: [
                 "Hợp kim nhôm 6063T5 cao cấp",
                 "Sơn tĩnh điện AkzoNobel CHLB Đức bảo hành 10 năm",
@@ -1074,11 +1098,10 @@ export default function ProductPricing() {
 
               {/* BÀI VIẾT / GIỚI THIỆU PHÍA TRÊN BẢNG GIÁ (LUÔN ĐỒNG BỘ HIỂN THỊ) */}
               <div className="pricing-custom-article-box above-quote-article">
-                <p className="custom-article-paragraph">
-                  {priceQuote?.articleAbove !== undefined && priceQuote.articleAbove !== null && priceQuote.articleAbove !== ""
-                    ? priceQuote.articleAbove
-                    : "BossDoor Đà Nẵng trân trọng gửi đến Quý khách hàng bảng báo giá chi tiết, mới nhất năm 2026. Các dòng sản phẩm được sản xuất trên dây chuyền hiện đại, tiêu chuẩn chất lượng cao, bền bỉ và an toàn tuyệt đối cho mọi công trình."}
-                </p>
+                {renderArticleContent(
+                  priceQuote?.articleAbove,
+                  "BossDoor Đà Nẵng trân trọng gửi đến Quý khách hàng bảng báo giá chi tiết, mới nhất năm 2026. Các dòng sản phẩm được sản xuất trên dây chuyền hiện đại, tiêu chuẩn chất lượng cao, bền bỉ và an toàn tuyệt đối cho mọi công trình."
+                )}
               </div>
 
               {/* BẢNG GIÁ KỸ THUẬT ĐỒNG BỘ 100% VỚI ADMIN */}
@@ -1246,11 +1269,10 @@ export default function ProductPricing() {
                   <Sparkles size={16} className="sparkle-gold-icon" />
                   <h4>THÔNG TIN CHI TIẾT &amp; TƯ VẤN KỸ THUẬT</h4>
                 </div>
-                <p className="custom-article-paragraph">
-                  {priceQuote?.articleBelow !== undefined && priceQuote.articleBelow !== null && priceQuote.articleBelow !== ""
-                    ? priceQuote.articleBelow
-                    : "Lưu ý: Báo giá trên áp dụng cho công trình tại khu vực Đà Nẵng và các tỉnh lân cận. Khách hàng lắp đặt số lượng lớn hoặc dự án công trình sẽ nhận được mức chiết khấu ưu đãi đặc biệt. Để được tư vấn chi tiết và khảo sát đo đạc miễn phí tận nơi, Quý khách vui lòng liên hệ Hotline/Zalo kỹ thuật: 0904.678.323."}
-                </p>
+                {renderArticleContent(
+                  priceQuote?.articleBelow,
+                  "Lưu ý: Báo giá trên áp dụng cho công trình tại khu vực Đà Nẵng và các tỉnh lân cận. Khách hàng lắp đặt số lượng lớn hoặc dự án công trình sẽ nhận được mức chiết khấu ưu đãi đặc biệt. Để được tư vấn chi tiết và khảo sát đo đạc miễn phí tận nơi, Quý khách vui lòng liên hệ Hotline/Zalo kỹ thuật: 0904.678.323."
+                )}
               </div>
 
               {/* 4. KHU VỰC "LỰA CHỌN THÊM" (PHỤ KIỆN & NÂNG CẤP) */}
@@ -1385,11 +1407,10 @@ export default function ProductPricing() {
 
               {/* BÀI VIẾT / GIỚI THIỆU PHÍA TRÊN BẢNG GIÁ (LUÔN ĐỒNG BỘ HIỂN THỊ) */}
               <div className="pricing-custom-article-box above-quote-article">
-                <p className="custom-article-paragraph">
-                  {priceQuote?.articleAbove !== undefined && priceQuote.articleAbove !== null && priceQuote.articleAbove !== ""
-                    ? priceQuote.articleAbove
-                    : "BossDoor Đà Nẵng trân trọng gửi đến Quý khách hàng bảng báo giá chi tiết, mới nhất năm 2026. Các dòng sản phẩm được sản xuất trên dây chuyền hiện đại, tiêu chuẩn chất lượng cao, bền bỉ và an toàn tuyệt đối cho mọi công trình."}
-                </p>
+                {renderArticleContent(
+                  priceQuote?.articleAbove,
+                  "BossDoor Đà Nẵng trân trọng gửi đến Quý khách hàng bảng báo giá chi tiết, mới nhất năm 2026. Các dòng sản phẩm được sản xuất trên dây chuyền hiện đại, tiêu chuẩn chất lượng cao, bền bỉ và an toàn tuyệt đối cho mọi công trình."
+                )}
               </div>
 
               {/* BẢNG GIÁ KỸ THUẬT ĐỒNG BỘ 100% VỚI ADMIN */}
@@ -1557,11 +1578,10 @@ export default function ProductPricing() {
                   <Sparkles size={16} className="sparkle-gold-icon" />
                   <h4>THÔNG TIN CHI TIẾT &amp; TƯ VẤN KỸ THUẬT</h4>
                 </div>
-                <p className="custom-article-paragraph">
-                  {priceQuote?.articleBelow !== undefined && priceQuote.articleBelow !== null && priceQuote.articleBelow !== ""
-                    ? priceQuote.articleBelow
-                    : "Lưu ý: Báo giá trên áp dụng cho công trình tại khu vực Đà Nẵng và các tỉnh lân cận. Khách hàng lắp đặt số lượng lớn hoặc dự án công trình sẽ nhận được mức chiết khấu ưu đãi đặc biệt. Để được tư vấn chi tiết và khảo sát đo đạc miễn phí tận nơi, Quý khách vui lòng liên hệ Hotline/Zalo kỹ thuật: 0904.678.323."}
-                </p>
+                {renderArticleContent(
+                  priceQuote?.articleBelow,
+                  "Lưu ý: Báo giá trên áp dụng cho công trình tại khu vực Đà Nẵng và các tỉnh lân cận. Khách hàng lắp đặt số lượng lớn hoặc dự án công trình sẽ nhận được mức chiết khấu ưu đãi đặc biệt. Để được tư vấn chi tiết và khảo sát đo đạc miễn phí tận nơi, Quý khách vui lòng liên hệ Hotline/Zalo kỹ thuật: 0904.678.323."
+                )}
               </div>
 
               {/* 4. KHU VỰC "LỰA CHỌN THÊM" (PHỤ KIỆN & NÂNG CẤP) */}

@@ -3633,6 +3633,94 @@
   line-height: 1.75;
 }
 
+/* Bài viết được định dạng trực quan (Rich Text HTML) */
+.custom-article-rendered-html {
+  font-size: 15.5px;
+  line-height: 1.8;
+  color: #1e293b;
+  word-break: break-word;
+}
+
+.custom-article-rendered-html h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #004d32;
+  margin: 20px 0 10px 0;
+  line-height: 1.4;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 6px;
+}
+
+.custom-article-rendered-html h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 16px 0 8px 0;
+  line-height: 1.4;
+}
+
+.custom-article-rendered-html h4 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 12px 0 6px 0;
+}
+
+.custom-article-rendered-html p {
+  margin: 0 0 10px 0;
+  line-height: 1.75;
+}
+
+.custom-article-rendered-html p:last-child {
+  margin-bottom: 0;
+}
+
+.custom-article-rendered-html strong,
+.custom-article-rendered-html b {
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.custom-article-rendered-html ul,
+.custom-article-rendered-html ol {
+  margin: 8px 0 14px 24px;
+  padding: 0;
+}
+
+.custom-article-rendered-html li {
+  margin-bottom: 6px;
+  line-height: 1.65;
+}
+
+.custom-article-rendered-html .editor-callout-box {
+  background: #f0fdf4 !important;
+  border: 1.5px solid #86efac !important;
+  border-left: 5px solid #004d32 !important;
+  border-radius: 8px;
+  padding: 14px 18px !important;
+  margin: 16px 0 !important;
+}
+
+.custom-article-rendered-html figure {
+  margin: 18px 0;
+  text-align: center;
+}
+
+.custom-article-rendered-html figure img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e8f0;
+}
+
+.custom-article-rendered-html figcaption {
+  font-size: 13px;
+  color: #64748b;
+  font-style: italic;
+  margin-top: 6px;
+}
+
 @media (max-width: 768px) {
   .pricing-custom-article-box {
     padding: 14px 16px;
