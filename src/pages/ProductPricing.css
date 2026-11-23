@@ -3641,44 +3641,59 @@
   word-break: break-word;
 }
 
-.custom-article-rendered-html h2 {
-  font-size: 1.3rem;
+.custom-article-rendered-html h1,
+.custom-article-rendered-html h2,
+.custom-article-rendered-html h3,
+.custom-article-rendered-html h4,
+.custom-article-rendered-html h5,
+.plain-article-heading {
+  color: #004d32 !important; /* Luôn chuẩn màu xanh thương hiệu BossDoor */
   font-weight: 700;
-  color: #004d32;
-  margin: 20px 0 10px 0;
   line-height: 1.4;
-  border-bottom: 2px solid #e2e8f0;
-  padding-bottom: 6px;
 }
 
-.custom-article-rendered-html h3 {
+.custom-article-rendered-html h2 {
+  font-size: 1.25rem;
+  margin: 18px 0 8px 0;
+}
+
+.custom-article-rendered-html h3,
+.plain-article-heading {
   font-size: 1.15rem;
-  font-weight: 700;
-  color: #0f172a;
-  margin: 16px 0 8px 0;
-  line-height: 1.4;
+  margin: 16px 0 6px 0;
 }
 
 .custom-article-rendered-html h4 {
   font-size: 1.05rem;
-  font-weight: 600;
-  color: #1e293b;
-  margin: 12px 0 6px 0;
+  margin: 12px 0 4px 0;
 }
 
-.custom-article-rendered-html p {
-  margin: 0 0 10px 0;
+.custom-article-rendered-html p,
+.plain-article-line {
+  margin: 0 0 8px 0;
   line-height: 1.75;
+  color: #1e293b;
 }
 
 .custom-article-rendered-html p:last-child {
   margin-bottom: 0;
 }
 
+/* Cho phép chữ in đậm kế thừa màu sắc (xanh Boss, đỏ giá...) đã chọn từ thanh công cụ */
 .custom-article-rendered-html strong,
 .custom-article-rendered-html b {
   font-weight: 700;
-  color: #0f172a;
+  color: inherit;
+}
+
+/* Đảm bảo màu sắc người dùng chọn từ thanh công cụ luôn hiển thị chính xác */
+.custom-article-rendered-html font[color] {
+  color: attr(color, color);
+}
+
+.custom-article-rendered-html font[color] *,
+.custom-article-rendered-html [style*="color"] * {
+  color: inherit !important;
 }
 
 .custom-article-rendered-html ul,

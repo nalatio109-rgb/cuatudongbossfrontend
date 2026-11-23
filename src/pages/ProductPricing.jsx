@@ -68,7 +68,32 @@ const renderArticleContent = (content, defaultText) => {
       />
     );
   }
-  return <p className="custom-article-paragraph">{text}</p>;
+
+  // Tự động nhận diện tiêu đề và định dạng màu xanh BossDoor cho cả văn bản thô
+  const lines = String(text).split(/\r?\n/);
+  return (
+    <div className="custom-article-rendered-html">
+      {lines.map((line, idx) => {
+        const trimmed = line.trim();
+        if (!trimmed) return <div key={idx} style={{ height: "8px" }} />;
+        const isHeading =
+          /^(kích thước|cách tính|bảng giá|lưu ý|chính sách|cam kết|\d+\.)/i.test(trimmed) &&
+          trimmed.length < 80;
+        if (isHeading) {
+          return (
+            <h3 key={idx} className="plain-article-heading">
+              {trimmed}
+            </h3>
+          );
+        }
+        return (
+          <p key={idx} className="plain-article-line">
+            {trimmed}
+          </p>
+        );
+      })}
+    </div>
+  );
 };
 
 // Nhận diện cột hình ảnh đồng bộ với Admin

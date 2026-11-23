@@ -1769,24 +1769,28 @@
   font-style: italic;
 }
 
+.rich-article-content-editable h1,
+.rich-article-content-editable h2,
+.rich-article-content-editable h3,
+.rich-article-content-editable h4,
+.rich-article-content-editable h5 {
+  color: #004d32;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
 .rich-article-content-editable h2 {
   font-size: 18px;
-  font-weight: 700;
-  color: #004d32;
   margin: 14px 0 6px 0;
 }
 
 .rich-article-content-editable h3 {
   font-size: 16px;
-  font-weight: 700;
-  color: #0f172a;
   margin: 12px 0 4px 0;
 }
 
 .rich-article-content-editable h4 {
   font-size: 14.5px;
-  font-weight: 600;
-  color: #1e293b;
   margin: 10px 0 3px 0;
 }
 
@@ -1808,6 +1812,12 @@
 .rich-article-content-editable strong,
 .rich-article-content-editable b {
   font-weight: 700;
+  color: inherit;
+}
+
+.rich-article-content-editable font[color] *,
+.rich-article-content-editable [style*="color"] * {
+  color: inherit !important;
 }
 
 .rich-article-content-editable .editor-callout-box {
