@@ -4231,23 +4231,63 @@
     color: #334155 !important;
   }
 
+  /* BÀI VIẾT PHÍA DƯỚI BẢNG GIÁ NẰM TRỰC TIẾP TRÊN NỀN TRẮNG, BỎ HOÀN TOÀN KHUNG */
   .pricing-custom-article-box.below-quote-article {
-    padding: 12px 14px !important;
-    font-size: 13px !important;
-    border-radius: 8px !important;
-    margin-top: 16px !important;
+    background: transparent !important;
+    border: none !important;
+    border-left: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin-top: 18px !important;
+    margin-bottom: 24px !important;
+    font-size: 13.5px !important;
+  }
+
+  .pricing-custom-article-box.below-quote-article .custom-article-header {
+    border-bottom: none !important;
+    padding-bottom: 0 !important;
+    margin-bottom: 10px !important;
+    gap: 6px !important;
   }
 
   .pricing-custom-article-box.below-quote-article .custom-article-header h4 {
-    font-size: 12px !important;
+    font-size: 14px !important;
     font-weight: 800 !important;
-    color: #065f46 !important;
+    color: #004d32 !important;
+    letter-spacing: 0.2px !important;
+    line-height: 1.35 !important;
   }
 
-  .pricing-custom-article-box.below-quote-article .custom-article-paragraph {
-    font-size: 13px !important;
-    line-height: 1.65 !important;
+  .pricing-custom-article-box.below-quote-article .custom-article-paragraph,
+  .pricing-custom-article-box.below-quote-article .custom-article-rendered-html {
+    font-size: 13.5px !important;
+    line-height: 1.7 !important;
     color: #334155 !important;
+  }
+
+  .pricing-custom-article-box.below-quote-article .custom-article-rendered-html h1,
+  .pricing-custom-article-box.below-quote-article .custom-article-rendered-html h2 {
+    font-size: 16px !important;
+    font-weight: 800 !important;
+    color: #004d32 !important;
+    margin: 16px 0 8px 0 !important;
+    line-height: 1.4 !important;
+  }
+
+  .pricing-custom-article-box.below-quote-article .custom-article-rendered-html h3 {
+    font-size: 14.5px !important;
+    font-weight: 700 !important;
+    color: #1e293b !important;
+    margin: 14px 0 6px 0 !important;
+  }
+
+  .pricing-custom-article-box.below-quote-article .custom-article-rendered-html p,
+  .pricing-custom-article-box.below-quote-article .custom-article-rendered-html li {
+    font-size: 13.5px !important;
+    line-height: 1.7 !important;
+    color: #334155 !important;
+    margin-bottom: 8px !important;
   }
 }
 
