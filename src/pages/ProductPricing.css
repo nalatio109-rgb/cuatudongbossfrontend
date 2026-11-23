@@ -826,7 +826,7 @@
   .technical-table-container-card {
     display: block !important;
     width: 100% !important;
-    margin: 16px 0 24px 0 !important;
+    margin: 14px 0 20px 0 !important;
     background: transparent !important;
     border-radius: 0 !important;
     border: none !important;
@@ -847,19 +847,21 @@
   }
 
   .customer-quote-table {
-    min-width: 680px !important;
-    font-size: 13px !important;
+    min-width: 700px !important;
+    font-size: 12.5px !important;
     width: 100% !important;
     border: none !important;
     border-radius: 0 !important;
     box-shadow: none !important;
     background: transparent !important;
     border-collapse: collapse !important;
+    table-layout: auto !important;
   }
 
   .customer-quote-table thead th {
-    padding: 11px 10px !important;
-    font-size: 12.5px !important;
+    padding: 10px 8px !important;
+    font-size: 12px !important;
+    font-weight: 700 !important;
     white-space: nowrap !important;
     background: #004d32 !important;
     color: #ffffff !important;
@@ -868,6 +870,7 @@
     border-right: none !important;
     border-bottom: 2px solid #00281b !important;
     border-radius: 0 !important;
+    text-align: center !important;
   }
 
   .customer-quote-table tbody td {
@@ -879,6 +882,117 @@
     border-bottom: 1px solid #f1f5f9 !important;
     background: #ffffff !important;
     border-radius: 0 !important;
+    vertical-align: middle !important;
+  }
+
+  /* Cột 1: STT */
+  .cell-client-stt {
+    font-size: 12px !important;
+    font-weight: 700 !important;
+    color: #64748b !important;
+    text-align: center !important;
+    width: 38px !important;
+  }
+
+  /* Cột 2: Mã SP - Không ngắt dòng, font chữ cân đối */
+  .cell-client-code {
+    text-align: center !important;
+    white-space: nowrap !important;
+    width: 75px !important;
+  }
+
+  .client-code-badge {
+    display: inline-block !important;
+    font-size: 11.5px !important;
+    font-weight: 700 !important;
+    padding: 3px 8px !important;
+    white-space: nowrap !important;
+    letter-spacing: 0 !important;
+    border-radius: 5px !important;
+    line-height: 1.3 !important;
+    background: #ecfdf5 !important;
+    color: #004d32 !important;
+    border: 1px solid #a7f3d0 !important;
+  }
+
+  /* Cột 3: Hình ảnh & Link xem SP - Xếp dọc nhỏ gọn, không lấn át cột Tên */
+  .cell-client-img {
+    text-align: center !important;
+    width: 65px !important;
+  }
+
+  .table-img-with-link-wrapper {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px !important;
+  }
+
+  .client-table-thumb-box {
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 6px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .table-item-detail-link {
+    font-size: 9.5px !important;
+    font-weight: 700 !important;
+    padding: 2px 6px !important;
+    border-radius: 4px !important;
+    gap: 2px !important;
+    white-space: nowrap !important;
+    line-height: 1.2 !important;
+  }
+
+  /* Cột 4: Tên & Quy cách kỹ thuật - Đầy đủ, rõ chữ, font dễ đọc */
+  .customer-quote-table thead th:nth-child(4) {
+    text-align: left !important;
+    min-width: 220px !important;
+  }
+
+  .cell-client-desc,
+  .customer-quote-table tbody td:nth-child(4) {
+    min-width: 220px !important;
+    max-width: 300px !important;
+    text-align: left !important;
+  }
+
+  .client-desc-text {
+    font-size: 12.5px !important;
+    line-height: 1.45 !important;
+    color: #1e293b !important;
+    font-weight: 500 !important;
+    word-break: break-word !important;
+    white-space: normal !important;
+  }
+
+  /* Cột 5, 6: ĐVT & Màu sắc */
+  .cell-client-unit,
+  .client-unit-text,
+  .cell-client-color,
+  .client-color-text {
+    font-size: 11.5px !important;
+    color: #475569 !important;
+    white-space: nowrap !important;
+    text-align: center !important;
+  }
+
+  /* Cột Đơn giá */
+  .customer-quote-table thead th.price-head {
+    text-align: center !important;
+    min-width: 90px !important;
+  }
+
+  .cell-client-price,
+  .client-price-text,
+  .price-val-highlight {
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    color: #b91c1c !important;
+    white-space: nowrap !important;
+    text-align: center !important;
   }
 
   .customer-quote-table th:nth-child(1),
@@ -893,20 +1007,27 @@
     display: flex !important;
     flex-direction: column !important;
     align-items: flex-start !important;
-    gap: 8px !important;
-    margin-bottom: 12px !important;
+    gap: 6px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .pricing-section-title {
+    font-size: 15px !important;
+    font-weight: 800 !important;
+    color: #004d32 !important;
+    line-height: 1.35 !important;
   }
 
   .table-scroll-hint-pill {
     display: inline-flex !important;
     align-items: center !important;
-    gap: 5px !important;
-    font-size: 12px !important;
-    padding: 5px 12px !important;
+    gap: 4px !important;
+    font-size: 11px !important;
+    padding: 3px 10px !important;
     background: #ecfdf5 !important;
     color: #065f46 !important;
     border: 1px solid #a7f3d0 !important;
-    border-radius: 20px !important;
+    border-radius: 16px !important;
     font-weight: 700 !important;
   }
 
@@ -4096,15 +4217,37 @@
 }
 
 @media (max-width: 768px) {
-  .pricing-custom-article-box {
-    padding: 14px 16px;
-    font-size: 14px;
-    border-radius: 10px;
+  .pricing-custom-article-box.above-quote-article {
+    padding: 0 !important;
+    font-size: 13.5px !important;
+    background: transparent !important;
+    border: none !important;
+    margin-bottom: 12px !important;
   }
 
-  .pricing-custom-article-box .custom-article-paragraph {
-    font-size: 14px;
-    line-height: 1.65;
+  .pricing-custom-article-box.above-quote-article .custom-article-paragraph {
+    font-size: 13.5px !important;
+    line-height: 1.65 !important;
+    color: #334155 !important;
+  }
+
+  .pricing-custom-article-box.below-quote-article {
+    padding: 12px 14px !important;
+    font-size: 13px !important;
+    border-radius: 8px !important;
+    margin-top: 16px !important;
+  }
+
+  .pricing-custom-article-box.below-quote-article .custom-article-header h4 {
+    font-size: 12px !important;
+    font-weight: 800 !important;
+    color: #065f46 !important;
+  }
+
+  .pricing-custom-article-box.below-quote-article .custom-article-paragraph {
+    font-size: 13px !important;
+    line-height: 1.65 !important;
+    color: #334155 !important;
   }
 }
 
