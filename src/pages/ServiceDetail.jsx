@@ -290,34 +290,6 @@ const ServiceDetail = () => {
               )}
             </div>
           </RevealOnScroll>
-
-          {/* BOX LIÊN HỆ CỨU HỘ & BẢO TRÌ NHANH */}
-          <RevealOnScroll animation="zoom-in" delay={200}>
-            <div className="service-detail-cta-box">
-              <div className="cta-box-text">
-                <h4 className="cta-box-title">
-                  CẦN HỖ TRỢ KỸ THUẬT & BÁO GIÁ NHANH?
-                </h4>
-                <p className="cta-box-desc">
-                  Đội ngũ kỹ thuật viên BOSS Đà Nẵng sẵn sàng có mặt sau 15 – 30 phút trên toàn địa bàn.
-                </p>
-              </div>
-
-              <div className="cta-box-btns">
-                <a href={`tel:${phoneCall}`} className="cta-btn-call">
-                  <Phone size={16} /> GỌI THỢ NGAY: {serviceItem.phone || '0904.678.323'}
-                </a>
-                <a
-                  href="https://zalo.me/0904678323"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="cta-btn-zalo"
-                >
-                  💬 Zalo tư vấn
-                </a>
-              </div>
-            </div>
-          </RevealOnScroll>
         </div>
 
         {/* 4. CÁC DỊCH VỤ LIÊN QUAN */}
