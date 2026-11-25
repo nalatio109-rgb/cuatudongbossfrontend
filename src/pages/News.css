@@ -1315,12 +1315,51 @@
   .related-news-view-all {
     display: none !important;
   }
+  /* HÀNG NGANG CHẠY TỪ TRÁI SANG PHẢI TRÊN ĐIỆN THOẠI (HORIZONTAL SCROLLING CAROUSEL) */
   .related-news-grid {
-    grid-template-columns: 1fr !important;
-    gap: 0.9rem !important;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch !important;
+    scroll-behavior: smooth !important;
+    gap: 14px !important;
+    padding-bottom: 12px !important;
+    padding-top: 4px !important;
+    padding-left: 2px !important;
+    padding-right: 24px !important;
+    margin-right: -15px !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
   }
+
+  .related-news-grid::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+
+  .related-news-card-reveal-wrapper {
+    flex: 0 0 76% !important;
+    min-width: 250px !important;
+    max-width: 285px !important;
+    scroll-snap-align: start !important;
+    scroll-snap-stop: normal !important;
+    height: auto !important;
+    display: flex !important;
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
   .related-news-card {
-    border-radius: 10px !important;
+    width: 100% !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    border-radius: 12px !important;
   }
   .related-news-img-holder {
     height: 155px !important;
