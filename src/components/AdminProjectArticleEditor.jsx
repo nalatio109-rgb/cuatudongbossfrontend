@@ -27,7 +27,9 @@ import {
   Unlink,
   ExternalLink,
   Copy,
-  Check
+  Check,
+  Columns2,
+  Columns
 } from "lucide-react";
 import "./AdminProjectArticleEditor.css";
 
@@ -110,10 +112,16 @@ export default function AdminProjectArticleEditor({
   const lastHtmlRef = useRef(projectForm.content || "");
   const [editorMode, setEditorMode] = useState("wysiwyg"); // "wysiwyg" | "code" | "preview"
   const [showImageInserter, setShowImageInserter] = useState(false);
+  const [inserterLayoutMode, setInserterLayoutMode] = useState("single"); // "single" | "two_cols"
   const [insertImageUrl, setInsertImageUrl] = useState("");
   const [insertImageCaption, setInsertImageCaption] = useState("");
   const [isUploadingInsertImg, setIsUploadingInsertImg] = useState(false);
   const [insertImgWidth, setInsertImgWidth] = useState("100%");
+
+  // Ảnh thứ 2 cho chế độ 2 ảnh ngang hàng
+  const [insertImgUrl2, setInsertImgUrl2] = useState("");
+  const [insertCaption2, setInsertCaption2] = useState("");
+  const [isUploadingInsertImg2, setIsUploadingInsertImg2] = useState(false);
 
   // Image resizer & align controller
   const [selectedImgEl, setSelectedImgEl] = useState(null);
@@ -603,6 +611,58 @@ export default function AdminProjectArticleEditor({
     }
   };
 
+  // Upload ảnh thứ 2 cho chế độ 2 ảnh ngang hàng
+  const handleUploadInsertImage2 = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setIsUploadingInsertImg2(true);
+
+    try {
+      let compressed = file;
+      if (compressImage) {
+        try {
+          compressed = await compressImage(file);
+        } catch (_) {}
+      }
+
+      const backendBase = import.meta.env.VITE_API_URL || "";
+      const uploadEndpoint = backendBase ? `${backendBase}/api/upload` : "/api/upload";
+
+      let uploadedUrl = null;
+      try {
+        const formData = new FormData();
+        formData.append("image", compressed);
+        const res = await fetch(uploadEndpoint, {
+          method: "POST",
+          body: formData
+        });
+        if (res.ok) {
+          const data = await res.json();
+          uploadedUrl = data.url || data.secure_url || data.imageUrl || (data.data && data.data.url);
+        }
+      } catch (_) {}
+
+      // Fallback base64
+      if (!uploadedUrl) {
+        uploadedUrl = await new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = (ev) => resolve(ev.target.result);
+          reader.readAsDataURL(compressed);
+        });
+      }
+
+      if (uploadedUrl) {
+        setInsertImgUrl2(uploadedUrl);
+        if (showToast) showToast("✅ Tải ảnh thứ 2 lên thành công!");
+      }
+    } catch (err) {
+      if (showToast) showToast("❌ Không thể tải ảnh 2: " + err.message);
+    } finally {
+      setIsUploadingInsertImg2(false);
+      e.target.value = "";
+    }
+  };
+
   // Confirm Insert Image into Article
   const handleConfirmInsertImage = () => {
     if (!insertImageUrl.trim()) {
@@ -651,6 +711,103 @@ export default function AdminProjectArticleEditor({
     if (showToast) showToast("📷 Đã chèn hình ảnh và chú thích vào bài viết thành công!");
   };
 
+  // Xác nhận chèn cụm 2 ảnh ngang hàng vào bài viết
+  const handleConfirmInsertTwoImages = () => {
+    if (!insertImageUrl.trim() && !insertImgUrl2.trim()) {
+      alert("Vui lòng tải hoặc dán link ít nhất 1 ảnh!");
+      return;
+    }
+
+    const img1 = insertImageUrl.trim() || insertImgUrl2.trim();
+    const img2 = insertImgUrl2.trim() || insertImageUrl.trim();
+    const cap1 = insertImageCaption.trim() || "Hình ảnh thi công thực tế 1";
+    const cap2 = insertCaption2.trim() || "Hình ảnh thi công thực tế 2";
+
+    const twoImagesHtml = `
+<div class="service-images-row-2col" style="display: flex; gap: 16px; margin: 24px 0; justify-content: center; align-items: flex-start; flex-wrap: wrap;">
+  <figure class="project-article-figure" style="flex: 1 1 calc(50% - 10px); min-width: 260px; max-width: calc(50% - 8px); margin: 0; text-align: center; box-sizing: border-box;">
+    <img src="${img1}" alt="${cap1}" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.12); border: 1px solid #cbd5e1; display: block; margin: 0 auto; object-fit: cover;" />
+    <figcaption style="margin-top: 8px; font-size: 0.88rem; color: #64748b; font-style: italic; text-align: center;">${cap1}</figcaption>
+  </figure>
+  <figure class="project-article-figure" style="flex: 1 1 calc(50% - 10px); min-width: 260px; max-width: calc(50% - 8px); margin: 0; text-align: center; box-sizing: border-box;">
+    <img src="${img2}" alt="${cap2}" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.12); border: 1px solid #cbd5e1; display: block; margin: 0 auto; object-fit: cover;" />
+    <figcaption style="margin-top: 8px; font-size: 0.88rem; color: #64748b; font-style: italic; text-align: center;">${cap2}</figcaption>
+  </figure>
+</div><p><br></p>`;
+
+    if (editorMode === "wysiwyg" && editorRef.current) {
+      editorRef.current.focus();
+      document.execCommand("insertHTML", false, twoImagesHtml);
+      handleContentInput();
+    } else {
+      setProjectForm((prev) => ({
+        ...prev,
+        content: (prev.content || "") + twoImagesHtml
+      }));
+    }
+
+    setProjectForm((prev) => {
+      const currentList = Array.isArray(prev.images) ? [...prev.images] : [];
+      if (!currentList.includes(img1)) currentList.push(img1);
+      if (!currentList.includes(img2)) currentList.push(img2);
+      return {
+        ...prev,
+        image: prev.image || img1,
+        images: currentList,
+        gallery: currentList
+      };
+    });
+
+    setInsertImageUrl("");
+    setInsertImageCaption("");
+    setInsertImgUrl2("");
+    setInsertCaption2("");
+    setShowImageInserter(false);
+
+    if (showToast) showToast("🖼️🖼️ Đã chèn cụm 2 ảnh ngang hàng vào bài viết thành công!");
+  };
+
+  // Đặt ảnh đã chọn sang chế độ ngang hàng 50%
+  const handleSetTwoImagesLayout = () => {
+    if (!selectedImgEl) return;
+    selectedImgEl.style.width = "calc(50% - 10px)";
+    selectedImgEl.style.maxWidth = "calc(50% - 10px)";
+    selectedImgEl.style.height = "auto";
+    selectedImgEl.style.display = "inline-block";
+    selectedImgEl.style.verticalAlign = "top";
+    selectedImgEl.style.margin = "10px 5px";
+    selectedImgEl.style.float = "none";
+    selectedImgEl.style.boxSizing = "border-box";
+
+    const parentFig = selectedImgEl.closest("figure");
+    if (parentFig) {
+      parentFig.style.display = "inline-block";
+      parentFig.style.width = "calc(50% - 10px)";
+      parentFig.style.maxWidth = "calc(50% - 10px)";
+      parentFig.style.verticalAlign = "top";
+      parentFig.style.margin = "10px 5px";
+      parentFig.style.boxSizing = "border-box";
+      parentFig.style.textAlign = "center";
+      selectedImgEl.style.width = "100%";
+      selectedImgEl.style.maxWidth = "100%";
+    }
+
+    setSelectedImgSize("50%");
+    setTimeout(() => {
+      if (selectedImgEl) {
+        const rect = selectedImgEl.getBoundingClientRect();
+        setImgToolbarPos({
+          top: Math.max(10, rect.top - 52),
+          left: rect.left + rect.width / 2
+        });
+      }
+    }, 50);
+    handleContentInput();
+    if (showToast) {
+      showToast("✨ Đã đặt kích thước ảnh 50% ngang hàng! Bấm tương tự cho ảnh kế tiếp để 2 ảnh nằm cạnh nhau.");
+    }
+  };
+
   // Lắng nghe click vào ảnh để bật thanh điều khiển kích thước ảnh
   const handleEditorClick = (e) => {
     const target = e.target;
@@ -682,12 +839,22 @@ export default function AdminProjectArticleEditor({
 
   const handleSetImageSize = (sizePercent) => {
     if (!selectedImgEl) return;
+    if (sizePercent === "50%") {
+      handleSetTwoImagesLayout();
+      return;
+    }
     selectedImgEl.style.width = sizePercent;
     selectedImgEl.style.maxWidth = "100%";
     selectedImgEl.style.height = "auto";
-    if (!selectedImgEl.style.margin) {
-      selectedImgEl.style.margin = "16px auto";
-      selectedImgEl.style.display = "block";
+    selectedImgEl.style.display = "block";
+    selectedImgEl.style.margin = "16px auto";
+    selectedImgEl.style.float = "none";
+    const parentFig = selectedImgEl.closest("figure");
+    if (parentFig) {
+      parentFig.style.display = "block";
+      parentFig.style.width = "100%";
+      parentFig.style.maxWidth = "100%";
+      parentFig.style.margin = "24px auto";
     }
     setSelectedImgSize(sizePercent);
     setTimeout(() => {
@@ -925,12 +1092,35 @@ export default function AdminProjectArticleEditor({
             <div className="toolbar-group highlight-tools">
               <button
                 type="button"
-                onClick={() => setShowImageInserter(!showImageInserter)}
-                className={`tool-btn-highlight ${showImageInserter ? "active" : ""}`}
+                onClick={() => {
+                  setShowLinkPopover(false);
+                  setInserterLayoutMode("single");
+                  setShowImageInserter(!showImageInserter || inserterLayoutMode !== "single");
+                }}
+                className={`tool-btn-highlight ${showImageInserter && inserterLayoutMode === "single" ? "active" : ""}`}
                 title="Chèn hình ảnh thi công kèm chú thích vào bài"
               >
                 <ImageIcon size={16} />
                 <strong>📷 Chèn ảnh vào bài</strong>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setShowLinkPopover(false);
+                  setInserterLayoutMode("two_cols");
+                  setShowImageInserter(true);
+                }}
+                className={`tool-btn-highlight ${showImageInserter && inserterLayoutMode === "two_cols" ? "active" : ""}`}
+                title="Chèn 2 hình ảnh ngang hàng song song cạnh nhau vào bài viết"
+                style={{
+                  background: showImageInserter && inserterLayoutMode === "two_cols" ? "#10b981" : "rgba(16, 185, 129, 0.2)",
+                  borderColor: "#10b981",
+                  color: showImageInserter && inserterLayoutMode === "two_cols" ? "#ffffff" : "#10b981"
+                }}
+              >
+                <Columns2 size={16} />
+                <strong>2 ảnh ngang hàng</strong>
               </button>
 
               <button
@@ -980,12 +1170,20 @@ export default function AdminProjectArticleEditor({
             </div>
           </div>
 
-          {/* KHUNG CHÈN ẢNH NHANH (POPOVER INSERTER) */}
+          {/* KHUNG CHÈN ẢNH NHANH (POPOVER INSERTER - 1 ẢNH HOẶC 2 ẢNH NGANG HÀNG) */}
           {showImageInserter && (
             <div className="image-inserter-popover">
               <div className="inserter-header">
                 <h5>
-                  <ImageIcon size={16} color="#10b981" /> Chèn hình ảnh thi công thực tế vào bài viết
+                  {inserterLayoutMode === "two_cols" ? (
+                    <>
+                      <Columns2 size={16} color="#10b981" /> Chèn 2 hình ảnh ngang hàng (song song cạnh nhau)
+                    </>
+                  ) : (
+                    <>
+                      <ImageIcon size={16} color="#10b981" /> Chèn hình ảnh thi công thực tế vào bài viết
+                    </>
+                  )}
                 </h5>
                 <button
                   type="button"
@@ -996,76 +1194,242 @@ export default function AdminProjectArticleEditor({
                 </button>
               </div>
 
+              {/* THANH CHỌN BỐ CỤC: 1 ẢNH ĐƠN HOẶC 2 ẢNH NGANG HÀNG */}
+              <div
+                style={{
+                  display: "flex",
+                  gap: "8px",
+                  marginBottom: "14px",
+                  background: "rgba(15, 23, 42, 0.65)",
+                  padding: "4px",
+                  borderRadius: "8px",
+                  border: "1px solid rgba(255, 255, 255, 0.08)"
+                }}
+              >
+                <button
+                  type="button"
+                  onClick={() => setInserterLayoutMode("single")}
+                  style={{
+                    flex: 1,
+                    padding: "8px 12px",
+                    border: "none",
+                    borderRadius: "6px",
+                    cursor: "pointer",
+                    fontWeight: 600,
+                    fontSize: "0.85rem",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "6px",
+                    background: inserterLayoutMode === "single" ? "#10b981" : "transparent",
+                    color: inserterLayoutMode === "single" ? "#ffffff" : "#94a3b8",
+                    transition: "all 0.2s ease"
+                  }}
+                >
+                  <ImageIcon size={14} /> 1 ảnh đơn (Căn giữa / Toàn dòng)
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setInserterLayoutMode("two_cols")}
+                  style={{
+                    flex: 1,
+                    padding: "8px 12px",
+                    border: "none",
+                    borderRadius: "6px",
+                    cursor: "pointer",
+                    fontWeight: 600,
+                    fontSize: "0.85rem",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "6px",
+                    background: inserterLayoutMode === "two_cols" ? "#10b981" : "transparent",
+                    color: inserterLayoutMode === "two_cols" ? "#ffffff" : "#94a3b8",
+                    transition: "all 0.2s ease"
+                  }}
+                >
+                  <Columns2 size={14} /> 2 ảnh ngang hàng (Song song 50% - 50%)
+                </button>
+              </div>
+
               <div className="inserter-body">
-                <div className="inserter-row">
-                  <div className="inserter-field flex-2">
-                    <label>Đường dẫn ảnh (URL hoặc chọn từ máy):</label>
-                    <div style={{ display: "flex", gap: "8px" }}>
-                      <input
-                        type="text"
-                        value={insertImageUrl}
-                        onChange={(e) => setInsertImageUrl(e.target.value)}
-                        placeholder="Dán link URL ảnh tại đây hoặc bấm nút Chọn ảnh..."
-                        style={{ flex: 1 }}
-                      />
-                      <label className="btn-inserter-upload">
-                        {isUploadingInsertImg ? (
-                          <>
-                            <Loader2 size={15} className="spin" />
-                            <span>Đang tải...</span>
-                          </>
-                        ) : (
-                          <>
-                            <Upload size={15} />
-                            <span>Chọn ảnh từ máy</span>
-                          </>
-                        )}
+                {/* 1. CHẾ ĐỘ 1 ẢNH ĐƠN */}
+                {inserterLayoutMode === "single" && (
+                  <>
+                    <div className="inserter-row">
+                      <div className="inserter-field flex-2">
+                        <label>Đường dẫn ảnh (URL hoặc chọn từ máy):</label>
+                        <div style={{ display: "flex", gap: "8px" }}>
+                          <input
+                            type="text"
+                            value={insertImageUrl}
+                            onChange={(e) => setInsertImageUrl(e.target.value)}
+                            placeholder="Dán link URL ảnh tại đây hoặc bấm nút Chọn ảnh..."
+                            style={{ flex: 1 }}
+                          />
+                          <label className="btn-inserter-upload">
+                            {isUploadingInsertImg ? (
+                              <>
+                                <Loader2 size={15} className="spin" />
+                                <span>Đang tải...</span>
+                              </>
+                            ) : (
+                              <>
+                                <Upload size={15} />
+                                <span>Chọn ảnh từ máy</span>
+                              </>
+                            )}
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={handleUploadInsertImage}
+                              disabled={isUploadingInsertImg}
+                              style={{ display: "none" }}
+                            />
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="inserter-row">
+                      <div className="inserter-field">
+                        <label>Dòng chú thích ảnh (Hiển thị ngay dưới chân ảnh):</label>
                         <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleUploadInsertImage}
-                          disabled={isUploadingInsertImg}
-                          style={{ display: "none" }}
+                          type="text"
+                          value={insertImageCaption}
+                          onChange={(e) => setInsertImageCaption(e.target.value)}
+                          placeholder="Ví dụ: Hình ảnh: Đội ngũ kỹ thuật viên đang lắp đặt ray nhôm dẫn hướng"
                         />
-                      </label>
+                      </div>
                     </div>
-                  </div>
-                </div>
 
-                <div className="inserter-row">
-                  <div className="inserter-field">
-                    <label>Dòng chú thích ảnh (Hiển thị ngay dưới chân ảnh):</label>
-                    <input
-                      type="text"
-                      value={insertImageCaption}
-                      onChange={(e) => setInsertImageCaption(e.target.value)}
-                      placeholder="Ví dụ: Hình ảnh: Đội ngũ kỹ thuật viên đang lắp đặt ray nhôm dẫn hướng"
-                    />
-                  </div>
-                </div>
-
-                <div className="inserter-row">
-                  <div className="inserter-field">
-                    <label>Kích thước hiển thị của ảnh khi ra web:</label>
-                    <div className="img-insert-size-presets">
-                      {["100%", "80%", "60%", "40%"].map((sz) => (
-                        <button
-                          key={sz}
-                          type="button"
-                          className={`size-preset-pill ${insertImgWidth === sz ? "active" : ""}`}
-                          onClick={() => setInsertImgWidth(sz)}
-                        >
-                          {sz === "100%" ? "Toàn khung (100%)" : sz === "80%" ? "Lớn (80%)" : sz === "60%" ? "Vừa (60%)" : "Nhỏ (40%)"}
-                        </button>
-                      ))}
+                    <div className="inserter-row">
+                      <div className="inserter-field">
+                        <label>Kích thước hiển thị của ảnh khi ra web:</label>
+                        <div className="img-insert-size-presets">
+                          {["100%", "80%", "60%", "40%"].map((sz) => (
+                            <button
+                              key={sz}
+                              type="button"
+                              className={`size-preset-pill ${insertImgWidth === sz ? "active" : ""}`}
+                              onClick={() => setInsertImgWidth(sz)}
+                            >
+                              {sz === "100%" ? "Toàn khung (100%)" : sz === "80%" ? "Lớn (80%)" : sz === "60%" ? "Vừa (60%)" : "Nhỏ (40%)"}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
 
-                {insertImageUrl && (
-                  <div className="inserter-preview-box">
-                    <img src={insertImageUrl} alt="Xem trước ảnh chèn" />
-                    <span>{insertImageCaption || "Hình ảnh thi công thực tế tại công trình"}</span>
+                    {insertImageUrl && (
+                      <div className="inserter-preview-box">
+                        <img src={insertImageUrl} alt="Xem trước ảnh chèn" />
+                        <span>{insertImageCaption || "Hình ảnh thi công thực tế tại công trình"}</span>
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {/* 2. CHẾ ĐỘ 2 ẢNH NGANG HÀNG (SONG SONG 50% - 50%) */}
+                {inserterLayoutMode === "two_cols" && (
+                  <div className="two-images-inserter-cols">
+                    {/* CỘT ẢNH 1 - TRÁI */}
+                    <div className="two-images-col-card">
+                      <div className="two-images-col-title">
+                        <ImageIcon size={14} /> 1. Hình ảnh bên trái
+                      </div>
+                      <div>
+                        <label style={{ fontSize: "0.78rem", color: "#cbd5e1", display: "block", marginBottom: "6px" }}>Chọn ảnh từ máy:</label>
+                        <label className="btn-upload-file-label" style={{ width: "100%", boxSizing: "border-box" }}>
+                          <Upload size={14} />
+                          <span>{isUploadingInsertImg ? "Đang tải ảnh 1..." : "Tải ảnh 1 lên"}</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleUploadInsertImage}
+                            disabled={isUploadingInsertImg}
+                            style={{ display: "none" }}
+                          />
+                        </label>
+                      </div>
+                      <div>
+                        <label style={{ fontSize: "0.78rem", color: "#cbd5e1", display: "block", marginBottom: "4px" }}>Hoặc dán URL ảnh 1:</label>
+                        <input
+                          type="text"
+                          value={insertImageUrl}
+                          onChange={(e) => setInsertImageUrl(e.target.value)}
+                          placeholder="https://... hoặc /uploads/..."
+                          className="inserter-text-input"
+                          style={{ width: "100%", boxSizing: "border-box" }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ fontSize: "0.78rem", color: "#cbd5e1", display: "block", marginBottom: "4px" }}>Chú thích ảnh 1:</label>
+                        <input
+                          type="text"
+                          value={insertImageCaption}
+                          onChange={(e) => setInsertImageCaption(e.target.value)}
+                          placeholder="Ví dụ: Công trình lắp đặt cửa cuốn tại Hải Châu"
+                          className="inserter-text-input"
+                          style={{ width: "100%", boxSizing: "border-box" }}
+                        />
+                      </div>
+                      {insertImageUrl && (
+                        <div className="inserter-preview" style={{ maxHeight: "140px" }}>
+                          <img src={insertImageUrl} alt="Xem trước ảnh 1" style={{ maxHeight: "90px", objectFit: "cover" }} />
+                          <span className="preview-caption">{insertImageCaption || "Ảnh bên trái"}</span>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* CỘT ẢNH 2 - PHẢI */}
+                    <div className="two-images-col-card">
+                      <div className="two-images-col-title">
+                        <ImageIcon size={14} /> 2. Hình ảnh bên phải
+                      </div>
+                      <div>
+                        <label style={{ fontSize: "0.78rem", color: "#cbd5e1", display: "block", marginBottom: "6px" }}>Chọn ảnh từ máy:</label>
+                        <label className="btn-upload-file-label" style={{ width: "100%", boxSizing: "border-box" }}>
+                          <Upload size={14} />
+                          <span>{isUploadingInsertImg2 ? "Đang tải ảnh 2..." : "Tải ảnh 2 lên"}</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleUploadInsertImage2}
+                            disabled={isUploadingInsertImg2}
+                            style={{ display: "none" }}
+                          />
+                        </label>
+                      </div>
+                      <div>
+                        <label style={{ fontSize: "0.78rem", color: "#cbd5e1", display: "block", marginBottom: "4px" }}>Hoặc dán URL ảnh 2:</label>
+                        <input
+                          type="text"
+                          value={insertImgUrl2}
+                          onChange={(e) => setInsertImgUrl2(e.target.value)}
+                          placeholder="https://... hoặc /uploads/..."
+                          className="inserter-text-input"
+                          style={{ width: "100%", boxSizing: "border-box" }}
+                        />
+                      </div>
+                      <div>
+                        <label style={{ fontSize: "0.78rem", color: "#cbd5e1", display: "block", marginBottom: "4px" }}>Chú thích ảnh 2:</label>
+                        <input
+                          type="text"
+                          value={insertCaption2}
+                          onChange={(e) => setInsertCaption2(e.target.value)}
+                          placeholder="Ví dụ: Hoàn thiện nghiệm thu cửa cuốn bàn giao gia chủ"
+                          className="inserter-text-input"
+                          style={{ width: "100%", boxSizing: "border-box" }}
+                        />
+                      </div>
+                      {insertImgUrl2 && (
+                        <div className="inserter-preview" style={{ maxHeight: "140px" }}>
+                          <img src={insertImgUrl2} alt="Xem trước ảnh 2" style={{ maxHeight: "90px", objectFit: "cover" }} />
+                          <span className="preview-caption">{insertCaption2 || "Ảnh bên phải"}</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
 
@@ -1077,14 +1441,27 @@ export default function AdminProjectArticleEditor({
                   >
                     Hủy
                   </button>
-                  <button
-                    type="button"
-                    onClick={handleConfirmInsertImage}
-                    disabled={!insertImageUrl.trim() || isUploadingInsertImg}
-                    className="btn-inserter-confirm"
-                  >
-                    <Plus size={15} /> Chèn vào bài viết ngay
-                  </button>
+
+                  {inserterLayoutMode === "single" ? (
+                    <button
+                      type="button"
+                      onClick={handleConfirmInsertImage}
+                      disabled={!insertImageUrl.trim() || isUploadingInsertImg}
+                      className="btn-inserter-confirm"
+                    >
+                      <CheckCircle2 size={15} /> Chèn vào vị trí con trỏ
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleConfirmInsertTwoImages}
+                      disabled={!insertImageUrl.trim() && !insertImgUrl2.trim()}
+                      className="btn-inserter-confirm"
+                      style={{ background: "linear-gradient(135deg, #059669 0%, #10b981 100%)" }}
+                    >
+                      <Columns2 size={15} /> Chèn 2 ảnh ngang hàng vào bài
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -1327,7 +1704,7 @@ export default function AdminProjectArticleEditor({
                   <span>📐 Cỡ ảnh:</span>
                 </div>
                 <div className="img-size-buttons">
-                  {["35%", "60%", "80%", "100%"].map((sz) => (
+                  {["35%", "50%", "70%", "100%"].map((sz) => (
                     <button
                       key={sz}
                       type="button"
@@ -1338,6 +1715,24 @@ export default function AdminProjectArticleEditor({
                     </button>
                   ))}
                 </div>
+                <button
+                  type="button"
+                  className={`size-pill-btn ${selectedImgSize === "50%" ? "active" : ""}`}
+                  onClick={handleSetTwoImagesLayout}
+                  title="Xếp 2 ảnh nằm ngang hàng cạnh nhau (50% - 50%)"
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "4px",
+                    background: selectedImgSize === "50%" ? "#10b981" : "rgba(16, 185, 129, 0.2)",
+                    color: selectedImgSize === "50%" ? "#ffffff" : "#10b981",
+                    border: "1px solid rgba(16, 185, 129, 0.4)",
+                    padding: "3px 8px"
+                  }}
+                >
+                  <Columns2 size={12} />
+                  <span>2 ảnh ngang (50%)</span>
+                </button>
                 <div className="img-adjust-group">
                   <button type="button" className="img-btn-adjust" onClick={() => handleStepImageSize(-10)} title="Thu nhỏ 10%"><Minus size={13} /></button>
                   <span className="img-current-percent">{selectedImgEl.style.width || "100%"}</span>

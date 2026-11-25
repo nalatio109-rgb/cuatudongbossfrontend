@@ -1064,4 +1064,64 @@
   }
 }
 
+/* ================= 2-COLUMN SIDE-BY-SIDE IMAGES (2 ẢNH NGANG HÀNG) ================= */
+.service-images-row-2col,
+.article-two-images-row {
+  display: flex;
+  gap: 16px;
+  margin: 24px 0;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.service-images-row-2col figure,
+.service-images-row-2col .project-article-figure,
+.article-two-images-row figure,
+.article-two-images-row .project-article-figure {
+  flex: 1 1 calc(50% - 10px);
+  min-width: 250px;
+  max-width: calc(50% - 8px);
+  margin: 0 !important;
+  display: block !important;
+  box-sizing: border-box;
+}
+
+.service-images-row-2col img,
+.article-two-images-row img {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+  border: 1px solid #cbd5e1;
+  display: block;
+  margin: 0 auto;
+  object-fit: cover;
+}
+
+@media (max-width: 640px) {
+  .service-images-row-2col,
+  .article-two-images-row {
+    flex-direction: column;
+    gap: 14px;
+  }
+  .service-images-row-2col figure,
+  .service-images-row-2col .project-article-figure,
+  .article-two-images-row figure,
+  .article-two-images-row .project-article-figure {
+    flex: 1 1 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
+  }
+  .news-detail-content img[style*="50%"],
+  .project-article-rendered-content img[style*="50%"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: block !important;
+    margin: 12px auto !important;
+  }
+}
+
+
 

@@ -1008,8 +1008,77 @@ a.project-article-link:hover {
   color: white;
 }
 
+/* ================= 2-COLUMN SIDE-BY-SIDE IMAGES (2 ẢNH NGANG HÀNG) ================= */
+.service-images-row-2col,
+.article-two-images-row {
+  display: flex;
+  gap: 16px;
+  margin: 24px 0;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.service-images-row-2col figure,
+.service-images-row-2col .project-article-figure,
+.article-two-images-row figure,
+.article-two-images-row .project-article-figure {
+  flex: 1 1 calc(50% - 10px);
+  min-width: 250px;
+  max-width: calc(50% - 8px);
+  margin: 0 !important;
+  display: block !important;
+  box-sizing: border-box;
+}
+
+.service-images-row-2col img,
+.article-two-images-row img {
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+  border: 1px solid #cbd5e1;
+  display: block;
+  margin: 0 auto;
+  object-fit: cover;
+}
+
+.two-images-inserter-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 10px 0;
+}
+
+.two-images-col-card {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  border-radius: 10px;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.two-images-col-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #10b981;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
 /* ================= RESPONSIVE ================= */
 @media (max-width: 768px) {
+  .two-images-inserter-cols {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
   .article-wysiwyg-wrapper,
   .preview-article-canvas {
     padding: 16px 14px;
@@ -1024,6 +1093,29 @@ a.project-article-link:hover {
   .btn-load-sample {
     width: 100%;
     justify-content: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .service-images-row-2col,
+  .article-two-images-row {
+    flex-direction: column;
+    gap: 14px;
+  }
+  .service-images-row-2col figure,
+  .service-images-row-2col .project-article-figure,
+  .article-two-images-row figure,
+  .article-two-images-row .project-article-figure {
+    flex: 1 1 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
+  }
+  .article-content-editable img[style*="50%"],
+  .project-article-rendered-content img[style*="50%"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: block !important;
+    margin: 12px auto !important;
   }
 }
 
