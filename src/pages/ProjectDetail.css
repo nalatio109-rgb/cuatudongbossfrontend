@@ -549,11 +549,22 @@ a.project-article-link:hover {
 
 @media (max-width: 768px) {
   .project-article-body-wrapper {
-    padding: 1.5rem 1rem;
+    padding: 1.2rem 0.85rem;
+  }
+  .project-article-rendered-content {
+    font-size: 0.9rem !important;
+    line-height: 1.68 !important;
+  }
+  .project-article-rendered-content p {
+    font-size: 0.9rem !important;
+    line-height: 1.68 !important;
+    margin-bottom: 0.85rem !important;
   }
   .project-article-rendered-content h2,
   .project-article-rendered-content h3 {
-    font-size: 1.2rem;
+    font-size: 1.08rem !important;
+    line-height: 1.4 !important;
+    margin: 1.15rem 0 0.45rem !important;
   }
 }
 

@@ -209,23 +209,12 @@ const ServiceDetail = () => {
 
           <h1 className="news-detail-title">{serviceItem.title}</h1>
 
-          <div className="news-detail-meta" style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+          <div className="news-detail-meta service-detail-meta">
             <span className="news-date">
               <Calendar size={18} /> {serviceItem.date || 'Cập nhật mới'}
             </span>
-            <a
-              href={`tel:${phoneCall}`}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                color: '#dc2626',
-                fontWeight: 700,
-                fontSize: '0.9rem',
-                textDecoration: 'none'
-              }}
-            >
-              <Phone size={16} /> Hotline: {serviceItem.phone || '0904.678.323'}
+            <a href={`tel:${phoneCall}`} className="service-meta-hotline">
+              <Phone size={15} /> Hotline: {serviceItem.phone || '0904.678.323'}
             </a>
           </div>
 
@@ -236,19 +225,7 @@ const ServiceDetail = () => {
           )}
 
           {serviceItem.desc && (
-            <div
-              style={{
-                background: '#f8fafc',
-                borderLeft: '4px solid #043c23',
-                padding: '16px 20px',
-                margin: '20px 0 28px 0',
-                borderRadius: '0 8px 8px 0',
-                color: '#1e293b',
-                fontSize: '1.02rem',
-                lineHeight: 1.7,
-                fontWeight: 500
-              }}
-            >
+            <div className="service-detail-lead-desc">
               {serviceItem.desc}
             </div>
           )}
@@ -258,7 +235,7 @@ const ServiceDetail = () => {
               <div dangerouslySetInnerHTML={{ __html: serviceItem.content }} />
             ) : (
               (serviceItem.content || '').split('\n').map((line, idx) => (
-                <p key={idx} style={{ lineHeight: 1.8, marginBottom: '14px', color: '#334155' }}>
+                <p key={idx} className="service-detail-plain-p">
                   {line}
                 </p>
               ))
@@ -266,65 +243,25 @@ const ServiceDetail = () => {
           </div>
 
           {/* BOX LIÊN HỆ CỨU HỘ & BẢO TRÌ NHANH */}
-          <div
-            style={{
-              marginTop: '3rem',
-              padding: '24px',
-              background: 'linear-gradient(135deg, #043c23 0%, #065f46 100%)',
-              color: '#ffffff',
-              borderRadius: '14px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              flexWrap: 'wrap',
-              gap: '16px',
-              boxShadow: '0 10px 25px rgba(4, 60, 35, 0.25)'
-            }}
-          >
-            <div>
-              <h4 style={{ margin: '0 0 6px 0', fontSize: '1.2rem', color: '#f5bd20', fontWeight: 800 }}>
+          <div className="service-detail-cta-box">
+            <div className="cta-box-text">
+              <h4 className="cta-box-title">
                 CẦN HỖ TRỢ KỸ THUẬT & BÁO GIÁ NHANH?
               </h4>
-              <p style={{ margin: 0, fontSize: '0.92rem', color: '#e2e8f0' }}>
+              <p className="cta-box-desc">
                 Đội ngũ kỹ thuật viên BOSS Đà Nẵng sẵn sàng có mặt sau 15 – 30 phút trên toàn địa bàn.
               </p>
             </div>
 
-            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-              <a
-                href={`tel:${phoneCall}`}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  padding: '10px 22px',
-                  background: '#dc2626',
-                  color: '#ffffff',
-                  fontWeight: 700,
-                  borderRadius: '8px',
-                  textDecoration: 'none',
-                  fontSize: '0.92rem',
-                  boxShadow: '0 4px 12px rgba(220, 38, 38, 0.35)'
-                }}
-              >
+            <div className="cta-box-btns">
+              <a href={`tel:${phoneCall}`} className="cta-btn-call">
                 <Phone size={16} /> GỌI THỢ NGAY: {serviceItem.phone || '0904.678.323'}
               </a>
               <a
                 href="https://zalo.me/0904678323"
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  padding: '10px 20px',
-                  background: '#ffffff',
-                  color: '#043c23',
-                  fontWeight: 700,
-                  borderRadius: '8px',
-                  textDecoration: 'none',
-                  fontSize: '0.92rem'
-                }}
+                className="cta-btn-zalo"
               >
                 💬 Zalo tư vấn
               </a>
@@ -334,7 +271,7 @@ const ServiceDetail = () => {
 
         {/* 4. CÁC DỊCH VỤ LIÊN QUAN */}
         {relatedServices.length > 0 && (
-          <div className="container news-related-wrapper" style={{ marginTop: '3.5rem' }}>
+          <div className="container news-related-wrapper">
             <section className="related-news-section">
               <RevealOnScroll animation="fade-up">
                 <div className="related-news-header">

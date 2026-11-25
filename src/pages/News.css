@@ -317,7 +317,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   4. NEWS DETAIL PAGE (DESKTOP - GIỮ NGUYÊN 100%)
+   4. NEWS DETAIL & SERVICE DETAIL PAGE (DESKTOP - GIỮ NGUYÊN 100%)
    -------------------------------------------------------------------------- */
 .news-detail-main {
   padding: 60px 0;
@@ -377,6 +377,181 @@
   flex-shrink: 0;
 }
 
+/* Service Detail Header Elements (Desktop) */
+.service-detail-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+
+.service-meta-hotline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #dc2626;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.service-meta-hotline:hover {
+  color: #b91c1c;
+  text-decoration: underline;
+}
+
+.service-detail-lead-desc {
+  background: #f8fafc;
+  border-left: 4px solid #043c23;
+  padding: 16px 20px;
+  margin: 20px 0 28px 0;
+  border-radius: 0 8px 8px 0;
+  color: #1e293b;
+  font-size: 1.02rem;
+  line-height: 1.7;
+  font-weight: 500;
+}
+
+.service-detail-plain-p {
+  line-height: 1.8;
+  margin-bottom: 14px;
+  color: #334155;
+}
+
+/* Service Detail CTA Hotline Box (Desktop) */
+.service-detail-cta-box {
+  margin-top: 3rem;
+  padding: 24px;
+  background: linear-gradient(135deg, #043c23 0%, #065f46 100%);
+  color: #ffffff;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  box-shadow: 0 10px 25px rgba(4, 60, 35, 0.25);
+}
+
+.cta-box-title {
+  margin: 0 0 6px 0;
+  font-size: 1.2rem;
+  color: #f5bd20;
+  font-weight: 800;
+}
+
+.cta-box-desc {
+  margin: 0;
+  font-size: 0.92rem;
+  color: #e2e8f0;
+}
+
+.cta-box-btns {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.cta-btn-call {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  background: #dc2626;
+  color: #ffffff;
+  font-weight: 700;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 0.92rem;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.35);
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.cta-btn-call:hover {
+  background: #b91c1c;
+  transform: translateY(-2px);
+}
+
+.cta-btn-zalo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #ffffff;
+  color: #043c23;
+  font-weight: 700;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 0.92rem;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.cta-btn-zalo:hover {
+  background: #f1f5f9;
+  transform: translateY(-2px);
+}
+
+/* Service Detail Related Cards info */
+.related-news-info {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.related-news-item-title {
+  font-size: 1.05rem;
+  font-weight: 750;
+  color: #1e293b;
+  line-height: 1.45;
+  margin: 0 0 8px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.related-news-item-title a {
+  color: #1e293b;
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+
+.related-news-item-title a:hover {
+  color: #07522f;
+}
+
+.related-news-excerpt {
+  font-size: 0.88rem;
+  color: #64748b;
+  line-height: 1.55;
+  margin: 0 0 14px 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  flex: 1;
+}
+
+.related-news-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.88rem;
+  color: #07522f;
+  font-weight: 700;
+  margin-top: auto;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.related-news-link:hover {
+  gap: 10px;
+  color: #10b981;
+}
+
 .news-detail-image {
   margin-bottom: 30px;
   border-radius: 12px;
@@ -427,32 +602,38 @@
 }
 
 /* --------------------------------------------------------------------------
-   5. MOBILE TYPOGRAPHY & LAYOUT - TINH CHỈNH DỄ NHÌN, VỪA VẶN MÀN HÌNH ĐIỆN THOẠI
+   5. MOBILE TYPOGRAPHY & LAYOUT - CỠ CHỮ NHỎ GỌN, DỄ ĐỌC, ĐẸP MẮT TRÊN ĐIỆN THOẠI
    -------------------------------------------------------------------------- */
 @media (max-width: 768px) {
   /* 1. Header Banner */
   .news-top-banner {
-    min-height: 150px;
-    padding: 2.2rem 1rem;
+    min-height: 115px !important;
+    padding: 1.4rem 1rem !important;
   }
   .news-banner-text h1 {
-    font-size: 1.45rem;
+    font-size: 1.22rem !important;
     letter-spacing: 0.2px;
-    margin-bottom: 6px;
-    line-height: 1.3;
+    margin-bottom: 4px !important;
+    line-height: 1.32 !important;
   }
   .news-banner-text p {
-    font-size: 0.84rem;
-    line-height: 1.5;
+    font-size: 0.78rem !important;
+    line-height: 1.45 !important;
+    max-width: 420px;
+    margin: 0 auto;
   }
 
   /* 2. Breadcrumb */
   .news-breadcrumb {
-    padding: 9px 0;
-    font-size: 0.8rem;
+    padding: 7px 0 !important;
+    font-size: 0.75rem !important;
+  }
+  .news-breadcrumb a {
+    font-size: 0.75rem !important;
   }
   .news-breadcrumb .current-page {
-    max-width: 160px;
+    font-size: 0.75rem !important;
+    max-width: 130px !important;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -462,135 +643,303 @@
 
   /* 3. News List Page */
   .site293-main-content.section-space {
-    padding: 1.8rem 0 3rem;
+    padding: 1.4rem 0 2.4rem !important;
   }
   .news-title-box {
-    margin-bottom: 1.4rem;
+    margin-bottom: 1.2rem;
   }
   .news-title-box h2 {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
     letter-spacing: 0.2px;
-    margin-bottom: 6px;
+    margin-bottom: 5px;
   }
   .title-underline {
-    width: 65px;
+    width: 55px;
     height: 3px;
   }
   .news-page-grid {
-    gap: 1.2rem;
+    gap: 1.1rem;
   }
   .news-img-wrap {
-    height: 185px;
+    height: 170px;
   }
   .news-date-badge {
-    font-size: 0.72rem;
-    padding: 4px 10px;
+    font-size: 0.7rem;
+    padding: 3px 8px;
   }
   .news-card-content {
-    padding: 1.1rem 1rem;
+    padding: 0.95rem 0.9rem;
   }
   .news-card-title a {
-    font-size: 1.02rem;
+    font-size: 0.95rem;
     font-weight: 750;
-    line-height: 1.4;
+    line-height: 1.38;
     color: #043c23;
   }
   .news-card-summary {
-    font-size: 0.88rem;
-    line-height: 1.55;
+    font-size: 0.82rem;
+    line-height: 1.52;
     color: #475569;
-    margin-bottom: 1rem;
+    margin-bottom: 0.85rem;
     -webkit-line-clamp: 3;
   }
   .btn-news-readmore {
-    font-size: 0.88rem;
+    font-size: 0.82rem;
     font-weight: 750;
     color: #043c23;
   }
 
-  /* 4. News Detail Mobile Typography */
+  /* 4. News & Service Detail Mobile Typography (Nhỏ gọn, thoáng, dễ đọc) */
   .news-detail-main {
-    padding: 24px 0 45px !important;
+    padding: 16px 0 35px !important;
+  }
+  .news-detail-container {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
   }
   .back-link {
-    font-size: 0.86rem;
-    margin-bottom: 14px;
-    gap: 4px;
+    font-size: 0.78rem !important;
+    margin-bottom: 12px !important;
+    gap: 4px !important;
+    padding: 4px 10px !important;
+    background: rgba(1, 148, 68, 0.08) !important;
+    border-radius: 6px !important;
+    display: inline-flex !important;
+  }
+  .back-link svg {
+    width: 13px !important;
+    height: 13px !important;
   }
   .news-detail-title {
-    font-size: 1.35rem;
-    font-weight: 850;
-    line-height: 1.4;
-    color: #0f172a;
-    margin-bottom: 10px;
+    font-size: 1.18rem !important;
+    font-weight: 800 !important;
+    line-height: 1.38 !important;
+    color: #0f172a !important;
+    margin-bottom: 10px !important;
     letter-spacing: -0.2px;
   }
-  .news-detail-meta {
-    font-size: 0.98rem;
-    margin-bottom: 18px;
-    gap: 12px;
+  .news-detail-meta,
+  .service-detail-meta {
+    font-size: 0.78rem !important;
+    margin-bottom: 14px !important;
+    gap: 8px 12px !important;
   }
   .news-detail-meta .news-date {
-    font-size: 0.98rem;
-    gap: 7px;
+    font-size: 0.78rem !important;
+    gap: 5px !important;
   }
   .news-detail-meta .news-date svg {
-    width: 17px;
-    height: 17px;
+    width: 14px !important;
+    height: 14px !important;
+  }
+  .service-meta-hotline {
+    font-size: 0.78rem !important;
+    gap: 4px !important;
+    background: #fef2f2 !important;
+    padding: 3px 8px !important;
+    border-radius: 5px !important;
+    border: 1px solid #fee2e2 !important;
+  }
+  .service-meta-hotline svg {
+    width: 13px !important;
+    height: 13px !important;
   }
   .news-detail-image {
-    margin-bottom: 20px;
-    border-radius: 10px;
+    margin-bottom: 16px !important;
+    border-radius: 8px !important;
   }
-  .news-detail-content {
-    font-size: 0.98rem;
-    line-height: 1.72;
-    color: #334155;
+  .service-detail-lead-desc {
+    padding: 10px 12px !important;
+    margin: 12px 0 16px 0 !important;
+    font-size: 0.86rem !important;
+    line-height: 1.58 !important;
+    border-left-width: 3px !important;
+    border-radius: 0 6px 6px 0 !important;
+  }
+
+  /* Body Content: Form chữ chuẩn mobile (14.5px), khoảng cách dòng mượt */
+  .news-detail-content,
+  .project-article-rendered-content {
+    font-size: 0.9rem !important;
+    line-height: 1.68 !important;
+    color: #334155 !important;
+    word-break: break-word;
+  }
+  .news-detail-content p,
+  .project-article-rendered-content p,
+  .service-detail-plain-p {
+    font-size: 0.9rem !important;
+    line-height: 1.68 !important;
+    margin-bottom: 0.85rem !important;
+    color: #334155 !important;
+  }
+  .news-detail-content h1,
+  .project-article-rendered-content h1 {
+    font-size: 1.15rem !important;
+    font-weight: 800 !important;
+    margin: 1.2rem 0 0.45rem !important;
+    line-height: 1.38 !important;
+    color: #043c23 !important;
   }
   .news-detail-content h2,
-  .news-detail-content h3 {
-    font-size: 1.15rem;
-    font-weight: 800;
-    margin: 1.4rem 0 0.5rem;
-    line-height: 1.45;
-    color: #043c23;
+  .project-article-rendered-content h2 {
+    font-size: 1.08rem !important;
+    font-weight: 800 !important;
+    margin: 1.15rem 0 0.45rem !important;
+    line-height: 1.4 !important;
+    color: #043c23 !important;
+    padding-bottom: 4px !important;
+    border-bottom: 1.5px solid #e2e8f0 !important;
   }
-  .news-detail-content p {
-    margin-bottom: 1rem;
-    font-size: 0.98rem;
-    line-height: 1.72;
+  .news-detail-content h3,
+  .project-article-rendered-content h3 {
+    font-size: 1.02rem !important;
+    font-weight: 800 !important;
+    margin: 1.1rem 0 0.4rem !important;
+    line-height: 1.4 !important;
+    color: #043c23 !important;
+  }
+  .news-detail-content h4,
+  .project-article-rendered-content h4 {
+    font-size: 0.95rem !important;
+    font-weight: 750 !important;
+    margin: 0.9rem 0 0.35rem !important;
+    line-height: 1.4 !important;
+    color: #0f172a !important;
   }
   .news-detail-content ul,
-  .news-detail-content ol {
-    padding-left: 1.2rem;
-    margin-bottom: 1rem;
-    font-size: 0.95rem;
-    line-height: 1.65;
+  .news-detail-content ol,
+  .project-article-rendered-content ul,
+  .project-article-rendered-content ol {
+    padding-left: 1.15rem !important;
+    margin-bottom: 0.85rem !important;
+    font-size: 0.88rem !important;
+    line-height: 1.62 !important;
   }
-  .news-detail-content li {
-    margin-bottom: 0.4rem;
+  .news-detail-content li,
+  .project-article-rendered-content li {
+    margin-bottom: 0.35rem !important;
+    line-height: 1.6 !important;
+  }
+  .news-detail-content strong,
+  .project-article-rendered-content strong {
+    font-weight: 750 !important;
+    color: #0f172a !important;
+  }
+  .news-detail-content a,
+  .project-article-rendered-content a {
+    font-size: inherit !important;
+    color: #0284c7 !important;
+    text-decoration: underline !important;
+  }
+  .news-detail-content figure,
+  .project-article-rendered-content figure,
+  .news-detail-content .project-article-figure,
+  .project-article-rendered-content .project-article-figure {
+    margin: 1.1rem 0 !important;
+  }
+  .news-detail-content img,
+  .project-article-rendered-content img {
+    max-width: 100% !important;
+    height: auto !important;
+    border-radius: 8px !important;
+    margin: 0.6rem auto !important;
+    display: block !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06) !important;
+  }
+  .news-detail-content figcaption,
+  .project-article-rendered-content figcaption {
+    margin-top: 6px !important;
+    font-size: 0.78rem !important;
+    color: #64748b !important;
+    font-style: italic !important;
+    text-align: center !important;
+    line-height: 1.4 !important;
+  }
+
+  /* Bảng trong bài viết hiển thị thanh cuộn mượt không bị vỡ giao diện */
+  .news-detail-content table,
+  .project-article-rendered-content table,
+  .project-specs-table {
+    display: block !important;
+    width: 100% !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    font-size: 0.78rem !important;
+    margin: 1rem 0 !important;
+    border-radius: 6px !important;
+  }
+  .news-detail-content th,
+  .news-detail-content td,
+  .project-article-rendered-content th,
+  .project-article-rendered-content td {
+    padding: 6px 9px !important;
+    font-size: 0.76rem !important;
+    white-space: nowrap !important;
+  }
+
+  /* Khung CTA Hotline Dịch Vụ trên điện thoại */
+  .service-detail-cta-box {
+    margin-top: 1.8rem !important;
+    padding: 14px 12px !important;
+    border-radius: 10px !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+  }
+  .cta-box-title {
+    font-size: 0.98rem !important;
+    margin-bottom: 3px !important;
+  }
+  .cta-box-desc {
+    font-size: 0.78rem !important;
+    line-height: 1.42 !important;
+  }
+  .cta-box-btns {
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 8px !important;
+  }
+  .cta-btn-call,
+  .cta-btn-zalo {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 8.5px 14px !important;
+    font-size: 0.8rem !important;
+    border-radius: 7px !important;
   }
 }
 
 @media (max-width: 380px) {
   .news-banner-text h1 {
-    font-size: 1.25rem;
+    font-size: 1.15rem !important;
   }
   .news-title-box h2 {
-    font-size: 1.18rem;
+    font-size: 1.12rem !important;
   }
   .news-detail-title {
-    font-size: 1.22rem;
+    font-size: 1.08rem !important;
   }
   .news-card-title a {
-    font-size: 0.96rem;
+    font-size: 0.9rem !important;
   }
   .news-card-summary {
-    font-size: 0.85rem;
+    font-size: 0.78rem !important;
   }
   .news-detail-content,
-  .news-detail-content p {
-    font-size: 0.94rem;
+  .project-article-rendered-content,
+  .news-detail-content p,
+  .project-article-rendered-content p,
+  .service-detail-plain-p {
+    font-size: 0.86rem !important;
+  }
+  .news-detail-content h2,
+  .project-article-rendered-content h2 {
+    font-size: 1.02rem !important;
+  }
+  .news-detail-content h3,
+  .project-article-rendered-content h3 {
+    font-size: 0.96rem !important;
   }
 }
 
@@ -824,22 +1173,89 @@
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
+  .news-related-wrapper {
+    padding: 0 14px !important;
+  }
   .related-news-section {
-    margin-top: 2rem;
-    padding-top: 1.5rem;
+    margin-top: 2rem !important;
+    padding-top: 1.5rem !important;
+  }
+  .related-news-header {
+    margin-bottom: 1.2rem !important;
+    gap: 8px !important;
   }
   .related-news-title {
-    font-size: 1.3rem;
+    font-size: 1.15rem !important;
+    letter-spacing: -0.2px !important;
   }
   .related-news-desc {
-    font-size: 0.85rem;
+    font-size: 0.78rem !important;
+    line-height: 1.45 !important;
+  }
+  .related-news-view-all {
+    font-size: 0.78rem !important;
+    padding: 6px 12px !important;
+    border-radius: 6px !important;
   }
   .related-news-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+    grid-template-columns: 1fr !important;
+    gap: 0.9rem !important;
+  }
+  .related-news-card {
+    border-radius: 10px !important;
   }
   .related-news-img-holder {
-    height: 180px;
+    height: 155px !important;
+  }
+  .related-news-badge {
+    font-size: 0.68rem !important;
+    padding: 3px 7px !important;
+    top: 8px !important;
+    left: 8px !important;
+  }
+  .related-news-card-body,
+  .related-news-info {
+    padding: 0.85rem 0.95rem !important;
+  }
+  .related-news-date {
+    font-size: 0.74rem !important;
+    margin-bottom: 5px !important;
+  }
+  .related-news-card-title,
+  .related-news-item-title {
+    font-size: 0.92rem !important;
+    line-height: 1.38 !important;
+    margin-bottom: 6px !important;
+  }
+  .related-news-card-title a,
+  .related-news-item-title a {
+    font-size: 0.92rem !important;
+  }
+  .related-news-card-summary,
+  .related-news-excerpt {
+    font-size: 0.8rem !important;
+    line-height: 1.48 !important;
+    margin-bottom: 8px !important;
+    -webkit-line-clamp: 2 !important;
+  }
+  .related-news-read-more,
+  .related-news-link {
+    font-size: 0.78rem !important;
+    gap: 4px !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .related-news-title {
+    font-size: 1.05rem !important;
+  }
+  .related-news-card-title,
+  .related-news-item-title {
+    font-size: 0.88rem !important;
+  }
+  .related-news-card-summary,
+  .related-news-excerpt {
+    font-size: 0.76rem !important;
   }
 }
