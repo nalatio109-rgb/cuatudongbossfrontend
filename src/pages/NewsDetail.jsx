@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ChevronRight, Calendar, ArrowLeft, ArrowRight } from 'lucide-react';
 import RevealOnScroll from '../components/RevealOnScroll';
 import ArticleGalleryModal from '../components/ArticleGalleryModal';
-import { enhanceArticleImages } from '../utils/enhanceArticleImages';
+import { enhanceArticleImages, initMobileAutoScroll } from '../utils/enhanceArticleImages';
 import { getNewsSlug, slugify } from '../utils/slug';
 import { sortByNewest } from '../utils/sortHelper';
 import './News.css';
@@ -197,6 +197,19 @@ const NewsDetail = () => {
       })
       .slice(0, 3);
   }, [newsItem, allNews]);
+
+  // Tự động chạy thẻ hàng ngang từ trái sang phải trên điện thoại
+  useEffect(() => {
+    if (relatedNews && relatedNews.length > 1) {
+      const gridEl = document.querySelector('.related-news-grid');
+      if (gridEl) {
+        const cleanupScroll = initMobileAutoScroll(gridEl);
+        return () => {
+          if (cleanupScroll) cleanupScroll();
+        };
+      }
+    }
+  }, [relatedNews]);
 
   if (loading) {
     return <div className="news-loading" style={{ minHeight: '50vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Đang tải chi tiết tin tức...</div>;

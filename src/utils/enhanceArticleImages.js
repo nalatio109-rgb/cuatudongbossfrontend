@@ -314,3 +314,63 @@ export function initMobileArticleScrollReveal(containerEl) {
     if (observer) observer.disconnect();
   };
 }
+
+/**
+ * Tự động chạy thẻ hàng ngang từ trái sang phải trên điện thoại (Mobile Auto Scroll Carousel)
+ * - Máy tính: Giữ nguyên 100%, không tự chạy
+ * - Điện thoại: Tự động lướt sang thẻ tiếp theo mỗi 3.2 giây
+ * - Tự động tạm dừng khi người dùng chạm tay vào lướt để đọc, tiếp tục chạy sau khi buông tay
+ */
+export function initMobileAutoScroll(gridEl) {
+  if (!gridEl) return () => {};
+
+  let isPaused = false;
+  let resumeTimer = null;
+
+  const handleTouchStart = () => {
+    isPaused = true;
+    if (resumeTimer) clearTimeout(resumeTimer);
+  };
+
+  const handleTouchEnd = () => {
+    if (resumeTimer) clearTimeout(resumeTimer);
+    resumeTimer = setTimeout(() => {
+      isPaused = false;
+    }, 3500);
+  };
+
+  gridEl.addEventListener('touchstart', handleTouchStart, { passive: true });
+  gridEl.addEventListener('touchend', handleTouchEnd, { passive: true });
+  gridEl.addEventListener('mouseenter', handleTouchStart);
+  gridEl.addEventListener('mouseleave', handleTouchEnd);
+
+  const intervalId = setInterval(() => {
+    // Chỉ tự động chạy trên màn hình điện thoại / tablet nhỏ (<= 768px)
+    if (window.innerWidth > 768 || isPaused) return;
+
+    const cards = gridEl.querySelectorAll('.related-news-card-reveal-wrapper');
+    if (!cards || cards.length <= 1) return;
+
+    const firstCard = cards[0];
+    const cardWidth = firstCard.offsetWidth + 14; // Chiều rộng thẻ + gap 14px
+    const maxScroll = gridEl.scrollWidth - gridEl.clientWidth;
+
+    if (gridEl.scrollLeft + 15 >= maxScroll) {
+      // Đã chạy tới thẻ cuối cùng -> quay về thẻ đầu tiên mượt mà
+      gridEl.scrollTo({ left: 0, behavior: 'smooth' });
+    } else {
+      // Trượt mượt sang thẻ tiếp theo từ trái sang phải
+      gridEl.scrollBy({ left: cardWidth, behavior: 'smooth' });
+    }
+  }, 3200);
+
+  return () => {
+    clearInterval(intervalId);
+    if (resumeTimer) clearTimeout(resumeTimer);
+    gridEl.removeEventListener('touchstart', handleTouchStart);
+    gridEl.removeEventListener('touchend', handleTouchEnd);
+    gridEl.removeEventListener('mouseenter', handleTouchStart);
+    gridEl.removeEventListener('mouseleave', handleTouchEnd);
+  };
+}
+

@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ChevronRight, Calendar, ArrowLeft, ArrowRight, Phone, ShieldCheck, Clock, Wrench } from 'lucide-react';
 import RevealOnScroll from '../components/RevealOnScroll';
 import ArticleGalleryModal from '../components/ArticleGalleryModal';
-import { enhanceArticleImages } from '../utils/enhanceArticleImages';
+import { enhanceArticleImages, initMobileAutoScroll } from '../utils/enhanceArticleImages';
 import { getServiceSlug, slugify } from '../utils/slug';
 import { DEFAULT_SERVICES } from '../data/defaultServices';
 import './News.css';
@@ -182,6 +182,19 @@ const ServiceDetail = () => {
       })
       .slice(0, 3);
   }, [serviceItem, allServices]);
+
+  // Tự động chạy thẻ hàng ngang từ trái sang phải trên điện thoại
+  useEffect(() => {
+    if (relatedServices && relatedServices.length > 1) {
+      const gridEl = document.querySelector('.related-news-grid');
+      if (gridEl) {
+        const cleanupScroll = initMobileAutoScroll(gridEl);
+        return () => {
+          if (cleanupScroll) cleanupScroll();
+        };
+      }
+    }
+  }, [relatedServices]);
 
   if (loading) {
     return (
