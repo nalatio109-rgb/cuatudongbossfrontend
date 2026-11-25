@@ -76,12 +76,35 @@ const ServiceDetail = () => {
 
       setAllServices(merged);
 
-      // Tìm dịch vụ hiện tại theo slug hoặc id
-      const normalizedParam = (id || "").toLowerCase().trim();
+      // Tìm dịch vụ hiện tại theo slug hoặc id hoặc title
+      const rawParam = id || "";
+      let decodedParam = "";
+      try {
+        decodedParam = decodeURIComponent(rawParam).toLowerCase().trim();
+      } catch (e) {
+        decodedParam = rawParam.toLowerCase().trim();
+      }
+      const slugifiedParam = slugify(decodedParam);
+      const normalizedParam = rawParam.toLowerCase().trim();
+
       const foundService = merged.find((s) => {
-        const slug = (s.slug || slugify(s.title)).toLowerCase();
+        const canonical = getServiceSlug(s).toLowerCase();
+        const slug = (s.slug || slugify(s.title || s.name || "")).toLowerCase();
         const sid = String(s._id || s.id || "").toLowerCase();
-        return slug === normalizedParam || sid === normalizedParam || slug.includes(normalizedParam);
+        const titleLower = (s.title || s.name || "").toLowerCase();
+
+        return (
+          canonical === normalizedParam ||
+          canonical === slugifiedParam ||
+          canonical === decodedParam ||
+          slug === normalizedParam ||
+          slug === slugifiedParam ||
+          slug === decodedParam ||
+          sid === normalizedParam ||
+          titleLower === decodedParam ||
+          (slug && normalizedParam && slug.includes(normalizedParam)) ||
+          (canonical && slugifiedParam && canonical.includes(slugifiedParam))
+        );
       });
 
       if (foundService) {

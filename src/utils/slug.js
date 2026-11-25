@@ -88,6 +88,9 @@ export function getServiceSlug(service) {
   if (service.title && typeof service.title === "string") {
     return slugify(service.title);
   }
+  if (service.name && typeof service.name === "string") {
+    return slugify(service.name);
+  }
   return String(service._id || service.id || "").toLowerCase();
 }
 
