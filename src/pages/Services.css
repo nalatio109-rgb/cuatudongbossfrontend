@@ -1101,15 +1101,15 @@
 }
 
 @media (max-width: 640px) {
-  .service-images-row-2col,
-  .article-two-images-row {
+  .service-images-row-2col:not(.mobile-carousel-enhanced),
+  .article-two-images-row:not(.mobile-carousel-enhanced) {
     flex-direction: column;
     gap: 14px;
   }
-  .service-images-row-2col figure,
-  .service-images-row-2col .project-article-figure,
-  .article-two-images-row figure,
-  .article-two-images-row .project-article-figure {
+  .service-images-row-2col:not(.mobile-carousel-enhanced) figure,
+  .service-images-row-2col:not(.mobile-carousel-enhanced) .project-article-figure,
+  .article-two-images-row:not(.mobile-carousel-enhanced) figure,
+  .article-two-images-row:not(.mobile-carousel-enhanced) .project-article-figure {
     flex: 1 1 100% !important;
     max-width: 100% !important;
     min-width: 100% !important;

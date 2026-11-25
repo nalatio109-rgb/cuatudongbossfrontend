@@ -2,6 +2,8 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ChevronRight, Calendar, ArrowLeft, ArrowRight, Phone, ShieldCheck, Clock, Wrench } from 'lucide-react';
 import RevealOnScroll from '../components/RevealOnScroll';
+import ArticleGalleryModal from '../components/ArticleGalleryModal';
+import { enhanceArticleImages } from '../utils/enhanceArticleImages';
 import { getServiceSlug, slugify } from '../utils/slug';
 import { DEFAULT_SERVICES } from '../data/defaultServices';
 import './News.css';
@@ -26,6 +28,21 @@ const ServiceDetail = () => {
   const [allServices, setAllServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [galleryModal, setGalleryModal] = useState({
+    isOpen: false,
+    images: [],
+    initialIndex: 0,
+    initialViewMode: 'slide'
+  });
+
+  const handleOpenGallery = (images, index = 0, mode = 'slide') => {
+    setGalleryModal({
+      isOpen: true,
+      images: images,
+      initialIndex: index,
+      initialViewMode: mode
+    });
+  };
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -126,6 +143,7 @@ const ServiceDetail = () => {
   }, [id]);
 
   // Tự động gắn thuộc tính title để khi rê chuột vào bất kỳ link nào sẽ hiện URL đầy đủ
+  // và Tự động nâng cấp các cụm nhiều ảnh liên tiếp thành Slider mượt mà trên mobile
   useEffect(() => {
     if (serviceItem?.content) {
       const container = document.querySelector(".news-detail-content");
@@ -137,6 +155,12 @@ const ServiceDetail = () => {
             a.setAttribute("title", `Đến trang: ${href}`);
           }
         });
+
+        // Nâng cấp cụm nhiều ảnh thành Mobile Carousel / Modal Gallery
+        const cleanupImages = enhanceArticleImages(container, handleOpenGallery);
+        return () => {
+          if (cleanupImages) cleanupImages();
+        };
       }
     }
   }, [serviceItem?.content]);
@@ -339,6 +363,15 @@ const ServiceDetail = () => {
           </div>
         )}
       </main>
+
+      {/* 5. CỬA SỔ PHÓNG TO & XEM CÙNG LÚC TẤT CẢ ẢNH TRONG BÀI VIẾT */}
+      <ArticleGalleryModal
+        isOpen={galleryModal.isOpen}
+        onClose={() => setGalleryModal((prev) => ({ ...prev, isOpen: false }))}
+        images={galleryModal.images}
+        initialIndex={galleryModal.initialIndex}
+        initialViewMode={galleryModal.initialViewMode}
+      />
     </div>
   );
 };

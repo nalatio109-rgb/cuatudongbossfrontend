@@ -21,6 +21,8 @@ import {
   Sliders
 } from 'lucide-react';
 import RevealOnScroll from '../components/RevealOnScroll';
+import ArticleGalleryModal from '../components/ArticleGalleryModal';
+import { enhanceArticleImages } from '../utils/enhanceArticleImages';
 import { getProjectSlug, slugify } from '../utils/slug';
 import { SAMPLE_PROJECT_TEMPLATE } from '../components/AdminProjectArticleEditor';
 import { HOMEPAGE_PROJECTS } from '../components/Projects';
@@ -52,6 +54,21 @@ export default function ProjectDetail() {
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
   const [touchStartX, setTouchStartX] = useState(null);
+  const [articleGalleryModal, setArticleGalleryModal] = useState({
+    isOpen: false,
+    images: [],
+    initialIndex: 0,
+    initialViewMode: 'slide'
+  });
+
+  const handleOpenArticleGallery = (images, index = 0, mode = 'slide') => {
+    setArticleGalleryModal({
+      isOpen: true,
+      images: images,
+      initialIndex: index,
+      initialViewMode: mode
+    });
+  };
 
   // Bộ sưu tập hình ảnh của công trình (Ảnh bìa + Gallery + Ảnh trong nội dung bài viết)
   const galleryPhotos = useMemo(() => {
@@ -129,6 +146,19 @@ export default function ProjectDetail() {
       return () => cancelAnimationFrame(raf);
     }
   }, [withTransition]);
+
+  // Tự động nâng cấp các cụm nhiều ảnh liên tiếp trong bài viết thành Slider mượt mà trên mobile
+  useEffect(() => {
+    if (project?.content) {
+      const container = document.querySelector('.project-article-rendered-content');
+      if (container) {
+        const cleanup = enhanceArticleImages(container, handleOpenArticleGallery);
+        return () => {
+          if (cleanup) cleanup();
+        };
+      }
+    }
+  }, [project?.content]);
 
   // Xử lý snap vị trí vô tận không giật lag khi chuyển hết chu kỳ ảnh
   const handleTransitionEnd = () => {
@@ -797,6 +827,15 @@ export default function ProjectDetail() {
           </section>
         )}
       </div>
+
+      {/* CỬA SỔ PHÓNG TO & XEM CÙNG LÚC TẤT CẢ ẢNH TRONG BÀI VIẾT */}
+      <ArticleGalleryModal
+        isOpen={articleGalleryModal.isOpen}
+        onClose={() => setArticleGalleryModal((prev) => ({ ...prev, isOpen: false }))}
+        images={articleGalleryModal.images}
+        initialIndex={articleGalleryModal.initialIndex}
+        initialViewMode={articleGalleryModal.initialViewMode}
+      />
     </div>
   );
 }
