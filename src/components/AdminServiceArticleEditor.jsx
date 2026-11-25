@@ -794,36 +794,14 @@ export default function AdminServiceArticleEditor({
             />
           </div>
 
-          <div className="admin-form-grid-3">
-            <div className="admin-form-group">
-              <label>Ngày đăng hiển thị</label>
-              <input
-                type="text"
-                value={serviceForm.date}
-                onChange={(e) => setServiceForm({ ...serviceForm, date: e.target.value })}
-                placeholder="DD/MM/YYYY"
-              />
-            </div>
-
-            <div className="admin-form-group">
-              <label>Thứ tự ưu tiên hiển thị (order)</label>
-              <input
-                type="number"
-                value={serviceForm.order}
-                onChange={(e) => setServiceForm({ ...serviceForm, order: Number(e.target.value) })}
-                placeholder="1, 2, 3..."
-              />
-            </div>
-
-            <div className="admin-form-group">
-              <label>Hotline hỗ trợ kỹ thuật</label>
-              <input
-                type="text"
-                value={serviceForm.phone}
-                onChange={(e) => setServiceForm({ ...serviceForm, phone: e.target.value })}
-                placeholder="0904.678.323"
-              />
-            </div>
+          <div className="admin-form-group">
+            <label>Ngày đăng hiển thị</label>
+            <input
+              type="text"
+              value={serviceForm.date}
+              onChange={(e) => setServiceForm({ ...serviceForm, date: e.target.value })}
+              placeholder="DD/MM/YYYY"
+            />
           </div>
 
           {/* HÌNH ẢNH ĐẠI DIỆN DỊCH VỤ */}
