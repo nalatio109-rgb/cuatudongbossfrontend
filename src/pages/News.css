@@ -1315,16 +1315,15 @@
   .related-news-view-all {
     display: none !important;
   }
-  /* HÀNG NGANG CHẠY TỪ TRÁI SANG PHẢI TRÊN ĐIỆN THOẠI (HORIZONTAL SCROLLING CAROUSEL) */
+  /* HÀNG NGANG CHẠY TỰ ĐỘNG TỪ TRÁI SANG PHẢI TRÊN ĐIỆN THOẠI (SEAMLESS INFINITE FLOW) */
   .related-news-grid {
     display: flex !important;
     flex-direction: row !important;
     flex-wrap: nowrap !important;
     overflow-x: auto !important;
     overflow-y: hidden !important;
-    scroll-snap-type: x mandatory !important;
+    scroll-snap-type: none !important;
     -webkit-overflow-scrolling: touch !important;
-    scroll-behavior: smooth !important;
     gap: 14px !important;
     padding-bottom: 12px !important;
     padding-top: 4px !important;
@@ -1333,6 +1332,7 @@
     margin-right: -15px !important;
     scrollbar-width: none !important;
     -ms-overflow-style: none !important;
+    will-change: scroll-position;
   }
 
   .related-news-grid::-webkit-scrollbar {
@@ -1345,8 +1345,6 @@
     flex: 0 0 76% !important;
     min-width: 250px !important;
     max-width: 285px !important;
-    scroll-snap-align: start !important;
-    scroll-snap-stop: normal !important;
     height: auto !important;
     display: flex !important;
     opacity: 1 !important;
@@ -1991,6 +1989,11 @@
     opacity: 1 !important;
     transform: none !important;
     transition: none !important;
+  }
+  /* Ẩn các thẻ clone trên máy tính để giữ nguyên bố cục lưới 3 cột */
+  .related-news-card-reveal-wrapper[data-clone="true"],
+  .related-news-card-reveal-wrapper.is-cloned-item {
+    display: none !important;
   }
 }
 

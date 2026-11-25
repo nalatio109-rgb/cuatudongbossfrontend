@@ -317,15 +317,38 @@ export function initMobileArticleScrollReveal(containerEl) {
 
 /**
  * Tự động chạy thẻ hàng ngang từ trái sang phải trên điện thoại (Mobile Auto Scroll Carousel)
- * - Máy tính: Giữ nguyên 100%, không tự chạy
- * - Điện thoại: Tự động lướt sang thẻ tiếp theo mỗi 3.2 giây
- * - Tự động tạm dừng khi người dùng chạm tay vào lướt để đọc, tiếp tục chạy sau khi buông tay
+ * - Máy tính: Giữ nguyên 100%, không tự chạy, các thẻ clone bị ẩn
+ * - Điện thoại: Tự động trôi liên tục mượt mà 60fps - 120fps (Seamless Infinite Flow)
+ * - Tự động tạm dừng khi người dùng chạm tay vào lướt hoặc đọc, tiếp tục chạy sau khi buông tay
  */
 export function initMobileAutoScroll(gridEl) {
   if (!gridEl) return () => {};
 
+  // Lấy các thẻ bài viết ban đầu (chưa clone)
+  const originalCards = Array.from(
+    gridEl.querySelectorAll(':scope > .related-news-card-reveal-wrapper:not([data-clone="true"])')
+  );
+  if (originalCards.length <= 1) return () => {};
+
+  // Dọn dẹp các thẻ clone cũ nếu có
+  const oldClones = gridEl.querySelectorAll('[data-clone="true"]');
+  oldClones.forEach((c) => c.remove());
+
+  // Tạo các thẻ clone nối tiếp phía sau để tạo vòng lặp vô tận
+  const clones = originalCards.map((card) => {
+    const clone = card.cloneNode(true);
+    clone.setAttribute('data-clone', 'true');
+    clone.classList.add('is-cloned-item');
+    gridEl.appendChild(clone);
+    return clone;
+  });
+
   let isPaused = false;
   let resumeTimer = null;
+  let animationFrameId = null;
+  let lastTimestamp = null;
+  // Tốc độ trôi êm ái: 45 pixel mỗi giây
+  const speed = 45;
 
   const handleTouchStart = () => {
     isPaused = true;
@@ -336,7 +359,8 @@ export function initMobileAutoScroll(gridEl) {
     if (resumeTimer) clearTimeout(resumeTimer);
     resumeTimer = setTimeout(() => {
       isPaused = false;
-    }, 3500);
+      lastTimestamp = null;
+    }, 2200);
   };
 
   gridEl.addEventListener('touchstart', handleTouchStart, { passive: true });
@@ -344,33 +368,48 @@ export function initMobileAutoScroll(gridEl) {
   gridEl.addEventListener('mouseenter', handleTouchStart);
   gridEl.addEventListener('mouseleave', handleTouchEnd);
 
-  const intervalId = setInterval(() => {
-    // Chỉ tự động chạy trên màn hình điện thoại / tablet nhỏ (<= 768px)
-    if (window.innerWidth > 768 || isPaused) return;
+  // Tính chiều rộng của 1 chu kỳ ban đầu (tổng chiều rộng các thẻ gốc + gap)
+  const calculateCycleWidth = () => {
+    if (originalCards.length === 0) return 0;
+    const firstEl = originalCards[0];
+    const lastEl = originalCards[originalCards.length - 1];
+    const firstRect = firstEl.getBoundingClientRect();
+    const lastRect = lastEl.getBoundingClientRect();
+    return Math.max(10, lastRect.right - firstRect.left + 14);
+  };
 
-    const cards = gridEl.querySelectorAll('.related-news-card-reveal-wrapper');
-    if (!cards || cards.length <= 1) return;
+  let cycleWidth = calculateCycleWidth();
 
-    const firstCard = cards[0];
-    const cardWidth = firstCard.offsetWidth + 14; // Chiều rộng thẻ + gap 14px
-    const maxScroll = gridEl.scrollWidth - gridEl.clientWidth;
+  const step = (timestamp) => {
+    if (!lastTimestamp) lastTimestamp = timestamp;
+    const elapsed = Math.min(0.1, (timestamp - lastTimestamp) / 1000);
+    lastTimestamp = timestamp;
 
-    if (gridEl.scrollLeft + 15 >= maxScroll) {
-      // Đã chạy tới thẻ cuối cùng -> quay về thẻ đầu tiên mượt mà
-      gridEl.scrollTo({ left: 0, behavior: 'smooth' });
-    } else {
-      // Trượt mượt sang thẻ tiếp theo từ trái sang phải
-      gridEl.scrollBy({ left: cardWidth, behavior: 'smooth' });
+    if (!isPaused && window.innerWidth <= 768) {
+      if (cycleWidth <= 10) cycleWidth = calculateCycleWidth();
+      if (cycleWidth > 10) {
+        gridEl.scrollLeft += speed * elapsed;
+        // Khi cuộn hết 1 chu kỳ ban đầu, lập tức trừ đi đúng 1 chu kỳ
+        // Vì chuỗi thẻ thứ 2 giống hệt chuỗi thẻ thứ 1 nên chuyển động hoàn toàn vô tận, không giật lùi
+        if (gridEl.scrollLeft >= cycleWidth) {
+          gridEl.scrollLeft -= cycleWidth;
+        }
+      }
     }
-  }, 3200);
+
+    animationFrameId = requestAnimationFrame(step);
+  };
+
+  animationFrameId = requestAnimationFrame(step);
 
   return () => {
-    clearInterval(intervalId);
+    if (animationFrameId) cancelAnimationFrame(animationFrameId);
     if (resumeTimer) clearTimeout(resumeTimer);
     gridEl.removeEventListener('touchstart', handleTouchStart);
     gridEl.removeEventListener('touchend', handleTouchEnd);
     gridEl.removeEventListener('mouseenter', handleTouchStart);
     gridEl.removeEventListener('mouseleave', handleTouchEnd);
+    clones.forEach((c) => c.remove());
   };
 }
 
