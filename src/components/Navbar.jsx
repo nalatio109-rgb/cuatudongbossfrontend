@@ -6,6 +6,8 @@ import {
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { DEFAULT_PRICE_QUOTES } from "../data/defaultPriceQuotes";
+import { DEFAULT_SERVICES } from "../data/defaultServices";
+import { getServiceSlug } from "../utils/slug";
 
 export const FLYOUT_PRODUCT_NAV_DATA = [
   {
@@ -125,6 +127,18 @@ export default function Navbar() {
     return DEFAULT_PRICE_QUOTES;
   });
 
+  // DANH SÁCH DỊCH VỤ ĐỒNG BỘ 100% VỚI ADMIN (GIỐNG HỆT BẢNG GIÁ)
+  const [navServices, setNavServices] = useState(() => {
+    try {
+      const local = localStorage.getItem("boss_admin_services");
+      if (local) {
+        const parsed = JSON.parse(local);
+        if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      }
+    } catch (e) {}
+    return DEFAULT_SERVICES;
+  });
+
   const fetchPriceQuotesForNav = async () => {
     try {
       const apiUrl = import.meta.env.VITE_API_URL;
@@ -151,6 +165,33 @@ export default function Navbar() {
     }
   };
 
+  const fetchServicesForNav = async () => {
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL;
+      if (apiUrl) {
+        const res = await fetch(`${apiUrl}/api/services`);
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+          setNavServices(json.data);
+          try {
+            localStorage.setItem("boss_admin_services", JSON.stringify(json.data));
+          } catch (e) {}
+          return;
+        }
+      }
+      const local = localStorage.getItem("boss_admin_services");
+      if (local) {
+        const parsed = JSON.parse(local);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setNavServices(parsed);
+          return;
+        }
+      }
+    } catch (e) {
+      console.log("Navbar services fetch error:", e);
+    }
+  };
+
   const fetchProductsForNav = async () => {
     try {
       const apiUrl = import.meta.env.VITE_API_URL;
@@ -172,6 +213,7 @@ export default function Navbar() {
   useEffect(() => {
     fetchProductsForNav();
     fetchPriceQuotesForNav();
+    fetchServicesForNav();
 
     const handleProductsUpdated = (e) => {
       if (e?.detail && Array.isArray(e.detail)) {
@@ -185,13 +227,31 @@ export default function Navbar() {
       fetchPriceQuotesForNav();
     };
 
+    const handleServicesUpdated = (e) => {
+      if (e?.detail && Array.isArray(e.detail)) {
+        setNavServices(e.detail);
+      } else {
+        fetchServicesForNav();
+      }
+    };
+
+    const handleStorageChange = () => {
+      handlePriceQuotesUpdated();
+      handleServicesUpdated();
+    };
+
     window.addEventListener("boss_products_updated", handleProductsUpdated);
     window.addEventListener("priceQuotesUpdated", handlePriceQuotesUpdated);
-    window.addEventListener("storage", handlePriceQuotesUpdated);
+    window.addEventListener("boss_services_updated", handleServicesUpdated);
+    window.addEventListener("servicesUpdated", handleServicesUpdated);
+    window.addEventListener("storage", handleStorageChange);
+
     return () => {
       window.removeEventListener("boss_products_updated", handleProductsUpdated);
       window.removeEventListener("priceQuotesUpdated", handlePriceQuotesUpdated);
-      window.removeEventListener("storage", handlePriceQuotesUpdated);
+      window.removeEventListener("boss_services_updated", handleServicesUpdated);
+      window.removeEventListener("servicesUpdated", handleServicesUpdated);
+      window.removeEventListener("storage", handleStorageChange);
     };
   }, []);
 
@@ -745,43 +805,51 @@ export default function Navbar() {
               </button>
             </div>
 
-            {/* DESKTOP DROPDOWN CHO DỊCH VỤ */}
+            {/* DESKTOP DROPDOWN CHO DỊCH VỤ ĐỒNG BỘ 100% VỚI ADMIN (GIỐNG HỆT BẢNG GIÁ) */}
             <div className={`desktop-simple-dropdown-menu ${servicesOpen ? "show" : ""}`}>
               <div className="desktop-dropdown-header-title">DỊCH VỤ CHUYÊN NGHIỆP</div>
               <div className="desktop-dropdown-list">
-                {MOBILE_SERVICES_MENU_ITEMS.map((item, idx) => (
-                  <Link
-                    key={idx}
-                    to={item.to || `/dich-vu?service=${encodeURIComponent(item.name)}`}
-                    onClick={() => {
-                      setServicesOpen(false);
-                      setMenu(false);
-                    }}
-                    className="desktop-dropdown-item-link"
-                  >
-                    <span>{item.name}</span>
-                    <ChevronRight size={13} className="item-arrow" />
-                  </Link>
-                ))}
+                {navServices.map((item, idx) => {
+                  const title = item.title || item.name || `Dịch vụ ${idx + 1}`;
+                  const slug = getServiceSlug(item);
+                  return (
+                    <Link
+                      key={item._id || item.id || slug || idx}
+                      to={`/dich-vu/${slug}`}
+                      onClick={() => {
+                        setServicesOpen(false);
+                        setMenu(false);
+                      }}
+                      className="desktop-dropdown-item-link"
+                    >
+                      <span>{title}</span>
+                      <ChevronRight size={13} className="item-arrow" />
+                    </Link>
+                  );
+                })}
               </div>
             </div>
 
-            {/* Danh sách dịch vụ xổ xuống trên điện thoại */}
+            {/* Danh sách dịch vụ xổ xuống trên điện thoại đồng bộ với Admin */}
             <div className={`mobile-sub-accordion mobile-pricing-accordion ${mobileServicesExpanded ? "show" : ""}`}>
               <div className="mobile-pricing-list">
-                {MOBILE_SERVICES_MENU_ITEMS.map((item, idx) => (
-                  <Link
-                    key={idx}
-                    to={item.to || `/dich-vu?service=${encodeURIComponent(item.name)}`}
-                    onClick={() => {
-                      setMenu(false);
-                      setMobileServicesExpanded(false);
-                    }}
-                    className="mobile-pricing-item-link"
-                  >
-                    <span>{item.name}</span>
-                  </Link>
-                ))}
+                {navServices.map((item, idx) => {
+                  const title = item.title || item.name || `Dịch vụ ${idx + 1}`;
+                  const slug = getServiceSlug(item);
+                  return (
+                    <Link
+                      key={item._id || item.id || slug || idx}
+                      to={`/dich-vu/${slug}`}
+                      onClick={() => {
+                        setMenu(false);
+                        setMobileServicesExpanded(false);
+                      }}
+                      className="mobile-pricing-item-link"
+                    >
+                      <span>{title}</span>
+                    </Link>
+                  );
+                })}
               </div>
             </div>
           </div>

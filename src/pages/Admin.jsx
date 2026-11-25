@@ -437,6 +437,7 @@ export default function Admin() {
       }
       setServices(loadedServices);
       localStorage.setItem("boss_admin_services", JSON.stringify(loadedServices));
+      window.dispatchEvent(new CustomEvent("boss_services_updated", { detail: loadedServices }));
 
       // Reviews: Hybrid MongoDB backend + localStorage fallback
       let loadedReviews = [];
@@ -1445,6 +1446,7 @@ export default function Admin() {
       if (data && data.success && Array.isArray(data.data) && data.data.length > 0) {
         setServices(data.data);
         localStorage.setItem("boss_admin_services", JSON.stringify(data.data));
+        window.dispatchEvent(new CustomEvent("boss_services_updated", { detail: data.data }));
         if (!silent) showToast("✨ Đã nạp thành công 8 dịch vụ vào hệ thống!");
         setSeedingServices(false);
         return;
@@ -1471,11 +1473,13 @@ export default function Admin() {
       if (createdServices.length > 0) {
         setServices(createdServices);
         localStorage.setItem("boss_admin_services", JSON.stringify(createdServices));
+        window.dispatchEvent(new CustomEvent("boss_services_updated", { detail: createdServices }));
         if (!silent) showToast(`✨ Đã nạp ${createdServices.length} dịch vụ vào cơ sở dữ liệu!`);
       } else {
         const localServices = DEFAULT_SAMPLE_SERVICES.map((s, idx) => ({ ...s, _id: `seed_${Date.now()}_${idx}` }));
         setServices(localServices);
         localStorage.setItem("boss_admin_services", JSON.stringify(localServices));
+        window.dispatchEvent(new CustomEvent("boss_services_updated", { detail: localServices }));
         if (!silent) showToast("✨ Đã nạp 8 dịch vụ tiêu chuẩn vào Admin!");
       }
     } catch (err) {
@@ -1483,6 +1487,7 @@ export default function Admin() {
       const localServices = DEFAULT_SAMPLE_SERVICES.map((s, idx) => ({ ...s, _id: `seed_${Date.now()}_${idx}` }));
       setServices(localServices);
       localStorage.setItem("boss_admin_services", JSON.stringify(localServices));
+      window.dispatchEvent(new CustomEvent("boss_services_updated", { detail: localServices }));
       if (!silent) showToast("✨ Đã nạp 8 dịch vụ tiêu chuẩn vào Admin!");
     } finally {
       setSeedingServices(false);
@@ -1508,6 +1513,7 @@ export default function Admin() {
           const updated = services.map(s => s._id === editingService._id ? data.data : s);
           setServices(updated);
           localStorage.setItem("boss_admin_services", JSON.stringify(updated));
+          window.dispatchEvent(new CustomEvent("boss_services_updated", { detail: updated }));
           showToast("✨ Đã cập nhật dịch vụ thành công!");
         }
       } else {
@@ -1521,6 +1527,7 @@ export default function Admin() {
           const updated = [...services, data.data];
           setServices(updated);
           localStorage.setItem("boss_admin_services", JSON.stringify(updated));
+          window.dispatchEvent(new CustomEvent("boss_services_updated", { detail: updated }));
           showToast("🎉 Thêm dịch vụ mới thành công!");
         }
       }
@@ -1534,6 +1541,7 @@ export default function Admin() {
         const updated = services.map(s => s._id === editingService._id ? { ...finalForm, _id: editingService._id } : s);
         setServices(updated);
         localStorage.setItem("boss_admin_services", JSON.stringify(updated));
+        window.dispatchEvent(new CustomEvent("boss_services_updated", { detail: updated }));
         setShowServiceForm(false);
         setEditingService(null);
         showToast("✨ Đã lưu cập nhật dịch vụ vào hệ thống!");
@@ -1542,6 +1550,7 @@ export default function Admin() {
         const updated = [...services, newLocal];
         setServices(updated);
         localStorage.setItem("boss_admin_services", JSON.stringify(updated));
+        window.dispatchEvent(new CustomEvent("boss_services_updated", { detail: updated }));
         setShowServiceForm(false);
         setEditingService(null);
         showToast("🎉 Đã lưu dịch vụ mới vào hệ thống!");
@@ -1558,6 +1567,7 @@ export default function Admin() {
         const updated = services.filter(s => s._id !== id);
         setServices(updated);
         localStorage.setItem("boss_admin_services", JSON.stringify(updated));
+        window.dispatchEvent(new CustomEvent("boss_services_updated", { detail: updated }));
         showToast("🗑️ Đã xóa dịch vụ thành công!");
       }
     } catch (err) {
@@ -1565,6 +1575,7 @@ export default function Admin() {
       const updated = services.filter(s => s._id !== id);
       setServices(updated);
       localStorage.setItem("boss_admin_services", JSON.stringify(updated));
+      window.dispatchEvent(new CustomEvent("boss_services_updated", { detail: updated }));
       showToast("🗑️ Đã xóa dịch vụ khỏi hệ thống!");
     }
   };
