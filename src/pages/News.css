@@ -323,9 +323,22 @@
   padding: 60px 0;
 }
 
+/* KEYFRAMES & HIỆU ỨNG CHUYỂN ĐỘNG TRANG CHI TIẾT */
+@keyframes detailPageFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .news-detail-container {
   max-width: 800px;
   margin: 0 auto;
+  animation: detailPageFadeIn 0.65s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .back-link {
@@ -412,6 +425,12 @@
   font-size: 1.02rem;
   line-height: 1.7;
   font-weight: 500;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+
+.service-detail-lead-desc:hover {
+  transform: translateX(4px);
+  box-shadow: 0 4px 14px rgba(4, 60, 35, 0.08);
 }
 
 .service-detail-plain-p {
@@ -421,6 +440,15 @@
 }
 
 /* Service Detail CTA Hotline Box (Desktop) */
+@keyframes ctaPulseGlow {
+  0%, 100% {
+    box-shadow: 0 10px 25px rgba(4, 60, 35, 0.22);
+  }
+  50% {
+    box-shadow: 0 12px 32px rgba(4, 60, 35, 0.36);
+  }
+}
+
 .service-detail-cta-box {
   margin-top: 3rem;
   padding: 24px;
@@ -432,7 +460,12 @@
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 16px;
-  box-shadow: 0 10px 25px rgba(4, 60, 35, 0.25);
+  animation: ctaPulseGlow 4s ease-in-out infinite;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.service-detail-cta-box:hover {
+  transform: translateY(-2px);
 }
 
 .cta-box-title {
@@ -454,6 +487,15 @@
   flex-wrap: wrap;
 }
 
+@keyframes btnPhoneShimmer {
+  0%, 100% {
+    box-shadow: 0 4px 12px rgba(220, 38, 38, 0.35);
+  }
+  50% {
+    box-shadow: 0 6px 20px rgba(220, 38, 38, 0.6);
+  }
+}
+
 .cta-btn-call {
   display: inline-flex;
   align-items: center;
@@ -465,6 +507,7 @@
   border-radius: 8px;
   text-decoration: none;
   font-size: 0.92rem;
+  animation: btnPhoneShimmer 2.6s infinite ease-in-out;
   box-shadow: 0 4px 12px rgba(220, 38, 38, 0.35);
   transition: transform 0.2s ease, background 0.2s ease;
 }
@@ -556,13 +599,19 @@
   margin-bottom: 30px;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
 }
 
 .news-detail-image img {
   width: 100%;
   height: auto;
   display: block;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.news-detail-image:hover img {
+  transform: scale(1.025);
 }
 
 .news-detail-content {
@@ -594,11 +643,19 @@
   margin-bottom: 0.5rem;
 }
 
-.news-detail-content img {
+.news-detail-content img,
+.project-article-rendered-content img {
   max-width: 100%;
   height: auto;
   border-radius: 8px;
   margin: 1.5rem 0;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+}
+
+.news-detail-content img:hover,
+.project-article-rendered-content img:hover {
+  transform: scale(1.018);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
 }
 
 /* --------------------------------------------------------------------------

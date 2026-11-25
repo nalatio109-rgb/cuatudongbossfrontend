@@ -206,28 +206,38 @@ const NewsDetail = () => {
       {/* 3. MAIN CONTENT */}
       <main className="site293-main-content section-space news-detail-main">
         <div className="container news-detail-container">
-          <Link to="/tin-tuc" className="back-link">
-            <ArrowLeft size={16} /> Quay lại tin tức
-          </Link>
+          <RevealOnScroll animation="fade-up" delay={50}>
+            <Link to="/tin-tuc" className="back-link">
+              <ArrowLeft size={16} /> Quay lại tin tức
+            </Link>
+          </RevealOnScroll>
           
-          <h1 className="news-detail-title">{newsItem.title}</h1>
+          <RevealOnScroll animation="fade-up" delay={100}>
+            <h1 className="news-detail-title">{newsItem.title}</h1>
+          </RevealOnScroll>
           
-          <div className="news-detail-meta">
-            <span className="news-date">
-              <Calendar size={19} /> {newsItem.date || (newsItem.createdAt ? new Date(newsItem.createdAt).toLocaleDateString('vi-VN') : "")}
-            </span>
-          </div>
+          <RevealOnScroll animation="fade-up" delay={150}>
+            <div className="news-detail-meta">
+              <span className="news-date">
+                <Calendar size={19} /> {newsItem.date || (newsItem.createdAt ? new Date(newsItem.createdAt).toLocaleDateString('vi-VN') : "")}
+              </span>
+            </div>
+          </RevealOnScroll>
 
           {newsItem.image && (
-            <div className="news-detail-image">
-              <img src={newsItem.image} alt={newsItem.title} />
-            </div>
+            <RevealOnScroll animation="zoom-in" delay={200}>
+              <div className="news-detail-image">
+                <img src={newsItem.image} alt={newsItem.title} />
+              </div>
+            </RevealOnScroll>
           )}
 
-          <div className="news-detail-content">
-            {/* If content is HTML, use dangerouslySetInnerHTML, otherwise just display it */}
-            <div dangerouslySetInnerHTML={{ __html: newsItem.content }} />
-          </div>
+          <RevealOnScroll animation="fade-up" delay={250}>
+            <div className="news-detail-content">
+              {/* If content is HTML, use dangerouslySetInnerHTML, otherwise just display it */}
+              <div dangerouslySetInnerHTML={{ __html: newsItem.content }} />
+            </div>
+          </RevealOnScroll>
         </div>
 
         {/* 4. CÁC BÀI VIẾT LIÊN QUAN */}

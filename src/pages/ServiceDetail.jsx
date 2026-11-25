@@ -184,10 +184,10 @@ const ServiceDetail = () => {
       <div className="news-top-banner">
         <div className="news-banner-overlay"></div>
         <div className="container relative-z">
-          <div className="news-banner-text">
+          <RevealOnScroll animation="fade-down" className="news-banner-text">
             <h1>DỊCH VỤ BOSS ĐÀ NẴNG</h1>
             <p>Hệ thống thi công, bảo trì & sửa chữa cửa cuốn, cửa kéo, cổng tự động chuyên nghiệp 24/7</p>
-          </div>
+          </RevealOnScroll>
         </div>
       </div>
 
@@ -203,70 +203,84 @@ const ServiceDetail = () => {
       {/* 3. MAIN CONTENT CHI TIẾT DỊCH VỤ */}
       <main className="site293-main-content section-space news-detail-main">
         <div className="container news-detail-container">
-          <Link to="/dich-vu" className="back-link">
-            <ArrowLeft size={16} /> Quay lại danh sách dịch vụ
-          </Link>
+          <RevealOnScroll animation="fade-up" delay={50}>
+            <Link to="/dich-vu" className="back-link">
+              <ArrowLeft size={16} /> Quay lại danh sách dịch vụ
+            </Link>
+          </RevealOnScroll>
 
-          <h1 className="news-detail-title">{serviceItem.title}</h1>
+          <RevealOnScroll animation="fade-up" delay={100}>
+            <h1 className="news-detail-title">{serviceItem.title}</h1>
+          </RevealOnScroll>
 
-          <div className="news-detail-meta service-detail-meta">
-            <span className="news-date">
-              <Calendar size={18} /> {serviceItem.date || 'Cập nhật mới'}
-            </span>
-            <a href={`tel:${phoneCall}`} className="service-meta-hotline">
-              <Phone size={15} /> Hotline: {serviceItem.phone || '0904.678.323'}
-            </a>
-          </div>
+          <RevealOnScroll animation="fade-up" delay={150}>
+            <div className="news-detail-meta service-detail-meta">
+              <span className="news-date">
+                <Calendar size={18} /> {serviceItem.date || 'Cập nhật mới'}
+              </span>
+              <a href={`tel:${phoneCall}`} className="service-meta-hotline">
+                <Phone size={15} /> Hotline: {serviceItem.phone || '0904.678.323'}
+              </a>
+            </div>
+          </RevealOnScroll>
 
           {serviceItem.img && (
-            <div className="news-detail-image">
-              <img src={formatImgSrc(serviceItem.img)} alt={serviceItem.title} />
-            </div>
+            <RevealOnScroll animation="zoom-in" delay={200}>
+              <div className="news-detail-image">
+                <img src={formatImgSrc(serviceItem.img)} alt={serviceItem.title} />
+              </div>
+            </RevealOnScroll>
           )}
 
           {serviceItem.desc && (
-            <div className="service-detail-lead-desc">
-              {serviceItem.desc}
-            </div>
+            <RevealOnScroll animation="fade-up" delay={250}>
+              <div className="service-detail-lead-desc">
+                {serviceItem.desc}
+              </div>
+            </RevealOnScroll>
           )}
 
-          <div className="news-detail-content project-article-rendered-content">
-            {serviceItem.content && serviceItem.content.includes('<') ? (
-              <div dangerouslySetInnerHTML={{ __html: serviceItem.content }} />
-            ) : (
-              (serviceItem.content || '').split('\n').map((line, idx) => (
-                <p key={idx} className="service-detail-plain-p">
-                  {line}
-                </p>
-              ))
-            )}
-          </div>
+          <RevealOnScroll animation="fade-up" delay={300}>
+            <div className="news-detail-content project-article-rendered-content">
+              {serviceItem.content && serviceItem.content.includes('<') ? (
+                <div dangerouslySetInnerHTML={{ __html: serviceItem.content }} />
+              ) : (
+                (serviceItem.content || '').split('\n').map((line, idx) => (
+                  <p key={idx} className="service-detail-plain-p">
+                    {line}
+                  </p>
+                ))
+              )}
+            </div>
+          </RevealOnScroll>
 
           {/* BOX LIÊN HỆ CỨU HỘ & BẢO TRÌ NHANH */}
-          <div className="service-detail-cta-box">
-            <div className="cta-box-text">
-              <h4 className="cta-box-title">
-                CẦN HỖ TRỢ KỸ THUẬT & BÁO GIÁ NHANH?
-              </h4>
-              <p className="cta-box-desc">
-                Đội ngũ kỹ thuật viên BOSS Đà Nẵng sẵn sàng có mặt sau 15 – 30 phút trên toàn địa bàn.
-              </p>
-            </div>
+          <RevealOnScroll animation="zoom-in" delay={200}>
+            <div className="service-detail-cta-box">
+              <div className="cta-box-text">
+                <h4 className="cta-box-title">
+                  CẦN HỖ TRỢ KỸ THUẬT & BÁO GIÁ NHANH?
+                </h4>
+                <p className="cta-box-desc">
+                  Đội ngũ kỹ thuật viên BOSS Đà Nẵng sẵn sàng có mặt sau 15 – 30 phút trên toàn địa bàn.
+                </p>
+              </div>
 
-            <div className="cta-box-btns">
-              <a href={`tel:${phoneCall}`} className="cta-btn-call">
-                <Phone size={16} /> GỌI THỢ NGAY: {serviceItem.phone || '0904.678.323'}
-              </a>
-              <a
-                href="https://zalo.me/0904678323"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="cta-btn-zalo"
-              >
-                💬 Zalo tư vấn
-              </a>
+              <div className="cta-box-btns">
+                <a href={`tel:${phoneCall}`} className="cta-btn-call">
+                  <Phone size={16} /> GỌI THỢ NGAY: {serviceItem.phone || '0904.678.323'}
+                </a>
+                <a
+                  href="https://zalo.me/0904678323"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="cta-btn-zalo"
+                >
+                  💬 Zalo tư vấn
+                </a>
+              </div>
             </div>
-          </div>
+          </RevealOnScroll>
         </div>
 
         {/* 4. CÁC DỊCH VỤ LIÊN QUAN */}
@@ -288,29 +302,36 @@ const ServiceDetail = () => {
 
                 <div className="related-news-grid">
                   {relatedServices.map((item, index) => (
-                    <div key={item._id || item.id || index} className="related-news-card">
-                      <div className="related-news-img-holder">
-                        <Link to={`/dich-vu/${getServiceSlug(item)}`}>
-                          <img src={formatImgSrc(item.img)} alt={item.title} />
-                        </Link>
-                        <span className="related-news-badge">
-                          <Calendar size={11} /> {item.date || 'Mới cập nhật'}
-                        </span>
-                      </div>
-                      <div className="related-news-info">
-                        <h4 className="related-news-item-title">
+                    <RevealOnScroll
+                      key={item._id || item.id || index}
+                      animation="fade-up"
+                      delay={index * 140}
+                      className="related-news-card-reveal-wrapper"
+                    >
+                      <div className="related-news-card">
+                        <div className="related-news-img-holder">
                           <Link to={`/dich-vu/${getServiceSlug(item)}`}>
-                            {item.title}
+                            <img src={formatImgSrc(item.img)} alt={item.title} />
                           </Link>
-                        </h4>
-                        <p className="related-news-excerpt">
-                          {item.desc || (item.content ? item.content.substring(0, 110) + '...' : '')}
-                        </p>
-                        <Link to={`/dich-vu/${getServiceSlug(item)}`} className="related-news-link">
-                          Xem chi tiết <ArrowRight size={13} />
-                        </Link>
+                          <span className="related-news-badge">
+                            <Calendar size={11} /> {item.date || 'Mới cập nhật'}
+                          </span>
+                        </div>
+                        <div className="related-news-info">
+                          <h4 className="related-news-item-title">
+                            <Link to={`/dich-vu/${getServiceSlug(item)}`}>
+                              {item.title}
+                            </Link>
+                          </h4>
+                          <p className="related-news-excerpt">
+                            {item.desc || (item.content ? item.content.substring(0, 110) + '...' : '')}
+                          </p>
+                          <Link to={`/dich-vu/${getServiceSlug(item)}`} className="related-news-link">
+                            Xem chi tiết <ArrowRight size={13} />
+                          </Link>
+                        </div>
                       </div>
-                    </div>
+                    </RevealOnScroll>
                   ))}
                 </div>
               </RevealOnScroll>
