@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Phone, Calendar, ArrowRight, Shield, Clock, MapPin, CheckCircle2,
   Send, Wrench, Search, X, ChevronRight, FileText, Headphones, Tag,
   ShieldCheck, RotateCcw, Award, Loader2
 } from 'lucide-react';
+import { getServiceSlug } from '../utils/slug';
+import './News.css';
 import './Services.css';
 import RevealOnScroll from '../components/RevealOnScroll';
 import { DEFAULT_SERVICES } from '../data/defaultServices';
@@ -25,7 +28,6 @@ const Services = () => {
   const { currentUser } = useAuth();
   const [servicesData, setServicesData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedService, setSelectedService] = useState(null);
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [formData, setFormData] = useState({
     name: currentUser?.fullName || '',
@@ -117,51 +119,21 @@ const Services = () => {
   return (
     <div className="boss-services-page site-293-style">
 
-      {/* 1. TOP BANNER HEADER */}
-      <div className="site293-top-banner">
-        <div className="banner-overlay"></div>
+      {/* 1. TOP BANNER HEADER (PHONG CÁCH TIN TỨC) */}
+      <div className="news-top-banner">
+        <div className="news-banner-overlay"></div>
         <div className="container relative-z">
-          <RevealOnScroll animation="fade-down" className="banner-text-box">
-            {/* Desktop Banner View (Giữ nguyên 100%) */}
-            <div className="desktop-svc-banner">
-              <h1>DỊCH VỤ BOSS ĐÀ NẴNG</h1>
-              <p className="banner-sub-desc">
-                Hệ thống phân phối, thi công & sửa chữa cửa cuốn, cửa kéo, cổng tự động chuyên nghiệp 24/7
-              </p>
-              <p className="banner-trust-line">
-                ⭐ Cam kết uy tín & bảo hành chính hãng 5 – 10 năm • Động cơ mô tơ 1 đổi 1 • Cứu hộ kỹ thuật thần tốc 24/7
-              </p>
-            </div>
-
-            {/* Mobile Banner View (Gọn gàng, ít chữ, có icon đẹp mắt) */}
-            <div className="mobile-svc-banner">
-              <h1>DỊCH VỤ BOSS ĐÀ NẴNG</h1>
-              <p className="mobile-sub-desc">
-                Thi công & sửa chữa cửa cuốn, cửa kéo chuyên nghiệp 24/7
-              </p>
-              <div className="mobile-svc-badges">
-                <div className="svc-badge-pill">
-                  <ShieldCheck size={14} />
-                  <span>Bảo hành 5 – 10 năm</span>
-                </div>
-                <div className="svc-badge-pill">
-                  <Clock size={14} />
-                  <span>Cứu hộ 24/7</span>
-                </div>
-                <div className="svc-badge-pill">
-                  <RotateCcw size={14} />
-                  <span>Mô tơ 1 đổi 1</span>
-                </div>
-              </div>
-            </div>
+          <RevealOnScroll animation="fade-down" className="news-banner-text">
+            <h1>DỊCH VỤ BOSS ĐÀ NẴNG</h1>
+            <p>Hệ thống phân phối, thi công & sửa chữa cửa cuốn, cửa kéo, cổng tự động chuyên nghiệp 24/7</p>
           </RevealOnScroll>
         </div>
       </div>
 
       {/* 2. BREADCRUMB */}
-      <div className="site293-breadcrumb">
+      <div className="news-breadcrumb">
         <div className="container">
-          <a href="/" title="Trang chủ">Trang chủ <ChevronRight size={14} /></a>
+          <Link to="/" title="Trang chủ">Trang chủ <ChevronRight size={14} /></Link>
           <span className="current-page">Dịch vụ</span>
         </div>
       </div>
@@ -171,26 +143,14 @@ const Services = () => {
         <div className="container">
 
           {/* Title Box */}
-          <RevealOnScroll animation="fade-left" className="site293-title-box">
-            <h2>Dịch vụ</h2>
+          <RevealOnScroll animation="fade-left" className="news-title-box">
+            <h2>Dịch Vụ Nổi Bật</h2>
             <div className="title-underline"></div>
           </RevealOnScroll>
 
-          {/* Service Cards Grid (3 Columns) with Staggered Fade-Up Animations */}
+          {/* Service Cards Grid (Phong cách Tin tức) */}
           {loading ? (
-            <div className="site293-news-grid">
-              {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="site293-news-card skeleton-card">
-                  <div className="img-article-wrap skeleton-img" style={{ minHeight: '210px', background: 'linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%)', backgroundSize: '200% 100%', animation: 'skeleton-shimmer 1.5s infinite' }}></div>
-                  <div className="nd-article">
-                    <div style={{ height: '22px', width: '85%', background: '#e2e8f0', borderRadius: '4px', marginBottom: '12px' }}></div>
-                    <div style={{ height: '14px', width: '100%', background: '#f1f5f9', borderRadius: '4px', marginBottom: '8px' }}></div>
-                    <div style={{ height: '14px', width: '70%', background: '#f1f5f9', borderRadius: '4px', marginBottom: '16px' }}></div>
-                    <div style={{ height: '34px', width: '120px', background: '#e2e8f0', borderRadius: '6px' }}></div>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <div className="news-loading">Đang tải danh sách dịch vụ...</div>
           ) : servicesData.length === 0 ? (
             <div className="services-empty-state" style={{ textAlign: 'center', padding: '3.5rem 1.5rem', background: '#f8fafc', borderRadius: '16px', border: '1px dashed #cbd5e1', margin: '1rem 0' }}>
               <Wrench size={44} style={{ color: '#94a3b8', margin: '0 auto 1rem', display: 'block' }} />
@@ -205,7 +165,7 @@ const Services = () => {
               </a>
             </div>
           ) : (
-            <div className="site293-news-grid">
+            <div className="news-page-grid">
               {servicesData.map((item, index) => (
                 <RevealOnScroll
                   key={item._id || item.id || index}
@@ -213,28 +173,27 @@ const Services = () => {
                   delay={(index % 3) * 120}
                   duration={650}
                 >
-                  <div className="site293-news-card">
-                    <div className="img-article-wrap">
-                      <img src={formatImgSrc(item.img)} alt={item.title} />
-                      <span className="sp-date">
+                  <div className="news-page-card">
+                    <div className="news-img-wrap">
+                      <Link to={`/dich-vu/${getServiceSlug(item)}`}>
+                        <img src={formatImgSrc(item.img)} alt={item.title} />
+                      </Link>
+                      <span className="news-date-badge">
                         <Calendar size={13} /> {item.date || 'Mới cập nhật'}
                       </span>
                     </div>
-                    <div className="nd-article">
-                      <h3 className="title-article">
-                        <button onClick={() => setSelectedService(item)}>
+                    <div className="news-card-content">
+                      <h3 className="news-card-title">
+                        <Link to={`/dich-vu/${getServiceSlug(item)}`}>
                           {item.title}
-                        </button>
+                        </Link>
                       </h3>
-                      <div className="body-content">
-                        {item.desc}
+                      <div className="news-card-summary">
+                        {item.desc || (item.content ? item.content.replace(/<[^>]*>?/gm, '').substring(0, 140) + '...' : '')}
                       </div>
-                      <button
-                        className="btn-readmore-293"
-                        onClick={() => setSelectedService(item)}
-                      >
+                      <Link to={`/dich-vu/${getServiceSlug(item)}`} className="btn-news-readmore">
                         Xem chi tiết <ArrowRight size={14} />
-                      </button>
+                      </Link>
                     </div>
                   </div>
                 </RevealOnScroll>
@@ -244,44 +203,6 @@ const Services = () => {
 
         </div>
       </main>
-
-      {/* 4. DETAIL MODAL POPUP */}
-      {selectedService && (
-        <div className="site293-modal-overlay" onClick={() => setSelectedService(null)}>
-          <div className="site293-modal-card" onClick={(e) => e.stopPropagation()}>
-            <button className="modal-close-btn" onClick={() => setSelectedService(null)}>
-              <X size={22} />
-            </button>
-            <div className="modal-header">
-              <span className="modal-date"><Calendar size={14} /> Ngày đăng: {selectedService.date || 'Mới cập nhật'}</span>
-              <h2>{selectedService.title}</h2>
-            </div>
-            <div className="modal-img-wrap">
-              <img src={formatImgSrc(selectedService.img)} alt={selectedService.title} />
-            </div>
-            <div className="modal-body-text">
-              {selectedService.desc && <p className="modal-desc">{selectedService.desc}</p>}
-              <div className="modal-detail-content project-article-rendered-content">
-                {selectedService.content && selectedService.content.includes('<') ? (
-                  <div dangerouslySetInnerHTML={{ __html: selectedService.content }} />
-                ) : (
-                  (selectedService.content || '').split('\n').map((line, idx) => (
-                    <p key={idx}>{line}</p>
-                  ))
-                )}
-              </div>
-            </div>
-            <div className="modal-footer">
-              <a href={`tel:${selectedService.phone ? selectedService.phone.replace(/[^0-9]/g, '') : '0904678323'}`} className="btn-modal-call">
-                <Phone size={16} /> GỌI THỢ NGAY: {selectedService.phone || '0904.678.323'}
-              </a>
-              <button className="btn-modal-close" onClick={() => setSelectedService(null)}>
-                Đóng
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* 5. QUICK BOOKING FORM SECTION */}
       <section className="site293-booking-section" id="quote-form-section">

@@ -17,7 +17,7 @@ import AdminProductQuickInfoCard from "../components/AdminProductQuickInfoCard";
 import { getProductCardDescription } from "../utils/productDescriptionHelper";
 import { formatProductPrice } from "../utils/priceFormatter";
 import { useAuth } from "../context/AuthContext";
-import { slugify } from "../utils/slug.js";
+import { slugify, getServiceSlug } from "../utils/slug.js";
 import { matchKeywords, extractSearchableText } from "../utils/searchHelper";
 import { DEFAULT_SERVICES as DEFAULT_SAMPLE_SERVICES } from "../data/defaultServices";
 import { compressImage } from "../utils/imageCompressor";
@@ -3037,7 +3037,7 @@ export default function Admin() {
                             <div style={{ fontSize: "0.78rem", color: "#38bdf8", marginTop: 4, display: "flex", alignItems: "center", gap: 8 }}>
                               <span>📞 Hotline: {s.phone || "0904.678.323"}</span>
                               <span>•</span>
-                              <Link to="/dich-vu" target="_blank" style={{ color: "#38bdf8", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 3 }}>
+                              <Link to={`/dich-vu/${getServiceSlug(s)}`} target="_blank" style={{ color: "#38bdf8", textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 3 }}>
                                 <ExternalLink size={12} /> Xem trên web
                               </Link>
                             </div>

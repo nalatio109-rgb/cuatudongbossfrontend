@@ -75,4 +75,20 @@ export function getProjectSlug(project) {
   return String(project._id || project.id || "").toLowerCase();
 }
 
+/**
+ * Lấy slug chuẩn không dấu cho một dịch vụ.
+ * Ví dụ: "Sửa chữa cửa cuốn 24/24 tại Đà Nẵng"
+ * -> "sua-chua-cua-cuon-24-24-tai-da-nang"
+ */
+export function getServiceSlug(service) {
+  if (!service) return "";
+  if (service.slug && typeof service.slug === "string" && service.slug.trim().length > 0) {
+    return service.slug.trim();
+  }
+  if (service.title && typeof service.title === "string") {
+    return slugify(service.title);
+  }
+  return String(service._id || service.id || "").toLowerCase();
+}
+
 
