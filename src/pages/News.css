@@ -1310,14 +1310,10 @@
     font-size: 1.15rem !important;
     letter-spacing: -0.2px !important;
   }
-  .related-news-desc {
-    font-size: 0.78rem !important;
-    line-height: 1.45 !important;
-  }
+  /* Trên điện thoại (Mobile): Ẩn dòng mô tả phụ và nút Xem tất cả theo yêu cầu */
+  .related-news-desc,
   .related-news-view-all {
-    font-size: 0.78rem !important;
-    padding: 6px 12px !important;
-    border-radius: 6px !important;
+    display: none !important;
   }
   .related-news-grid {
     grid-template-columns: 1fr !important;
