@@ -715,35 +715,108 @@
     height: 3px;
   }
   .news-page-grid {
-    gap: 1.1rem;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
   }
+
+  /* BỐ CỤC THẺ HÀNG NGANG TRÊN ĐIỆN THOẠI (ẢNH BÊN TRÁI + NỘI DUNG BÊN PHẢI GIỐNG ẢNH 2) */
+  .news-page-card {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+    padding: 10px !important;
+    border-radius: 14px !important;
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04) !important;
+    height: auto !important;
+    min-height: 115px !important;
+    position: relative !important;
+    overflow: hidden !important;
+  }
+
   .news-img-wrap {
-    height: 170px;
+    width: 120px !important;
+    min-width: 120px !important;
+    max-width: 120px !important;
+    height: auto !important;
+    min-height: 110px !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
+    flex-shrink: 0 !important;
+    position: relative !important;
+    background: #f1f5f9 !important;
   }
+
+  .news-img-wrap img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    border-radius: 10px !important;
+  }
+
   .news-date-badge {
-    font-size: 0.7rem;
-    padding: 3px 8px;
+    position: absolute !important;
+    top: 6px !important;
+    left: 6px !important;
+    bottom: auto !important;
+    right: auto !important;
+    font-size: 0.62rem !important;
+    padding: 2px 6px !important;
+    border-radius: 6px !important;
+    gap: 3px !important;
+    background: rgba(4, 60, 35, 0.92) !important;
+    backdrop-filter: blur(4px) !important;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25) !important;
   }
+
   .news-card-content {
-    padding: 0.95rem 0.9rem;
+    padding: 2px 4px 2px 2px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    flex: 1 !important;
+    min-width: 0 !important;
   }
+
+  .news-card-title {
+    margin: 0 0 4px 0 !important;
+    line-height: 1.3 !important;
+  }
+
   .news-card-title a {
-    font-size: 0.95rem;
-    font-weight: 750;
-    line-height: 1.38;
-    color: #043c23;
+    font-size: 0.92rem !important;
+    font-weight: 800 !important;
+    color: #043c23 !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    line-height: 1.35 !important;
   }
+
   .news-card-summary {
-    font-size: 0.82rem;
-    line-height: 1.52;
-    color: #475569;
-    margin-bottom: 0.85rem;
-    -webkit-line-clamp: 3;
+    font-size: 0.78rem !important;
+    line-height: 1.45 !important;
+    color: #475569 !important;
+    margin-bottom: 6px !important;
+    display: -webkit-box !important;
+    -webkit-line-clamp: 2 !important;
+    -webkit-box-orient: vertical !important;
+    overflow: hidden !important;
+    flex: 1 !important;
   }
+
   .btn-news-readmore {
-    font-size: 0.82rem;
-    font-weight: 750;
-    color: #043c23;
+    font-size: 0.78rem !important;
+    font-weight: 750 !important;
+    color: #07522f !important;
+    gap: 4px !important;
+    margin-top: auto !important;
+    display: inline-flex !important;
+    align-items: center !important;
   }
 
   /* 4. News & Service Detail Mobile Typography (Nhỏ gọn, thoáng, dễ đọc) */
@@ -1066,6 +1139,11 @@
 }
 
 @media (max-width: 380px) {
+  .news-img-wrap {
+    width: 105px !important;
+    min-width: 105px !important;
+    max-width: 105px !important;
+  }
   .cta-box-title {
     font-size: 0.9rem !important;
   }
