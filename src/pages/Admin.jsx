@@ -2413,7 +2413,8 @@ export default function Admin() {
                   onClick={() => setProductSubTab("list")}
                 >
                   <Package size={17} />
-                  <span>Danh Mục Sản Phẩm</span>
+                  <span className="desktop-subnav-text">Danh Mục Sản Phẩm</span>
+                  <span className="mobile-subnav-text">Danh Mục SP</span>
                   <span className="subnav-count-pill">{products.length}</span>
                 </button>
 
@@ -2425,7 +2426,8 @@ export default function Admin() {
                   }}
                 >
                   <FileEdit size={17} />
-                  <span>Soạn Bài Chi Tiết SP & SEO (Word)</span>
+                  <span className="desktop-subnav-text">Soạn Bài Chi Tiết SP & SEO (Word)</span>
+                  <span className="mobile-subnav-text">Soạn Bài Viết</span>
                   {editingArticleCode && (
                     <span className="subnav-active-code-pill">
                       {editingArticleCode === "NEW" ? "✨ TẠO MỚI" : editingArticleCode}
