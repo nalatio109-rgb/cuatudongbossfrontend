@@ -549,22 +549,60 @@ a.project-article-link:hover {
 
 @media (max-width: 768px) {
   .project-article-body-wrapper {
-    padding: 1.2rem 0.85rem;
+    padding: 1rem 0.75rem;
   }
   .project-article-rendered-content {
-    font-size: 0.9rem !important;
-    line-height: 1.68 !important;
+    font-size: 0.85rem !important;
+    line-height: 1.62 !important;
+  }
+  .project-article-rendered-content span,
+  .project-article-rendered-content font,
+  .project-article-rendered-content strong,
+  .project-article-rendered-content b,
+  .project-article-rendered-content em,
+  .project-article-rendered-content i,
+  .project-article-rendered-content a,
+  .project-article-rendered-content [style*="font-size"],
+  .project-article-rendered-content h1 *,
+  .project-article-rendered-content h2 *,
+  .project-article-rendered-content h3 *,
+  .project-article-rendered-content h4 *,
+  .project-article-rendered-content h5 *,
+  .project-article-rendered-content h6 *,
+  .project-article-rendered-content p * {
+    font-size: inherit !important;
+    line-height: inherit !important;
   }
   .project-article-rendered-content p {
-    font-size: 0.9rem !important;
-    line-height: 1.68 !important;
-    margin-bottom: 0.85rem !important;
+    font-size: 0.85rem !important;
+    line-height: 1.62 !important;
+    margin-bottom: 0.75rem !important;
+  }
+  .project-article-rendered-content h1,
+  .project-article-rendered-content h1[style*="font-size"] {
+    font-size: 1.02rem !important;
+    line-height: 1.35 !important;
+    margin: 1rem 0 0.35rem !important;
   }
   .project-article-rendered-content h2,
-  .project-article-rendered-content h3 {
-    font-size: 1.08rem !important;
-    line-height: 1.4 !important;
-    margin: 1.15rem 0 0.45rem !important;
+  .project-article-rendered-content h2[style*="font-size"] {
+    font-size: 0.98rem !important;
+    line-height: 1.35 !important;
+    margin: 0.95rem 0 0.35rem !important;
+  }
+  .project-article-rendered-content h3,
+  .project-article-rendered-content h3[style*="font-size"] {
+    font-size: 0.94rem !important;
+    line-height: 1.35 !important;
+    margin: 0.9rem 0 0.3rem !important;
+  }
+  .project-article-rendered-content h4,
+  .project-article-rendered-content h4[style*="font-size"],
+  .project-article-rendered-content h5,
+  .project-article-rendered-content h6 {
+    font-size: 0.9rem !important;
+    line-height: 1.35 !important;
+    margin: 0.85rem 0 0.3rem !important;
   }
 }
 

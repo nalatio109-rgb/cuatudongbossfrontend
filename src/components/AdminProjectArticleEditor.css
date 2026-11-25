@@ -1121,3 +1121,75 @@ a.project-article-link:hover {
   }
 }
 
+@media (max-width: 768px) {
+  .article-content-editable,
+  .preview-article-canvas {
+    font-size: 13.5px !important;
+    line-height: 1.62 !important;
+    padding: 14px 12px !important;
+  }
+  .article-content-editable span,
+  .preview-article-canvas span,
+  .article-content-editable font,
+  .preview-article-canvas font,
+  .article-content-editable strong,
+  .preview-article-canvas strong,
+  .article-content-editable b,
+  .preview-article-canvas b,
+  .article-content-editable [style*="font-size"],
+  .preview-article-canvas [style*="font-size"],
+  .article-content-editable h1 *,
+  .article-content-editable h2 *,
+  .article-content-editable h3 *,
+  .article-content-editable h4 *,
+  .article-content-editable p *,
+  .preview-article-canvas h1 *,
+  .preview-article-canvas h2 *,
+  .preview-article-canvas h3 *,
+  .preview-article-canvas h4 *,
+  .preview-article-canvas p * {
+    font-size: inherit !important;
+    line-height: inherit !important;
+  }
+  .article-content-editable h1,
+  .preview-article-canvas h1,
+  .article-content-editable h1[style*="font-size"],
+  .preview-article-canvas h1[style*="font-size"] {
+    font-size: 16px !important;
+    line-height: 1.35 !important;
+    margin: 14px 0 6px 0 !important;
+  }
+  .article-content-editable h2,
+  .preview-article-canvas h2,
+  .article-content-editable h2[style*="font-size"],
+  .preview-article-canvas h2[style*="font-size"] {
+    font-size: 15.5px !important;
+    line-height: 1.35 !important;
+    margin: 13px 0 5px 0 !important;
+  }
+  .article-content-editable h3,
+  .preview-article-canvas h3,
+  .article-content-editable h3[style*="font-size"],
+  .preview-article-canvas h3[style*="font-size"] {
+    font-size: 15px !important;
+    line-height: 1.35 !important;
+    margin: 12px 0 5px 0 !important;
+  }
+  .article-content-editable h4,
+  .preview-article-canvas h4,
+  .article-content-editable h4[style*="font-size"],
+  .preview-article-canvas h4[style*="font-size"] {
+    font-size: 14px !important;
+    line-height: 1.35 !important;
+    margin: 10px 0 4px 0 !important;
+  }
+  .article-content-editable p,
+  .preview-article-canvas p,
+  .article-content-editable p[style*="font-size"],
+  .preview-article-canvas p[style*="font-size"] {
+    font-size: 13.5px !important;
+    line-height: 1.62 !important;
+    margin-bottom: 10px !important;
+  }
+}
+
