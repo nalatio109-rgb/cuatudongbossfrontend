@@ -1651,18 +1651,38 @@
   display: flex;
   gap: 24px;
   background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 18px 22px;
-  transition: all 0.25s ease;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  border-radius: 16px;
+  padding: 20px 22px;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04), 0 2px 6px -1px rgba(0, 0, 0, 0.02);
+  position: relative;
+  overflow: hidden;
+}
+
+.pricing-article-list-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, #07522f 0%, #10b981 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-top-left-radius: 16px;
+  border-bottom-left-radius: 16px;
 }
 
 .pricing-article-list-card:hover {
-  border-color: #005a3c;
-  box-shadow: 0 8px 24px rgba(0, 90, 60, 0.09);
-  transform: translateY(-2px);
+  border-color: rgba(7, 82, 47, 0.35);
+  box-shadow: 0 16px 36px -4px rgba(7, 82, 47, 0.12), 0 6px 12px -2px rgba(0, 0, 0, 0.04);
+  transform: translateY(-4px);
+}
+
+.pricing-article-list-card:hover::before {
+  opacity: 1;
 }
 
 .card-thumb-column {
@@ -1673,51 +1693,58 @@
   position: relative;
   width: 290px;
   height: 180px;
-  border-radius: 6px;
+  border-radius: 12px;
   overflow: hidden;
   background: #f1f5f9;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
 }
 
 .card-thumb-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.35s ease;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .pricing-article-list-card:hover .card-thumb-image {
-  transform: scale(1.04);
+  transform: scale(1.06);
 }
 
-/* Watermark logo góc trên bên trái khớp chuẩn 100% Ảnh 3 */
+/* Watermark logo góc trên bên trái thiết kế mềm mại, tinh tế */
 .thumb-boss-watermark {
   position: absolute;
   top: 10px;
   left: 10px;
-  background: #f5bd18;
-  border: 1.5px solid #004d32;
-  border-radius: 3px;
-  padding: 3px 8px;
+  background: linear-gradient(135deg, #f5bd20 0%, #eab308 100%);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: 8px;
+  padding: 4px 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25), 0 0 10px rgba(245, 189, 32, 0.4);
+  backdrop-filter: blur(4px);
   z-index: 2;
+  transition: transform 0.3s ease;
+}
+
+.pricing-article-list-card:hover .thumb-boss-watermark {
+  transform: scale(1.05);
 }
 
 .thumb-boss-watermark .wm-title {
   font-size: 13px;
   font-weight: 900;
-  color: #004d32;
+  color: #043c23;
   line-height: 1.1;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
 }
 
 .thumb-boss-watermark .wm-sub {
   font-size: 8px;
   font-weight: 800;
-  color: #004d32;
+  color: #043c23;
   line-height: 1;
   margin-top: 1px;
 }
@@ -1731,22 +1758,22 @@
 
 .card-article-title {
   font-size: 20px;
-  font-weight: 700;
-  color: #0f172a;
+  font-weight: 800;
+  color: #07522f;
   margin: 0 0 10px 0;
-  line-height: 1.4;
+  line-height: 1.38;
+  letter-spacing: -0.2px;
 }
 
 .article-title-link {
-  color: #0f172a;
+  color: #07522f;
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition: color 0.25s ease;
 }
 
 .pricing-article-list-card:hover .article-title-link,
 .article-title-link:hover {
-  color: #005a3c;
-  text-decoration: underline;
+  color: #059669;
 }
 
 .card-article-excerpt {
@@ -1760,25 +1787,79 @@
   overflow: hidden;
 }
 
+/* Dải thông tin Meta thiết kế dạng Badge / Pill mềm mại */
 .card-article-meta-row {
   display: flex;
   align-items: center;
-  gap: 22px;
+  justify-content: space-between;
+  gap: 12px;
   font-size: 13.5px;
   color: #64748b;
   font-weight: 500;
   margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid #f1f5f9;
+  flex-wrap: wrap;
 }
 
-.card-article-meta-row .meta-date,
-.card-article-meta-row .meta-category {
+.card-meta-left {
   display: flex;
   align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.card-article-meta-row .meta-date {
+  display: inline-flex;
+  align-items: center;
   gap: 6px;
+  background: #f8fafc;
+  color: #475569;
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid #e2e8f0;
+}
+
+.card-article-meta-row .meta-category {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(7, 82, 47, 0.08);
+  color: #07522f;
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid rgba(7, 82, 47, 0.18);
 }
 
 .card-article-meta-row .meta-icon {
-  color: #005a3c;
+  color: #07522f;
+}
+
+.card-article-read-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #07522f;
+  font-size: 13.5px;
+  font-weight: 700;
+  margin-left: auto;
+  transition: all 0.25s ease;
+}
+
+.card-article-read-more .arrow-icon {
+  transition: transform 0.25s ease;
+}
+
+.pricing-article-list-card:hover .card-article-read-more {
+  color: #059669;
+}
+
+.pricing-article-list-card:hover .card-article-read-more .arrow-icon {
+  transform: translateX(4px);
 }
 
 .empty-search-state {
@@ -1915,19 +1996,39 @@
     flex-direction: column;
     gap: 14px;
     padding: 14px;
+    border-radius: 14px;
   }
 
   .card-thumb-wrapper {
     width: 100%;
-    height: 190px;
+    height: 185px;
+    border-radius: 10px;
   }
 
   .card-article-title {
-    font-size: 17px;
+    font-size: 1.05rem;
+    margin-bottom: 6px;
   }
 
   .card-article-excerpt {
     font-size: 13.5px;
+    line-height: 1.5;
     -webkit-line-clamp: 2;
+    margin-bottom: 8px;
+  }
+
+  .card-article-meta-row {
+    padding-top: 10px;
+    gap: 8px;
+  }
+
+  .card-article-meta-row .meta-date,
+  .card-article-meta-row .meta-category {
+    font-size: 11.5px;
+    padding: 3px 9px;
+  }
+
+  .card-article-read-more {
+    font-size: 12px;
   }
 }

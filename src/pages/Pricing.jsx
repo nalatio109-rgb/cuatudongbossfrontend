@@ -257,13 +257,19 @@ export default function Pricing() {
                 <p className="card-article-excerpt">{article.excerpt}</p>
 
                 <div className="card-article-meta-row">
-                  <span className="meta-date">
-                    <Calendar size={14} className="meta-icon" />
-                    <span>{article.publishDate}</span>
-                  </span>
-                  <span className="meta-category">
-                    <Folder size={14} className="meta-icon" />
-                    <span>{article.category}</span>
+                  <div className="card-meta-left">
+                    <span className="meta-date">
+                      <Calendar size={13} className="meta-icon" />
+                      <span>{article.publishDate}</span>
+                    </span>
+                    <span className="meta-category">
+                      <Folder size={13} className="meta-icon" />
+                      <span>{article.category}</span>
+                    </span>
+                  </div>
+                  <span className="card-article-read-more">
+                    <span>Xem bảng giá</span>
+                    <ArrowRight size={14} className="arrow-icon" />
                   </span>
                 </div>
               </div>
