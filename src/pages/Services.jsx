@@ -302,7 +302,7 @@ const Services = () => {
                   ></textarea>
                 </div>
 
-                <div className="text-center" style={{ marginTop: '1.5rem' }}>
+                <div className="text-center form-submit-wrap" style={{ marginTop: '1.5rem' }}>
                   <button type="submit" className="btn-brand-red">
                     <Send size={18} /> GỬI YÊU CẦU TƯ VẤN NGAY
                   </button>
