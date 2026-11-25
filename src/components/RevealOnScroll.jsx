@@ -10,29 +10,44 @@ export default function RevealOnScroll({
   const elementRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
 
-
   useEffect(() => {
     const element = elementRef.current;
     if (!element) return;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.unobserve(element);
+    // Safety fallback: Tự động hiển thị sau tối đa 600ms nếu observer chưa kích hoạt
+    // Đảm bảo không bao giờ có phần tử nào bị kẹt ẩn (opacity: 0)
+    const safetyTimer = setTimeout(() => {
+      setIsVisible(true);
+    }, 600);
+
+    let observer = null;
+    if (typeof IntersectionObserver !== "undefined") {
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting || entry.intersectionRatio > 0) {
+            setIsVisible(true);
+            clearTimeout(safetyTimer);
+            if (observer && element) {
+              observer.unobserve(element);
+            }
+          }
+        },
+        {
+          threshold: 0.01,
+          rootMargin: "50px 0px 0px 0px",
         }
-      },
-      {
-        threshold: 0.1,
-        rootMargin: "0px 0px -40px 0px",
-      }
-    );
+      );
 
-    observer.observe(element);
+      observer.observe(element);
+    } else {
+      setIsVisible(true);
+    }
 
-    return () => observer.disconnect();
+    return () => {
+      clearTimeout(safetyTimer);
+      if (observer) observer.disconnect();
+    };
   }, []);
-
 
   return (
     <div

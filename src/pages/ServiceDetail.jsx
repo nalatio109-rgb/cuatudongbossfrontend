@@ -6,6 +6,7 @@ import { getServiceSlug, slugify } from '../utils/slug';
 import { DEFAULT_SERVICES } from '../data/defaultServices';
 import './News.css';
 import './Services.css';
+import './ProjectDetail.css';
 
 const formatImgSrc = (src) => {
   if (!src) return '/service_repair_247.png';
@@ -151,7 +152,8 @@ const ServiceDetail = () => {
     );
   }
 
-  const phoneCall = serviceItem.phone ? serviceItem.phone.replace(/[^0-9]/g, '') : '0904678323';
+  const rawPhone = String(serviceItem.phone || '0904.678.323');
+  const phoneCall = rawPhone.replace(/[^0-9]/g, '') || '0904678323';
 
   return (
     <div className="boss-news-page site-293-style">
@@ -159,10 +161,10 @@ const ServiceDetail = () => {
       <div className="news-top-banner">
         <div className="news-banner-overlay"></div>
         <div className="container relative-z">
-          <RevealOnScroll animation="fade-down" className="news-banner-text">
+          <div className="news-banner-text">
             <h1>DỊCH VỤ BOSS ĐÀ NẴNG</h1>
             <p>Hệ thống thi công, bảo trì & sửa chữa cửa cuốn, cửa kéo, cổng tự động chuyên nghiệp 24/7</p>
-          </RevealOnScroll>
+          </div>
         </div>
       </div>
 
@@ -178,135 +180,133 @@ const ServiceDetail = () => {
       {/* 3. MAIN CONTENT CHI TIẾT DỊCH VỤ */}
       <main className="site293-main-content section-space news-detail-main">
         <div className="container news-detail-container">
-          <RevealOnScroll animation="fade-up">
-            <Link to="/dich-vu" className="back-link">
-              <ArrowLeft size={16} /> Quay lại danh sách dịch vụ
-            </Link>
+          <Link to="/dich-vu" className="back-link">
+            <ArrowLeft size={16} /> Quay lại danh sách dịch vụ
+          </Link>
 
-            <h1 className="news-detail-title">{serviceItem.title}</h1>
+          <h1 className="news-detail-title">{serviceItem.title}</h1>
 
-            <div className="news-detail-meta" style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
-              <span className="news-date">
-                <Calendar size={18} /> {serviceItem.date || 'Cập nhật mới'}
-              </span>
+          <div className="news-detail-meta" style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
+            <span className="news-date">
+              <Calendar size={18} /> {serviceItem.date || 'Cập nhật mới'}
+            </span>
+            <a
+              href={`tel:${phoneCall}`}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                color: '#dc2626',
+                fontWeight: 700,
+                fontSize: '0.9rem',
+                textDecoration: 'none'
+              }}
+            >
+              <Phone size={16} /> Hotline: {serviceItem.phone || '0904.678.323'}
+            </a>
+          </div>
+
+          {serviceItem.img && (
+            <div className="news-detail-image">
+              <img src={formatImgSrc(serviceItem.img)} alt={serviceItem.title} />
+            </div>
+          )}
+
+          {serviceItem.desc && (
+            <div
+              style={{
+                background: '#f8fafc',
+                borderLeft: '4px solid #043c23',
+                padding: '16px 20px',
+                margin: '20px 0 28px 0',
+                borderRadius: '0 8px 8px 0',
+                color: '#1e293b',
+                fontSize: '1.02rem',
+                lineHeight: 1.7,
+                fontWeight: 500
+              }}
+            >
+              {serviceItem.desc}
+            </div>
+          )}
+
+          <div className="news-detail-content project-article-rendered-content">
+            {serviceItem.content && serviceItem.content.includes('<') ? (
+              <div dangerouslySetInnerHTML={{ __html: serviceItem.content }} />
+            ) : (
+              (serviceItem.content || '').split('\n').map((line, idx) => (
+                <p key={idx} style={{ lineHeight: 1.8, marginBottom: '14px', color: '#334155' }}>
+                  {line}
+                </p>
+              ))
+            )}
+          </div>
+
+          {/* BOX LIÊN HỆ CỨU HỘ & BẢO TRÌ NHANH */}
+          <div
+            style={{
+              marginTop: '3rem',
+              padding: '24px',
+              background: 'linear-gradient(135deg, #043c23 0%, #065f46 100%)',
+              color: '#ffffff',
+              borderRadius: '14px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: '16px',
+              boxShadow: '0 10px 25px rgba(4, 60, 35, 0.25)'
+            }}
+          >
+            <div>
+              <h4 style={{ margin: '0 0 6px 0', fontSize: '1.2rem', color: '#f5bd20', fontWeight: 800 }}>
+                CẦN HỖ TRỢ KỸ THUẬT & BÁO GIÁ NHANH?
+              </h4>
+              <p style={{ margin: 0, fontSize: '0.92rem', color: '#e2e8f0' }}>
+                Đội ngũ kỹ thuật viên BOSS Đà Nẵng sẵn sàng có mặt sau 15 – 30 phút trên toàn địa bàn.
+              </p>
+            </div>
+
+            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
               <a
                 href={`tel:${phoneCall}`}
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
-                  gap: '6px',
-                  color: '#dc2626',
+                  gap: '8px',
+                  padding: '10px 22px',
+                  background: '#dc2626',
+                  color: '#ffffff',
                   fontWeight: 700,
-                  fontSize: '0.9rem',
-                  textDecoration: 'none'
+                  borderRadius: '8px',
+                  textDecoration: 'none',
+                  fontSize: '0.92rem',
+                  boxShadow: '0 4px 12px rgba(220, 38, 38, 0.35)'
                 }}
               >
-                <Phone size={16} /> Hotline: {serviceItem.phone || '0904.678.323'}
+                <Phone size={16} /> GỌI THỢ NGAY: {serviceItem.phone || '0904.678.323'}
+              </a>
+              <a
+                href="https://zalo.me/0904678323"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '10px 20px',
+                  background: '#ffffff',
+                  color: '#043c23',
+                  fontWeight: 700,
+                  borderRadius: '8px',
+                  textDecoration: 'none',
+                  fontSize: '0.92rem'
+                }}
+              >
+                💬 Zalo tư vấn
               </a>
             </div>
-
-            {serviceItem.img && (
-              <div className="news-detail-image">
-                <img src={formatImgSrc(serviceItem.img)} alt={serviceItem.title} />
-              </div>
-            )}
-
-            {serviceItem.desc && (
-              <div
-                style={{
-                  background: '#f8fafc',
-                  borderLeft: '4px solid #043c23',
-                  padding: '16px 20px',
-                  margin: '20px 0 28px 0',
-                  borderRadius: '0 8px 8px 0',
-                  color: '#1e293b',
-                  fontSize: '1.02rem',
-                  lineHeight: 1.7,
-                  fontWeight: 500
-                }}
-              >
-                {serviceItem.desc}
-              </div>
-            )}
-
-            <div className="news-detail-content project-article-rendered-content">
-              {serviceItem.content && serviceItem.content.includes('<') ? (
-                <div dangerouslySetInnerHTML={{ __html: serviceItem.content }} />
-              ) : (
-                (serviceItem.content || '').split('\n').map((line, idx) => (
-                  <p key={idx} style={{ lineHeight: 1.8, marginBottom: '14px', color: '#334155' }}>
-                    {line}
-                  </p>
-                ))
-              )}
-            </div>
-
-            {/* BOX LIÊN HỆ CỨU HỘ & BẢO TRÌ NHANH */}
-            <div
-              style={{
-                marginTop: '3rem',
-                padding: '24px',
-                background: 'linear-gradient(135deg, #043c23 0%, #065f46 100%)',
-                color: '#ffffff',
-                borderRadius: '14px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                flexWrap: 'wrap',
-                gap: '16px',
-                boxShadow: '0 10px 25px rgba(4, 60, 35, 0.25)'
-              }}
-            >
-              <div>
-                <h4 style={{ margin: '0 0 6px 0', fontSize: '1.2rem', color: '#f5bd20', fontWeight: 800 }}>
-                  CẦN HỖ TRỢ KỸ THUẬT & BÁO GIÁ NHANH?
-                </h4>
-                <p style={{ margin: 0, fontSize: '0.92rem', color: '#e2e8f0' }}>
-                  Đội ngũ kỹ thuật viên BOSS Đà Nẵng sẵn sàng có mặt sau 15 – 30 phút trên toàn địa bàn.
-                </p>
-              </div>
-
-              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                <a
-                  href={`tel:${phoneCall}`}
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    padding: '10px 22px',
-                    background: '#dc2626',
-                    color: '#ffffff',
-                    fontWeight: 700,
-                    borderRadius: '8px',
-                    textDecoration: 'none',
-                    fontSize: '0.92rem',
-                    boxShadow: '0 4px 12px rgba(220, 38, 38, 0.35)'
-                  }}
-                >
-                  <Phone size={16} /> GỌI THỢ NGAY: {serviceItem.phone || '0904.678.323'}
-                </a>
-                <a
-                  href="https://zalo.me/0904678323"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    padding: '10px 20px',
-                    background: '#ffffff',
-                    color: '#043c23',
-                    fontWeight: 700,
-                    borderRadius: '8px',
-                    textDecoration: 'none',
-                    fontSize: '0.92rem'
-                  }}
-                >
-                  💬 Zalo tư vấn
-                </a>
-              </div>
-            </div>
-          </RevealOnScroll>
+          </div>
         </div>
 
         {/* 4. CÁC DỊCH VỤ LIÊN QUAN */}

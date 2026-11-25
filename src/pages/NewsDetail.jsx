@@ -206,30 +206,28 @@ const NewsDetail = () => {
       {/* 3. MAIN CONTENT */}
       <main className="site293-main-content section-space news-detail-main">
         <div className="container news-detail-container">
-          <RevealOnScroll animation="fade-up">
-            <Link to="/tin-tuc" className="back-link">
-              <ArrowLeft size={16} /> Quay lại tin tức
-            </Link>
-            
-            <h1 className="news-detail-title">{newsItem.title}</h1>
-            
-            <div className="news-detail-meta">
-              <span className="news-date">
-                <Calendar size={19} /> {newsItem.date || (newsItem.createdAt ? new Date(newsItem.createdAt).toLocaleDateString('vi-VN') : "")}
-              </span>
-            </div>
+          <Link to="/tin-tuc" className="back-link">
+            <ArrowLeft size={16} /> Quay lại tin tức
+          </Link>
+          
+          <h1 className="news-detail-title">{newsItem.title}</h1>
+          
+          <div className="news-detail-meta">
+            <span className="news-date">
+              <Calendar size={19} /> {newsItem.date || (newsItem.createdAt ? new Date(newsItem.createdAt).toLocaleDateString('vi-VN') : "")}
+            </span>
+          </div>
 
-            {newsItem.image && (
-              <div className="news-detail-image">
-                <img src={newsItem.image} alt={newsItem.title} />
-              </div>
-            )}
-
-            <div className="news-detail-content">
-              {/* If content is HTML, use dangerouslySetInnerHTML, otherwise just display it */}
-              <div dangerouslySetInnerHTML={{ __html: newsItem.content }} />
+          {newsItem.image && (
+            <div className="news-detail-image">
+              <img src={newsItem.image} alt={newsItem.title} />
             </div>
-          </RevealOnScroll>
+          )}
+
+          <div className="news-detail-content">
+            {/* If content is HTML, use dangerouslySetInnerHTML, otherwise just display it */}
+            <div dangerouslySetInnerHTML={{ __html: newsItem.content }} />
+          </div>
         </div>
 
         {/* 4. CÁC BÀI VIẾT LIÊN QUAN */}
