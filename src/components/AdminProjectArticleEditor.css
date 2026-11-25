@@ -657,19 +657,21 @@ a.project-article-link:hover {
   transition: outline 0.15s ease, transform 0.2s ease;
 }
 
-/* KHI CLICK HOẶC RÊ CHUỘT VÀO ẢNH TRONG SOẠN THẢO THÌ CÓ VIỀN XANH HIGHLIGHT */
+/* KHI CLICK HOẶC RÊ CHUỘT VÀO ẢNH TRONG SOẠN THẢO */
 .article-content-editable img {
   cursor: pointer;
+  transition: box-shadow 0.2s ease, outline 0.15s ease;
 }
 
 .article-content-editable img:hover {
-  outline: 2px dashed #10b981;
+  outline: none; /* Bỏ viền nét đứt khi rê chuột để không gây khó chịu */
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
 }
 
 .article-content-editable img.img-selected,
 .article-content-editable img[data-selected="true"] {
-  outline: 3px solid #10b981 !important;
-  box-shadow: 0 0 14px rgba(16, 185, 129, 0.45);
+  outline: 2px solid #10b981 !important;
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.45);
 }
 
 /* FLOATING IMAGE CONTROL TOOLBAR CHO PHÉP CHỈNH TO / NHỎ VÀ CĂN VỊ TRÍ ẢNH */

@@ -431,6 +431,16 @@ export default function AdminServiceArticleEditor({
     setServiceForm((prev) => ({ ...prev, content: html }));
   };
 
+  const cleanHtmlForSave = (html) => {
+    if (!html) return "";
+    return html
+      .replace(/\s*class="([^"]*)\bimg-selected\b([^"]*)"/g, (match, p1, p2) => {
+        const remaining = (p1 + " " + p2).trim().replace(/\s+/g, " ");
+        return remaining ? ` class="${remaining}"` : "";
+      })
+      .replace(/\s*data-selected="true"/g, "");
+  };
+
   const handleFormSubmit = (e) => {
     if (e && e.preventDefault) e.preventDefault();
     let finalContent = serviceForm.content || "";
@@ -438,6 +448,7 @@ export default function AdminServiceArticleEditor({
       finalContent = editorRef.current.innerHTML;
       lastHtmlRef.current = finalContent;
     }
+    finalContent = cleanHtmlForSave(finalContent);
     setServiceForm((prev) => ({ ...prev, content: finalContent }));
     if (onSave) {
       onSave(e, finalContent);
