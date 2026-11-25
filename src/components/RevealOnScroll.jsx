@@ -14,37 +14,32 @@ export default function RevealOnScroll({
     const element = elementRef.current;
     if (!element) return;
 
-    // Safety fallback: Tự động hiển thị sau tối đa 600ms nếu observer chưa kích hoạt
-    // Đảm bảo không bao giờ có phần tử nào bị kẹt ẩn (opacity: 0)
-    const safetyTimer = setTimeout(() => {
-      setIsVisible(true);
-    }, 600);
-
+    // Nếu trình duyệt hỗ trợ IntersectionObserver (mọi điện thoại hiện đại),
+    // kích hoạt hiệu ứng khi người dùng thực sự cuộn tới phần tử đó
     let observer = null;
     if (typeof IntersectionObserver !== "undefined") {
       observer = new IntersectionObserver(
         ([entry]) => {
           if (entry.isIntersecting || entry.intersectionRatio > 0) {
             setIsVisible(true);
-            clearTimeout(safetyTimer);
             if (observer && element) {
               observer.unobserve(element);
             }
           }
         },
         {
-          threshold: 0.01,
-          rootMargin: "50px 0px 0px 0px",
+          threshold: 0.05,
+          rootMargin: "0px 0px -40px 0px", // Kích hoạt khi phần tử tiệm cận tầm mắt màn hình
         }
       );
 
       observer.observe(element);
     } else {
+      // Fallback an toàn cho trình duyệt quá cũ không có IntersectionObserver
       setIsVisible(true);
     }
 
     return () => {
-      clearTimeout(safetyTimer);
       if (observer) observer.disconnect();
     };
   }, []);

@@ -1946,3 +1946,82 @@
   }
 }
 
+/* ==========================================================================
+   MOBILE SCROLL REVEAL (LƯỚT TỚI ĐÂU HIỆN RA TỚI ĐÓ TRÊN ĐIỆN THOẠI)
+   ========================================================================== */
+
+/* 1. MÁY TÍNH (> 768px): GIỮ NGUYÊN 100% GIAO DIỆN BAN ĐẦU */
+@media (min-width: 769px) {
+  .news-detail-main .mobile-article-scroll-item {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* 2. ĐIỆN THOẠI (<= 768px): KHI LƯỚT TỚI NƠI THÌ CÁC PHẦN TỬ SẼ HIỆN RA */
+@media (max-width: 768px) {
+  /* Hiệu ứng mờ và lướt lên cho từng khối nội dung bài viết khi cuộn tới */
+  .mobile-article-scroll-item {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 0.58s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.58s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+  }
+
+  .mobile-article-scroll-item.mobile-in-view {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
+
+  /* Tiêu đề H2, H3, H4: Hiệu ứng nổi bật, dứt khoát */
+  h2.mobile-article-scroll-item,
+  h3.mobile-article-scroll-item,
+  h4.mobile-article-scroll-item {
+    transform: translateY(18px) scale(0.985);
+  }
+
+  h2.mobile-article-scroll-item.mobile-in-view,
+  h3.mobile-article-scroll-item.mobile-in-view,
+  h4.mobile-article-scroll-item.mobile-in-view {
+    transform: translateY(0) scale(1) !important;
+  }
+
+  /* Đoạn văn P: Hiệu ứng êm dịu, dễ đọc */
+  p.mobile-article-scroll-item {
+    transform: translateY(15px);
+  }
+
+  p.mobile-article-scroll-item.mobile-in-view {
+    transform: translateY(0) !important;
+  }
+
+  /* Hình ảnh & Cụm ảnh slider: Hiệu ứng zoom nhẹ tạo chiều sâu */
+  figure.mobile-article-scroll-item,
+  .service-images-row-2col.mobile-article-scroll-item,
+  .mobile-slider-viewport.mobile-article-scroll-item,
+  .news-detail-content img.mobile-article-scroll-item {
+    transform: translateY(26px) scale(0.97);
+  }
+
+  figure.mobile-article-scroll-item.mobile-in-view,
+  .service-images-row-2col.mobile-article-scroll-item.mobile-in-view,
+  .mobile-slider-viewport.mobile-article-scroll-item.mobile-in-view,
+  .news-detail-content img.mobile-article-scroll-item.mobile-in-view {
+    transform: translateY(0) scale(1) !important;
+  }
+
+  /* Box CTA gọi thợ & Bảng biểu */
+  .service-detail-cta-box.mobile-article-scroll-item,
+  table.mobile-article-scroll-item {
+    transform: translateY(28px) scale(0.96);
+  }
+
+  .service-detail-cta-box.mobile-article-scroll-item.mobile-in-view,
+  table.mobile-article-scroll-item.mobile-in-view {
+    transform: translateY(0) scale(1) !important;
+  }
+}
+
+

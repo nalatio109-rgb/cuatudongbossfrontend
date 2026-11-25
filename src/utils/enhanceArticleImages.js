@@ -242,7 +242,75 @@ export function enhanceArticleImages(containerEl, onOpenGallery) {
     });
   });
 
+  // 7. TỰ ĐỘNG KÍCH HOẠT HIỆU ỨNG CHUYỂN ĐỘNG KHI LƯỚT TỚI NƠI TRÊN ĐIỆN THOẠI
+  const cleanupScrollReveal = initMobileArticleScrollReveal(containerEl);
+  if (cleanupScrollReveal) {
+    cleanups.push(cleanupScrollReveal);
+  }
+
   return () => {
     cleanups.forEach((cleanup) => cleanup());
+  };
+}
+
+/**
+ * Tự động tạo hiệu ứng trượt hiện ra khi lướt ngón tay tới từng đoạn / ảnh / tiêu đề
+ * trên điện thoại di động (Mobile Scroll Reveal Animation)
+ */
+export function initMobileArticleScrollReveal(containerEl) {
+  if (!containerEl) return () => {};
+
+  // Tìm tất cả các khối nội dung con trong bài viết
+  const elements = containerEl.querySelectorAll(
+    'h1, h2, h3, h4, h5, h6, p, figure, .service-images-row-2col, .article-two-images-row, .mobile-slider-viewport, table, ul, ol, blockquote, .service-detail-cta-box'
+  );
+
+  if (!elements || elements.length === 0) return () => {};
+
+  let observer = null;
+  const isObserverSupported = typeof IntersectionObserver !== 'undefined';
+
+  if (isObserverSupported) {
+    observer = new IntersectionObserver(
+      (entries, obs) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting || entry.intersectionRatio > 0) {
+            entry.target.classList.add('mobile-in-view');
+            obs.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.05,
+        rootMargin: '0px 0px -30px 0px', // Kích hoạt khi cuộn đến cách đáy màn hình 30px
+      }
+    );
+  }
+
+  elements.forEach((el) => {
+    // Bỏ qua các thẻ rỗng hoặc chỉ có thẻ br
+    if (el.tagName.toLowerCase() === 'p') {
+      const text = el.textContent.trim();
+      const hasImg = Boolean(el.querySelector('img'));
+      if (!text && !hasImg) return;
+    }
+
+    el.classList.add('mobile-article-scroll-item');
+
+    if (isObserverSupported && observer) {
+      // Nếu phần tử đã nằm sẵn trong màn hình ban đầu (above the fold), cho hiển thị ngay
+      const rect = el.getBoundingClientRect();
+      if (rect.top < window.innerHeight * 0.9) {
+        el.classList.add('mobile-in-view');
+      } else {
+        observer.observe(el);
+      }
+    } else {
+      el.classList.add('mobile-in-view');
+    }
+  });
+
+  return () => {
+    if (observer) observer.disconnect();
   };
 }
