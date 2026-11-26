@@ -220,34 +220,38 @@ export const HOMEPAGE_PROJECTS = [
   },
   {
     id: 7,
-    title: "Cửa Cuốn Song Ngang TTTM Lacoste / Aeon Mall",
-    category: "Cửa cuốn song ngang Inox",
-    image: "/about_construction.jpg",
+    slug: "thi-cong-cua-cuon-xep-truot-cong-aeon-mall-da-nang",
+    title: "Thi công cửa cuốn trong suốt & cửa xếp trượt cong KKV – AEON Mall Đà Nẵng",
+    category: "Cửa xếp cong & Cửa cuốn trong suốt",
+    image: "/about_project_result_3.jpg",
     gallery: [
-      "/about_construction.jpg",
-      "/about_technician_install.jpg",
-      "/factory_worker.png",
-      "/about_meeting.jpg"
+      "/about_project_result_3.jpg",
+      "/about_project_result_1.jpg",
+      "/about_project_result_2.jpg",
+      "/about_project_install_1.jpg",
+      "/about_project_install_2.jpg",
+      "/about_project_install_3.jpg",
+      "/about_project_install_4.jpg"
     ],
-    location: "Trung tâm thương mại Aeon Mall, Q. Hải Châu, TP. Đà Nẵng",
-    date: "Tháng 04/2024",
-    scale: "2 bộ cửa cuốn song ngang inox 304 khổ lớn 7.5m x 4.2m",
+    location: "Đại siêu thị KKV, TTTM AEON Mall, TP. Đà Nẵng",
+    date: "Tháng 11/2026",
+    scale: "Hệ ray cong 3D nghệ thuật, cửa xếp trượt bo góc & cửa cuốn Polycarbonate",
     specs: [
-      { label: "Chất liệu nan", val: "Inox SUS 304 dạng ống tròn phi 22 dày 1.2mm sáng bóng" },
-      { label: "Động cơ", val: "Mô tơ xích kéo ngoài tải trọng 1000kg chuyên dụng TTTM" },
-      { label: "Độ thông thoáng", val: "Thông thoáng 85%, trưng bày sản phẩm sang trọng ngoài giờ" },
-      { label: "Tiêu chuẩn PCCC", val: "Đạt chuẩn an toàn phòng cháy chữa cháy TTTM quốc tế" }
+      { label: "Loại hình cửa", val: "Cửa xếp trượt uốn cong bo góc & Cửa cuốn trong suốt Polycarbonate" },
+      { label: "Kỹ thuật ray", val: "Ray uốn cong 3D chuẩn xác ôm trọn vòm kiến trúc mặt tiền" },
+      { label: "Vật liệu nan", val: "Nan Polycarbonate chịu va đập xuyên sáng 24/7 & hợp kim nhôm định hình" },
+      { label: "Tiêu chuẩn an toàn", val: "Tuân thủ 100% quy chuẩn giàn giáo, bảo hộ lao động TTTM quốc tế" }
     ],
-    summary: "Thi công hoàn thiện 2 bộ cửa cuốn lưới song ngang inox 304 cao cấp cho gian hàng thời trang Lacoste tại trung tâm thương mại Đà Nẵng.",
+    summary: "Thi công hoàn thiện hệ thống cửa xếp trượt uốn cong nghệ thuật và cửa cuốn trong suốt Polycarbonate cho chuỗi bán lẻ quốc tế KKV tại AEON Mall Đà Nẵng.",
     articleContent: [
-      "Gian hàng thương hiệu thời trang Lacoste tại TTTM yêu cầu mặt tiền phải hoàn toàn thông thoáng để khách hàng vẫn có thể ngắm nhìn các bộ sưu tập trưng bày bên trong kể cả khi trung tâm thương mại đóng cửa.",
-      "BOSS Đà Nẵng đã trực tiếp gia công tại xưởng 2 bộ cửa cuốn song ngang inox SUS 304 với kỹ thuật uốn và hàn liên kết tinh xảo, không để lộ vết hàn.",
-      "Đội ngũ kỹ thuật thi công ca đêm theo đúng nội quy nghiêm ngặt của TTTM, đảm bảo an toàn tuyệt đối cho hệ thống trần thạch cao và ánh sáng của gian hàng."
+      "AEON Mall Đà Nẵng là một trong những đại trung tâm thương mại quy mô và khắt khe hàng đầu miền Trung. Gian hàng đại siêu thị phụ kiện & làm đẹp KKV sở hữu mặt bằng vòm cong lớn, đòi hỏi hệ cửa vừa phải uốn lượn mềm mại theo kiến trúc, vừa phải đảm bảo tầm nhìn trưng bày hàng hóa thông suốt 24/7.",
+      "Đội ngũ kỹ sư và kỹ thuật viên BOSS Đà Nẵng đã trực tiếp đo đạc, gia công hệ ray uốn cong 3D chuẩn xác từng milimet, ghép nối các nan cửa xếp bo góc màu vàng và trắng sữa trang nhã, kết hợp hệ cửa cuốn trong suốt Polycarbonate chịu lực va đập cao.",
+      "Toàn bộ quá trình lắp đặt được thực hiện nghiêm ngặt theo quy chuẩn an toàn lao động của TTTM: kỹ thuật viên trang bị đầy đủ đai an toàn trên giàn giáo, mũ bảo hộ, kiểm định tải trọng động cơ và vận hành thử nghiệm êm ái trước khi bàn giao hoàn mỹ đúng tiến độ."
     ],
     clientReview: {
-      name: "Anh Hưng",
-      role: "Quản lý thi công chuỗi Retail",
-      comment: "Cửa hoàn thiện rất đẹp, sáng bóng và sắc nét. Đội thi công BOSS làm đêm rất đúng giờ, tuân thủ nghiêm ngặt bảo hộ lao động."
+      name: "Đại diện KKV Retail",
+      role: "Ban Quản lý Thi công & Bàn giao Chuỗi Siêu thị KKV",
+      comment: "BOSS Đà Nẵng xử lý độ cong của hệ ray và nan cửa rất xuất sắc. Cửa vận hành êm ái, thẩm mỹ sang trọng, đội ngũ tuân thủ an toàn rất nghiêm túc."
     }
   },
   {

@@ -97,6 +97,7 @@ const AEON_SLIDER_ITEMS = [...AEON_PROJECT_GALLERY, ...AEON_PROJECT_GALLERY];
 const About = () => {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(null);
+  const [activeAeonImg, setActiveAeonImg] = useState(0);
   const videoSrc = "/boss_intro.mp4";
 
   // Điều khiển phím bàn phím khi mở Lightbox
@@ -105,10 +106,10 @@ const About = () => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') setLightboxIndex(null);
       if (e.key === 'ArrowRight') {
-        setLightboxIndex((prev) => (prev + 1) % BENTO_AEON_GALLERY.length);
+        setLightboxIndex((prev) => (prev + 1) % AEON_PROJECT_GALLERY.length);
       }
       if (e.key === 'ArrowLeft') {
-        setLightboxIndex((prev) => (prev - 1 + BENTO_AEON_GALLERY.length) % BENTO_AEON_GALLERY.length);
+        setLightboxIndex((prev) => (prev - 1 + AEON_PROJECT_GALLERY.length) % AEON_PROJECT_GALLERY.length);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -460,73 +461,106 @@ const About = () => {
         </div>
       </section>
 
-      {/* 4.5. DỰ ÁN TIÊU BIỂU TẠI AEON MALL ĐÀ NẴNG (DẢI TRƯỢT NGANG SLIDER / CAROUSEL) */}
-      <section className="aeon-slider-section" id="du-an-aeon-mall">
+      {/* 4.5. DỰ ÁN TRỌNG ĐIỂM TIÊU BIỂU: CASE STUDY AEON MALL ĐÀ NẴNG (PHƯƠNG ÁN 3) */}
+      <section className="aeon-case-study-section" id="du-an-aeon-mall">
         <div className="exact-container">
-          {/* Header thanh lịch, thoáng đãng */}
-          <RevealOnScroll animation="fade-up" className="aeon-slider-header">
-            <div className="aeon-slider-badge">
-              <Sparkles size={15} /> DỰ ÁN TRỌNG ĐIỂM TIÊU BIỂU
+          <RevealOnScroll animation="fade-up" className="aeon-case-study-card">
+            {/* Visual Column (Bên trái: Ảnh chính đang chọn + Hàng thumbnail 7 ảnh) */}
+            <div className="aeon-case-study-visual">
+              <div 
+                className="aeon-main-frame"
+                onClick={() => setLightboxIndex(activeAeonImg)}
+                title="Bấm để xem ảnh phóng to toàn màn hình"
+              >
+                <img 
+                  src={AEON_PROJECT_GALLERY[activeAeonImg].src} 
+                  alt={AEON_PROJECT_GALLERY[activeAeonImg].title} 
+                />
+                <span className="aeon-frame-tag">{AEON_PROJECT_GALLERY[activeAeonImg].tag}</span>
+                <div className="aeon-frame-zoom-hint">
+                  <Maximize2 size={15} /> <span>Xem phóng to ảnh</span>
+                </div>
+              </div>
+
+              {/* Hàng Thumbnail 7 ảnh thực tế */}
+              <div className="aeon-thumb-strip">
+                {AEON_PROJECT_GALLERY.map((img, idx) => (
+                  <button
+                    key={img.id}
+                    type="button"
+                    className={`aeon-thumb-btn ${activeAeonImg === idx ? 'active' : ''}`}
+                    onClick={() => setActiveAeonImg(idx)}
+                    title={img.title}
+                  >
+                    <img src={img.src} alt={img.title} />
+                  </button>
+                ))}
+              </div>
             </div>
-            <h2 className="aeon-slider-title">
-              Hệ Cửa Cuốn & Cửa Xếp Trượt Bo Góc <br />
-              <span className="aeon-highlight-green">Gian Hàng KKV – TTTM AEON Mall Đà Nẵng</span>
-            </h2>
-            <p className="aeon-slider-lead">
-              Minh chứng thực tế cho năng lực thi công kỹ thuật cao của BOSS Đà Nẵng tại đại trung tâm thương mại lớn, đáp ứng tiêu chuẩn an toàn lao động và độ tinh xảo kiến trúc khắt khe nhất.
-            </p>
-          </RevealOnScroll>
-        </div>
 
-        {/* Dải trượt ảnh ngang tự động (Chạy mượt mà từ phải sang trái, rê chuột tạm dừng) */}
-        <div className="aeon-slider-wrapper">
-          <div className="aeon-slider-track">
-            {AEON_SLIDER_ITEMS.map((item, index) => {
-              const originalIndex = index % AEON_PROJECT_GALLERY.length;
-              return (
-                <div
-                  className="aeon-slider-card"
-                  key={`${item.id}-${index}`}
-                  onClick={() => setLightboxIndex(originalIndex)}
-                  role="button"
-                  tabIndex={0}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault();
-                      setLightboxIndex(originalIndex);
-                    }
-                  }}
-                  title={`Bấm xem ảnh phóng to: ${item.title}`}
-                >
-                  <div className="aeon-slider-img-wrap">
-                    <img src={item.src} alt={item.title} loading="lazy" />
-                  </div>
-                  
-                  {/* Tag phân loại góc trên */}
-                  <span className="aeon-slider-card-tag">{item.tag}</span>
+            {/* Content Column (Bên phải: Thông tin dự án + Điểm nhấn + Nút xem bài viết) */}
+            <div className="aeon-case-study-content">
+              <div className="aeon-badge-tag">
+                <Sparkles size={14} /> DỰ ÁN TRỌNG ĐIỂM TIÊU BIỂU
+              </div>
+              
+              <h2 className="aeon-case-study-title">
+                Hệ Cửa Cuốn Trong Suốt & Cửa Xếp Trượt Uốn Cong <br />
+                <span className="aeon-highlight-green">Đại Siêu Thị KKV – AEON Mall Đà Nẵng</span>
+              </h2>
 
-                  {/* Gradient tối ở chân ảnh */}
-                  <div className="aeon-slider-card-overlay">
-                    <span className="aeon-slider-card-subtitle">{item.subtitle}</span>
-                    <h3 className="aeon-slider-card-title">{item.title}</h3>
-                    <span className="aeon-slider-card-hint">
-                      <Maximize2 size={13} /> Xem phóng to & chi tiết
-                    </span>
+              <div className="aeon-case-study-location">
+                <MapPin size={16} className="aeon-loc-icon" />
+                <span>TTTM AEON Mall, TP. Đà Nẵng • Bàn giao hoàn thiện</span>
+              </div>
+
+              <p className="aeon-case-study-desc">
+                Minh chứng rõ nét cho năng lực kỹ thuật và quy chuẩn thi công khắt khe của BOSS Đà Nẵng tại các đại trung tâm thương mại tầm cỡ quốc tế. Hệ thống kết hợp hoàn mỹ giữa cửa cuốn trong suốt Polycarbonate xuyên sáng 24/7 và hệ cửa xếp trượt cong ôm trọn bán kính vòm mặt tiền.
+              </p>
+
+              {/* 3 Điểm nhấn kỹ thuật */}
+              <div className="aeon-highlights-list">
+                <div className="aeon-highlight-item">
+                  <CheckCircle2 size={18} className="aeon-check-icon" />
+                  <div>
+                    <strong>Kỹ thuật ray cong 3D:</strong> Gia công uốn vòm chính xác, ôm sát bán kính mặt tiền.
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        </div>
+                <div className="aeon-highlight-item">
+                  <CheckCircle2 size={18} className="aeon-check-icon" />
+                  <div>
+                    <strong>Nan Polycarbonate cao cấp:</strong> Chịu lực xuyên sáng 24/7, phô diễn trọn vẹn sản phẩm.
+                  </div>
+                </div>
+                <div className="aeon-highlight-item">
+                  <CheckCircle2 size={18} className="aeon-check-icon" />
+                  <div>
+                    <strong>Tiêu chuẩn TTTM quốc tế:</strong> 100% trang bị đai an toàn, giàn giáo và thi công ban đêm đạt chuẩn.
+                  </div>
+                </div>
+              </div>
 
-        {/* Thanh chỉ dẫn nhẹ nhàng */}
-        <div className="exact-container">
-          <div className="aeon-slider-hint-row">
-            <span className="aeon-hint-pill">
-              <span className="aeon-hint-dot"></span>
-              Dải trượt tự động lướt nhẹ • Rê chuột để dừng • Nhấp vào ảnh để xem toàn màn hình
-            </span>
-          </div>
+              {/* Nút hành động */}
+              <div className="aeon-case-study-actions">
+                <Link 
+                  to="/cong-trinh/thi-cong-cua-cuon-xep-truot-cong-aeon-mall-da-nang" 
+                  className="btn-aeon-primary"
+                >
+                  <span>Xem bài viết chi tiết công trình</span>
+                  <ArrowRight size={18} />
+                </Link>
+
+                <button
+                  type="button"
+                  className="btn-aeon-secondary"
+                  onClick={() => setLightboxIndex(activeAeonImg)}
+                >
+                  <Maximize2 size={16} />
+                  <span>Phóng to 7 ảnh thực tế</span>
+                </button>
+              </div>
+            </div>
+          </RevealOnScroll>
         </div>
       </section>
 
