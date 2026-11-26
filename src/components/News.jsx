@@ -96,11 +96,16 @@ export default function News() {
     };
   }, []);
 
-  // Lấy 3 bài viết mới nhất hiển thị trên Trang Chủ
+  // Nạp danh sách tin tức từ Database / LocalStorage / Mặc định
   const sourceList = newsList && newsList.length > 0 ? newsList : DEFAULT_NEWS;
-  const displayNews = sourceList.slice(0, 3);
-  // Nhân đôi mảng để hỗ trợ hiệu ứng marquee chạy vòng tuần hoàn mượt mà trên mobile
-  const marqueeNews = [...displayNews, ...displayNews];
+
+  // Chuẩn bị danh sách chạy marquee: đảm bảo tối thiểu 5-6 bài để track đủ dài chạy liên tục
+  let baseList = [...sourceList];
+  while (baseList.length < 5) {
+    baseList = [...baseList, ...sourceList];
+  }
+  // Nhân đôi track để tạo hiệu ứng vòng tuần hoàn 0% -> -50% hoàn hảo
+  const marqueeNews = [...baseList, ...baseList];
 
   return (
     <>
@@ -119,12 +124,11 @@ export default function News() {
               <div className="news-cards">
                 {marqueeNews.map((news, index) => {
                   const slug = getNewsSlug(news);
-                  const isDuplicate = index >= displayNews.length;
 
                   return (
                     <div
                       key={`${news._id || news.id || index}-${index}`}
-                      className={`news-card ${isDuplicate ? "news-card-duplicate" : ""}`}
+                      className="news-card"
                     >
                       <Link to={`/tin-tuc/${slug}`} className="news-card-img-link" title={news.title}>
                         <img
