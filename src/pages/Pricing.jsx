@@ -11,7 +11,6 @@ import {
   HeadphonesIcon,
   PhoneCall,
   Sparkles,
-  Layers,
   ChevronRight,
   Clock,
   RotateCcw
@@ -190,33 +189,6 @@ export default function Pricing() {
 
       {/* 3. MAIN PRICING CONTENT SECTION */}
       <main className="container pricing-hub-main-container">
-        {/* Search Controls Bar */}
-        <div className="pricing-search-controls-bar">
-          <div className="pricing-hub-search-bar">
-            <Search size={18} className="search-icon" />
-            <input
-              type="text"
-              placeholder="Tìm bảng giá dòng cửa (Ví dụ: Bossdoor, Austdoor, Titadoor, Doortech, Đài Loan, Đức, Úc...)"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            {searchQuery && (
-              <button
-                type="button"
-                className="clear-search-btn"
-                onClick={() => setSearchQuery("")}
-                title="Xóa tìm kiếm"
-              >
-                ✕
-              </button>
-            )}
-          </div>
-          <div className="pricing-results-count-badge">
-            <Layers size={15} />
-            <span>Hiển thị <strong>{filteredArticles.length}</strong> chuyên mục bảng giá</span>
-          </div>
-        </div>
-
         {/* Article Cards Stream (Khớp 100% Ảnh 3) */}
         <div className="pricing-article-cards-stream">
           {filteredArticles.map((article) => (
