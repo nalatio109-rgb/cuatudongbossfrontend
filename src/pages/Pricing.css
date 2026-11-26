@@ -1791,60 +1791,10 @@
 .card-article-meta-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  font-size: 13.5px;
-  color: #64748b;
-  font-weight: 500;
+  justify-content: flex-end;
   margin-top: auto;
   padding-top: 14px;
   border-top: 1px solid #f1f5f9;
-  flex-wrap: wrap;
-}
-
-.card-meta-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.card-article-meta-row .meta-date {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: #f8fafc;
-  color: #475569;
-  font-size: 12.5px;
-  font-weight: 600;
-  padding: 4px 12px;
-  border-radius: 20px;
-  border: 1px solid #e2e8f0;
-}
-
-.meta-date-desktop {
-  display: inline;
-}
-
-.meta-date-mobile {
-  display: none;
-}
-
-.card-article-meta-row .meta-category {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(7, 82, 47, 0.08);
-  color: #07522f;
-  font-size: 12.5px;
-  font-weight: 700;
-  padding: 4px 12px;
-  border-radius: 20px;
-  border: 1px solid rgba(7, 82, 47, 0.18);
-}
-
-.card-article-meta-row .meta-icon {
-  color: #07522f;
 }
 
 .card-article-read-more {
@@ -2103,43 +2053,10 @@
   .card-article-meta-row {
     display: flex !important;
     align-items: center !important;
-    justify-content: space-between !important;
-    gap: 6px !important;
-    padding-top: 4px !important;
+    justify-content: flex-end !important;
+    padding-top: 6px !important;
     margin-top: auto !important;
     border-top: none !important;
-    flex-wrap: wrap !important;
-  }
-
-  .card-meta-left {
-    display: flex !important;
-    align-items: center !important;
-    gap: 6px !important;
-    flex-wrap: wrap !important;
-  }
-
-  .card-article-meta-row .meta-date,
-  .card-article-meta-row .meta-category {
-    font-size: 0.65rem !important;
-    padding: 2px 7px !important;
-    border-radius: 4px !important;
-    gap: 4px !important;
-    background: #f1f5f9 !important;
-    color: #475569 !important;
-    white-space: nowrap !important;
-  }
-
-  .meta-date-desktop {
-    display: none !important;
-  }
-
-  .meta-date-mobile {
-    display: inline !important;
-  }
-
-  .card-article-meta-row .meta-icon {
-    width: 11px !important;
-    height: 11px !important;
   }
 
   .card-article-read-more {
@@ -2176,11 +2093,6 @@
   }
   .card-article-excerpt {
     font-size: 0.72rem !important;
-  }
-  .card-article-meta-row .meta-date,
-  .card-article-meta-row .meta-category {
-    font-size: 0.62rem !important;
-    padding: 1.5px 5px !important;
   }
   .card-article-read-more {
     font-size: 0.7rem !important;
