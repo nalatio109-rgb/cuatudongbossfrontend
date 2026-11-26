@@ -2154,82 +2154,124 @@
 }
 
 /* ==========================================================================
-   4.5. THƯ VIỆN ẢNH THỰC TẾ DỰ ÁN AEON MALL ĐÀ NẴNG (TỐI GIẢN - KHÔNG KHUNG HỘP)
+   4.5. BỐ CỤC POSTER DỰ ÁN AEON MALL ĐÀ NẴNG - CHUỖI KKV (CHUẨN THEO ẢNH MẪU)
    ========================================================================== */
-.about-clean-gallery-section {
-  padding: 65px 0 75px 0;
+.aeon-poster-section {
+  padding: 60px 0 70px 0;
   background: #ffffff;
   position: relative;
 }
 
-.about-clean-gallery-header {
-  text-align: center;
-  max-width: 760px;
-  margin: 0 auto 36px auto;
-}
-
-.clean-gallery-sub {
-  font-size: 13px;
-  font-weight: 750;
-  color: #047857;
-  text-transform: uppercase;
-  letter-spacing: 1.5px;
-  margin-bottom: 8px;
-}
-
-.clean-gallery-title {
-  font-size: 28px;
-  font-weight: 800;
-  color: #043c23;
-  line-height: 1.35;
-  margin-bottom: 8px;
-}
-
-.clean-gallery-title .highlight-text {
-  color: #004d32;
-  background: linear-gradient(135deg, #004d32 0%, #0a7049 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.clean-gallery-desc {
-  font-size: 15px;
-  color: #64748b;
-  line-height: 1.6;
+.aeon-poster-container {
+  width: 100%;
+  max-width: 1200px;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
-/* Lưới 7 ảnh gọn gàng, sạch sẽ */
-.about-clean-gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
+/* 1. HERO BANNER MẶT TIỀN TRÊN CÙNG */
+.aeon-poster-hero-wrap {
+  width: 100%;
 }
 
-.clean-gallery-item-wrap.item-wide {
-  grid-column: span 2;
-}
-
-.clean-gallery-item {
+.aeon-poster-hero {
   position: relative;
   width: 100%;
-  height: 200px;
-  border-radius: 14px;
+  height: 520px;
+  border-radius: 20px;
   overflow: hidden;
   cursor: pointer;
   background: #0f172a;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
 
-.clean-gallery-item:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 28px rgba(0, 77, 50, 0.14);
-  border-color: rgba(0, 77, 50, 0.3);
+.aeon-poster-hero img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.clean-gallery-item img {
+.aeon-poster-hero:hover img {
+  transform: scale(1.03);
+}
+
+.aeon-poster-hero-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 44px 36px 30px;
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0.88) 0%, rgba(0, 0, 0, 0.45) 50%, rgba(0, 0, 0, 0) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.aeon-poster-hero-title {
+  font-size: 34px;
+  font-weight: 850;
+  color: #ffffff;
+  margin: 0 0 6px 0;
+  line-height: 1.25;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+}
+
+.aeon-poster-hero-subtitle {
+  font-size: 18px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.95);
+  margin: 0;
+  line-height: 1.4;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+}
+
+/* 2. HÀNG 4 THẺ THI CÔNG Ở GIỮA */
+.aeon-poster-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  width: 100%;
+}
+
+.aeon-poster-card-col {
+  display: flex;
+  width: 100%;
+}
+
+.aeon-poster-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  background: #004d32;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s ease;
+}
+
+.aeon-poster-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 32px rgba(0, 77, 50, 0.22);
+}
+
+.aeon-poster-card-img {
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+  position: relative;
+  background: #0f172a;
+}
+
+.aeon-poster-card-img img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -2237,90 +2279,100 @@
   transition: transform 0.5s ease;
 }
 
-.clean-gallery-item:hover img {
-  transform: scale(1.05);
+.aeon-poster-card:hover .aeon-poster-card-img img {
+  transform: scale(1.06);
 }
 
-/* Lớp phủ chữ mờ nhẹ ở đáy ảnh */
-.clean-gallery-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 45%, rgba(4, 30, 20, 0.8) 100%);
+.aeon-poster-card-body {
+  background: #004d32;
+  padding: 16px 18px 20px;
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  padding: 14px 16px;
+  flex-direction: column;
+  flex-grow: 1;
+  min-height: 82px;
+}
+
+.aeon-poster-gold-line {
+  width: 32px;
+  height: 3.5px;
+  background: #f5bd20;
+  border-radius: 2px;
+  margin-bottom: 12px;
+}
+
+.aeon-poster-card-title {
   color: #ffffff;
-  transition: all 0.25s ease;
+  font-size: 14.5px;
+  font-weight: 750;
+  line-height: 1.4;
+  letter-spacing: -0.2px;
 }
 
-.clean-gallery-item:hover .clean-gallery-overlay {
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 25%, rgba(4, 30, 20, 0.9) 100%);
+/* 3. THANH 4 GIÁ TRỊ DƯỚI CÙNG */
+.aeon-poster-values-wrap {
+  width: 100%;
+  margin-top: 10px;
 }
 
-.clean-gallery-caption {
-  font-size: 13.5px;
-  font-weight: 600;
-  color: #ffffff;
-  line-height: 1.35;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  padding-right: 8px;
+.aeon-poster-values-bar {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: #ffffff;
+  padding: 20px 8px 10px;
+  align-items: center;
 }
 
-.clean-gallery-icon {
-  width: 30px;
-  height: 30px;
+.aeon-poster-value-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 16px;
+  position: relative;
+}
+
+.aeon-poster-value-item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 15%;
+  bottom: 15%;
+  width: 1px;
+  background: #e2e8f0;
+}
+
+.aeon-poster-value-icon {
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.22);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
+  border: 1.8px solid #004d32;
+  background: #f4fbf7;
+  color: #004d32;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: #ffffff;
-  transition: all 0.25s ease;
+  box-shadow: 0 3px 10px rgba(0, 77, 50, 0.08);
 }
 
-.clean-gallery-item:hover .clean-gallery-icon {
-  background: #f5bd20;
-  color: #043c23;
-  transform: scale(1.1);
-}
-
-/* Nút liên kết xem toàn bộ bài viết dự án */
-.clean-gallery-action-row {
+.aeon-poster-value-text {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 26px;
+  flex-direction: column;
 }
 
-.clean-gallery-link-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: #f8fafc;
+.aeon-poster-value-text h4 {
+  font-size: 14px;
+  font-weight: 850;
   color: #004d32;
-  font-size: 13.5px;
-  font-weight: 700;
-  padding: 10px 22px;
-  border-radius: 30px;
-  border: 1px solid #cbd5e1;
-  text-decoration: none;
-  transition: all 0.25s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  text-transform: uppercase;
+  margin: 0 0 3px 0;
+  letter-spacing: 0.6px;
 }
 
-.clean-gallery-link-btn:hover {
-  background: #004d32;
-  color: #ffffff !important;
-  border-color: #004d32;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(0, 77, 50, 0.2);
+.aeon-poster-value-text p {
+  font-size: 12.5px;
+  color: #57534e;
+  margin: 0;
+  line-height: 1.4;
 }
 
 /* ==========================================================================
@@ -2474,49 +2526,97 @@
 }
 
 /* ==========================================================================
-   RESPONSIVE (MOBILE & TABLET)
+   RESPONSIVE CHO POSTER AEON MALL
    ========================================================================== */
-@media (max-width: 992px) {
-  .about-clean-gallery-grid {
+@media (max-width: 1024px) {
+  .aeon-poster-hero {
+    height: 420px;
+  }
+
+  .aeon-poster-hero-title {
+    font-size: 28px;
+  }
+
+  .aeon-poster-hero-subtitle {
+    font-size: 16px;
+  }
+
+  .aeon-poster-cards-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 14px;
   }
 
-  .clean-gallery-item-wrap.item-wide {
-    grid-column: span 2;
+  .aeon-poster-card-img {
+    height: 200px;
+  }
+
+  .aeon-poster-values-bar {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    padding: 16px 8px;
+  }
+
+  .aeon-poster-value-item:nth-child(2)::after {
+    display: none;
   }
 }
 
 @media (max-width: 640px) {
-  .about-clean-gallery-section {
-    padding: 45px 0 50px 0;
+  .aeon-poster-section {
+    padding: 40px 0 50px 0;
   }
 
-  .clean-gallery-title {
-    font-size: 21px;
-    line-height: 1.35;
+  .aeon-poster-hero {
+    height: 300px;
+    border-radius: 14px;
   }
 
-  .clean-gallery-desc {
-    font-size: 13.5px;
+  .aeon-poster-hero-overlay {
+    padding: 22px 18px 18px;
   }
 
-  .about-clean-gallery-grid {
+  .aeon-poster-hero-title {
+    font-size: 20px;
+    letter-spacing: -0.3px;
+  }
+
+  .aeon-poster-hero-subtitle {
+    font-size: 13px;
+  }
+
+  .aeon-poster-cards-grid {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 14px;
   }
 
-  .clean-gallery-item-wrap.item-wide {
-    grid-column: span 1;
+  .aeon-poster-card {
+    border-radius: 14px;
   }
 
-  .clean-gallery-item {
-    height: 190px;
-    border-radius: 12px;
+  .aeon-poster-card-img {
+    height: 220px;
   }
 
-  .clean-gallery-caption {
-    font-size: 12.5px;
+  .aeon-poster-card-body {
+    padding: 14px 16px 18px;
+  }
+
+  .aeon-poster-card-title {
+    font-size: 14px;
+  }
+
+  .aeon-poster-values-bar {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 12px 4px;
+  }
+
+  .aeon-poster-value-item {
+    padding: 6px 8px;
+  }
+
+  .aeon-poster-value-item::after {
+    display: none !important;
   }
 
   .about-lightbox-content {
