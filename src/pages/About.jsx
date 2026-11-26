@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Link } from 'react-router-dom';
 import { 
@@ -15,16 +15,113 @@ import {
   X,
   CalendarCheck,
   BadgeCheck,
-  Settings
+  Settings,
+  Camera,
+  ChevronLeft,
+  ChevronRight,
+  Maximize2,
+  HardHat,
+  Sparkles,
+  CheckCircle2
 } from 'lucide-react';
 import './About.css';
 import RevealOnScroll from '../components/RevealOnScroll';
 import AnimatedCounter from '../components/AnimatedCounter';
 import Workflow from '../components/Workflow';
 
+// Danh sách hình ảnh thực tế: Đội ngũ kỹ thuật thi công & Dự án hoàn thiện
+const REAL_PROJECT_GALLERY = [
+  {
+    id: 1,
+    category: 'construction',
+    categoryName: 'Quá trình thi công',
+    title: 'Lắp đặt hệ ray uốn cong trên cao',
+    description: 'Kỹ thuật viên BOSS Đà Nẵng lắp đặt chuẩn xác ray cong theo bán kính vòm kiến trúc. Trang bị đồ bảo hộ, mũ và giàn giáo đạt chuẩn an toàn khắt khe của TTTM.',
+    src: '/about_project_install_1.jpg',
+    tag: 'Kỹ thuật cao'
+  },
+  {
+    id: 2,
+    category: 'construction',
+    categoryName: 'Quá trình thi công',
+    title: 'Cân chỉnh hệ trục cuốn & nan nhôm bảo hộ',
+    description: 'Thắt đai an toàn trên giàn giáo, trực tiếp kiểm tra và cân chỉnh từng nan cửa cùng khớp truyền động, đảm bảo vận hành êm ái tuyệt đối.',
+    src: '/about_project_install_2.jpg',
+    tag: 'Quy chuẩn an toàn'
+  },
+  {
+    id: 3,
+    category: 'construction',
+    categoryName: 'Quá trình thi công',
+    title: 'Đo đạc & định hình nan cửa uốn cong',
+    description: 'Công đoạn định hình và ghép nối nan cửa tỉ mỉ tại mặt bằng trước khi đưa vào hệ ray trượt bo góc mềm mại.',
+    src: '/about_project_install_3.jpg',
+    tag: 'Gia công tỉ mỉ'
+  },
+  {
+    id: 4,
+    category: 'construction',
+    categoryName: 'Quá trình thi công',
+    title: 'Đội ngũ kỹ thuật thi công đồng bộ',
+    description: 'Tập thể kỹ sư & thợ lắp đặt lành nghề phối hợp nhịp nhàng trên hệ giàn giáo, kiểm soát chặt chẽ từng chi tiết kết cấu.',
+    src: '/about_project_install_4.jpg',
+    tag: 'Đội ngũ thực chiến'
+  },
+  {
+    id: 5,
+    category: 'finished',
+    categoryName: 'Công trình hoàn thiện',
+    title: 'Cửa xếp trượt uốn cong bo góc mềm mại',
+    description: 'Hoàn thiện hệ cửa xếp trượt cong màu trắng sữa ôm trọn góc lượn mặt tiền cửa hàng KKV, đóng mở nhẹ nhàng và tối ưu 100% diện tích.',
+    src: '/about_project_result_1.jpg',
+    tag: 'Cửa xếp trượt cong'
+  },
+  {
+    id: 6,
+    category: 'finished',
+    categoryName: 'Công trình hoàn thiện',
+    title: 'Cửa cuốn trong suốt Polycarbonate cao cấp',
+    description: 'Hệ cửa cuốn nan trong suốt xuyên sáng sang trọng, chịu lực va đập cao, giúp khách hàng quan sát sản phẩm từ bên ngoài 24/7.',
+    src: '/about_project_result_2.jpg',
+    tag: 'Cửa cuốn trong suốt'
+  },
+  {
+    id: 7,
+    category: 'finished',
+    categoryName: 'Công trình hoàn thiện',
+    title: 'Toàn cảnh mặt tiền KKV bàn giao hoàn mỹ',
+    description: 'Đại siêu thị KKV sau khi hoàn thiện, kết hợp hài hòa giữa cửa cuốn trong suốt và cửa xếp bo góc màu vàng rực rỡ.',
+    src: '/about_project_result_3.jpg',
+    tag: 'Dự án tiêu biểu'
+  }
+];
+
 const About = () => {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
+  const [activeGalleryTab, setActiveGalleryTab] = useState('all');
+  const [lightboxIndex, setLightboxIndex] = useState(null);
   const videoSrc = "/boss_intro.mp4";
+
+  // Lọc danh sách hình ảnh theo Tab
+  const filteredGallery = activeGalleryTab === 'all' 
+    ? REAL_PROJECT_GALLERY 
+    : REAL_PROJECT_GALLERY.filter(item => item.category === activeGalleryTab);
+
+  // Điều khiển phím bàn phím khi mở Lightbox
+  useEffect(() => {
+    if (lightboxIndex === null) return;
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') setLightboxIndex(null);
+      if (e.key === 'ArrowRight') {
+        setLightboxIndex((prev) => (prev + 1) % filteredGallery.length);
+      }
+      if (e.key === 'ArrowLeft') {
+        setLightboxIndex((prev) => (prev - 1 + filteredGallery.length) % filteredGallery.length);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [lightboxIndex, filteredGallery.length]);
 
   const renderKpiCards = () => (
     <>
@@ -371,6 +468,115 @@ const About = () => {
         </div>
       </section>
 
+      {/* 4.5. NĂNG LỰC THI CÔNG & HÌNH ẢNH CÔNG TRÌNH THỰC TẾ */}
+      <section className="exact-gallery-section" id="nang-luc-thi-cong">
+        <div className="exact-container">
+          <RevealOnScroll animation="fade-up" className="exact-gallery-header">
+            <div className="exact-gallery-sub">
+              <Camera size={16} /> HÌNH ẢNH THỰC TẾ & NĂNG LỰC DỰ ÁN
+            </div>
+            <h2>Đội Ngũ Kỹ Thuật Thực Chiến & Dự Án Đẳng Cấp</h2>
+            <p>
+              BOSS Đà Nẵng sở hữu đội ngũ kỹ sư và kỹ thuật viên tay nghề cao, được trang bị bảo hộ đạt chuẩn an toàn khắt khe. Chúng tôi tự hào trực tiếp thi công và bàn giao các hạng mục cửa cuốn cao cấp, cửa xếp trượt cong kỹ thuật cao tại các trung tâm thương mại lớn và công trình trọng điểm.
+            </p>
+
+            {/* Filter Tabs */}
+            <div className="exact-gallery-tabs">
+              <button 
+                type="button"
+                className={`exact-gallery-tab-btn ${activeGalleryTab === 'all' ? 'active' : ''}`}
+                onClick={() => setActiveGalleryTab('all')}
+              >
+                Tất cả hình ảnh ({REAL_PROJECT_GALLERY.length})
+              </button>
+              <button 
+                type="button"
+                className={`exact-gallery-tab-btn ${activeGalleryTab === 'construction' ? 'active' : ''}`}
+                onClick={() => setActiveGalleryTab('construction')}
+              >
+                <HardHat size={15} /> Quá trình thi công (4)
+              </button>
+              <button 
+                type="button"
+                className={`exact-gallery-tab-btn ${activeGalleryTab === 'finished' ? 'active' : ''}`}
+                onClick={() => setActiveGalleryTab('finished')}
+              >
+                <Sparkles size={15} /> Công trình hoàn thiện (3)
+              </button>
+            </div>
+          </RevealOnScroll>
+
+          {/* Gallery Grid */}
+          <div className="exact-gallery-grid">
+            {filteredGallery.map((item, index) => (
+              <RevealOnScroll 
+                animation="fade-up" 
+                delay={(index % 3) * 100}
+                key={item.id} 
+                className="exact-gallery-card-wrapper"
+              >
+                <div 
+                  className="exact-gallery-card"
+                  onClick={() => setLightboxIndex(index)}
+                  title={`Bấm để xem ảnh phóng to: ${item.title}`}
+                >
+                  <div className="exact-gallery-img-box">
+                    <img src={item.src} alt={item.title} loading="lazy" />
+                    <span className="exact-gallery-tag-badge">{item.tag}</span>
+                    <div className="exact-gallery-overlay-hint">
+                      <Maximize2 size={20} />
+                      <span>Xem phóng to</span>
+                    </div>
+                  </div>
+                  <div className="exact-gallery-body">
+                    <div className="exact-gallery-category-pill">
+                      {item.category === 'construction' ? (
+                        <>
+                          <HardHat size={12} /> {item.categoryName}
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle2 size={12} /> {item.categoryName}
+                        </>
+                      )}
+                    </div>
+                    <h3 className="exact-gallery-title">{item.title}</h3>
+                    <p className="exact-gallery-desc">{item.description}</p>
+                  </div>
+                </div>
+              </RevealOnScroll>
+            ))}
+          </div>
+
+          {/* Bottom Trust Banner */}
+          <RevealOnScroll animation="zoom-in" delay={150} className="exact-gallery-trust-banner">
+            <div className="trust-banner-item">
+              <CheckCircle2 size={20} className="trust-icon" />
+              <div>
+                <strong>100% Ảnh Thực Tế</strong>
+                <span>Hình ảnh trực tiếp từ công trình do BOSS Đà Nẵng thi công</span>
+              </div>
+            </div>
+            <div className="trust-banner-divider"></div>
+            <div className="trust-banner-item">
+              <HardHat size={20} className="trust-icon" />
+              <div>
+                <strong>Tiêu Chuẩn An Toàn Khắt Khe</strong>
+                <span>Tuân thủ nghiêm ngặt bảo hộ lao động và quy chuẩn kỹ thuật TTTM</span>
+              </div>
+            </div>
+            <div className="trust-banner-divider"></div>
+            <div className="trust-banner-item">
+              <ShieldCheck size={20} className="trust-icon" />
+              <div>
+                <strong>Bảo Hành Tận Tâm</strong>
+                <span>Bảo hành chính hãng 5 - 10 năm và cứu hộ kỹ thuật 24/7</span>
+              </div>
+            </div>
+          </RevealOnScroll>
+        </div>
+      </section>
+
       {/* 5. QUY TRÌNH LÀM VIỆC */}
       <Workflow />
 
@@ -425,6 +631,75 @@ const About = () => {
               autoPlay 
               style={{ width: '100%', height: '100%', objectFit: 'contain' }}
             />
+          </div>
+        </div>,
+        document.body
+      )}
+
+      {/* IMAGE LIGHTBOX POPUP MODAL */}
+      {lightboxIndex !== null && filteredGallery[lightboxIndex] && createPortal(
+        <div 
+          className="about-lightbox-backdrop" 
+          onClick={() => setLightboxIndex(null)}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div className="about-lightbox-content" onClick={(e) => e.stopPropagation()}>
+            {/* Close Button */}
+            <button 
+              type="button" 
+              className="about-lightbox-close-btn"
+              onClick={() => setLightboxIndex(null)}
+              aria-label="Đóng ảnh"
+            >
+              <X size={22} />
+            </button>
+
+            {/* Prev Button */}
+            <button 
+              type="button" 
+              className="about-lightbox-nav-btn prev"
+              onClick={() => setLightboxIndex((prev) => (prev - 1 + filteredGallery.length) % filteredGallery.length)}
+              aria-label="Ảnh trước"
+            >
+              <ChevronLeft size={28} />
+            </button>
+
+            {/* Next Button */}
+            <button 
+              type="button" 
+              className="about-lightbox-nav-btn next"
+              onClick={() => setLightboxIndex((prev) => (prev + 1) % filteredGallery.length)}
+              aria-label="Ảnh kế tiếp"
+            >
+              <ChevronRight size={28} />
+            </button>
+
+            {/* Main Image Frame */}
+            <div className="about-lightbox-img-frame">
+              <img 
+                src={filteredGallery[lightboxIndex].src} 
+                alt={filteredGallery[lightboxIndex].title} 
+              />
+            </div>
+
+            {/* Image Details Caption */}
+            <div className="about-lightbox-caption">
+              <div className="about-lightbox-badge-row">
+                <span className="about-lightbox-pill">
+                  {filteredGallery[lightboxIndex].categoryName}
+                </span>
+                <span className="about-lightbox-counter">
+                  {lightboxIndex + 1} / {filteredGallery.length}
+                </span>
+              </div>
+              <h3 className="about-lightbox-title">
+                {filteredGallery[lightboxIndex].title}
+              </h3>
+              <p className="about-lightbox-desc">
+                {filteredGallery[lightboxIndex].description}
+              </p>
+            </div>
           </div>
         </div>,
         document.body
