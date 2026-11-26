@@ -22,90 +22,93 @@ import {
   Maximize2,
   HardHat,
   Sparkles,
-  CheckCircle2
+  CheckCircle2,
+  MapPin,
+  Building2
 } from 'lucide-react';
 import './About.css';
 import RevealOnScroll from '../components/RevealOnScroll';
 import AnimatedCounter from '../components/AnimatedCounter';
 import Workflow from '../components/Workflow';
 
-// Danh sách hình ảnh thực tế: Đội ngũ kỹ thuật thi công & Dự án hoàn thiện
-const REAL_PROJECT_GALLERY = [
-  {
-    id: 1,
-    category: 'construction',
-    categoryName: 'Quá trình thi công',
-    title: 'Lắp đặt hệ ray uốn cong trên cao',
-    description: 'Kỹ thuật viên BOSS Đà Nẵng lắp đặt chuẩn xác ray cong theo bán kính vòm kiến trúc. Trang bị đồ bảo hộ, mũ và giàn giáo đạt chuẩn an toàn khắt khe của TTTM.',
-    src: '/about_project_install_1.jpg',
-    tag: 'Kỹ thuật cao'
-  },
-  {
-    id: 2,
-    category: 'construction',
-    categoryName: 'Quá trình thi công',
-    title: 'Cân chỉnh hệ trục cuốn & nan nhôm bảo hộ',
-    description: 'Thắt đai an toàn trên giàn giáo, trực tiếp kiểm tra và cân chỉnh từng nan cửa cùng khớp truyền động, đảm bảo vận hành êm ái tuyệt đối.',
-    src: '/about_project_install_2.jpg',
-    tag: 'Quy chuẩn an toàn'
-  },
-  {
-    id: 3,
-    category: 'construction',
-    categoryName: 'Quá trình thi công',
-    title: 'Đo đạc & định hình nan cửa uốn cong',
-    description: 'Công đoạn định hình và ghép nối nan cửa tỉ mỉ tại mặt bằng trước khi đưa vào hệ ray trượt bo góc mềm mại.',
-    src: '/about_project_install_3.jpg',
-    tag: 'Gia công tỉ mỉ'
-  },
-  {
-    id: 4,
-    category: 'construction',
-    categoryName: 'Quá trình thi công',
-    title: 'Đội ngũ kỹ thuật thi công đồng bộ',
-    description: 'Tập thể kỹ sư & thợ lắp đặt lành nghề phối hợp nhịp nhàng trên hệ giàn giáo, kiểm soát chặt chẽ từng chi tiết kết cấu.',
-    src: '/about_project_install_4.jpg',
-    tag: 'Đội ngũ thực chiến'
-  },
-  {
-    id: 5,
-    category: 'finished',
-    categoryName: 'Công trình hoàn thiện',
-    title: 'Cửa xếp trượt uốn cong bo góc mềm mại',
-    description: 'Hoàn thiện hệ cửa xếp trượt cong màu trắng sữa ôm trọn góc lượn mặt tiền cửa hàng KKV, đóng mở nhẹ nhàng và tối ưu 100% diện tích.',
-    src: '/about_project_result_1.jpg',
-    tag: 'Cửa xếp trượt cong'
-  },
-  {
-    id: 6,
-    category: 'finished',
-    categoryName: 'Công trình hoàn thiện',
-    title: 'Cửa cuốn trong suốt Polycarbonate cao cấp',
-    description: 'Hệ cửa cuốn nan trong suốt xuyên sáng sang trọng, chịu lực va đập cao, giúp khách hàng quan sát sản phẩm từ bên ngoài 24/7.',
-    src: '/about_project_result_2.jpg',
-    tag: 'Cửa cuốn trong suốt'
-  },
-  {
-    id: 7,
-    category: 'finished',
-    categoryName: 'Công trình hoàn thiện',
-    title: 'Toàn cảnh mặt tiền KKV bàn giao hoàn mỹ',
-    description: 'Đại siêu thị KKV sau khi hoàn thiện, kết hợp hài hòa giữa cửa cuốn trong suốt và cửa xếp bo góc màu vàng rực rỡ.',
-    src: '/about_project_result_3.jpg',
-    tag: 'Dự án tiêu biểu'
-  }
+// Dữ liệu hình ảnh dự án trọng điểm: AEON Mall Đà Nẵng (Chuỗi KKV)
+const AEON_PROJECT_PHASES = {
+  construction: [
+    {
+      id: 1,
+      step: '01',
+      title: 'Lắp đặt hệ ray uốn cong trên cao',
+      description: 'Đội ngũ kỹ thuật viên lắp đặt hệ ray cong 3D chuẩn xác theo bán kính vòm kiến trúc. Trang bị đồ bảo hộ, mũ và giàn giáo đạt chuẩn an toàn TTTM.',
+      src: '/about_project_install_1.jpg',
+      tag: 'Kỹ thuật ray cong',
+      badge: 'Giai đoạn thi công'
+    },
+    {
+      id: 2,
+      step: '02',
+      title: 'Cân chỉnh trục cuốn & nan nhôm bảo hộ',
+      description: 'Kỹ thuật viên thắt đai an toàn trên giàn giáo, trực tiếp kiểm tra và cân chỉnh từng nan cửa cùng khớp truyền động, đảm bảo vận hành êm ái tuyệt đối.',
+      src: '/about_project_install_2.jpg',
+      tag: 'Quy chuẩn an toàn',
+      badge: 'Giai đoạn thi công'
+    },
+    {
+      id: 3,
+      step: '03',
+      title: 'Đo đạc & định hình nan cửa uốn cong',
+      description: 'Công đoạn định hình và ghép nối nan cửa tỉ mỉ tại mặt bằng trước khi đưa vào hệ ray trượt bo góc mềm mại.',
+      src: '/about_project_install_3.jpg',
+      tag: 'Gia công tỉ mỉ',
+      badge: 'Giai đoạn thi công'
+    },
+    {
+      id: 4,
+      step: '04',
+      title: 'Đội ngũ kỹ thuật thi công đồng bộ',
+      description: 'Tập thể kỹ sư & thợ lắp đặt lành nghề phối hợp nhịp nhàng trên hệ giàn giáo, kiểm soát chặt chẽ từng chi tiết kết cấu.',
+      src: '/about_project_install_4.jpg',
+      tag: 'Đội ngũ thực chiến',
+      badge: 'Giai đoạn thi công'
+    }
+  ],
+  finished: [
+    {
+      id: 5,
+      isHero: true,
+      title: 'Toàn cảnh mặt tiền KKV bàn giao hoàn mỹ',
+      description: 'Đại siêu thị KKV sau khi hoàn thiện, kết hợp hài hòa giữa cửa cuốn trong suốt và cửa xếp bo góc màu vàng rực rỡ, làm bừng sáng không gian mua sắm.',
+      src: '/about_project_result_3.jpg',
+      tag: 'Toàn cảnh bàn giao',
+      badge: 'Hoàn thiện thực tế'
+    },
+    {
+      id: 6,
+      title: 'Cửa xếp trượt uốn cong bo góc mềm mại',
+      description: 'Hệ cửa xếp trượt cong màu trắng sữa ôm trọn góc lượn mặt tiền, đóng mở nhẹ nhàng, tối ưu 100% diện tích kinh doanh.',
+      src: '/about_project_result_1.jpg',
+      tag: 'Cửa xếp trượt cong',
+      badge: 'Hoàn thiện thực tế'
+    },
+    {
+      id: 7,
+      title: 'Cửa cuốn trong suốt Polycarbonate cao cấp',
+      description: 'Hệ nan trong suốt xuyên sáng sang trọng, chịu lực va đập cao, giúp khách hàng quan sát sản phẩm từ bên ngoài 24/7.',
+      src: '/about_project_result_2.jpg',
+      tag: 'Cửa cuốn trong suốt',
+      badge: 'Hoàn thiện thực tế'
+    }
+  ]
+};
+
+const ALL_AEON_IMAGES = [
+  ...AEON_PROJECT_PHASES.construction,
+  ...AEON_PROJECT_PHASES.finished
 ];
 
 const About = () => {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
-  const [activeGalleryTab, setActiveGalleryTab] = useState('all');
   const [lightboxIndex, setLightboxIndex] = useState(null);
   const videoSrc = "/boss_intro.mp4";
-
-  // Lọc danh sách hình ảnh theo Tab
-  const filteredGallery = activeGalleryTab === 'all' 
-    ? REAL_PROJECT_GALLERY 
-    : REAL_PROJECT_GALLERY.filter(item => item.category === activeGalleryTab);
 
   // Điều khiển phím bàn phím khi mở Lightbox
   useEffect(() => {
@@ -113,15 +116,15 @@ const About = () => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') setLightboxIndex(null);
       if (e.key === 'ArrowRight') {
-        setLightboxIndex((prev) => (prev + 1) % filteredGallery.length);
+        setLightboxIndex((prev) => (prev + 1) % ALL_AEON_IMAGES.length);
       }
       if (e.key === 'ArrowLeft') {
-        setLightboxIndex((prev) => (prev - 1 + filteredGallery.length) % filteredGallery.length);
+        setLightboxIndex((prev) => (prev - 1 + ALL_AEON_IMAGES.length) % ALL_AEON_IMAGES.length);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [lightboxIndex, filteredGallery.length]);
+  }, [lightboxIndex]);
 
   const renderKpiCards = () => (
     <>
@@ -468,84 +471,174 @@ const About = () => {
         </div>
       </section>
 
-      {/* 4.5. NĂNG LỰC THI CÔNG & HÌNH ẢNH CÔNG TRÌNH THỰC TẾ */}
-      <section className="exact-gallery-section" id="nang-luc-thi-cong">
+      {/* 4.5. GÓC DỰ ÁN TRỌNG ĐIỂM: AEON MALL ĐÀ NẴNG (CHUỖI BÁN LẺ KKV) */}
+      <section className="exact-aeon-spotlight-section" id="du-an-aeon-mall">
         <div className="exact-container">
-          <RevealOnScroll animation="fade-up" className="exact-gallery-header">
-            <div className="exact-gallery-sub">
-              <Camera size={16} /> HÌNH ẢNH THỰC TẾ & NĂNG LỰC DỰ ÁN
-            </div>
-            <h2>Đội Ngũ Kỹ Thuật Thực Chiến & Dự Án Đẳng Cấp</h2>
-            <p>
-              BOSS Đà Nẵng sở hữu đội ngũ kỹ sư và kỹ thuật viên tay nghề cao, được trang bị bảo hộ đạt chuẩn an toàn khắt khe. Chúng tôi tự hào trực tiếp thi công và bàn giao các hạng mục cửa cuốn cao cấp, cửa xếp trượt cong kỹ thuật cao tại các trung tâm thương mại lớn và công trình trọng điểm.
-            </p>
+          <div className="aeon-spotlight-box">
+            {/* Ambient Background Glow */}
+            <div className="aeon-box-glow"></div>
 
-            {/* Filter Tabs */}
-            <div className="exact-gallery-tabs">
-              <button 
-                type="button"
-                className={`exact-gallery-tab-btn ${activeGalleryTab === 'all' ? 'active' : ''}`}
-                onClick={() => setActiveGalleryTab('all')}
-              >
-                Tất cả hình ảnh ({REAL_PROJECT_GALLERY.length})
-              </button>
-              <button 
-                type="button"
-                className={`exact-gallery-tab-btn ${activeGalleryTab === 'construction' ? 'active' : ''}`}
-                onClick={() => setActiveGalleryTab('construction')}
-              >
-                <HardHat size={15} /> Quá trình thi công (4)
-              </button>
-              <button 
-                type="button"
-                className={`exact-gallery-tab-btn ${activeGalleryTab === 'finished' ? 'active' : ''}`}
-                onClick={() => setActiveGalleryTab('finished')}
-              >
-                <Sparkles size={15} /> Công trình hoàn thiện (3)
-              </button>
-            </div>
-          </RevealOnScroll>
+            {/* Header Góc Riêng Dự Án */}
+            <RevealOnScroll animation="fade-up" className="aeon-header-top">
+              <div className="aeon-badge-pill">
+                <Sparkles size={16} /> DỰ ÁN TRỌNG ĐIỂM TIÊU BIỂU
+              </div>
+              <h2 className="aeon-spotlight-title">
+                Thi Công Hệ Thống Cửa Cuốn & Cửa Xếp Trượt Cong <br />
+                <span className="aeon-highlight-text">Gian Hàng Đại Siêu Thị KKV – AEON Mall Đà Nẵng</span>
+              </h2>
+              <p className="aeon-spotlight-lead">
+                AEON Mall Đà Nẵng là một trong những đại trung tâm thương mại quy mô và khắt khe hàng đầu miền Trung. BOSS Đà Nẵng tự hào là đơn vị được tin chọn trực tiếp gia công, thi công và bàn giao hệ thống cửa xếp trượt bo góc uốn cong nghệ thuật và cửa cuốn trong suốt Polycarbonate sang trọng cho chuỗi bán lẻ quốc tế KKV.
+              </p>
+            </RevealOnScroll>
 
-          {/* Gallery Grid */}
-          <div className="exact-gallery-grid">
-            {filteredGallery.map((item, index) => (
-              <RevealOnScroll 
-                animation="fade-up" 
-                delay={(index % 3) * 100}
-                key={item.id} 
-                className="exact-gallery-card-wrapper"
-              >
-                <div 
-                  className="exact-gallery-card"
-                  onClick={() => setLightboxIndex(index)}
-                  title={`Bấm để xem ảnh phóng to: ${item.title}`}
-                >
-                  <div className="exact-gallery-img-box">
-                    <img src={item.src} alt={item.title} loading="lazy" />
-                    <span className="exact-gallery-tag-badge">{item.tag}</span>
-                    <div className="exact-gallery-overlay-hint">
-                      <Maximize2 size={20} />
-                      <span>Xem phóng to</span>
-                    </div>
-                  </div>
-                  <div className="exact-gallery-body">
-                    <div className="exact-gallery-category-pill">
-                      {item.category === 'construction' ? (
-                        <>
-                          <HardHat size={12} /> {item.categoryName}
-                        </>
-                      ) : (
-                        <>
-                          <CheckCircle2 size={12} /> {item.categoryName}
-                        </>
-                      )}
-                    </div>
-                    <h3 className="exact-gallery-title">{item.title}</h3>
-                    <p className="exact-gallery-desc">{item.description}</p>
-                  </div>
+            {/* Project Quick Factsheet (4 thẻ thông số dự án) */}
+            <RevealOnScroll animation="fade-up" delay={120} className="aeon-specs-grid">
+              <div className="aeon-spec-card">
+                <div className="aeon-spec-icon">
+                  <MapPin size={22} />
                 </div>
+                <div className="aeon-spec-info">
+                  <span className="aeon-spec-label">ĐỊA ĐIỂM DỰ ÁN</span>
+                  <strong className="aeon-spec-value">TTTM AEON Mall Đà Nẵng</strong>
+                </div>
+              </div>
+
+              <div className="aeon-spec-card">
+                <div className="aeon-spec-icon">
+                  <Building2 size={22} />
+                </div>
+                <div className="aeon-spec-info">
+                  <span className="aeon-spec-label">KHÁCH HÀNG / ĐỐI TÁC</span>
+                  <strong className="aeon-spec-value">Chuỗi Bán Lẻ KKV</strong>
+                </div>
+              </div>
+
+              <div className="aeon-spec-card">
+                <div className="aeon-spec-icon">
+                  <Settings size={22} />
+                </div>
+                <div className="aeon-spec-info">
+                  <span className="aeon-spec-label">HẠNG MỤC THI CÔNG</span>
+                  <strong className="aeon-spec-value">Cửa Xếp Cong & Cửa Trong Suốt</strong>
+                </div>
+              </div>
+
+              <div className="aeon-spec-card">
+                <div className="aeon-spec-icon">
+                  <ShieldCheck size={22} />
+                </div>
+                <div className="aeon-spec-info">
+                  <span className="aeon-spec-label">TIÊU CHUẨN AN TOÀN</span>
+                  <strong className="aeon-spec-value">Đạt Chuẩn TTTM & PCCC</strong>
+                </div>
+              </div>
+            </RevealOnScroll>
+
+            {/* PHẦN 1: QUÁ TRÌNH THI CÔNG KỸ THUẬT CAO (4 ẢNH) */}
+            <div className="aeon-phase-block">
+              <RevealOnScroll animation="fade-left" className="aeon-phase-title-row">
+                <div className="aeon-phase-tag">
+                  <HardHat size={16} /> GIAI ĐOẠN 1: NHẬT KÝ THI CÔNG TRỰC TIẾP TẠI CÔNG TRƯỜNG
+                </div>
+                <p className="aeon-phase-desc">
+                  Quy trình thi công trên giàn giáo tuân thủ nghiêm ngặt đồ bảo hộ, dây an toàn; căn chỉnh từng cung ray uốn lượn và khớp nối nan cửa chuẩn xác đến từng milimet.
+                </p>
               </RevealOnScroll>
-            ))}
+
+              <div className="aeon-construction-grid">
+                {AEON_PROJECT_PHASES.construction.map((item, idx) => (
+                  <RevealOnScroll animation="fade-up" delay={idx * 80} key={item.id} className="aeon-photo-card-wrap">
+                    <div 
+                      className="aeon-photo-card" 
+                      onClick={() => setLightboxIndex(ALL_AEON_IMAGES.findIndex(img => img.id === item.id))}
+                      title={`Bấm xem ảnh phóng to: ${item.title}`}
+                    >
+                      <div className="aeon-photo-frame">
+                        <img src={item.src} alt={item.title} loading="lazy" />
+                        <span className="aeon-step-badge">Bước {item.step}</span>
+                        <div className="aeon-photo-overlay">
+                          <Maximize2 size={20} />
+                          <span>Xem chi tiết</span>
+                        </div>
+                      </div>
+                      <div className="aeon-photo-meta">
+                        <span className="aeon-tag-pill">{item.tag}</span>
+                        <h4>{item.title}</h4>
+                        <p>{item.description}</p>
+                      </div>
+                    </div>
+                  </RevealOnScroll>
+                ))}
+              </div>
+            </div>
+
+            {/* PHẦN 2: THÀNH QUẢ BÀN GIAO HOÀN MỸ (3 ẢNH) */}
+            <div className="aeon-phase-block aeon-phase-finished">
+              <RevealOnScroll animation="fade-right" className="aeon-phase-title-row">
+                <div className="aeon-phase-tag finished-tag">
+                  <CheckCircle2 size={16} /> GIAI ĐOẠN 2: THÀNH QUẢ BÀN GIAO HOÀN MỸ CHO ĐẠI SIÊU THỊ KKV
+                </div>
+                <p className="aeon-phase-desc">
+                  Không gian mặt tiền KKV rực rỡ dưới ánh đèn đại siêu thị, kết hợp mượt mà giữa cửa cuốn trong suốt sang trọng và cửa xếp bo cong độc đáo.
+                </p>
+              </RevealOnScroll>
+
+              <div className="aeon-finished-layout">
+                {/* Ảnh lớn tiêu biểu toàn cảnh mặt tiền KKV */}
+                <RevealOnScroll animation="fade-up" className="aeon-hero-card-wrap">
+                  <div 
+                    className="aeon-hero-photo-card"
+                    onClick={() => setLightboxIndex(ALL_AEON_IMAGES.findIndex(img => img.id === AEON_PROJECT_PHASES.finished[0].id))}
+                    title="Bấm xem ảnh toàn cảnh phóng to"
+                  >
+                    <div className="aeon-hero-photo-frame">
+                      <img 
+                        src={AEON_PROJECT_PHASES.finished[0].src} 
+                        alt={AEON_PROJECT_PHASES.finished[0].title} 
+                        loading="lazy" 
+                      />
+                      <span className="aeon-hero-badge">⭐ Toàn cảnh mặt tiền hoàn thiện</span>
+                      <div className="aeon-photo-overlay">
+                        <Maximize2 size={24} />
+                        <span>Xem ảnh toàn cảnh</span>
+                      </div>
+                    </div>
+                    <div className="aeon-hero-content">
+                      <span className="aeon-tag-pill">{AEON_PROJECT_PHASES.finished[0].tag}</span>
+                      <h3>{AEON_PROJECT_PHASES.finished[0].title}</h3>
+                      <p>{AEON_PROJECT_PHASES.finished[0].description}</p>
+                    </div>
+                  </div>
+                </RevealOnScroll>
+
+                {/* 2 ảnh chi tiết bên cạnh */}
+                <div className="aeon-finished-sub-cards">
+                  {AEON_PROJECT_PHASES.finished.slice(1).map((item, idx) => (
+                    <RevealOnScroll animation="fade-up" delay={(idx + 1) * 100} key={item.id} className="aeon-sub-card-wrap">
+                      <div 
+                        className="aeon-photo-card aeon-photo-card-sub"
+                        onClick={() => setLightboxIndex(ALL_AEON_IMAGES.findIndex(img => img.id === item.id))}
+                        title={`Bấm xem ảnh phóng to: ${item.title}`}
+                      >
+                        <div className="aeon-photo-frame">
+                          <img src={item.src} alt={item.title} loading="lazy" />
+                          <span className="aeon-step-badge accent">{item.tag}</span>
+                          <div className="aeon-photo-overlay">
+                            <Maximize2 size={20} />
+                            <span>Xem chi tiết</span>
+                          </div>
+                        </div>
+                        <div className="aeon-photo-meta">
+                          <h4>{item.title}</h4>
+                          <p>{item.description}</p>
+                        </div>
+                      </div>
+                    </RevealOnScroll>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -610,7 +703,7 @@ const About = () => {
       )}
 
       {/* IMAGE LIGHTBOX POPUP MODAL */}
-      {lightboxIndex !== null && filteredGallery[lightboxIndex] && createPortal(
+      {lightboxIndex !== null && ALL_AEON_IMAGES[lightboxIndex] && createPortal(
         <div 
           className="about-lightbox-backdrop" 
           onClick={() => setLightboxIndex(null)}
@@ -632,7 +725,7 @@ const About = () => {
             <button 
               type="button" 
               className="about-lightbox-nav-btn prev"
-              onClick={() => setLightboxIndex((prev) => (prev - 1 + filteredGallery.length) % filteredGallery.length)}
+              onClick={() => setLightboxIndex((prev) => (prev - 1 + ALL_AEON_IMAGES.length) % ALL_AEON_IMAGES.length)}
               aria-label="Ảnh trước"
             >
               <ChevronLeft size={28} />
@@ -642,7 +735,7 @@ const About = () => {
             <button 
               type="button" 
               className="about-lightbox-nav-btn next"
-              onClick={() => setLightboxIndex((prev) => (prev + 1) % filteredGallery.length)}
+              onClick={() => setLightboxIndex((prev) => (prev + 1) % ALL_AEON_IMAGES.length)}
               aria-label="Ảnh kế tiếp"
             >
               <ChevronRight size={28} />
@@ -651,8 +744,8 @@ const About = () => {
             {/* Main Image Frame */}
             <div className="about-lightbox-img-frame">
               <img 
-                src={filteredGallery[lightboxIndex].src} 
-                alt={filteredGallery[lightboxIndex].title} 
+                src={ALL_AEON_IMAGES[lightboxIndex].src} 
+                alt={ALL_AEON_IMAGES[lightboxIndex].title} 
               />
             </div>
 
@@ -660,17 +753,17 @@ const About = () => {
             <div className="about-lightbox-caption">
               <div className="about-lightbox-badge-row">
                 <span className="about-lightbox-pill">
-                  {filteredGallery[lightboxIndex].categoryName}
+                  {ALL_AEON_IMAGES[lightboxIndex].badge}
                 </span>
                 <span className="about-lightbox-counter">
-                  {lightboxIndex + 1} / {filteredGallery.length}
+                  Ảnh {lightboxIndex + 1} / {ALL_AEON_IMAGES.length}
                 </span>
               </div>
               <h3 className="about-lightbox-title">
-                {filteredGallery[lightboxIndex].title}
+                {ALL_AEON_IMAGES[lightboxIndex].title}
               </h3>
               <p className="about-lightbox-desc">
-                {filteredGallery[lightboxIndex].description}
+                {ALL_AEON_IMAGES[lightboxIndex].description}
               </p>
             </div>
           </div>

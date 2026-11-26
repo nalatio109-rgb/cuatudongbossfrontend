@@ -2154,161 +2154,254 @@
 }
 
 /* ==========================================================================
-   4.5. NĂNG LỰC THI CÔNG & HÌNH ẢNH CÔNG TRÌNH THỰC TẾ
+   4.5. GÓC DỰ ÁN TRỌNG ĐIỂM: AEON MALL ĐÀ NẴNG (CHUỖI BÁN LẺ KKV)
    ========================================================================== */
-.exact-gallery-section {
-  padding: 85px 0 75px 0;
-  background: #f8fafc;
+.exact-aeon-spotlight-section {
+  padding: 85px 0 80px 0;
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
   position: relative;
-  border-top: 1px solid #edf2f7;
-  border-bottom: 1px solid #edf2f7;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
 }
 
-.exact-gallery-header {
+.aeon-spotlight-box {
+  background: #ffffff;
+  border-radius: 28px;
+  padding: 48px 44px 52px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+  border: 1.5px solid rgba(0, 77, 50, 0.12);
+  position: relative;
+  overflow: hidden;
+}
+
+.aeon-box-glow {
+  position: absolute;
+  top: -80px;
+  right: -80px;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(245, 189, 32, 0.12) 0%, rgba(0, 77, 50, 0) 70%);
+  pointer-events: none;
+}
+
+.aeon-header-top {
   text-align: center;
-  max-width: 820px;
+  max-width: 860px;
   margin: 0 auto 36px auto;
 }
 
-.exact-gallery-sub {
+.aeon-badge-pill {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  font-size: 13px;
+  gap: 8px;
+  background: linear-gradient(135deg, #022b1c 0%, #004d32 100%);
+  color: #f5bd20;
   font-weight: 800;
-  color: #004d32;
+  font-size: 12.5px;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  background: #e8f5ed;
-  padding: 6px 16px;
+  letter-spacing: 1.2px;
+  padding: 7px 20px;
   border-radius: 30px;
-  margin-bottom: 14px;
-  border: 1px solid rgba(0, 77, 50, 0.15);
+  margin-bottom: 16px;
+  border: 1px solid rgba(245, 189, 32, 0.35);
+  box-shadow: 0 4px 14px rgba(0, 77, 50, 0.2);
 }
 
-.exact-gallery-header h2 {
-  font-size: 32px;
+.aeon-spotlight-title {
+  font-size: 30px;
+  font-weight: 850;
   color: #043c23;
-  font-weight: 800;
   line-height: 1.35;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 
-.exact-gallery-header p {
+.aeon-highlight-text {
+  color: #004d32;
+  background: linear-gradient(135deg, #004d32 0%, #0a7049 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.aeon-spotlight-lead {
   font-size: 15px;
-  color: #4a5568;
-  line-height: 1.68;
+  color: #475569;
+  line-height: 1.7;
   margin: 0 auto;
 }
 
-/* Filter Tabs */
-.exact-gallery-tabs {
+/* Quick Factsheet 4 Cards */
+.aeon-specs-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin: 32px 0 46px 0;
+  padding: 20px;
+  background: #f8fafc;
+  border-radius: 20px;
+  border: 1px solid #e2e8f0;
+}
+
+.aeon-spec-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 14px;
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1px solid #eef2f6;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  transition: all 0.25s ease;
+}
+
+.aeon-spec-card:hover {
+  transform: translateY(-3px);
+  border-color: #86efac;
+  box-shadow: 0 8px 18px rgba(0, 77, 50, 0.08);
+}
+
+.aeon-spec-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #e8f5ed;
+  color: #004d32;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  margin-top: 26px;
+  flex-shrink: 0;
 }
 
-.exact-gallery-tab-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 9px 20px;
-  font-size: 13.5px;
-  font-weight: 700;
-  border-radius: 30px;
-  border: 1.5px solid #cbd5e1;
-  background: #ffffff;
-  color: #475569;
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.exact-gallery-tab-btn:hover {
-  border-color: #004d32;
-  color: #004d32;
-  background: #f0f7f3;
-  transform: translateY(-2px);
-}
-
-.exact-gallery-tab-btn.active {
-  background: #004d32;
-  color: #ffffff;
-  border-color: #004d32;
-  box-shadow: 0 6px 18px rgba(0, 77, 50, 0.22);
-}
-
-/* Gallery Grid */
-.exact-gallery-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  margin-top: 36px;
-}
-
-.exact-gallery-card-wrapper {
-  height: 100%;
-}
-
-.exact-gallery-card {
-  background: #ffffff;
-  border-radius: 18px;
-  overflow: hidden;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.05);
+.aeon-spec-info {
   display: flex;
   flex-direction: column;
-  height: 100%;
+}
+
+.aeon-spec-label {
+  font-size: 10px;
+  font-weight: 750;
+  color: #64748b;
+  letter-spacing: 0.5px;
+}
+
+.aeon-spec-value {
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #043c23;
+  margin-top: 2px;
+}
+
+/* Phases */
+.aeon-phase-block {
+  margin-bottom: 46px;
+}
+
+.aeon-phase-block:last-child {
+  margin-bottom: 0;
+}
+
+.aeon-phase-title-row {
+  margin-bottom: 22px;
+}
+
+.aeon-phase-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #0b6a3a;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  background: #ecfdf5;
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: 1px solid #a7f3d0;
+  width: max-content;
+}
+
+.aeon-phase-tag.finished-tag {
+  color: #854d0e;
+  background: #fefce8;
+  border-color: #fef08a;
+}
+
+.aeon-phase-desc {
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.6;
+  margin: 6px 0 0 0;
+}
+
+/* 4-col Construction Grid */
+.aeon-construction-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+.aeon-photo-card {
+  background: #ffffff;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   cursor: pointer;
-  transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
-.exact-gallery-card:hover {
+.aeon-photo-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 16px 36px rgba(0, 77, 50, 0.13);
-  border-color: #bbf7d0;
+  box-shadow: 0 14px 30px rgba(0, 77, 50, 0.14);
+  border-color: #86efac;
 }
 
-.exact-gallery-img-box {
+.aeon-photo-frame {
   position: relative;
   width: 100%;
-  height: 230px;
+  height: 190px;
   overflow: hidden;
   background: #0f172a;
 }
 
-.exact-gallery-img-box img {
+.aeon-photo-frame img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.5s ease;
 }
 
-.exact-gallery-card:hover .exact-gallery-img-box img {
+.aeon-photo-card:hover .aeon-photo-frame img {
   transform: scale(1.08);
 }
 
-.exact-gallery-tag-badge {
+.aeon-step-badge {
   position: absolute;
-  top: 12px;
-  left: 12px;
-  background: rgba(4, 60, 35, 0.88);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  top: 10px;
+  left: 10px;
+  background: rgba(4, 60, 35, 0.9);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
   color: #f5bd20;
-  font-weight: 750;
+  font-weight: 800;
   font-size: 11px;
-  padding: 5px 12px;
+  padding: 4px 10px;
   border-radius: 20px;
   border: 1px solid rgba(245, 189, 32, 0.4);
-  letter-spacing: 0.3px;
   z-index: 2;
 }
 
-.exact-gallery-overlay-hint {
+.aeon-step-badge.accent {
+  background: rgba(0, 77, 50, 0.9);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.aeon-photo-overlay {
   position: absolute;
   inset: 0;
   background: rgba(0, 50, 30, 0.45);
@@ -2317,51 +2410,144 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
   color: #ffffff;
   font-weight: 700;
-  font-size: 13.5px;
+  font-size: 13px;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.25s ease;
   z-index: 3;
 }
 
-.exact-gallery-card:hover .exact-gallery-overlay-hint {
+.aeon-photo-card:hover .aeon-photo-overlay,
+.aeon-hero-photo-card:hover .aeon-photo-overlay {
   opacity: 1;
 }
 
-.exact-gallery-body {
-  padding: 18px 20px 22px;
+.aeon-photo-meta {
+  padding: 14px 16px 18px;
   display: flex;
   flex-direction: column;
   flex: 1;
 }
 
-.exact-gallery-category-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 11px;
+.aeon-tag-pill {
+  font-size: 10.5px;
   font-weight: 750;
   color: #0b6a3a;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
+  display: block;
 }
 
-.exact-gallery-title {
-  font-size: 16px;
-  color: #043c23;
+.aeon-photo-meta h4 {
+  font-size: 14px;
   font-weight: 750;
-  line-height: 1.42;
-  margin-bottom: 8px;
+  color: #043c23;
+  line-height: 1.4;
+  margin-bottom: 6px;
 }
 
-.exact-gallery-desc {
-  font-size: 13px;
+.aeon-photo-meta p {
+  font-size: 12px;
   color: #64748b;
-  line-height: 1.62;
+  line-height: 1.55;
   margin: 0;
+}
+
+/* Phase 2: Finished Showcase Layout (1 Hero + 2 Sub) */
+.aeon-finished-layout {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 22px;
+  align-items: stretch;
+}
+
+.aeon-hero-photo-card {
+  background: #ffffff;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1.5px solid #cbd5e1;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.07);
+  cursor: pointer;
+  transition: all 0.35s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.aeon-hero-photo-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 40px rgba(0, 77, 50, 0.16);
+  border-color: #004d32;
+}
+
+.aeon-hero-photo-frame {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  overflow: hidden;
+  background: #0f172a;
+}
+
+.aeon-hero-photo-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.aeon-hero-photo-card:hover .aeon-hero-photo-frame img {
+  transform: scale(1.06);
+}
+
+.aeon-hero-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: linear-gradient(135deg, #022b1c 0%, #004d32 100%);
+  color: #f5bd20;
+  font-weight: 800;
+  font-size: 12px;
+  padding: 6px 14px;
+  border-radius: 24px;
+  border: 1px solid rgba(245, 189, 32, 0.4);
+  z-index: 2;
+}
+
+.aeon-hero-content {
+  padding: 20px 22px 24px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.aeon-hero-content h3 {
+  font-size: 18px;
+  font-weight: 800;
+  color: #043c23;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.aeon-hero-content p {
+  font-size: 13.5px;
+  color: #475569;
+  line-height: 1.65;
+  margin: 0;
+}
+
+.aeon-finished-sub-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  height: 100%;
+}
+
+.aeon-photo-card-sub .aeon-photo-frame {
+  height: 160px;
 }
 
 /* ==========================================================================
@@ -2517,44 +2703,68 @@
 /* ==========================================================================
    RESPONSIVE (MOBILE & TABLET)
    ========================================================================== */
-@media (max-width: 992px) {
-  .exact-gallery-grid {
+@media (max-width: 1024px) {
+  .aeon-specs-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .aeon-construction-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .aeon-finished-layout {
+    grid-template-columns: 1fr;
     gap: 18px;
+  }
+
+  .aeon-hero-photo-frame {
+    height: 260px;
   }
 }
 
-@media (max-width: 640px) {
-  .exact-gallery-section {
+@media (max-width: 768px) {
+  .exact-aeon-spotlight-section {
     padding: 55px 0 50px 0;
   }
 
-  .exact-gallery-header h2 {
-    font-size: 22px;
+  .aeon-spotlight-box {
+    padding: 24px 16px 28px;
+    border-radius: 20px;
+  }
+
+  .aeon-spotlight-title {
+    font-size: 21px;
     line-height: 1.35;
   }
 
-  .exact-gallery-header p {
+  .aeon-spotlight-lead {
     font-size: 13.5px;
   }
 
-  .exact-gallery-tabs {
-    gap: 8px;
-  }
-
-  .exact-gallery-tab-btn {
-    padding: 7px 14px;
-    font-size: 12px;
-  }
-
-  .exact-gallery-grid {
+  .aeon-specs-grid {
     grid-template-columns: 1fr;
-    gap: 16px;
-    margin-top: 24px;
+    padding: 14px;
+    gap: 10px;
+    margin: 22px 0 32px 0;
   }
 
-  .exact-gallery-img-box {
-    height: 200px;
+  .aeon-phase-tag {
+    font-size: 11.5px;
+    padding: 5px 12px;
+  }
+
+  .aeon-phase-desc {
+    font-size: 12.5px;
+  }
+
+  .aeon-construction-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .aeon-photo-frame {
+    height: 180px;
   }
 
   .about-lightbox-content {
