@@ -232,7 +232,12 @@ export default function Pricing() {
                   <div className="card-meta-left">
                     <span className="meta-date">
                       <Calendar size={13} className="meta-icon" />
-                      <span>{article.publishDate}</span>
+                      <span className="meta-date-desktop">{article.publishDate}</span>
+                      <span className="meta-date-mobile">
+                        {article.publishDate && article.publishDate.includes("2026")
+                          ? "Áp dụng năm 2026"
+                          : article.publishDate}
+                      </span>
                     </span>
                     <span className="meta-category">
                       <Folder size={13} className="meta-icon" />
