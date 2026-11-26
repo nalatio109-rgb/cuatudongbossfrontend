@@ -495,7 +495,7 @@ const About = () => {
         <div className="exact-container">
           <div className="aeon-poster-container">
             {/* 1. HERO BANNER LỚN Ở TRÊN */}
-            <RevealOnScroll animation="fade-up" className="aeon-poster-hero-wrap">
+            <RevealOnScroll animation="fade-up" delay={0} className="aeon-poster-hero-wrap">
               <div 
                 className="aeon-poster-hero"
                 onClick={() => setLightboxIndex(0)}
@@ -518,7 +518,7 @@ const About = () => {
               {AEON_POSTER_CARDS.map((item, idx) => (
                 <RevealOnScroll 
                   animation="fade-up" 
-                  delay={idx * 60} 
+                  delay={idx * 120 + 80} 
                   key={item.id}
                   className="aeon-poster-card-col"
                 >
@@ -543,7 +543,7 @@ const About = () => {
             </div>
 
             {/* 3. THANH 4 CAM KẾT / GIÁ TRỊ Ở DƯỚI CÙNG */}
-            <RevealOnScroll animation="fade-up" delay={150} className="aeon-poster-values-wrap">
+            <RevealOnScroll animation="fade-up" delay={200} className="aeon-poster-values-wrap">
               <div className="aeon-poster-values-bar">
                 {AEON_POSTER_VALUES.map((val, idx) => {
                   const IconComp = val.icon;

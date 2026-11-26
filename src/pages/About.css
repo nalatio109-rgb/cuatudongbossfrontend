@@ -2176,6 +2176,45 @@
   width: 100%;
 }
 
+/* Hiệu ứng chuyển động Scroll Reveal cho Hero Banner */
+.aeon-poster-hero-wrap.reveal-element {
+  opacity: 0;
+  transform: translateY(45px) scale(0.98);
+  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform;
+}
+
+.aeon-poster-hero-wrap.reveal-element.is-revealed {
+  opacity: 1 !important;
+  transform: translateY(0) scale(1) !important;
+}
+
+/* Hiệu ứng chữ tiêu đề trượt nhẹ từ dưới lên trong Hero */
+.aeon-poster-hero-wrap.reveal-element .aeon-poster-hero-title {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease 0.28s,
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.28s;
+}
+
+.aeon-poster-hero-wrap.reveal-element.is-revealed .aeon-poster-hero-title {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.aeon-poster-hero-wrap.reveal-element .aeon-poster-hero-subtitle {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.7s ease 0.42s,
+              transform 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.42s;
+}
+
+.aeon-poster-hero-wrap.reveal-element.is-revealed .aeon-poster-hero-subtitle {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .aeon-poster-hero {
   position: relative;
   width: 100%;
@@ -2246,6 +2285,31 @@
   width: 100%;
 }
 
+/* Hiệu ứng chuyển động lướt lên lần lượt (Staggered Wave) cho từng thẻ */
+.aeon-poster-card-col.reveal-element {
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.aeon-poster-card-col.reveal-element.is-revealed {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* Vạch vàng mở rộng khi thẻ xuất hiện */
+.aeon-poster-card-col.reveal-element .aeon-poster-gold-line {
+  width: 0;
+  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1) calc(var(--reveal-delay, 0ms) + 260ms);
+}
+
+.aeon-poster-card-col.reveal-element.is-revealed .aeon-poster-gold-line {
+  width: 32px;
+}
+
 .aeon-poster-card {
   display: flex;
   flex-direction: column;
@@ -2312,6 +2376,33 @@
 .aeon-poster-values-wrap {
   width: 100%;
   margin-top: 10px;
+}
+
+/* Hiệu ứng trượt lên nhẹ cho thanh cam kết */
+.aeon-poster-values-wrap.reveal-element {
+  opacity: 0;
+  transform: translateY(35px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s,
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s;
+  will-change: opacity, transform;
+}
+
+.aeon-poster-values-wrap.reveal-element.is-revealed {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+}
+
+/* Icon tròn nảy nhẹ lên khi xuất hiện */
+.aeon-poster-values-wrap.reveal-element .aeon-poster-value-icon {
+  transform: scale(0.65);
+  opacity: 0;
+  transition: transform 0.55s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.35s,
+              opacity 0.55s ease 0.35s;
+}
+
+.aeon-poster-values-wrap.reveal-element.is-revealed .aeon-poster-value-icon {
+  transform: scale(1);
+  opacity: 1;
 }
 
 .aeon-poster-values-bar {
