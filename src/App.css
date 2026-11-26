@@ -3084,11 +3084,12 @@ textarea {
   display: flex;
   gap: 20px;
   width: max-content;
-  animation: projectMarqueeScroll 28s linear infinite;
+  animation: projectMarqueeScroll 46s linear infinite;
   will-change: transform;
 }
 
-.projects-marquee-track:hover {
+.projects-marquee-track:hover,
+.projects-marquee-track:active {
   animation-play-state: paused;
 }
 
