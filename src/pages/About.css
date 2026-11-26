@@ -2154,23 +2154,24 @@
 }
 
 /* ==========================================================================
-   4.5. GÓC DỰ ÁN TRỌNG ĐIỂM: AEON MALL ĐÀ NẴNG (CHUỖI BÁN LẺ KKV) - BENTO GRID
+   4.5. GÓC DỰ ÁN TRỌNG ĐIỂM: AEON MALL ĐÀ NẴNG (DẢI TRƯỢT NGANG SLIDER / CAROUSEL)
    ========================================================================== */
-.aeon-bento-section {
-  padding: 85px 0 90px 0;
+.aeon-slider-section {
+  padding: 80px 0 85px 0;
   background: #f8fafc;
   position: relative;
   border-top: 1px solid #e2e8f0;
   border-bottom: 1px solid #e2e8f0;
+  overflow: hidden;
 }
 
-.aeon-bento-header {
+.aeon-slider-header {
   text-align: center;
-  max-width: 820px;
-  margin: 0 auto 40px auto;
+  max-width: 840px;
+  margin: 0 auto 38px auto;
 }
 
-.aeon-bento-badge {
+.aeon-slider-badge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -2186,7 +2187,7 @@
   border: 1px solid rgba(0, 77, 50, 0.15);
 }
 
-.aeon-bento-title {
+.aeon-slider-title {
   font-size: 30px;
   font-weight: 850;
   color: #0f172a;
@@ -2201,64 +2202,82 @@
   -webkit-text-fill-color: transparent;
 }
 
-.aeon-bento-lead {
+.aeon-slider-lead {
   font-size: 15px;
   color: #475569;
   line-height: 1.7;
   margin: 0 auto;
 }
 
-/* LƯỚI BENTO GRID 4 CỘT HIỆN ĐẠI */
-.aeon-bento-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-auto-rows: 215px;
-  gap: 16px;
-}
-
-/* Vai trò của từng thẻ trong lưới */
-.aeon-bento-card-wrap.role-hero {
-  grid-column: span 2;
-  grid-row: span 2;
-}
-
-.aeon-bento-card-wrap.role-normal {
-  grid-column: span 1;
-  grid-row: span 1;
-}
-
-.aeon-bento-card-wrap.role-wide {
-  grid-column: span 2;
-  grid-row: span 1;
-}
-
-/* Thẻ ảnh Bento */
-.aeon-bento-card {
+/* DẢI TRƯỢT NGANG (MARQUEE SLIDER) */
+.aeon-slider-wrapper {
   position: relative;
   width: 100%;
-  height: 100%;
+  overflow: hidden;
+  padding: 16px 0 20px 0;
+  mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+}
+
+.aeon-slider-track {
+  display: flex;
+  gap: 22px;
+  width: max-content;
+  animation: aeonMarqueeScroll 52s linear infinite;
+  will-change: transform;
+  touch-action: pan-y;
+}
+
+.aeon-slider-track:hover,
+.aeon-slider-track:active {
+  animation-play-state: paused;
+}
+
+/* Hiệu ứng trượt tự động liên tục từ phải sang trái */
+@keyframes aeonMarqueeScroll {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* Thẻ ảnh trong dải trượt */
+.aeon-slider-card {
+  position: relative;
+  width: 380px;
+  height: 260px;
+  flex-shrink: 0;
   border-radius: 20px;
   overflow: hidden;
   cursor: pointer;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-  border: 1px solid rgba(226, 232, 240, 0.85);
   background: #0f172a;
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
   transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+  -webkit-user-select: none;
+  outline: none;
 }
 
-.aeon-bento-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 16px 36px rgba(0, 77, 50, 0.16);
-  border-color: rgba(0, 77, 50, 0.4);
+.aeon-slider-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 18px 40px rgba(0, 77, 50, 0.22);
+  border-color: #86efac;
 }
 
-.bento-card-img-wrapper {
-  position: relative;
+.aeon-slider-card:focus-visible {
+  box-shadow: 0 0 0 3px #f5bd20, 0 18px 40px rgba(0, 77, 50, 0.25);
+}
+
+.aeon-slider-img-wrap {
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 
-.bento-card-img-wrapper img {
+.aeon-slider-img-wrap img {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -2266,45 +2285,44 @@
   transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.aeon-bento-card:hover .bento-card-img-wrapper img {
-  transform: scale(1.06);
+.aeon-slider-card:hover .aeon-slider-img-wrap img {
+  transform: scale(1.08);
 }
 
 /* Tag góc trên */
-.bento-card-tag {
+.aeon-slider-card-tag {
   position: absolute;
   top: 14px;
   left: 14px;
-  background: rgba(4, 60, 35, 0.88);
+  background: rgba(4, 60, 35, 0.9);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   color: #f5bd20;
-  font-weight: 750;
+  font-weight: 800;
   font-size: 11px;
   padding: 5px 12px;
   border-radius: 20px;
-  border: 1px solid rgba(245, 189, 32, 0.35);
+  border: 1px solid rgba(245, 189, 32, 0.4);
   z-index: 2;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
 /* Gradient overlay và nội dung ở chân ảnh */
-.bento-card-content {
+.aeon-slider-card-overlay {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 34px 18px 16px;
-  background: linear-gradient(180deg, rgba(4, 30, 20, 0) 0%, rgba(4, 30, 20, 0.75) 45%, rgba(4, 30, 20, 0.95) 100%);
+  padding: 34px 20px 18px;
+  background: linear-gradient(180deg, rgba(4, 30, 20, 0) 0%, rgba(4, 30, 20, 0.78) 45%, rgba(4, 30, 20, 0.96) 100%);
   color: #ffffff;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   z-index: 3;
-  transition: all 0.3s ease;
 }
 
-.bento-card-subtitle {
+.aeon-slider-card-subtitle {
   font-size: 11px;
   color: #cbd5e1;
   font-weight: 600;
@@ -2314,52 +2332,74 @@
   opacity: 0.9;
 }
 
-.bento-card-title {
-  font-size: 14.5px;
+.aeon-slider-card-title {
+  font-size: 15px;
   font-weight: 750;
   color: #ffffff;
   line-height: 1.35;
-  margin: 0;
+  margin: 0 0 6px 0;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-/* Hero card typography */
-.role-hero .bento-card-content {
-  padding: 60px 24px 22px;
-}
-
-.role-hero .bento-card-subtitle {
-  font-size: 12.5px;
-  color: #f5bd20;
-  font-weight: 700;
-}
-
-.role-hero .bento-card-title {
-  font-size: 20px;
-  font-weight: 850;
-  margin-bottom: 6px;
-}
-
-/* Gợi ý hover phóng to */
-.bento-card-hover-hint {
+.aeon-slider-card-hint {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  margin-top: 8px;
-  font-size: 12px;
-  font-weight: 600;
+  gap: 5px;
+  font-size: 11.5px;
+  font-weight: 700;
   color: #f5bd20;
-  opacity: 0;
-  transform: translateY(6px);
+  opacity: 0.9;
   transition: all 0.25s ease;
 }
 
-.aeon-bento-card:hover .bento-card-hover-hint {
+.aeon-slider-card:hover .aeon-slider-card-hint {
   opacity: 1;
-  transform: translateY(0);
+  color: #ffffff;
+  transform: translateX(3px);
+}
+
+/* Thanh chỉ dẫn nhẹ nhàng bên dưới */
+.aeon-slider-hint-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 24px;
+}
+
+.aeon-hint-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12.5px;
+  color: #64748b;
+  background: #ffffff;
+  padding: 6px 18px;
+  border-radius: 30px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.aeon-hint-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+  animation: pulseHintDot 2s infinite;
+}
+
+@keyframes pulseHintDot {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(0.85);
+  }
 }
 
 /* ==========================================================================
@@ -2516,76 +2556,71 @@
    RESPONSIVE (MOBILE & TABLET)
    ========================================================================== */
 @media (max-width: 1024px) {
-  .aeon-bento-section {
+  .aeon-slider-section {
     padding: 65px 0 70px 0;
   }
 
-  .aeon-bento-title {
+  .aeon-slider-title {
     font-size: 26px;
   }
 
-  .aeon-bento-grid {
-    grid-template-columns: repeat(2, 1fr);
-    grid-auto-rows: 210px;
-    gap: 14px;
+  .aeon-slider-card {
+    width: 340px;
+    height: 240px;
   }
 
-  .aeon-bento-card-wrap.role-hero {
-    grid-column: span 2;
-    grid-row: span 2;
-  }
-
-  .aeon-bento-card-wrap.role-normal {
-    grid-column: span 1;
-    grid-row: span 1;
-  }
-
-  .aeon-bento-card-wrap.role-wide {
-    grid-column: span 2;
-    grid-row: span 1;
+  .aeon-slider-card-title {
+    font-size: 14.5px;
   }
 }
 
-@media (max-width: 640px) {
-  .aeon-bento-section {
+@media (max-width: 768px) {
+  .aeon-slider-section {
     padding: 50px 0 55px 0;
   }
 
-  .aeon-bento-title {
+  .aeon-slider-title {
     font-size: 21px;
     line-height: 1.35;
   }
 
-  .aeon-bento-lead {
+  .aeon-slider-lead {
     font-size: 13.5px;
   }
 
-  .aeon-bento-grid {
-    display: flex;
-    flex-direction: column;
+  .aeon-slider-wrapper {
+    mask-image: none;
+    -webkit-mask-image: none;
+    padding: 10px 0 16px 0;
+  }
+
+  .aeon-slider-track {
     gap: 14px;
+    animation-duration: 40s;
   }
 
-  .aeon-bento-card-wrap {
-    width: 100%;
-    height: 220px;
+  .aeon-slider-card {
+    width: 290px;
+    height: 215px;
+    border-radius: 16px;
   }
 
-  .aeon-bento-card-wrap.role-hero {
-    height: 270px;
+  .aeon-slider-card-overlay {
+    padding: 24px 14px 14px;
   }
 
-  .bento-card-title {
-    font-size: 14px;
+  .aeon-slider-card-title {
+    font-size: 13.5px;
   }
 
-  .role-hero .bento-card-title {
-    font-size: 16.5px;
+  .aeon-slider-hint-row {
+    margin-top: 18px;
   }
 
-  .bento-card-hover-hint {
-    opacity: 1;
-    transform: none;
+  .aeon-hint-pill {
+    font-size: 11px;
+    padding: 5px 14px;
+    text-align: center;
   }
 
   .about-lightbox-content {

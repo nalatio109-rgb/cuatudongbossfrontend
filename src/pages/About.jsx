@@ -31,11 +31,10 @@ import RevealOnScroll from '../components/RevealOnScroll';
 import AnimatedCounter from '../components/AnimatedCounter';
 import Workflow from '../components/Workflow';
 
-// Danh sách 7 hình ảnh Bento Grid dự án AEON Mall Đà Nẵng (Chuỗi KKV)
-const BENTO_AEON_GALLERY = [
+// Danh sách 7 hình ảnh dự án AEON Mall Đà Nẵng (Chuỗi KKV)
+const AEON_PROJECT_GALLERY = [
   {
     id: 1,
-    role: 'hero', // 2 cols x 2 rows lớn
     title: 'Toàn cảnh mặt tiền KKV – AEON Mall Đà Nẵng',
     subtitle: 'Đại siêu thị phụ kiện & làm đẹp KKV',
     description: 'Mặt tiền đại siêu thị KKV rực rỡ với sự kết hợp hài hòa giữa cửa cuốn trong suốt và cửa xếp bo góc màu vàng sang trọng, bàn giao hoàn thiện đúng tiến độ.',
@@ -44,16 +43,14 @@ const BENTO_AEON_GALLERY = [
   },
   {
     id: 2,
-    role: 'normal',
     title: 'Cửa cuốn trong suốt Polycarbonate',
-    subtitle: 'Xuyên sáng 24/7',
+    subtitle: 'Xuyên sáng 24/7 sang trọng',
     description: 'Hệ nan trong suốt sang trọng, chịu lực va đập cao, giúp khách hàng quan sát toàn bộ sản phẩm bên trong ngay cả khi đóng cửa.',
     src: '/about_project_result_2.jpg',
     tag: 'Cửa cuốn trong suốt'
   },
   {
     id: 3,
-    role: 'normal',
     title: 'Cửa xếp trượt uốn cong bo góc',
     subtitle: 'Màu trắng sữa trang nhã',
     description: 'Hệ cửa xếp trượt cong ôm trọn đường cung mặt tiền, đóng mở nhẹ nhàng, tối ưu 100% diện tích kinh doanh.',
@@ -62,7 +59,6 @@ const BENTO_AEON_GALLERY = [
   },
   {
     id: 4,
-    role: 'normal',
     title: 'Lắp đặt ray uốn cong trên cao',
     subtitle: 'Kỹ thuật định hình vòm 3D',
     description: 'Kỹ thuật viên căn chỉnh chính xác bán kính vòm kiến trúc. Trang bị đồ bảo hộ, mũ và giàn giáo đạt chuẩn an toàn TTTM.',
@@ -71,7 +67,14 @@ const BENTO_AEON_GALLERY = [
   },
   {
     id: 5,
-    role: 'normal',
+    title: 'Đo đạc & ghép nan uốn cong tại sàn',
+    subtitle: 'Gia công tỉ mỉ từng chi tiết',
+    description: 'Công đoạn đo đạc và định hình nan cửa uốn cong ngay tại mặt bằng trước khi lắp ráp vào hệ ray trượt bo góc mềm mại.',
+    src: '/about_project_install_3.jpg',
+    tag: 'Gia công tỉ mỉ'
+  },
+  {
+    id: 6,
     title: 'Cân chỉnh trục cuốn & nan bảo hộ',
     subtitle: 'An toàn lao động khắt khe',
     description: 'Thắt đai an toàn trên giàn giáo, kiểm tra và cân chỉnh từng nan cửa cùng khớp truyền động để cửa vận hành êm ái.',
@@ -79,24 +82,17 @@ const BENTO_AEON_GALLERY = [
     tag: 'Quy chuẩn an toàn'
   },
   {
-    id: 6,
-    role: 'wide', // 2 cols span
-    title: 'Đo đạc & ghép nan uốn cong tại mặt bằng',
-    subtitle: 'Gia công tỉ mỉ từng chi tiết',
-    description: 'Công đoạn đo đạc và định hình nan cửa uốn cong ngay tại mặt bằng trước khi lắp ráp vào hệ ray trượt bo góc mềm mại.',
-    src: '/about_project_install_3.jpg',
-    tag: 'Gia công tỉ mỉ'
-  },
-  {
     id: 7,
-    role: 'wide', // 2 cols span
-    title: 'Đội ngũ kỹ thuật thi công đồng bộ trên giàn giáo',
+    title: 'Đội ngũ kỹ thuật thi công đồng bộ',
     subtitle: 'Đội ngũ thực chiến chuyên nghiệp',
     description: 'Tập thể kỹ sư & thợ thi công phối hợp nhịp nhàng trên hệ giàn giáo, kiểm soát chặt chẽ từng chi tiết kết cấu và thẩm mỹ.',
     src: '/about_project_install_4.jpg',
     tag: 'Đội ngũ thực chiến'
   }
 ];
+
+// Nhân đôi danh sách để tạo dải trượt vô tận không ngắt quãng
+const AEON_SLIDER_ITEMS = [...AEON_PROJECT_GALLERY, ...AEON_PROJECT_GALLERY];
 
 const About = () => {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
@@ -464,54 +460,72 @@ const About = () => {
         </div>
       </section>
 
-      {/* 4.5. DỰ ÁN TIÊU BIỂU TẠI AEON MALL ĐÀ NẴNG (BENTO GRID NGHỆ THUẬT) */}
-      <section className="aeon-bento-section" id="du-an-aeon-mall">
+      {/* 4.5. DỰ ÁN TIÊU BIỂU TẠI AEON MALL ĐÀ NẴNG (DẢI TRƯỢT NGANG SLIDER / CAROUSEL) */}
+      <section className="aeon-slider-section" id="du-an-aeon-mall">
         <div className="exact-container">
-          {/* Header thanh lịch, thoáng đãng, không đóng hộp */}
-          <RevealOnScroll animation="fade-up" className="aeon-bento-header">
-            <div className="aeon-bento-badge">
+          {/* Header thanh lịch, thoáng đãng */}
+          <RevealOnScroll animation="fade-up" className="aeon-slider-header">
+            <div className="aeon-slider-badge">
               <Sparkles size={15} /> DỰ ÁN TRỌNG ĐIỂM TIÊU BIỂU
             </div>
-            <h2 className="aeon-bento-title">
+            <h2 className="aeon-slider-title">
               Hệ Cửa Cuốn & Cửa Xếp Trượt Bo Góc <br />
-              <span>Gian Hàng KKV – TTTM AEON Mall Đà Nẵng</span>
+              <span className="aeon-highlight-green">Gian Hàng KKV – TTTM AEON Mall Đà Nẵng</span>
             </h2>
-            <p className="aeon-bento-lead">
+            <p className="aeon-slider-lead">
               Minh chứng thực tế cho năng lực thi công kỹ thuật cao của BOSS Đà Nẵng tại đại trung tâm thương mại lớn, đáp ứng tiêu chuẩn an toàn lao động và độ tinh xảo kiến trúc khắt khe nhất.
             </p>
           </RevealOnScroll>
+        </div>
 
-          {/* Bento Grid 7 ảnh nghệ thuật */}
-          <div className="aeon-bento-grid">
-            {BENTO_AEON_GALLERY.map((item, index) => (
-              <RevealOnScroll
-                animation="fade-up"
-                delay={(index % 4) * 80}
-                key={item.id}
-                className={`aeon-bento-card-wrap role-${item.role}`}
-              >
+        {/* Dải trượt ảnh ngang tự động (Chạy mượt mà từ phải sang trái, rê chuột tạm dừng) */}
+        <div className="aeon-slider-wrapper">
+          <div className="aeon-slider-track">
+            {AEON_SLIDER_ITEMS.map((item, index) => {
+              const originalIndex = index % AEON_PROJECT_GALLERY.length;
+              return (
                 <div
-                  className={`aeon-bento-card role-${item.role}`}
-                  onClick={() => setLightboxIndex(index)}
-                  title={`Bấm xem ảnh to: ${item.title}`}
+                  className="aeon-slider-card"
+                  key={`${item.id}-${index}`}
+                  onClick={() => setLightboxIndex(originalIndex)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      setLightboxIndex(originalIndex);
+                    }
+                  }}
+                  title={`Bấm xem ảnh phóng to: ${item.title}`}
                 >
-                  <img src={item.src} alt={item.title} loading="lazy" />
+                  <div className="aeon-slider-img-wrap">
+                    <img src={item.src} alt={item.title} loading="lazy" />
+                  </div>
                   
-                  {/* Tag góc trên */}
-                  <span className="bento-card-tag">{item.tag}</span>
+                  {/* Tag phân loại góc trên */}
+                  <span className="aeon-slider-card-tag">{item.tag}</span>
 
-                  {/* Gradient tối nhẹ ở đáy ảnh với phụ đề & tiêu đề */}
-                  <div className="bento-card-content">
-                    <span className="bento-card-subtitle">{item.subtitle}</span>
-                    <h3 className="bento-card-title">{item.title}</h3>
-                    <div className="bento-card-hover-hint">
-                      <Maximize2 size={15} />
-                      <span>Xem phóng to</span>
-                    </div>
+                  {/* Gradient tối ở chân ảnh */}
+                  <div className="aeon-slider-card-overlay">
+                    <span className="aeon-slider-card-subtitle">{item.subtitle}</span>
+                    <h3 className="aeon-slider-card-title">{item.title}</h3>
+                    <span className="aeon-slider-card-hint">
+                      <Maximize2 size={13} /> Xem phóng to & chi tiết
+                    </span>
                   </div>
                 </div>
-              </RevealOnScroll>
-            ))}
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Thanh chỉ dẫn nhẹ nhàng */}
+        <div className="exact-container">
+          <div className="aeon-slider-hint-row">
+            <span className="aeon-hint-pill">
+              <span className="aeon-hint-dot"></span>
+              Dải trượt tự động lướt nhẹ • Rê chuột để dừng • Nhấp vào ảnh để xem toàn màn hình
+            </span>
           </div>
         </div>
       </section>
@@ -576,7 +590,7 @@ const About = () => {
       )}
 
       {/* IMAGE LIGHTBOX POPUP MODAL */}
-      {lightboxIndex !== null && BENTO_AEON_GALLERY[lightboxIndex] && createPortal(
+      {lightboxIndex !== null && AEON_PROJECT_GALLERY[lightboxIndex] && createPortal(
         <div 
           className="about-lightbox-backdrop" 
           onClick={() => setLightboxIndex(null)}
@@ -598,7 +612,7 @@ const About = () => {
             <button 
               type="button" 
               className="about-lightbox-nav-btn prev"
-              onClick={() => setLightboxIndex((prev) => (prev - 1 + BENTO_AEON_GALLERY.length) % BENTO_AEON_GALLERY.length)}
+              onClick={() => setLightboxIndex((prev) => (prev - 1 + AEON_PROJECT_GALLERY.length) % AEON_PROJECT_GALLERY.length)}
               aria-label="Ảnh trước"
             >
               <ChevronLeft size={28} />
@@ -608,7 +622,7 @@ const About = () => {
             <button 
               type="button" 
               className="about-lightbox-nav-btn next"
-              onClick={() => setLightboxIndex((prev) => (prev + 1) % BENTO_AEON_GALLERY.length)}
+              onClick={() => setLightboxIndex((prev) => (prev + 1) % AEON_PROJECT_GALLERY.length)}
               aria-label="Ảnh kế tiếp"
             >
               <ChevronRight size={28} />
@@ -617,8 +631,8 @@ const About = () => {
             {/* Main Image Frame */}
             <div className="about-lightbox-img-frame">
               <img 
-                src={BENTO_AEON_GALLERY[lightboxIndex].src} 
-                alt={BENTO_AEON_GALLERY[lightboxIndex].title} 
+                src={AEON_PROJECT_GALLERY[lightboxIndex].src} 
+                alt={AEON_PROJECT_GALLERY[lightboxIndex].title} 
               />
             </div>
 
@@ -626,17 +640,17 @@ const About = () => {
             <div className="about-lightbox-caption">
               <div className="about-lightbox-badge-row">
                 <span className="about-lightbox-pill">
-                  {BENTO_AEON_GALLERY[lightboxIndex].tag}
+                  {AEON_PROJECT_GALLERY[lightboxIndex].tag}
                 </span>
                 <span className="about-lightbox-counter">
-                  Ảnh {lightboxIndex + 1} / {BENTO_AEON_GALLERY.length}
+                  Ảnh {lightboxIndex + 1} / {AEON_PROJECT_GALLERY.length}
                 </span>
               </div>
               <h3 className="about-lightbox-title">
-                {BENTO_AEON_GALLERY[lightboxIndex].title}
+                {AEON_PROJECT_GALLERY[lightboxIndex].title}
               </h3>
               <p className="about-lightbox-desc">
-                {BENTO_AEON_GALLERY[lightboxIndex].description}
+                {AEON_PROJECT_GALLERY[lightboxIndex].description}
               </p>
             </div>
           </div>
