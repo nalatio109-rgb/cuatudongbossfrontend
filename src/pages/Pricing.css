@@ -1647,6 +1647,10 @@
   margin-bottom: 40px;
 }
 
+.pricing-card-reveal-wrap {
+  width: 100%;
+}
+
 .pricing-article-list-card {
   display: flex;
   gap: 24px;
@@ -1958,6 +1962,10 @@
     width: 100% !important;
     gap: 14px !important;
     margin-bottom: 30px !important;
+  }
+
+  .pricing-card-reveal-wrap {
+    width: 100% !important;
   }
 
   /* 3. Khung thẻ bài viết bảng giá kéo dài sang 2 bên màn hình điện thoại */

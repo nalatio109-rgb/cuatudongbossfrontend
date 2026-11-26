@@ -189,51 +189,57 @@ export default function Pricing() {
       <main className="container pricing-hub-main-container">
         {/* Article Cards Stream (Khớp 100% Ảnh 3) */}
         <div className="pricing-article-cards-stream">
-          {filteredArticles.map((article) => (
-            <article
+          {filteredArticles.map((article, index) => (
+            <RevealOnScroll
               key={article.id}
-              className="pricing-article-list-card"
-              onClick={() => navigate(article.path)}
+              animation="fade-up"
+              delay={(index % 4) * 120}
+              className="pricing-card-reveal-wrap"
             >
-              {/* Bên trái: Thumbnail kèm watermark BOSS ** ĐÀ NẴNG ** */}
-              <div className="card-thumb-column">
-                <div className="card-thumb-wrapper">
-                  <img
-                    src={article.image}
-                    alt={article.title}
-                    loading="lazy"
-                    className="card-thumb-image"
-                  />
-                  {/* Watermark logo góc trên bên trái khớp Ảnh 3 */}
-                  <div className="thumb-boss-watermark">
-                    <span className="wm-title">BOSS</span>
-                    <span className="wm-sub">★ ĐÀ NẴNG ★</span>
+              <article
+                className="pricing-article-list-card"
+                onClick={() => navigate(article.path)}
+              >
+                {/* Bên trái: Thumbnail kèm watermark BOSS ** ĐÀ NẴNG ** */}
+                <div className="card-thumb-column">
+                  <div className="card-thumb-wrapper">
+                    <img
+                      src={article.image}
+                      alt={article.title}
+                      loading="lazy"
+                      className="card-thumb-image"
+                    />
+                    {/* Watermark logo góc trên bên trái khớp Ảnh 3 */}
+                    <div className="thumb-boss-watermark">
+                      <span className="wm-title">BOSS</span>
+                      <span className="wm-sub">★ ĐÀ NẴNG ★</span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* Bên phải: Tiêu đề H3, mô tả trích dẫn, Meta row */}
-              <div className="card-content-column">
-                <h3 className="card-article-title">
-                  <Link
-                    to={article.path}
-                    className="article-title-link"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    {article.title}
-                  </Link>
-                </h3>
+                {/* Bên phải: Tiêu đề H3, mô tả trích dẫn, Meta row */}
+                <div className="card-content-column">
+                  <h3 className="card-article-title">
+                    <Link
+                      to={article.path}
+                      className="article-title-link"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      {article.title}
+                    </Link>
+                  </h3>
 
-                <p className="card-article-excerpt">{article.excerpt}</p>
+                  <p className="card-article-excerpt">{article.excerpt}</p>
 
-                <div className="card-article-meta-row">
-                  <span className="card-article-read-more">
-                    <span>Xem bảng giá</span>
-                    <ArrowRight size={14} className="arrow-icon" />
-                  </span>
+                  <div className="card-article-meta-row">
+                    <span className="card-article-read-more">
+                      <span>Xem bảng giá</span>
+                      <ArrowRight size={14} className="arrow-icon" />
+                    </span>
+                  </div>
                 </div>
-              </div>
-            </article>
+              </article>
+            </RevealOnScroll>
           ))}
         </div>
 
