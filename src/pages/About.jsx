@@ -576,7 +576,7 @@ const About = () => {
             <div className="exact-cta-glow"></div>
 
             <div className="exact-cta-left-img">
-              <img src="/about_door_1.png" alt="Cửa nhựa cao cấp" />
+              <img src="/about_cta_technicians.jpg" alt="Đội ngũ kỹ thuật viên BOSS Đà Nẵng thi công chuyên nghiệp" />
             </div>
 
             <div className="exact-cta-right-content">
