@@ -451,10 +451,10 @@ const About = () => {
           <RevealOnScroll animation="fade-up" className="about-clean-gallery-header">
             <div className="clean-gallery-sub">HÌNH ẢNH THỰC TẾ THI CÔNG</div>
             <h2 className="clean-gallery-title">
-              Công Trình AEON Mall Đà Nẵng <span className="highlight-text">(Chuỗi KKV)</span>
+              Một Số Hình Ảnh Tại Dự Án <span className="highlight-text">AEON Mall Đà Nẵng</span>
             </h2>
             <p className="clean-gallery-desc">
-              Hệ cửa xếp trượt uốn cong nghệ thuật & cửa cuốn trong suốt Polycarbonate sang trọng
+              Quá trình gia công và thi công hoàn thiện hệ thống cửa xếp trượt uốn cong bo góc & cửa cuốn trong suốt Polycarbonate tại đại siêu thị KKV
             </p>
           </RevealOnScroll>
 
@@ -482,6 +482,17 @@ const About = () => {
                 </div>
               </RevealOnScroll>
             ))}
+          </div>
+
+          {/* Nút xem chi tiết toàn bộ bài viết dự án */}
+          <div className="clean-gallery-action-row">
+            <Link 
+              to="/cong-trinh/thi-cong-cua-cuon-xep-truot-cong-aeon-mall-da-nang"
+              className="clean-gallery-link-btn"
+            >
+              <span>Xem bài viết chi tiết & toàn bộ quá trình thi công dự án này</span>
+              <ArrowRight size={16} />
+            </Link>
           </div>
         </div>
       </section>
