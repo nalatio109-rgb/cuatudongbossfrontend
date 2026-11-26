@@ -30,7 +30,6 @@ import {
 import './About.css';
 import RevealOnScroll from '../components/RevealOnScroll';
 import AnimatedCounter from '../components/AnimatedCounter';
-import Workflow from '../components/Workflow';
 
 // Dữ liệu hình ảnh theo đúng bố cục mẫu: AEON Mall Đà Nẵng - Chuỗi KKV
 const AEON_POSTER_HERO = {
@@ -565,10 +564,7 @@ const About = () => {
         </div>
       </section>
 
-      {/* 5. QUY TRÌNH LÀM VIỆC */}
-      <Workflow />
-
-      {/* 6. CTA BANNER */}
+      {/* 5. CTA BANNER */}
       <section className="exact-cta-section">
         <div className="exact-container">
           <RevealOnScroll animation="zoom-in" className="exact-cta-box">
