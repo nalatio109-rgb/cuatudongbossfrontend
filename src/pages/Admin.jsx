@@ -1255,6 +1255,7 @@ export default function Admin() {
 
       setNews(updated);
       localStorage.setItem("boss_admin_news", JSON.stringify(updated));
+      window.dispatchEvent(new CustomEvent("boss_news_updated", { detail: updated }));
       setShowNewsForm(false);
       setEditingNews(null);
       showToast(editingNews ? "✨ Đã cập nhật bài viết tin tức thành công!" : "🎉 Đã thêm và đăng bài viết tin tức thành công!");
@@ -1271,12 +1272,14 @@ export default function Admin() {
       const updated = news.filter(n => n._id !== id && n.id !== id);
       setNews(updated);
       localStorage.setItem("boss_admin_news", JSON.stringify(updated));
+      window.dispatchEvent(new CustomEvent("boss_news_updated", { detail: updated }));
       showToast("🗑️ Đã xóa bài viết tin tức thành công!");
     } catch (err) {
       console.error("Delete news error:", err);
       const updated = news.filter(n => n._id !== id && n.id !== id);
       setNews(updated);
       localStorage.setItem("boss_admin_news", JSON.stringify(updated));
+      window.dispatchEvent(new CustomEvent("boss_news_updated", { detail: updated }));
       showToast("🗑️ Đã xóa bài viết tin tức!");
     }
   };

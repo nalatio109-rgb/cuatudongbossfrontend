@@ -4,6 +4,7 @@ import { ChevronRight, Calendar, ArrowRight } from 'lucide-react';
 import RevealOnScroll from '../components/RevealOnScroll';
 import { getNewsSlug } from '../utils/slug';
 import { sortByNewest } from '../utils/sortHelper';
+import { DEFAULT_NEWS } from '../data/defaultNews';
 import './News.css';
 
 const News = () => {
@@ -26,13 +27,17 @@ const News = () => {
         const response = await fetch(`${import.meta.env.VITE_API_URL}/api/news`);
         if (response.ok) {
           const json = await response.json();
-          if (json.success && Array.isArray(json.data)) {
+          if (json.success && Array.isArray(json.data) && json.data.length > 0) {
             const merged = [...json.data];
             localNews.forEach((ln) => {
               if (!ln) return;
               const lnId = String(ln._id || ln.id || "");
               const exists = merged.some((m) => String(m._id || m.id || "") === lnId || (m.slug && m.slug === ln.slug));
               if (!exists) merged.push(ln);
+            });
+            DEFAULT_NEWS.forEach((sample) => {
+              const exists = merged.some((m) => String(m._id || m.id || "") === sample._id || m.slug === sample.slug);
+              if (!exists) merged.push(sample);
             });
             merged.sort(sortByNewest);
             setNewsList(merged);
@@ -44,16 +49,40 @@ const News = () => {
         console.warn('API fetch news error, checking local storage:', err);
       }
 
-      if (localNews.length > 0) {
-        localNews.sort(sortByNewest);
-        setNewsList(localNews);
-      } else {
-        setError('Không thể tải dữ liệu tin tức lúc này. Vui lòng thử lại sau.');
-      }
+      const merged = [...localNews];
+      DEFAULT_NEWS.forEach((sample) => {
+        const exists = merged.some((m) => String(m._id || m.id || "") === sample._id || m.slug === sample.slug);
+        if (!exists) merged.push(sample);
+      });
+      merged.sort(sortByNewest);
+      setNewsList(merged);
       setLoading(false);
     };
 
     fetchNews();
+
+    const handleNewsUpdate = (e) => {
+      if (e.detail && Array.isArray(e.detail)) {
+        const sorted = [...e.detail].sort(sortByNewest);
+        setNewsList(sorted);
+      } else {
+        fetchNews();
+      }
+    };
+
+    const handleStorageChange = (e) => {
+      if (e.key === "boss_admin_news") {
+        fetchNews();
+      }
+    };
+
+    window.addEventListener("boss_news_updated", handleNewsUpdate);
+    window.addEventListener("storage", handleStorageChange);
+
+    return () => {
+      window.removeEventListener("boss_news_updated", handleNewsUpdate);
+      window.removeEventListener("storage", handleStorageChange);
+    };
   }, []);
 
   return (
