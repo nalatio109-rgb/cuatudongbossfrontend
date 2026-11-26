@@ -209,6 +209,9 @@ export default function Pricing() {
                     <span className="wm-title">BOSS</span>
                     <span className="wm-sub">★ ĐÀ NẴNG ★</span>
                   </div>
+                  <div className="thumb-price-tag-red">
+                    BẢNG GIÁ 2026
+                  </div>
                 </div>
               </div>
 
