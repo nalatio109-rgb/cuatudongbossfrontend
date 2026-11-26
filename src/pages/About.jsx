@@ -547,33 +547,6 @@ const About = () => {
               </RevealOnScroll>
             ))}
           </div>
-
-          {/* Bottom Trust Banner */}
-          <RevealOnScroll animation="zoom-in" delay={150} className="exact-gallery-trust-banner">
-            <div className="trust-banner-item">
-              <CheckCircle2 size={20} className="trust-icon" />
-              <div>
-                <strong>100% Ảnh Thực Tế</strong>
-                <span>Hình ảnh trực tiếp từ công trình do BOSS Đà Nẵng thi công</span>
-              </div>
-            </div>
-            <div className="trust-banner-divider"></div>
-            <div className="trust-banner-item">
-              <HardHat size={20} className="trust-icon" />
-              <div>
-                <strong>Tiêu Chuẩn An Toàn Khắt Khe</strong>
-                <span>Tuân thủ nghiêm ngặt bảo hộ lao động và quy chuẩn kỹ thuật TTTM</span>
-              </div>
-            </div>
-            <div className="trust-banner-divider"></div>
-            <div className="trust-banner-item">
-              <ShieldCheck size={20} className="trust-icon" />
-              <div>
-                <strong>Bảo Hành Tận Tâm</strong>
-                <span>Bảo hành chính hãng 5 - 10 năm và cứu hộ kỹ thuật 24/7</span>
-              </div>
-            </div>
-          </RevealOnScroll>
         </div>
       </section>
 

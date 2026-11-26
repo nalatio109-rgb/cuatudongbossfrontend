@@ -2364,53 +2364,6 @@
   margin: 0;
 }
 
-/* Trust Banner */
-.exact-gallery-trust-banner {
-  background: linear-gradient(135deg, #022b1c 0%, #004d32 100%);
-  border-radius: 20px;
-  padding: 24px 36px;
-  margin-top: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  color: #ffffff;
-  box-shadow: 0 14px 34px rgba(0, 77, 50, 0.18);
-  border: 1px solid rgba(245, 189, 32, 0.2);
-}
-
-.trust-banner-item {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  flex: 1;
-}
-
-.trust-banner-item .trust-icon {
-  color: #f5bd20;
-  flex-shrink: 0;
-}
-
-.trust-banner-item strong {
-  display: block;
-  font-size: 14.5px;
-  font-weight: 750;
-  color: #ffffff;
-  margin-bottom: 3px;
-}
-
-.trust-banner-item span {
-  font-size: 12.5px;
-  color: #d1fae5;
-  line-height: 1.45;
-}
-
-.trust-banner-divider {
-  width: 1px;
-  height: 44px;
-  background: rgba(255, 255, 255, 0.15);
-}
-
 /* ==========================================================================
    IMAGE LIGHTBOX MODAL
    ========================================================================== */
@@ -2568,18 +2521,6 @@
   .exact-gallery-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 18px;
-  }
-
-  .exact-gallery-trust-banner {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 24px;
-    gap: 16px;
-  }
-
-  .trust-banner-divider {
-    width: 100%;
-    height: 1px;
   }
 }
 
