@@ -31,78 +31,71 @@ import RevealOnScroll from '../components/RevealOnScroll';
 import AnimatedCounter from '../components/AnimatedCounter';
 import Workflow from '../components/Workflow';
 
-// Dữ liệu hình ảnh dự án trọng điểm: AEON Mall Đà Nẵng (Chuỗi KKV)
-const AEON_PROJECT_PHASES = {
-  construction: [
-    {
-      id: 1,
-      step: '01',
-      title: 'Lắp đặt hệ ray uốn cong trên cao',
-      description: 'Đội ngũ kỹ thuật viên lắp đặt hệ ray cong 3D chuẩn xác theo bán kính vòm kiến trúc. Trang bị đồ bảo hộ, mũ và giàn giáo đạt chuẩn an toàn TTTM.',
-      src: '/about_project_install_1.jpg',
-      tag: 'Kỹ thuật ray cong',
-      badge: 'Giai đoạn thi công'
-    },
-    {
-      id: 2,
-      step: '02',
-      title: 'Cân chỉnh trục cuốn & nan nhôm bảo hộ',
-      description: 'Kỹ thuật viên thắt đai an toàn trên giàn giáo, trực tiếp kiểm tra và cân chỉnh từng nan cửa cùng khớp truyền động, đảm bảo vận hành êm ái tuyệt đối.',
-      src: '/about_project_install_2.jpg',
-      tag: 'Quy chuẩn an toàn',
-      badge: 'Giai đoạn thi công'
-    },
-    {
-      id: 3,
-      step: '03',
-      title: 'Đo đạc & định hình nan cửa uốn cong',
-      description: 'Công đoạn định hình và ghép nối nan cửa tỉ mỉ tại mặt bằng trước khi đưa vào hệ ray trượt bo góc mềm mại.',
-      src: '/about_project_install_3.jpg',
-      tag: 'Gia công tỉ mỉ',
-      badge: 'Giai đoạn thi công'
-    },
-    {
-      id: 4,
-      step: '04',
-      title: 'Đội ngũ kỹ thuật thi công đồng bộ',
-      description: 'Tập thể kỹ sư & thợ lắp đặt lành nghề phối hợp nhịp nhàng trên hệ giàn giáo, kiểm soát chặt chẽ từng chi tiết kết cấu.',
-      src: '/about_project_install_4.jpg',
-      tag: 'Đội ngũ thực chiến',
-      badge: 'Giai đoạn thi công'
-    }
-  ],
-  finished: [
-    {
-      id: 5,
-      isHero: true,
-      title: 'Toàn cảnh mặt tiền KKV bàn giao hoàn mỹ',
-      description: 'Đại siêu thị KKV sau khi hoàn thiện, kết hợp hài hòa giữa cửa cuốn trong suốt và cửa xếp bo góc màu vàng rực rỡ, làm bừng sáng không gian mua sắm.',
-      src: '/about_project_result_3.jpg',
-      tag: 'Toàn cảnh bàn giao',
-      badge: 'Hoàn thiện thực tế'
-    },
-    {
-      id: 6,
-      title: 'Cửa xếp trượt uốn cong bo góc mềm mại',
-      description: 'Hệ cửa xếp trượt cong màu trắng sữa ôm trọn góc lượn mặt tiền, đóng mở nhẹ nhàng, tối ưu 100% diện tích kinh doanh.',
-      src: '/about_project_result_1.jpg',
-      tag: 'Cửa xếp trượt cong',
-      badge: 'Hoàn thiện thực tế'
-    },
-    {
-      id: 7,
-      title: 'Cửa cuốn trong suốt Polycarbonate cao cấp',
-      description: 'Hệ nan trong suốt xuyên sáng sang trọng, chịu lực va đập cao, giúp khách hàng quan sát sản phẩm từ bên ngoài 24/7.',
-      src: '/about_project_result_2.jpg',
-      tag: 'Cửa cuốn trong suốt',
-      badge: 'Hoàn thiện thực tế'
-    }
-  ]
-};
-
-const ALL_AEON_IMAGES = [
-  ...AEON_PROJECT_PHASES.construction,
-  ...AEON_PROJECT_PHASES.finished
+// Danh sách 7 hình ảnh Bento Grid dự án AEON Mall Đà Nẵng (Chuỗi KKV)
+const BENTO_AEON_GALLERY = [
+  {
+    id: 1,
+    role: 'hero', // 2 cols x 2 rows lớn
+    title: 'Toàn cảnh mặt tiền KKV – AEON Mall Đà Nẵng',
+    subtitle: 'Đại siêu thị phụ kiện & làm đẹp KKV',
+    description: 'Mặt tiền đại siêu thị KKV rực rỡ với sự kết hợp hài hòa giữa cửa cuốn trong suốt và cửa xếp bo góc màu vàng sang trọng, bàn giao hoàn thiện đúng tiến độ.',
+    src: '/about_project_result_3.jpg',
+    tag: '⭐ Bàn giao hoàn thiện'
+  },
+  {
+    id: 2,
+    role: 'normal',
+    title: 'Cửa cuốn trong suốt Polycarbonate',
+    subtitle: 'Xuyên sáng 24/7',
+    description: 'Hệ nan trong suốt sang trọng, chịu lực va đập cao, giúp khách hàng quan sát toàn bộ sản phẩm bên trong ngay cả khi đóng cửa.',
+    src: '/about_project_result_2.jpg',
+    tag: 'Cửa cuốn trong suốt'
+  },
+  {
+    id: 3,
+    role: 'normal',
+    title: 'Cửa xếp trượt uốn cong bo góc',
+    subtitle: 'Màu trắng sữa trang nhã',
+    description: 'Hệ cửa xếp trượt cong ôm trọn đường cung mặt tiền, đóng mở nhẹ nhàng, tối ưu 100% diện tích kinh doanh.',
+    src: '/about_project_result_1.jpg',
+    tag: 'Cửa xếp cong bo góc'
+  },
+  {
+    id: 4,
+    role: 'normal',
+    title: 'Lắp đặt ray uốn cong trên cao',
+    subtitle: 'Kỹ thuật định hình vòm 3D',
+    description: 'Kỹ thuật viên căn chỉnh chính xác bán kính vòm kiến trúc. Trang bị đồ bảo hộ, mũ và giàn giáo đạt chuẩn an toàn TTTM.',
+    src: '/about_project_install_1.jpg',
+    tag: 'Kỹ thuật ray cong'
+  },
+  {
+    id: 5,
+    role: 'normal',
+    title: 'Cân chỉnh trục cuốn & nan bảo hộ',
+    subtitle: 'An toàn lao động khắt khe',
+    description: 'Thắt đai an toàn trên giàn giáo, kiểm tra và cân chỉnh từng nan cửa cùng khớp truyền động để cửa vận hành êm ái.',
+    src: '/about_project_install_2.jpg',
+    tag: 'Quy chuẩn an toàn'
+  },
+  {
+    id: 6,
+    role: 'wide', // 2 cols span
+    title: 'Đo đạc & ghép nan uốn cong tại mặt bằng',
+    subtitle: 'Gia công tỉ mỉ từng chi tiết',
+    description: 'Công đoạn đo đạc và định hình nan cửa uốn cong ngay tại mặt bằng trước khi lắp ráp vào hệ ray trượt bo góc mềm mại.',
+    src: '/about_project_install_3.jpg',
+    tag: 'Gia công tỉ mỉ'
+  },
+  {
+    id: 7,
+    role: 'wide', // 2 cols span
+    title: 'Đội ngũ kỹ thuật thi công đồng bộ trên giàn giáo',
+    subtitle: 'Đội ngũ thực chiến chuyên nghiệp',
+    description: 'Tập thể kỹ sư & thợ thi công phối hợp nhịp nhàng trên hệ giàn giáo, kiểm soát chặt chẽ từng chi tiết kết cấu và thẩm mỹ.',
+    src: '/about_project_install_4.jpg',
+    tag: 'Đội ngũ thực chiến'
+  }
 ];
 
 const About = () => {
@@ -116,10 +109,10 @@ const About = () => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') setLightboxIndex(null);
       if (e.key === 'ArrowRight') {
-        setLightboxIndex((prev) => (prev + 1) % ALL_AEON_IMAGES.length);
+        setLightboxIndex((prev) => (prev + 1) % BENTO_AEON_GALLERY.length);
       }
       if (e.key === 'ArrowLeft') {
-        setLightboxIndex((prev) => (prev - 1 + ALL_AEON_IMAGES.length) % ALL_AEON_IMAGES.length);
+        setLightboxIndex((prev) => (prev - 1 + BENTO_AEON_GALLERY.length) % BENTO_AEON_GALLERY.length);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -471,174 +464,54 @@ const About = () => {
         </div>
       </section>
 
-      {/* 4.5. GÓC DỰ ÁN TRỌNG ĐIỂM: AEON MALL ĐÀ NẴNG (CHUỖI BÁN LẺ KKV) */}
-      <section className="exact-aeon-spotlight-section" id="du-an-aeon-mall">
+      {/* 4.5. DỰ ÁN TIÊU BIỂU TẠI AEON MALL ĐÀ NẴNG (BENTO GRID NGHỆ THUẬT) */}
+      <section className="aeon-bento-section" id="du-an-aeon-mall">
         <div className="exact-container">
-          <div className="aeon-spotlight-box">
-            {/* Ambient Background Glow */}
-            <div className="aeon-box-glow"></div>
-
-            {/* Header Góc Riêng Dự Án */}
-            <RevealOnScroll animation="fade-up" className="aeon-header-top">
-              <div className="aeon-badge-pill">
-                <Sparkles size={16} /> DỰ ÁN TRỌNG ĐIỂM TIÊU BIỂU
-              </div>
-              <h2 className="aeon-spotlight-title">
-                Thi Công Hệ Thống Cửa Cuốn & Cửa Xếp Trượt Cong <br />
-                <span className="aeon-highlight-text">Gian Hàng Đại Siêu Thị KKV – AEON Mall Đà Nẵng</span>
-              </h2>
-              <p className="aeon-spotlight-lead">
-                AEON Mall Đà Nẵng là một trong những đại trung tâm thương mại quy mô và khắt khe hàng đầu miền Trung. BOSS Đà Nẵng tự hào là đơn vị được tin chọn trực tiếp gia công, thi công và bàn giao hệ thống cửa xếp trượt bo góc uốn cong nghệ thuật và cửa cuốn trong suốt Polycarbonate sang trọng cho chuỗi bán lẻ quốc tế KKV.
-              </p>
-            </RevealOnScroll>
-
-            {/* Project Quick Factsheet (4 thẻ thông số dự án) */}
-            <RevealOnScroll animation="fade-up" delay={120} className="aeon-specs-grid">
-              <div className="aeon-spec-card">
-                <div className="aeon-spec-icon">
-                  <MapPin size={22} />
-                </div>
-                <div className="aeon-spec-info">
-                  <span className="aeon-spec-label">ĐỊA ĐIỂM DỰ ÁN</span>
-                  <strong className="aeon-spec-value">TTTM AEON Mall Đà Nẵng</strong>
-                </div>
-              </div>
-
-              <div className="aeon-spec-card">
-                <div className="aeon-spec-icon">
-                  <Building2 size={22} />
-                </div>
-                <div className="aeon-spec-info">
-                  <span className="aeon-spec-label">KHÁCH HÀNG / ĐỐI TÁC</span>
-                  <strong className="aeon-spec-value">Chuỗi Bán Lẻ KKV</strong>
-                </div>
-              </div>
-
-              <div className="aeon-spec-card">
-                <div className="aeon-spec-icon">
-                  <Settings size={22} />
-                </div>
-                <div className="aeon-spec-info">
-                  <span className="aeon-spec-label">HẠNG MỤC THI CÔNG</span>
-                  <strong className="aeon-spec-value">Cửa Xếp Cong & Cửa Trong Suốt</strong>
-                </div>
-              </div>
-
-              <div className="aeon-spec-card">
-                <div className="aeon-spec-icon">
-                  <ShieldCheck size={22} />
-                </div>
-                <div className="aeon-spec-info">
-                  <span className="aeon-spec-label">TIÊU CHUẨN AN TOÀN</span>
-                  <strong className="aeon-spec-value">Đạt Chuẩn TTTM & PCCC</strong>
-                </div>
-              </div>
-            </RevealOnScroll>
-
-            {/* PHẦN 1: QUÁ TRÌNH THI CÔNG KỸ THUẬT CAO (4 ẢNH) */}
-            <div className="aeon-phase-block">
-              <RevealOnScroll animation="fade-left" className="aeon-phase-title-row">
-                <div className="aeon-phase-tag">
-                  <HardHat size={16} /> GIAI ĐOẠN 1: NHẬT KÝ THI CÔNG TRỰC TIẾP TẠI CÔNG TRƯỜNG
-                </div>
-                <p className="aeon-phase-desc">
-                  Quy trình thi công trên giàn giáo tuân thủ nghiêm ngặt đồ bảo hộ, dây an toàn; căn chỉnh từng cung ray uốn lượn và khớp nối nan cửa chuẩn xác đến từng milimet.
-                </p>
-              </RevealOnScroll>
-
-              <div className="aeon-construction-grid">
-                {AEON_PROJECT_PHASES.construction.map((item, idx) => (
-                  <RevealOnScroll animation="fade-up" delay={idx * 80} key={item.id} className="aeon-photo-card-wrap">
-                    <div 
-                      className="aeon-photo-card" 
-                      onClick={() => setLightboxIndex(ALL_AEON_IMAGES.findIndex(img => img.id === item.id))}
-                      title={`Bấm xem ảnh phóng to: ${item.title}`}
-                    >
-                      <div className="aeon-photo-frame">
-                        <img src={item.src} alt={item.title} loading="lazy" />
-                        <span className="aeon-step-badge">Bước {item.step}</span>
-                        <div className="aeon-photo-overlay">
-                          <Maximize2 size={20} />
-                          <span>Xem chi tiết</span>
-                        </div>
-                      </div>
-                      <div className="aeon-photo-meta">
-                        <span className="aeon-tag-pill">{item.tag}</span>
-                        <h4>{item.title}</h4>
-                        <p>{item.description}</p>
-                      </div>
-                    </div>
-                  </RevealOnScroll>
-                ))}
-              </div>
+          {/* Header thanh lịch, thoáng đãng, không đóng hộp */}
+          <RevealOnScroll animation="fade-up" className="aeon-bento-header">
+            <div className="aeon-bento-badge">
+              <Sparkles size={15} /> DỰ ÁN TRỌNG ĐIỂM TIÊU BIỂU
             </div>
+            <h2 className="aeon-bento-title">
+              Hệ Cửa Cuốn & Cửa Xếp Trượt Bo Góc <br />
+              <span>Gian Hàng KKV – TTTM AEON Mall Đà Nẵng</span>
+            </h2>
+            <p className="aeon-bento-lead">
+              Minh chứng thực tế cho năng lực thi công kỹ thuật cao của BOSS Đà Nẵng tại đại trung tâm thương mại lớn, đáp ứng tiêu chuẩn an toàn lao động và độ tinh xảo kiến trúc khắt khe nhất.
+            </p>
+          </RevealOnScroll>
 
-            {/* PHẦN 2: THÀNH QUẢ BÀN GIAO HOÀN MỸ (3 ẢNH) */}
-            <div className="aeon-phase-block aeon-phase-finished">
-              <RevealOnScroll animation="fade-right" className="aeon-phase-title-row">
-                <div className="aeon-phase-tag finished-tag">
-                  <CheckCircle2 size={16} /> GIAI ĐOẠN 2: THÀNH QUẢ BÀN GIAO HOÀN MỸ CHO ĐẠI SIÊU THỊ KKV
-                </div>
-                <p className="aeon-phase-desc">
-                  Không gian mặt tiền KKV rực rỡ dưới ánh đèn đại siêu thị, kết hợp mượt mà giữa cửa cuốn trong suốt sang trọng và cửa xếp bo cong độc đáo.
-                </p>
-              </RevealOnScroll>
+          {/* Bento Grid 7 ảnh nghệ thuật */}
+          <div className="aeon-bento-grid">
+            {BENTO_AEON_GALLERY.map((item, index) => (
+              <RevealOnScroll
+                animation="fade-up"
+                delay={(index % 4) * 80}
+                key={item.id}
+                className={`aeon-bento-card-wrap role-${item.role}`}
+              >
+                <div
+                  className={`aeon-bento-card role-${item.role}`}
+                  onClick={() => setLightboxIndex(index)}
+                  title={`Bấm xem ảnh to: ${item.title}`}
+                >
+                  <img src={item.src} alt={item.title} loading="lazy" />
+                  
+                  {/* Tag góc trên */}
+                  <span className="bento-card-tag">{item.tag}</span>
 
-              <div className="aeon-finished-layout">
-                {/* Ảnh lớn tiêu biểu toàn cảnh mặt tiền KKV */}
-                <RevealOnScroll animation="fade-up" className="aeon-hero-card-wrap">
-                  <div 
-                    className="aeon-hero-photo-card"
-                    onClick={() => setLightboxIndex(ALL_AEON_IMAGES.findIndex(img => img.id === AEON_PROJECT_PHASES.finished[0].id))}
-                    title="Bấm xem ảnh toàn cảnh phóng to"
-                  >
-                    <div className="aeon-hero-photo-frame">
-                      <img 
-                        src={AEON_PROJECT_PHASES.finished[0].src} 
-                        alt={AEON_PROJECT_PHASES.finished[0].title} 
-                        loading="lazy" 
-                      />
-                      <span className="aeon-hero-badge">⭐ Toàn cảnh mặt tiền hoàn thiện</span>
-                      <div className="aeon-photo-overlay">
-                        <Maximize2 size={24} />
-                        <span>Xem ảnh toàn cảnh</span>
-                      </div>
-                    </div>
-                    <div className="aeon-hero-content">
-                      <span className="aeon-tag-pill">{AEON_PROJECT_PHASES.finished[0].tag}</span>
-                      <h3>{AEON_PROJECT_PHASES.finished[0].title}</h3>
-                      <p>{AEON_PROJECT_PHASES.finished[0].description}</p>
+                  {/* Gradient tối nhẹ ở đáy ảnh với phụ đề & tiêu đề */}
+                  <div className="bento-card-content">
+                    <span className="bento-card-subtitle">{item.subtitle}</span>
+                    <h3 className="bento-card-title">{item.title}</h3>
+                    <div className="bento-card-hover-hint">
+                      <Maximize2 size={15} />
+                      <span>Xem phóng to</span>
                     </div>
                   </div>
-                </RevealOnScroll>
-
-                {/* 2 ảnh chi tiết bên cạnh */}
-                <div className="aeon-finished-sub-cards">
-                  {AEON_PROJECT_PHASES.finished.slice(1).map((item, idx) => (
-                    <RevealOnScroll animation="fade-up" delay={(idx + 1) * 100} key={item.id} className="aeon-sub-card-wrap">
-                      <div 
-                        className="aeon-photo-card aeon-photo-card-sub"
-                        onClick={() => setLightboxIndex(ALL_AEON_IMAGES.findIndex(img => img.id === item.id))}
-                        title={`Bấm xem ảnh phóng to: ${item.title}`}
-                      >
-                        <div className="aeon-photo-frame">
-                          <img src={item.src} alt={item.title} loading="lazy" />
-                          <span className="aeon-step-badge accent">{item.tag}</span>
-                          <div className="aeon-photo-overlay">
-                            <Maximize2 size={20} />
-                            <span>Xem chi tiết</span>
-                          </div>
-                        </div>
-                        <div className="aeon-photo-meta">
-                          <h4>{item.title}</h4>
-                          <p>{item.description}</p>
-                        </div>
-                      </div>
-                    </RevealOnScroll>
-                  ))}
                 </div>
-              </div>
-            </div>
+              </RevealOnScroll>
+            ))}
           </div>
         </div>
       </section>
@@ -703,7 +576,7 @@ const About = () => {
       )}
 
       {/* IMAGE LIGHTBOX POPUP MODAL */}
-      {lightboxIndex !== null && ALL_AEON_IMAGES[lightboxIndex] && createPortal(
+      {lightboxIndex !== null && BENTO_AEON_GALLERY[lightboxIndex] && createPortal(
         <div 
           className="about-lightbox-backdrop" 
           onClick={() => setLightboxIndex(null)}
@@ -725,7 +598,7 @@ const About = () => {
             <button 
               type="button" 
               className="about-lightbox-nav-btn prev"
-              onClick={() => setLightboxIndex((prev) => (prev - 1 + ALL_AEON_IMAGES.length) % ALL_AEON_IMAGES.length)}
+              onClick={() => setLightboxIndex((prev) => (prev - 1 + BENTO_AEON_GALLERY.length) % BENTO_AEON_GALLERY.length)}
               aria-label="Ảnh trước"
             >
               <ChevronLeft size={28} />
@@ -735,7 +608,7 @@ const About = () => {
             <button 
               type="button" 
               className="about-lightbox-nav-btn next"
-              onClick={() => setLightboxIndex((prev) => (prev + 1) % ALL_AEON_IMAGES.length)}
+              onClick={() => setLightboxIndex((prev) => (prev + 1) % BENTO_AEON_GALLERY.length)}
               aria-label="Ảnh kế tiếp"
             >
               <ChevronRight size={28} />
@@ -744,8 +617,8 @@ const About = () => {
             {/* Main Image Frame */}
             <div className="about-lightbox-img-frame">
               <img 
-                src={ALL_AEON_IMAGES[lightboxIndex].src} 
-                alt={ALL_AEON_IMAGES[lightboxIndex].title} 
+                src={BENTO_AEON_GALLERY[lightboxIndex].src} 
+                alt={BENTO_AEON_GALLERY[lightboxIndex].title} 
               />
             </div>
 
@@ -753,17 +626,17 @@ const About = () => {
             <div className="about-lightbox-caption">
               <div className="about-lightbox-badge-row">
                 <span className="about-lightbox-pill">
-                  {ALL_AEON_IMAGES[lightboxIndex].badge}
+                  {BENTO_AEON_GALLERY[lightboxIndex].tag}
                 </span>
                 <span className="about-lightbox-counter">
-                  Ảnh {lightboxIndex + 1} / {ALL_AEON_IMAGES.length}
+                  Ảnh {lightboxIndex + 1} / {BENTO_AEON_GALLERY.length}
                 </span>
               </div>
               <h3 className="about-lightbox-title">
-                {ALL_AEON_IMAGES[lightboxIndex].title}
+                {BENTO_AEON_GALLERY[lightboxIndex].title}
               </h3>
               <p className="about-lightbox-desc">
-                {ALL_AEON_IMAGES[lightboxIndex].description}
+                {BENTO_AEON_GALLERY[lightboxIndex].description}
               </p>
             </div>
           </div>
