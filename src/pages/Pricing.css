@@ -1801,23 +1801,25 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #07522f;
+  color: #dc2626;
   font-size: 13.5px;
-  font-weight: 700;
+  font-weight: 750;
   margin-left: auto;
   transition: all 0.25s ease;
 }
 
 .card-article-read-more .arrow-icon {
+  color: #dc2626;
   transition: transform 0.25s ease;
 }
 
 .pricing-article-list-card:hover .card-article-read-more {
-  color: #059669;
+  color: #b91c1c;
 }
 
 .pricing-article-list-card:hover .card-article-read-more .arrow-icon {
   transform: translateX(4px);
+  color: #b91c1c;
 }
 
 .empty-search-state {
@@ -2061,8 +2063,8 @@
 
   .card-article-read-more {
     font-size: 0.74rem !important;
-    font-weight: 700 !important;
-    color: #004d32 !important;
+    font-weight: 750 !important;
+    color: #dc2626 !important;
     gap: 3px !important;
     display: inline-flex !important;
     align-items: center !important;
@@ -2073,6 +2075,7 @@
   .card-article-read-more .arrow-icon {
     width: 12px !important;
     height: 12px !important;
+    color: #dc2626 !important;
   }
 }
 
