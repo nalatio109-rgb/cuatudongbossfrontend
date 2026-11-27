@@ -242,8 +242,8 @@ const About = () => {
                 </span>
               </p>
 
-              <Link to="/san-pham" className="exact-btn-yellow">
-                <span>Khám phá sản phẩm</span> <ArrowRight size={18} />
+              <Link to="/ho-so-nang-luc" className="exact-btn-yellow">
+                <span>Hồ sơ năng lực (Profile)</span> <ArrowRight size={18} />
               </Link>
             </RevealOnScroll>
           </div>
