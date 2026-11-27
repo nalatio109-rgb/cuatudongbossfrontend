@@ -10,7 +10,6 @@ import {
   ChevronDown,
   ChevronUp,
   Share2,
-  Star,
   Building2,
   User,
   ShieldCheck,
@@ -378,18 +377,6 @@ export default function CompanyProfile() {
               </li>
             </ul>
           </section>
-
-          {/* FOOTER RATING BOX */}
-          <div className="profile-rating-box">
-            <div className="rating-stars">
-              <Star size={18} fill="#f5bd20" color="#f5bd20" />
-              <Star size={18} fill="#f5bd20" color="#f5bd20" />
-              <Star size={18} fill="#f5bd20" color="#f5bd20" />
-              <Star size={18} fill="#f5bd20" color="#f5bd20" />
-              <Star size={18} fill="#f5bd20" color="#f5bd20" />
-            </div>
-            <span className="rating-score">4.9 / 5 – (128 bình chọn)</span>
-          </div>
         </div>
       </div>
     </div>
