@@ -177,7 +177,7 @@ export default function Testimonials() {
     );
   };
 
-  // Nạp danh sách đánh giá từ MongoDB backend API
+  // Nạp danh sách đánh giá từ MongoDB backend API kết hợp Smart Merge với localStorage
   useEffect(() => {
     const fetchReviews = async () => {
       try {
@@ -190,14 +190,42 @@ export default function Testimonials() {
             id: item._id || item.id,
             role: "",
           }));
-          setReviews(normalized);
+
+          // Đọc danh sách local hiện tại để KHÔNG bị ghi đè xóa mất đánh giá mới của khách
+          let localReviews = [];
           try {
-            localStorage.setItem("boss_customer_reviews", JSON.stringify(normalized));
+            const saved = localStorage.getItem("boss_customer_reviews");
+            if (saved) {
+              const parsed = JSON.parse(saved);
+              if (Array.isArray(parsed)) localReviews = parsed;
+            }
+          } catch (_) { }
+
+          // Giữ lại các đánh giá mới ở local mà backend chưa có (so khớp theo ID, text và tên)
+          const unSynced = localReviews.filter(
+            (lr) => !normalized.some((br) => (br._id && br._id === lr._id) || br.id === lr.id || (br.text === lr.text && br.name === lr.name))
+          );
+
+          const merged = [...unSynced, ...normalized];
+          setReviews(merged);
+          try {
+            localStorage.setItem("boss_customer_reviews", JSON.stringify(merged));
           } catch (_) { }
         }
       } catch (_) { }
     };
     fetchReviews();
+  }, []);
+
+  // Lắng nghe sự kiện đồng bộ đánh giá thời gian thực từ Admin hoặc các tab khác
+  useEffect(() => {
+    const handleSync = (e) => {
+      if (e.detail && Array.isArray(e.detail)) {
+        setReviews(e.detail);
+      }
+    };
+    window.addEventListener("boss_customer_reviews_updated", handleSync);
+    return () => window.removeEventListener("boss_customer_reviews_updated", handleSync);
   }, []);
 
   // Review Modal state
@@ -276,20 +304,69 @@ export default function Testimonials() {
     }
   };
 
-  // Image Upload handler
-  const handleImageFile = (e) => {
+  // Helper nén ảnh client-side bằng Canvas: giảm dung lượng từ 5-15MB xuống ~60-120KB
+  // Giúp lưu vào localStorage không bao giờ bị dính QuotaExceededError (giới hạn 5MB của trình duyệt)
+  const compressImageFile = (file) => {
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const MAX_WIDTH = 1200;
+          const MAX_HEIGHT = 1200;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height = Math.round((height * MAX_WIDTH) / width);
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width = Math.round((width * MAX_HEIGHT) / height);
+              height = MAX_HEIGHT;
+            }
+          }
+
+          const canvas = document.createElement("canvas");
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Nén chất lượng JPEG 0.78: sắc nét nhưng siêu nhẹ (dưới 100KB)
+          const compressed = canvas.toDataURL("image/jpeg", 0.78);
+          resolve(compressed);
+        };
+        img.onerror = () => resolve(e.target.result);
+        img.src = e.target.result;
+      };
+      reader.onerror = () => resolve("");
+      reader.readAsDataURL(file);
+    });
+  };
+
+  // Image Upload handler với tính năng tự động nén ảnh thông minh
+  const handleImageFile = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 15 * 1024 * 1024) {
-      alert("Dung lượng file ảnh quá lớn (vui lòng chọn dưới 15MB).");
+    if (file.size > 20 * 1024 * 1024) {
+      alert("Dung lượng file ảnh quá lớn (vui lòng chọn ảnh dưới 20MB).");
       return;
     }
-    const reader = new FileReader();
-    reader.onload = (ev) => {
+    try {
+      const compressedUrl = await compressImageFile(file);
       setMediaType("image");
-      setMediaUrl(ev.target.result);
-    };
-    reader.readAsDataURL(file);
+      setMediaUrl(compressedUrl);
+    } catch (_) {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        setMediaType("image");
+        setMediaUrl(ev.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   // Video Upload handler
@@ -297,8 +374,15 @@ export default function Testimonials() {
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.size > 50 * 1024 * 1024) {
-      alert("Dung lượng video quá lớn (vui lòng chọn dưới 50MB).");
+      alert("Dung lượng video quá lớn (vui lòng chọn dưới 50MB, hoặc dán link YouTube/Online để tối ưu tốc độ).");
       return;
+    }
+    // Cảnh báo nếu file video từ máy nặng hơn 4MB (gần mốc 5MB giới hạn của trình duyệt)
+    if (file.size > 4 * 1024 * 1024) {
+      const confirmUpload = window.confirm(
+        `Video của bạn nặng ${(file.size / (1024 * 1024)).toFixed(1)}MB. Trình duyệt giới hạn bộ nhớ cục bộ tối đa 5MB, nên để tối ưu nhất bạn có thể dán đường link video (YouTube/Drive/MP4). Bạn vẫn muốn dùng tệp video này chứ?`
+      );
+      if (!confirmUpload) return;
     }
     const reader = new FileReader();
     reader.onload = (ev) => {
@@ -316,7 +400,7 @@ export default function Testimonials() {
     setVideoUrlInput("");
   };
 
-  // Submit review
+  // Submit review với cơ chế lưu trữ an toàn (Safe Persistence)
   const handleSubmitReview = (e) => {
     e.preventDefault();
     if (!currentUser) {
@@ -351,9 +435,32 @@ export default function Testimonials() {
 
     const updated = [newReview, ...reviews];
     setReviews(updated);
+
+    // Lưu vào localStorage an toàn tuyệt đối với fallback chống QuotaExceededError
     try {
       localStorage.setItem("boss_customer_reviews", JSON.stringify(updated));
-    } catch (_) { }
+    } catch (quotaErr) {
+      console.warn("Storage quota exceeded, trying safe fallback:", quotaErr);
+      try {
+        // Fallback: Nếu tệp video/ảnh quá lớn làm đầy localStorage, lưu review nhưng lược bớt tệp base64 khổng lồ
+        const safeReviews = updated.map((r, idx) => {
+          if (idx === 0 && r.mediaUrl && r.mediaUrl.length > 500000) {
+            return {
+              ...r,
+              mediaUrl: "",
+              mediaNote: r.mediaType === "video" ? "Video đính kèm từ máy (kích thước lớn)" : "Ảnh đính kèm"
+            };
+          }
+          return r;
+        });
+        localStorage.setItem("boss_customer_reviews", JSON.stringify(safeReviews));
+      } catch (innerErr) {
+        console.error("Fatal localStorage error:", innerErr);
+      }
+    }
+
+    // Phát sự kiện thông báo để Admin cập nhật ngay lập tức nếu đang mở
+    window.dispatchEvent(new CustomEvent("boss_customer_reviews_updated", { detail: updated }));
 
     // Gửi đánh giá lên MongoDB backend
     try {

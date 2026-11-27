@@ -439,23 +439,28 @@ export default function Admin() {
       localStorage.setItem("boss_admin_services", JSON.stringify(loadedServices));
       window.dispatchEvent(new CustomEvent("boss_services_updated", { detail: loadedServices }));
 
-      // Reviews: Hybrid MongoDB backend + localStorage fallback
+      // Reviews: Hybrid MongoDB backend + localStorage fallback với Smart Merge (chống ghi đè mất đánh giá)
       let loadedReviews = [];
+      let localReviews = [];
+      const localR = localStorage.getItem("boss_customer_reviews");
+      if (localR) {
+        try {
+          const parsedR = JSON.parse(localR);
+          if (Array.isArray(parsedR)) localReviews = parsedR;
+        } catch (e) {
+          console.error("Parse local reviews error:", e);
+        }
+      }
+
       if (dataR && dataR.success && Array.isArray(dataR.data) && dataR.data.length > 0) {
-        loadedReviews = dataR.data;
+        const backendReviews = dataR.data.map(item => ({ ...item, id: item._id || item.id }));
+        // Giữ lại các đánh giá mới của khách ở local mà backend chưa có (chống ghi đè mất đánh giá mới)
+        const unSynced = localReviews.filter(lr =>
+          !backendReviews.some(br => (br._id && br._id === lr._id) || br.id === lr.id || (br.text === lr.text && br.name === lr.name))
+        );
+        loadedReviews = [...unSynced, ...backendReviews];
       } else {
-        const localR = localStorage.getItem("boss_customer_reviews");
-        if (localR) {
-          try {
-            const parsedR = JSON.parse(localR);
-            if (Array.isArray(parsedR) && parsedR.length > 0) loadedReviews = parsedR;
-          } catch (e) {
-            console.error("Parse local reviews error:", e);
-          }
-        }
-        if (loadedReviews.length === 0) {
-          loadedReviews = DEFAULT_SAMPLE_REVIEWS;
-        }
+        loadedReviews = localReviews.length > 0 ? localReviews : DEFAULT_SAMPLE_REVIEWS;
       }
       setReviews(loadedReviews);
       try {
@@ -486,6 +491,15 @@ export default function Admin() {
 
   useEffect(() => {
     fetchData();
+
+    // Lắng nghe sự kiện đồng bộ đánh giá từ trang chủ (khi khách hàng gửi review mới)
+    const handleSyncReviews = (e) => {
+      if (e.detail && Array.isArray(e.detail)) {
+        setReviews(e.detail);
+      }
+    };
+    window.addEventListener("boss_customer_reviews_updated", handleSyncReviews);
+    return () => window.removeEventListener("boss_customer_reviews_updated", handleSyncReviews);
   }, []);
 
   // ----------------------------------------------------
@@ -1596,6 +1610,7 @@ export default function Admin() {
       try {
         localStorage.setItem("boss_customer_reviews", JSON.stringify(updated));
       } catch (_) { }
+      window.dispatchEvent(new CustomEvent("boss_customer_reviews_updated", { detail: updated }));
       showToast("🗑️ Đã xóa đánh giá khách hàng thành công!");
     } catch (err) {
       console.error("Delete review error:", err);
@@ -1604,6 +1619,7 @@ export default function Admin() {
       try {
         localStorage.setItem("boss_customer_reviews", JSON.stringify(updated));
       } catch (_) { }
+      window.dispatchEvent(new CustomEvent("boss_customer_reviews_updated", { detail: updated }));
       showToast("🗑️ Đã xóa đánh giá khỏi bộ nhớ!");
     }
   };
