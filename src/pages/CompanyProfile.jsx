@@ -26,7 +26,8 @@ import {
   DoorClosed,
   Cpu,
   BadgeCheck,
-  Calendar
+  Calendar,
+  Compass
 } from "lucide-react";
 import RevealOnScroll from "../components/RevealOnScroll";
 import "./CompanyProfile.css";
