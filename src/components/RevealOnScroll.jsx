@@ -6,6 +6,7 @@ export default function RevealOnScroll({
   animation = "fade-up",
   delay = 0,
   className = "",
+  once = false, // Mặc định false: hiệu ứng kích hoạt cả khi load lại trang lẫn khi lướt lên lướt xuống
 }) {
   const elementRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -14,35 +15,38 @@ export default function RevealOnScroll({
     const element = elementRef.current;
     if (!element) return;
 
-    // Nếu trình duyệt hỗ trợ IntersectionObserver (mọi điện thoại hiện đại),
-    // kích hoạt hiệu ứng khi người dùng thực sự cuộn tới phần tử đó
     let observer = null;
     if (typeof IntersectionObserver !== "undefined") {
       observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting || entry.intersectionRatio > 0) {
-            setIsVisible(true);
-            if (observer && element) {
-              observer.unobserve(element);
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting || entry.intersectionRatio > 0) {
+              setIsVisible(true);
+              if (once && observer && element) {
+                observer.unobserve(element);
+              }
+            } else if (!once) {
+              // Khi cuộn ra khỏi tầm nhìn, reset lại để khi lướt lên/xuống trở lại thì hiệu ứng chuyển động lại tiếp tục hiện ra
+              setIsVisible(false);
             }
-          }
+          });
         },
         {
           threshold: 0.05,
-          rootMargin: "0px 0px -40px 0px", // Kích hoạt khi phần tử tiệm cận tầm mắt màn hình
+          rootMargin: "0px 0px -30px 0px", // Kích hoạt mượt mà khi chạm tầm mắt
         }
       );
 
       observer.observe(element);
     } else {
-      // Fallback an toàn cho trình duyệt quá cũ không có IntersectionObserver
+      // Fallback an toàn cho trình duyệt không hỗ trợ IntersectionObserver
       setIsVisible(true);
     }
 
     return () => {
       if (observer) observer.disconnect();
     };
-  }, []);
+  }, [once]);
 
   return (
     <div
