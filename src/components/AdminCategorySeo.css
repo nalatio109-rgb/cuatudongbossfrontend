@@ -9,9 +9,22 @@
   border: 1.5px solid #cbd5e1;
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  overflow: hidden;
+  overflow: visible;
   display: flex;
   flex-direction: column;
+  position: relative;
+}
+
+/* THANH NAVBAR / TOOLBAR CỐ ĐỊNH KHI CUỘN TRANG (STICKY) */
+.word-editor-sticky-navbar {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: #ffffff;
+  border-top-left-radius: 14px;
+  border-top-right-radius: 14px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.09);
 }
 
 /* 1. TOP HEADER BAR */
@@ -406,7 +419,6 @@
   min-height: 650px;
   display: flex;
   justify-content: center;
-  overflow-y: auto;
 }
 
 .word-document-page-sheet {

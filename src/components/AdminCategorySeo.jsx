@@ -374,8 +374,10 @@ export default function AdminCategorySeo({ showToast }) {
 
   return (
     <div className="admin-word-article-editor-card">
-      {/* 1. THANH TIÊU ĐỀ & CHỌN DANH MỤC TRÊN ĐẦU */}
-      <div className="word-editor-top-bar">
+      {/* KHỐI NAVBAR & TOOLBAR CỐ ĐỊNH KHI CUỘN TRANG */}
+      <div className="word-editor-sticky-navbar">
+        {/* 1. THANH TIÊU ĐỀ & CHỌN DANH MỤC TRÊN ĐẦU */}
+        <div className="word-editor-top-bar">
         <div className="top-bar-left">
           <h2>QUẢN LÝ BÀI VIẾT BÁN HÀNG THEO DANH MỤC</h2>
           <span className="top-bar-sub">Soạn thảo bài viết trực tiếp trên trang giấy y như Word</span>
@@ -686,6 +688,7 @@ export default function AdminCategorySeo({ showToast }) {
           </div>
         </div>
       )}
+      </div>
 
       {/* 4. CANVAS TRANG GIẤY WORD DUY NHẤT (WORD DOCUMENT PAGE SHEET) */}
       <div className="word-canvas-outer-wrapper">
