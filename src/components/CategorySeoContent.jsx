@@ -91,10 +91,12 @@ export default function CategorySeoContent({ activeCategory = "all" }) {
     setActiveFaq(activeFaq === idx ? null : idx);
   };
 
-  const hasTechPoints = Array.isArray(data.structureAndTech?.points) && data.structureAndTech.points.length > 0;
-  const hasBenefits = Array.isArray(data.benefits) && data.benefits.length > 0;
-  const hasApplications = Array.isArray(data.applications?.items) && data.applications.items.length > 0;
-  const hasBuyingGuide = Array.isArray(data.buyingGuide?.steps) && data.buyingGuide.steps.length > 0;
+  const hasRichHeadings = Boolean(data.content && (data.content.includes("</h2>") || data.content.includes("</h3>") || data.content.includes("<p>")));
+  const hasTechPoints = !hasRichHeadings && Array.isArray(data.structureAndTech?.points) && data.structureAndTech.points.length > 0;
+  const hasBenefits = !hasRichHeadings && Array.isArray(data.benefits) && data.benefits.length > 0;
+  const hasApplications = !hasRichHeadings && Array.isArray(data.applications?.items) && data.applications.items.length > 0;
+  const hasBuyingGuide = !hasRichHeadings && Array.isArray(data.buyingGuide?.steps) && data.buyingGuide.steps.length > 0;
+  const showSeparateFaqs = !hasRichHeadings && hasFaqs;
 
   return (
     <article className="seo-content-section" aria-label="Nội dung chuyên sâu danh mục">
@@ -121,37 +123,41 @@ export default function CategorySeoContent({ activeCategory = "all" }) {
 
           {/* DYNAMIC ARTICLE BODY CONTENT */}
           {data.content && (
-            <div className="seo-body-content">
-              {data.content.split("\n\n").map((para, i) => {
-                const trimmed = para.trim();
-                if (trimmed.startsWith("### ")) {
-                  return (
-                    <h3 key={i} className="seo-content-h3">
-                      {trimmed.replace(/^###\s*/, "")}
-                    </h3>
-                  );
-                }
-                if (trimmed.startsWith("## ")) {
-                  return (
-                    <h3 key={i} className="seo-content-h3">
-                      {trimmed.replace(/^##\s*/, "")}
-                    </h3>
-                  );
-                }
-                if (trimmed.startsWith("- ")) {
-                  const items = trimmed.split("\n").filter((l) => l.trim().startsWith("- "));
-                  return (
-                    <ul key={i} className="seo-content-list">
-                      {items.map((it, idx) => (
-                        <li key={idx}>
-                          {it.replace(/^-\s*/, "")}
-                        </li>
-                      ))}
-                    </ul>
-                  );
-                }
-                return <p key={i}>{trimmed}</p>;
-              })}
+            <div className="seo-body-content rich-word-rendered-content">
+              {/<[a-z][\s\S]*>/i.test(data.content) ? (
+                <div dangerouslySetInnerHTML={{ __html: data.content }} />
+              ) : (
+                data.content.split("\n\n").map((para, i) => {
+                  const trimmed = para.trim();
+                  if (trimmed.startsWith("### ")) {
+                    return (
+                      <h3 key={i} className="seo-content-h3">
+                        {trimmed.replace(/^###\s*/, "")}
+                      </h3>
+                    );
+                  }
+                  if (trimmed.startsWith("## ")) {
+                    return (
+                      <h3 key={i} className="seo-content-h3">
+                        {trimmed.replace(/^##\s*/, "")}
+                      </h3>
+                    );
+                  }
+                  if (trimmed.startsWith("- ")) {
+                    const items = trimmed.split("\n").filter((l) => l.trim().startsWith("- "));
+                    return (
+                      <ul key={i} className="seo-content-list">
+                        {items.map((it, idx) => (
+                          <li key={idx}>
+                            {it.replace(/^-\s*/, "")}
+                          </li>
+                        ))}
+                      </ul>
+                    );
+                  }
+                  return <p key={i}>{trimmed}</p>;
+                })
+              )}
             </div>
           )}
 
@@ -234,7 +240,7 @@ export default function CategorySeoContent({ activeCategory = "all" }) {
           )}
 
           {/* DYNAMIC FAQ ACCORDION */}
-          {hasFaqs && (
+          {showSeparateFaqs && (
             <section className="seo-section seo-faq-section">
               <div className="section-title-wrap">
                 <HelpCircle size={22} className="title-icon" />
