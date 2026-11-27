@@ -25,9 +25,7 @@ import {
   CheckCircle2,
   MapPin,
   Building2,
-  Clock,
-  FileText,
-  Download
+  Clock
 } from 'lucide-react';
 import './About.css';
 import RevealOnScroll from '../components/RevealOnScroll';
@@ -488,49 +486,6 @@ const About = () => {
               <div className="exact-quote-line"></div>
             </RevealOnScroll>
           </div>
-        </div>
-      </section>
-
-      {/* 4.2. BANNER HỒ SƠ NĂNG LỰC DOANH NGHIỆP (COMPANY PROFILE) */}
-      <section className="about-profile-banner-section">
-        <div className="exact-container">
-          <RevealOnScroll animation="zoom-in" className="about-profile-card">
-            <div className="about-profile-card-left">
-              <div className="about-profile-badge">
-                <FileText size={14} />
-                <span>HỒ SƠ NĂNG LỰC CÔNG TY</span>
-              </div>
-              <h2 className="about-profile-heading">
-                Company Profile BOSS Đà Nẵng 2026
-              </h2>
-              <p className="about-profile-subtext">
-                Tổng hợp đầy đủ tư cách pháp lý, quy mô xưởng sản xuất, năng lực trang thiết bị máy móc, 
-                đội ngũ kỹ thuật và danh mục dự án trọng điểm. Sẵn sàng phục vụ thẩm định & đấu thầu.
-              </p>
-              <div className="about-profile-highlights">
-                <span className="profile-hl-item"><CheckCircle2 size={15} /> Pháp lý minh bạch</span>
-                <span className="profile-hl-item"><CheckCircle2 size={15} /> Dây chuyền hiện đại</span>
-                <span className="profile-hl-item"><CheckCircle2 size={15} /> 10+ năm kinh nghiệm</span>
-              </div>
-            </div>
-
-            <div className="about-profile-card-right">
-              <Link to="/ho-so-nang-luc" className="btn-about-view-profile">
-                <span>Xem Hồ Sơ Năng Lực Trực Tuyến</span>
-                <ArrowRight size={16} />
-              </Link>
-              <a 
-                href="https://drive.google.com/uc?export=download&id=1IxLIKEYCc_RVlHsyq8nCDEMXVp0cLvAr" 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                className="btn-about-download-profile"
-                title="Tải nhanh PDF về máy"
-              >
-                <Download size={15} />
-                <span>Tải Bản PDF (Bản gốc)</span>
-              </a>
-            </div>
-          </RevealOnScroll>
         </div>
       </section>
 
