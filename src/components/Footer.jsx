@@ -90,6 +90,7 @@ export default function Footer() {
             <h4>LIÊN KẾT NHANH</h4>
             <a href="/">Trang chủ</a>
             <a href="/gioi-thieu">Giới thiệu</a>
+            <a href="/ho-so-nang-luc" style={{ color: "#f5bd20", fontWeight: 700 }}>📄 Hồ sơ năng lực (Profile)</a>
             <a href="/san-pham">Sản phẩm</a>
             <a href="/bang-gia">Bảng giá</a>
             <a href="/dich-vu">Dịch vụ</a>

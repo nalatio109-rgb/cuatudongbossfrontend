@@ -18,6 +18,7 @@ import Projects from "./pages/Projects";
 import ProjectDetail from "./pages/ProjectDetail";
 import NewsPage from "./pages/News";
 import NewsDetail from "./pages/NewsDetail";
+import CompanyProfile from "./pages/CompanyProfile";
 import Contact from "./pages/Contact";
 import Admin from "./pages/Admin";
 import Auth from "./pages/Auth";
@@ -131,6 +132,9 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/gioi-thieu" element={<About />} />
+          <Route path="/ho-so-nang-luc" element={<CompanyProfile />} />
+          <Route path="/profile" element={<Navigate to="/ho-so-nang-luc" replace />} />
+          <Route path="/company-profile" element={<Navigate to="/ho-so-nang-luc" replace />} />
           <Route path="/san-pham" element={<ProductsPage />} />
           <Route path="/san-pham/:id" element={<ProductDetail />} />
           <Route path="/bang-gia" element={<Pricing />} />
