@@ -17,7 +17,7 @@ const Contact = () => {
 
   // Tự động điền thông tin khi khách hàng đăng nhập tài khoản
   useEffect(() => {
-    if (currentUser) {
+    if (currentUser && typeof currentUser === "object") {
       setFormData((prev) => ({
         ...prev,
         fullName: prev.fullName || currentUser.fullName || "",
@@ -239,7 +239,7 @@ const Contact = () => {
                 width="100%" 
                 height="100%" 
                 style={{ border: 0 }} 
-                allowFullScreen="" 
+                allowFullScreen
                 loading="lazy" 
                 referrerPolicy="no-referrer-when-downgrade">
               </iframe>

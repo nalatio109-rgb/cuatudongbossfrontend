@@ -33,7 +33,7 @@ function ScrollToTop() {
   return null;
 }
 
-// Protected Route for Admin - STRICTLY for admin@boss.vn
+// ErrorBoundary with automatic route reset and developer diagnostics
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
@@ -48,43 +48,85 @@ class ErrorBoundary extends React.Component {
     console.error("ErrorBoundary caught an uncaught runtime error:", error, errorInfo);
   }
 
+  componentDidUpdate(prevProps) {
+    // Tự động giải phóng trạng thái lỗi khi người dùng bấm chuyển sang trang khác
+    if (this.state.hasError && this.props.location?.pathname !== prevProps.location?.pathname) {
+      this.setState({ hasError: false, error: null });
+    }
+  }
+
+  handleReset = () => {
+    this.setState({ hasError: false, error: null });
+  };
+
   render() {
     if (this.state.hasError) {
       return (
-        <div style={{ padding: "60px 20px", textAlign: "center", minHeight: "50vh", maxWidth: "600px", margin: "0 auto" }}>
-          <h2 style={{ color: "#004d32", marginBottom: "12px" }}>Không thể hiển thị nội dung này</h2>
-          <p style={{ color: "#64748b", marginBottom: "24px", lineHeight: "1.6" }}>
-            Hệ thống đã ghi nhận sự cố hiển thị. Quý khách vui lòng thử tải lại trang hoặc bấm quay lại danh mục bảng giá.
+        <div style={{ padding: "80px 20px", textAlign: "center", minHeight: "55vh", maxWidth: "620px", margin: "0 auto" }}>
+          <div style={{
+            width: "56px",
+            height: "56px",
+            background: "rgba(234, 179, 8, 0.15)",
+            color: "#d97706",
+            borderRadius: "50%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            margin: "0 auto 16px auto",
+            fontSize: "26px"
+          }}>
+            ⚠️
+          </div>
+          <h2 style={{ color: "#004d32", marginBottom: "12px", fontSize: "22px", fontWeight: "850" }}>
+            Không thể hiển thị nội dung này
+          </h2>
+          <p style={{ color: "#64748b", marginBottom: "26px", lineHeight: "1.6", fontSize: "14.5px" }}>
+            Hệ thống ghi nhận sự cố hiển thị tạm thời trên trang này. Quý khách vui lòng bấm thử lại hoặc quay về Trang chủ.
           </p>
-          <div style={{ display: "flex", gap: "12px", justifyContent: "center" }}>
+          <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
             <button
-              onClick={() => window.location.reload()}
+              onClick={this.handleReset}
               style={{
-                padding: "10px 20px",
+                padding: "11px 24px",
                 background: "#004d32",
                 color: "#ffffff",
                 border: "none",
-                borderRadius: "8px",
-                fontWeight: "700",
-                cursor: "pointer"
+                borderRadius: "30px",
+                fontWeight: "750",
+                fontSize: "14px",
+                cursor: "pointer",
+                boxShadow: "0 4px 14px rgba(0, 77, 50, 0.3)"
               }}
             >
-              Tải lại trang
+              Thử tải lại nội dung
             </button>
             <a
-              href="/bang-gia"
+              href="/"
               style={{
-                padding: "10px 20px",
+                padding: "11px 24px",
                 background: "#f1f5f9",
                 color: "#334155",
-                borderRadius: "8px",
+                borderRadius: "30px",
                 textDecoration: "none",
-                fontWeight: "700"
+                fontWeight: "750",
+                fontSize: "14px",
+                border: "1px solid #cbd5e1"
               }}
             >
-              Xem tất cả bảng giá
+              Về Trang chủ
             </a>
           </div>
+
+          {import.meta.env.DEV && this.state.error && (
+            <details style={{ marginTop: "24px", textAlign: "left", background: "#fef2f2", border: "1px solid #fecaca", padding: "14px", borderRadius: "10px", fontSize: "12px", color: "#991b1b" }}>
+              <summary style={{ cursor: "pointer", fontWeight: "bold" }}>Chi tiết lỗi phát triển (Dev Diagnostics):</summary>
+              <pre style={{ whiteSpace: "pre-wrap", marginTop: "10px", overflowX: "auto" }}>
+                {this.state.error.toString()}
+                {"\n"}
+                {this.state.error.stack}
+              </pre>
+            </details>
+          )}
         </div>
       );
     }
@@ -128,7 +170,7 @@ export default function App() {
     <>
       <ScrollToTop />
       {!hideNavAndFooter && <Navbar />}
-      <ErrorBoundary>
+      <ErrorBoundary key={location.pathname} location={location}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/gioi-thieu" element={<About />} />
