@@ -350,7 +350,7 @@ export default function CompanyProfile() {
               <li><strong>Chuỗi Showroom Thời trang SAVANI:</strong> Thi công cửa cuốn và cửa kéo nhận diện thương hiệu tại miền Trung.</li>
               <li><strong>Dự án Nhà máy nước Hòa Liên:</strong> Cung cấp lắp đặt cửa kỹ thuật tại huyện Hòa Vang, TP. Đà Nẵng.</li>
               <li><strong>Nhà máy Xử lý Rác sinh hoạt Bắc Quảng Nam:</strong> Thi công hệ thống cửa cuốn chống ăn mòn hóa chất.</li>
-              <li><strong>Chuỗi gian hàng AEON Mall Đà Nẵng (KKV):</strong> Thi công hệ thống cửa cuốn song ngang Inox 304 thông thoáng cao cấp.</li>
+              <li><strong>TTTM AEON Mall Đà Nẵng:</strong> Thi công hệ thống cửa cuốn song ngang Inox 304 thông thoáng cao cấp.</li>
               <li><strong>Hệ thống Ngân hàng Agribank & Eximbank Đà Nẵng:</strong> Cung cấp cửa cuốn bảo mật và phụ kiện mã nhảy chống dò sóng.</li>
             </ul>
           </section>

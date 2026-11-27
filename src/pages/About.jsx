@@ -31,9 +31,9 @@ import './About.css';
 import RevealOnScroll from '../components/RevealOnScroll';
 import AnimatedCounter from '../components/AnimatedCounter';
 
-// Dữ liệu hình ảnh theo đúng bố cục mẫu: AEON Mall Đà Nẵng - Chuỗi KKV
+// Dữ liệu hình ảnh theo đúng bố cục mẫu: AEON Mall Đà Nẵng
 const AEON_POSTER_HERO = {
-  title: 'AEON Mall Đà Nẵng – Chuỗi KKV',
+  title: 'AEON Mall Đà Nẵng',
   subtitle: 'Hệ cửa xếp trượt uốn cong & cửa cuốn Polycarbonate',
   src: '/about_project_result_1.jpg'
 };
@@ -88,13 +88,13 @@ const AEON_POSTER_VALUES = [
 const ALL_AEON_IMAGES = [
   {
     src: '/about_project_result_1.jpg',
-    title: 'AEON Mall Đà Nẵng – Chuỗi KKV',
+    title: 'AEON Mall Đà Nẵng',
     desc: 'Hệ cửa xếp trượt uốn cong bo góc mềm mại màu trắng sữa'
   },
   {
     src: '/about_project_result_3.jpg',
-    title: 'Toàn cảnh mặt tiền KKV rực rỡ',
-    desc: 'Mặt tiền đại siêu thị kết hợp hài hòa giữa cửa cuốn trong suốt và cửa xếp bo góc màu vàng sang trọng'
+    title: 'Toàn cảnh mặt tiền dự án rực rỡ',
+    desc: 'Mặt tiền kết hợp hài hòa giữa cửa cuốn trong suốt và cửa xếp bo góc màu vàng sang trọng'
   },
   {
     src: '/about_project_result_2.jpg',
