@@ -3165,7 +3165,7 @@ textarea {
 
 /* ================= WHY CHOOSE US (GRID LAYOUT) ================= */
 .why-section {
-  padding: 60px 0;
+  padding: 48px 0;
   background: #ffffff;
   position: relative;
 }
@@ -3173,14 +3173,14 @@ textarea {
 .why-header-centered {
   text-align: center;
   max-width: 600px;
-  margin: 0 auto 40px auto;
+  margin: 0 auto 30px auto;
 }
 
 .why-subtitle {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   color: #556b60;
   font-size: 11px;
   font-weight: 700;
@@ -3191,23 +3191,24 @@ textarea {
 .why-main-title.text-center {
   text-align: center;
   font-family: 'Be Vietnam Pro', 'Montserrat', sans-serif;
-  font-size: clamp(24px, 3vw, 32px);
-  margin-bottom: 12px;
+  font-size: clamp(21px, 2.2vw, 25px);
+  margin-bottom: 8px;
   color: #004d32;
-  font-weight: 900;
+  font-weight: 800;
+  letter-spacing: -0.3px;
 }
 
 .why-header-desc.text-center {
   text-align: center;
   color: #66796f;
-  font-size: 14px;
+  font-size: 13.5px;
 }
 
 .why-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 40px;
-  max-width: 760px;
+  gap: 24px;
+  max-width: 720px;
   margin: 0 auto;
 }
 
@@ -3215,10 +3216,10 @@ textarea {
   background: #ffffff;
   border: 1px solid #eaeaea;
   border-radius: 12px;
-  padding: 16px 20px;
+  padding: 14px 18px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
   transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   overflow: hidden;
@@ -3246,8 +3247,8 @@ textarea {
 }
 
 .why-grid-icon {
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   border-radius: 10px;
   background: rgba(245, 189, 32, 0.12);
   color: #e5aa10;
@@ -3265,16 +3266,16 @@ textarea {
 }
 
 .why-grid-content h3 {
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 750;
   color: #004d32;
-  margin: 0 0 8px 0;
+  margin: 0 0 5px 0;
 }
 
 .why-grid-content p {
-  font-size: 13px;
+  font-size: 12.5px;
   color: #556b60;
-  line-height: 1.5;
+  line-height: 1.48;
   margin: 0;
 }
 
