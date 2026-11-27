@@ -101,13 +101,11 @@ export default function Navbar() {
   const [mobileServicesExpanded, setMobileServicesExpanded] = useState(false);
   const [pricingOpen, setPricingOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
-  const [aboutOpen, setAboutOpen] = useState(false);
 
   const navRef = useRef(null);
   const hoverTimeoutRef = useRef(null);
   const pricingTimeoutRef = useRef(null);
   const servicesTimeoutRef = useRef(null);
-  const aboutTimeoutRef = useRef(null);
   const [dbProducts, setDbProducts] = useState(() => {
     try {
       const cached = localStorage.getItem("boss_cached_products");
@@ -330,7 +328,6 @@ export default function Navbar() {
     setMegaOpen(false);
     setPricingOpen(false);
     setServicesOpen(false);
-    setAboutOpen(false);
     setMenu(false);
     setUserMenuOpen(false);
     setHoveredCatKey(null);
@@ -416,16 +413,7 @@ export default function Navbar() {
     }, 180);
   };
 
-  const handleAboutEnter = () => {
-    if (aboutTimeoutRef.current) clearTimeout(aboutTimeoutRef.current);
-    setAboutOpen(true);
-  };
 
-  const handleAboutLeave = () => {
-    aboutTimeoutRef.current = setTimeout(() => {
-      setAboutOpen(false);
-    }, 180);
-  };
 
   if (hoveredCatKey) {
     const found = dynamicNavData.find((c) => c.categoryKey === hoveredCatKey);
@@ -496,62 +484,12 @@ export default function Navbar() {
             <span>TRANG CHỦ</span>
           </NavLink>
 
-          {/* GIỚI THIỆU WITH DROPDOWN: VỀ CHÚNG TÔI & HỒ SƠ NĂNG LỰC */}
-          <div 
-            className={`nav-dropdown-wrapper ${aboutOpen ? "is-active" : ""}`}
-            onMouseEnter={handleAboutEnter}
-            onMouseLeave={handleAboutLeave}
-          >
-            <NavLink 
-              to="/gioi-thieu" 
-              onClick={() => {
-                setMenu(false);
-                setAboutOpen(false);
-              }} 
-              className={({ isActive }) => (isActive ? "nav-link-item active" : "nav-link-item")}
-            >
-              <span>GIỚI THIỆU</span>
-            </NavLink>
-
-            {/* DESKTOP DROPDOWN CHO GIỚI THIỆU */}
-            <div className={`desktop-simple-dropdown-menu ${aboutOpen ? "show" : ""}`} style={{ width: "260px" }}>
-              <div className="desktop-dropdown-header-title">VỀ CHÚNG TÔI</div>
-              <div className="desktop-dropdown-list">
-                <Link
-                  to="/gioi-thieu"
-                  onClick={() => {
-                    setAboutOpen(false);
-                    setMenu(false);
-                  }}
-                  className="desktop-dropdown-item-link"
-                >
-                  <span>🏢 Về BOSS Đà Nẵng</span>
-                  <ChevronRight size={13} className="item-arrow" />
-                </Link>
-                <Link
-                  to="/ho-so-nang-luc"
-                  onClick={() => {
-                    setAboutOpen(false);
-                    setMenu(false);
-                  }}
-                  className="desktop-dropdown-item-link"
-                  style={{ color: "#f5bd20" }}
-                >
-                  <span>📄 Hồ sơ năng lực (Profile)</span>
-                  <ChevronRight size={13} className="item-arrow" />
-                </Link>
-              </div>
-            </div>
-          </div>
-
-          {/* LIÊN KẾT HỒ SƠ NĂNG LỰC TRÊN MOBILE MENU */}
           <NavLink 
-            to="/ho-so-nang-luc" 
+            to="/gioi-thieu" 
             onClick={() => setMenu(false)} 
-            className={({ isActive }) => (isActive ? "nav-link-item active mobile-only-profile-link" : "nav-link-item mobile-only-profile-link")}
+            className={({ isActive }) => (isActive ? "nav-link-item active" : "nav-link-item")}
           >
-            <span>HỒ SƠ NĂNG LỰC</span>
-            <span className="mobile-nav-badge-pdf">PDF</span>
+            <span>GIỚI THIỆU</span>
           </NavLink>
 
           {/* SẢN PHẨM WITH ULTRA LUXURY E-COMMERCE FLYOUT DROPDOWN */}
