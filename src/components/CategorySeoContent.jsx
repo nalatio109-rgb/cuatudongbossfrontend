@@ -122,9 +122,36 @@ export default function CategorySeoContent({ activeCategory = "all" }) {
           {/* DYNAMIC ARTICLE BODY CONTENT */}
           {data.content && (
             <div className="seo-body-content">
-              {data.content.split("\n\n").map((para, i) => (
-                <p key={i}>{para}</p>
-              ))}
+              {data.content.split("\n\n").map((para, i) => {
+                const trimmed = para.trim();
+                if (trimmed.startsWith("### ")) {
+                  return (
+                    <h3 key={i} className="seo-content-h3">
+                      {trimmed.replace(/^###\s*/, "")}
+                    </h3>
+                  );
+                }
+                if (trimmed.startsWith("## ")) {
+                  return (
+                    <h3 key={i} className="seo-content-h3">
+                      {trimmed.replace(/^##\s*/, "")}
+                    </h3>
+                  );
+                }
+                if (trimmed.startsWith("- ")) {
+                  const items = trimmed.split("\n").filter((l) => l.trim().startsWith("- "));
+                  return (
+                    <ul key={i} className="seo-content-list">
+                      {items.map((it, idx) => (
+                        <li key={idx}>
+                          {it.replace(/^-\s*/, "")}
+                        </li>
+                      ))}
+                    </ul>
+                  );
+                }
+                return <p key={i}>{trimmed}</p>;
+              })}
             </div>
           )}
 

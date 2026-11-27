@@ -82,6 +82,23 @@
   margin-bottom: 14px;
 }
 
+.seo-content-h3 {
+  font-size: 19px;
+  font-weight: 800;
+  color: #004d32;
+  margin: 28px 0 12px;
+}
+
+.seo-content-list {
+  margin: 10px 0 16px 20px;
+  color: #334155;
+  line-height: 1.8;
+}
+
+.seo-content-list li {
+  margin-bottom: 6px;
+}
+
 /* REUSABLE SECTION STYLES */
 .seo-section {
   margin-bottom: 38px;

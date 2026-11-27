@@ -14,7 +14,11 @@ import {
   Wrench,
   HelpCircle,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  Eye,
+  Sliders,
+  AlignLeft,
+  Copy
 } from "lucide-react";
 import { defaultCategorySeoTemplates } from "../data/defaultCategorySeo";
 import "./AdminCategorySeo.css";
@@ -32,6 +36,7 @@ export default function AdminCategorySeo({ showToast }) {
   const [formData, setFormData] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [editorTab, setEditorTab] = useState("article"); // 'article' | 'seo' | 'advanced'
 
   // Load data whenever selected category changes
   useEffect(() => {
@@ -112,8 +117,10 @@ export default function AdminCategorySeo({ showToast }) {
 
   const handleAddTechPoint = () => {
     setFormData((prev) => {
-      const newPoints = [...(prev.structureAndTech?.points || [])];
-      newPoints.push({ heading: "Bộ phận mới", detail: "Mô tả chi tiết kỹ thuật..." });
+      const newPoints = [
+        ...(prev.structureAndTech?.points || []),
+        { heading: "Bộ phận kỹ thuật mới", detail: "Mô tả cấu tạo, thông số kỹ thuật chi tiết..." }
+      ];
       return {
         ...prev,
         structureAndTech: { ...prev.structureAndTech, points: newPoints }
@@ -122,13 +129,13 @@ export default function AdminCategorySeo({ showToast }) {
   };
 
   const handleDeleteTechPoint = (idx) => {
-    setFormData((prev) => {
-      const newPoints = prev.structureAndTech?.points?.filter((_, i) => i !== idx) || [];
-      return {
-        ...prev,
-        structureAndTech: { ...prev.structureAndTech, points: newPoints }
-      };
-    });
+    setFormData((prev) => ({
+      ...prev,
+      structureAndTech: {
+        ...prev.structureAndTech,
+        points: prev.structureAndTech?.points?.filter((_, i) => i !== idx) || []
+      }
+    }));
   };
 
   // Benefits
@@ -143,7 +150,10 @@ export default function AdminCategorySeo({ showToast }) {
   const handleAddBenefit = () => {
     setFormData((prev) => ({
       ...prev,
-      benefits: [...(prev.benefits || []), { title: "Ưu điểm mới", desc: "Mô tả lợi ích..." }]
+      benefits: [
+        ...(prev.benefits || []),
+        { title: "Ưu điểm nổi bật mới", desc: "Mô tả lợi ích mang lại cho khách hàng..." }
+      ]
     }));
   };
 
@@ -175,7 +185,7 @@ export default function AdminCategorySeo({ showToast }) {
 
   const handleAddAppItem = () => {
     setFormData((prev) => {
-      const newItems = [...(prev.applications?.items || []), "Ứng dụng thực tế mới..."];
+      const newItems = [...(prev.applications?.items || []), "Ứng dụng công trình thực tế mới..."];
       return {
         ...prev,
         applications: { ...prev.applications, items: newItems }
@@ -258,11 +268,55 @@ export default function AdminCategorySeo({ showToast }) {
     }));
   };
 
+  // Helper: Consolidate structured points into the single content textarea
+  const handleConsolidateIntoArticle = () => {
+    let fullText = formData.content || "";
+    
+    if (formData.structureAndTech?.points?.length) {
+      fullText += `\n\n### ${formData.structureAndTech.title || "Cấu Tạo Kỹ Thuật & Nguyên Lý Hoạt Động"}\n`;
+      if (formData.structureAndTech.desc) fullText += `${formData.structureAndTech.desc}\n`;
+      formData.structureAndTech.points.forEach((pt) => {
+        fullText += `\n- **${pt.heading}**: ${pt.detail}`;
+      });
+    }
+
+    if (formData.benefits?.length) {
+      fullText += `\n\n### ${formData.benefitsTitle || "Ưu Điểm & Lợi Ích Vượt Trội"}`;
+      formData.benefits.forEach((b) => {
+        fullText += `\n- **${b.title}**: ${b.desc}`;
+      });
+    }
+
+    if (formData.applications?.items?.length) {
+      fullText += `\n\n### ${formData.applications.title || "Ứng Dụng Thực Tế Tại Đà Nẵng"}`;
+      formData.applications.items.forEach((item) => {
+        fullText += `\n- ${item}`;
+      });
+    }
+
+    if (formData.buyingGuide?.steps?.length) {
+      fullText += `\n\n### ${formData.buyingGuide.title || "Kinh Nghiệm Lựa Chọn Sản Phẩm"}`;
+      formData.buyingGuide.steps.forEach((step) => {
+        fullText += `\n- ${step}`;
+      });
+    }
+
+    if (formData.faqs?.length) {
+      fullText += `\n\n### Câu Hỏi Thường Gặp (FAQ)`;
+      formData.faqs.forEach((faq) => {
+        fullText += `\n\n**Hỏi: ${faq.q}**\nTrả lời: ${faq.a}`;
+      });
+    }
+
+    setFormData((prev) => ({ ...prev, content: fullText.trim() }));
+    showToast("✅ Đã gộp toàn bộ cấu tạo, lợi ích & FAQ vào 1 khung soạn thảo duy nhất!");
+  };
+
   // ----------------------------------------------------
   // SAVE & RESET
   // ----------------------------------------------------
   const handleSave = async (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
     if (!formData) return;
     setIsSaving(true);
 
@@ -279,7 +333,7 @@ export default function AdminCategorySeo({ showToast }) {
         });
         const resJson = await res.json();
         if (resJson.success) {
-          showToast(`✅ Đã lưu bài viết SEO danh mục "${CATEGORIES.find(c => c.id === selectedCat)?.label}" vào cơ sở dữ liệu!`);
+          showToast(`✅ Đã lưu bài viết danh mục "${CATEGORIES.find(c => c.id === selectedCat)?.label}" thành công!`);
         } else {
           showToast(`💾 Đã lưu bài viết vào bộ nhớ trình duyệt!`);
         }
@@ -305,514 +359,387 @@ export default function AdminCategorySeo({ showToast }) {
     } catch (e) {
       console.error(e);
     }
-    showToast(`🔄 Đã khôi phục nội dung mẫu chuẩn SEO cho danh mục!`);
+    showToast(`🔄 Đã khôi phục nội dung mẫu chuẩn cho danh mục!`);
   };
 
   if (isLoading || !formData) {
     return (
       <div className="admin-seo-loading">
         <div className="spinner"></div>
-        <p>Đang tải dữ liệu bài viết SEO danh mục...</p>
+        <p>Đang tải dữ liệu bài viết danh mục...</p>
       </div>
     );
   }
 
+  // Word & character stats
+  const contentWords = (formData.content || "").trim() ? (formData.content || "").trim().split(/\s+/).length : 0;
+  const contentChars = (formData.content || "").length;
+
   return (
-    <div className="admin-category-seo-panel">
-      {/* HEADER SECTION */}
-      <div className="admin-panel-head">
-        <div>
-          <h2>QUẢN LÝ BÀI VIẾT SEO BÁN HÀNG THEO DANH MỤC</h2>
-          <p>
-            Chỉnh sửa nội dung bán hàng chuyên sâu, tiêu đề H1/H2, thông số kỹ thuật và câu hỏi FAQ xuất hiện ở cuối mỗi danh mục sản phẩm.
-          </p>
+    <div className="admin-category-seo-unified-wrapper">
+      {/* KHUNG DUY NHẤT CHỨA TOÀN BỘ QUẢN LÝ BÀI VIẾT */}
+      <div className="admin-category-seo-unified-box">
+
+        {/* 1. HEADER SECTION TÍCH HỢP */}
+        <div className="unified-box-head">
+          <div className="unified-head-text">
+            <h2>QUẢN LÝ BÀI VIẾT BÁN HÀNG THEO DANH MỤC</h2>
+            <p>
+              Chỉnh sửa bài viết giới thiệu chuyên sâu xuất hiện ở chân trang mỗi danh mục sản phẩm (H1, nội dung chi tiết & thông số SEO).
+            </p>
+          </div>
+          <div className="unified-head-actions">
+            <a
+              href={`/san-pham${selectedCat !== "all" ? `?cat=${selectedCat}` : ""}`}
+              target="_blank"
+              rel="noreferrer"
+              className="btn-unified-preview"
+              title="Xem bài viết hiển thị thực tế trên web"
+            >
+              <ExternalLink size={15} /> Xem Trên Web
+            </a>
+            <button
+              type="button"
+              className="btn-unified-reset"
+              onClick={handleResetDefault}
+              title="Khôi phục nội dung mẫu chuẩn"
+            >
+              <RotateCcw size={15} /> Mẫu Chuẩn SEO
+            </button>
+            <button
+              type="button"
+              className="btn-unified-save"
+              onClick={handleSave}
+              disabled={isSaving}
+            >
+              <Save size={16} /> {isSaving ? "Đang Lưu..." : "Lưu Bài Viết"}
+            </button>
+          </div>
         </div>
-        <div className="admin-head-actions">
-          <a
-            href={`/san-pham${selectedCat !== "all" ? `?cat=${selectedCat}` : ""}`}
-            target="_blank"
-            rel="noreferrer"
-            className="btn-admin-preview"
-          >
-            <ExternalLink size={16} /> Xem Trên Web
-          </a>
+
+        {/* 2. CHỌN DANH MỤC LIỀN MẠCH TRONG CÙNG KHUNG */}
+        <div className="unified-box-cats">
+          <span className="unified-cats-label">Danh mục bài viết:</span>
+          <div className="unified-cats-list">
+            {CATEGORIES.map((cat) => (
+              <button
+                key={cat.id}
+                type="button"
+                className={`unified-cat-pill ${selectedCat === cat.id ? "active" : ""}`}
+                onClick={() => setSelectedCat(cat.id)}
+              >
+                <span className="cat-name">{cat.label}</span>
+                <span className="cat-badge">{cat.badge}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* 3. THANH ĐIỀU HƯỚNG TAB TINH GỌN (CHỈ 3 PHẦN, MẶC ĐỊNH LÀ 1 KHUNG SOẠN BÀI DUY NHẤT) */}
+        <div className="unified-box-subtabs">
           <button
             type="button"
-            className="btn-admin-reset"
-            onClick={handleResetDefault}
+            className={`unified-subtab-btn ${editorTab === "article" ? "active" : ""}`}
+            onClick={() => setEditorTab("article")}
           >
-            <RotateCcw size={16} /> Mẫu Chuẩn SEO
+            <FileText size={17} />
+            <span>1. Soạn Thảo Bài Viết (Khung duy nhất)</span>
           </button>
           <button
             type="button"
-            className="btn-admin-save"
-            onClick={handleSave}
-            disabled={isSaving}
+            className={`unified-subtab-btn ${editorTab === "seo" ? "active" : ""}`}
+            onClick={() => setEditorTab("seo")}
           >
-            <Save size={16} /> {isSaving ? "Đang Lưu..." : "Lưu Bài Viết"}
+            <Search size={17} />
+            <span>2. Cấu Hình SEO Google</span>
+          </button>
+          <button
+            type="button"
+            className={`unified-subtab-btn ${editorTab === "advanced" ? "active" : ""}`}
+            onClick={() => setEditorTab("advanced")}
+          >
+            <Sliders size={17} />
+            <span>3. Cấu Tạo & FAQ (Nâng cao)</span>
           </button>
         </div>
-      </div>
 
-      {/* CATEGORY SELECTOR PILLS */}
-      <div className="admin-category-tabs-bar">
-        <span className="cat-tabs-label">Chọn danh mục bài viết:</span>
-        <div className="cat-tabs-list">
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat.id}
-              type="button"
-              className={`cat-tab-btn ${selectedCat === cat.id ? "active" : ""}`}
-              onClick={() => setSelectedCat(cat.id)}
-            >
-              <span className="cat-name">{cat.label}</span>
-              <span className="cat-sub-badge">{cat.badge}</span>
-            </button>
-          ))}
-        </div>
-      </div>
+        {/* 4. VÙNG NỘI DUNG FORM NẰM GỌN TRONG 1 KHUNG */}
+        <form onSubmit={handleSave} className="unified-box-form">
 
-      {/* FORM SECTIONS */}
-      <form onSubmit={handleSave} className="admin-seo-form">
-
-        {/* 1. SEO META & KEYWORDS */}
-        <div className="admin-card-section">
-          <div className="section-header-row">
-            <div className="section-badge-icon">
-              <Search size={18} />
-            </div>
-            <div>
-              <h3>1. Tối Ưu SEO Meta & Từ Khóa Google</h3>
-              <p>Hiển thị trên kết quả tìm kiếm Google và thanh tiêu đề trình duyệt.</p>
-            </div>
-          </div>
-
-          <div className="form-group-grid">
-            <div className="form-field full-width">
-              <label>
-                Meta Title (Tiêu đề Google & Tab trình duyệt)
-                <span className="field-hint">Khuyến nghị 55 - 65 ký tự</span>
-              </label>
-              <input
-                type="text"
-                value={formData.metaTitle || ""}
-                onChange={(e) => handleSimpleChange("metaTitle", e.target.value)}
-                placeholder="Ví dụ: Cửa Cuốn Đà Nẵng - Báo Giá & Lắp Đặt Cửa Cuốn BossDoor Chính Hãng 2026"
-                required
-              />
-            </div>
-
-            <div className="form-field full-width">
-              <label>
-                Meta Description (Đoạn mô tả ngắn tóm lược cho Google)
-                <span className="field-hint">Khuyến nghị 140 - 160 ký tự</span>
-              </label>
-              <textarea
-                rows={3}
-                value={formData.metaDescription || ""}
-                onChange={(e) => handleSimpleChange("metaDescription", e.target.value)}
-                placeholder="Đoạn văn ngắn chứa từ khóa chính tóm lược nội dung trang..."
-                required
-              />
-            </div>
-
-            <div className="form-field full-width">
-              <label>
-                Từ Khóa Mục Tiêu (Target Keywords)
-                <span className="field-hint">Phân cách các từ khóa bằng dấu phẩy</span>
-              </label>
-              <input
-                type="text"
-                value={Array.isArray(formData.targetKeywords) ? formData.targetKeywords.join(", ") : (formData.targetKeywords || "")}
-                onChange={handleKeywordsChange}
-                placeholder="cửa cuốn Đà Nẵng, cửa cuốn BossDoor, báo giá cửa cuốn Đà Nẵng..."
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* 2. MAIN HEADING & SUMMARY */}
-        <div className="admin-card-section">
-          <div className="section-header-row">
-            <div className="section-badge-icon">
-              <FileText size={18} />
-            </div>
-            <div>
-              <h3>2. Tiêu Đề Bài Viết & Đoạn Giới Thiệu (Sapo)</h3>
-              <p>Tiêu đề chính H1/H2 và đoạn văn mở đầu bài viết bán hàng.</p>
-            </div>
-          </div>
-
-          <div className="form-group-grid">
-            <div className="form-field full-width">
-              <label>Tiêu Đề Chính Bài Viết (H1/H2 Heading)</label>
-              <input
-                type="text"
-                value={formData.h1 || ""}
-                onChange={(e) => handleSimpleChange("h1", e.target.value)}
-                placeholder="Ví dụ: Cửa Cuốn Đà Nẵng - Báo Giá & Thi Công Lắp Đặt Cửa Cuốn BossDoor Chính Hãng"
-                required
-              />
-            </div>
-
-            <div className="form-field full-width">
-              <label>Đoạn Giới Thiệu Tổng Quan (Sapo mở bài)</label>
-              <textarea
-                rows={3}
-                value={formData.summary || ""}
-                onChange={(e) => handleSimpleChange("summary", e.target.value)}
-                placeholder="Đoạn văn mở đầu nêu bật vị thế, năng lực thi công tại Đà Nẵng, bảo hành..."
-              />
-            </div>
-
-            <div className="form-field full-width">
-              <label>
-                Nội Dung Chi Tiết Bài Viết (Sales Content)
-                <span className="field-hint">Hỗ trợ nhiều đoạn văn, tự động tách dòng trên giao diện</span>
-              </label>
-              <textarea
-                rows={6}
-                value={formData.content || ""}
-                onChange={(e) => handleSimpleChange("content", e.target.value)}
-                placeholder="Nhập nội dung bài viết bán hàng chi tiết..."
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* 3. STRUCTURE & TECHNICAL SPECIFICATIONS */}
-        <div className="admin-card-section">
-          <div className="section-header-row">
-            <div className="section-badge-icon">
-              <Settings size={18} />
-            </div>
-            <div>
-              <h3>3. Cấu Tạo Kỹ Thuật & Nguyên Lý Hoạt Động</h3>
-              <p>Phân tích chi tiết các bộ phận cơ khí và động cơ.</p>
-            </div>
-          </div>
-
-          <div className="form-group-grid">
-            <div className="form-field full-width">
-              <label>Tiêu Đề Khối Cấu Tạo</label>
-              <input
-                type="text"
-                value={formData.structureAndTech?.title || ""}
-                onChange={(e) => handleTechTitleChange(e.target.value)}
-              />
-            </div>
-
-            <div className="form-field full-width">
-              <label>Đoạn Giới Thiệu Ngắn Khối Cấu Tạo</label>
-              <input
-                type="text"
-                value={formData.structureAndTech?.desc || ""}
-                onChange={(e) => handleTechDescChange(e.target.value)}
-              />
-            </div>
-          </div>
-
-          {/* List of points */}
-          <div className="dynamic-items-container">
-            <label className="sub-section-label">Danh Sách Các Bộ Phận / Điểm Kỹ Thuật:</label>
-            {(formData.structureAndTech?.points || []).map((pt, idx) => (
-              <div key={idx} className="dynamic-item-card">
-                <div className="item-card-header">
-                  <span className="item-card-index">Bộ phận #{idx + 1}</span>
-                  <button
-                    type="button"
-                    className="btn-item-delete"
-                    onClick={() => handleDeleteTechPoint(idx)}
-                    title="Xóa bộ phận này"
-                  >
-                    <Trash2 size={15} /> Xóa
-                  </button>
-                </div>
-                <div className="item-card-body">
-                  <div className="form-field">
-                    <label>Tên Bộ Phận / Tiêu Đề</label>
-                    <input
-                      type="text"
-                      value={pt.heading || ""}
-                      onChange={(e) => handleTechPointChange(idx, "heading", e.target.value)}
-                      placeholder="Ví dụ: Thân cửa (Nan cửa)"
-                    />
-                  </div>
-                  <div className="form-field">
-                    <label>Chi Tiết Cấu Tạo & Thông Số</label>
-                    <textarea
-                      rows={2}
-                      value={pt.detail || ""}
-                      onChange={(e) => handleTechPointChange(idx, "detail", e.target.value)}
-                      placeholder="Mô tả hợp kim nhôm, sơn tĩnh điện, độ dày..."
-                    />
-                  </div>
-                </div>
-              </div>
-            ))}
-
-            <button
-              type="button"
-              className="btn-add-dynamic-item"
-              onClick={handleAddTechPoint}
-            >
-              <Plus size={16} /> Thêm Bộ Phận Cấu Tạo Mới
-            </button>
-          </div>
-        </div>
-
-        {/* 4. BENEFITS */}
-        <div className="admin-card-section">
-          <div className="section-header-row">
-            <div className="section-badge-icon">
-              <Award size={18} />
-            </div>
-            <div>
-              <h3>4. Ưu Điểm & Lợi Ích Vượt Trội</h3>
-              <p>Các lý do thuyết phục khách hàng tin chọn mua tại Boss Đà Nẵng.</p>
-            </div>
-          </div>
-
-          <div className="form-field full-width" style={{ marginBottom: "16px" }}>
-            <label>Tiêu Đề Khối Ưu Điểm</label>
-            <input
-              type="text"
-              value={formData.benefitsTitle || ""}
-              onChange={(e) => handleSimpleChange("benefitsTitle", e.target.value)}
-              placeholder="Ví dụ: Ưu Điểm & Lợi Ích Vượt Trội Khi Chọn Mua Tại Boss Đà Nẵng"
-            />
-          </div>
-
-          <div className="dynamic-items-container">
-            {(formData.benefits || []).map((b, idx) => (
-              <div key={idx} className="dynamic-item-card">
-                <div className="item-card-header">
-                  <span className="item-card-index">Lợi ích #{idx + 1}</span>
-                  <button
-                    type="button"
-                    className="btn-item-delete"
-                    onClick={() => handleDeleteBenefit(idx)}
-                  >
-                    <Trash2 size={15} /> Xóa
-                  </button>
-                </div>
-                <div className="item-card-body">
-                  <div className="form-field">
-                    <label>Tiêu Đề Lợi Ích</label>
-                    <input
-                      type="text"
-                      value={b.title || ""}
-                      onChange={(e) => handleBenefitChange(idx, "title", e.target.value)}
-                      placeholder="Ví dụ: An Toàn Chống Trộm Vượt Trội"
-                    />
-                  </div>
-                  <div className="form-field">
-                    <label>Diễn Giải Lợi Ích</label>
-                    <textarea
-                      rows={2}
-                      value={b.desc || ""}
-                      onChange={(e) => handleBenefitChange(idx, "desc", e.target.value)}
-                      placeholder="Chi tiết công nghệ mã nhảy, vận hành êm ái..."
-                    />
-                  </div>
-                </div>
-              </div>
-            ))}
-
-            <button
-              type="button"
-              className="btn-add-dynamic-item"
-              onClick={handleAddBenefit}
-            >
-              <Plus size={16} /> Thêm Lợi Ích Mới
-            </button>
-          </div>
-        </div>
-
-        {/* 5. APPLICATIONS */}
-        <div className="admin-card-section">
-          <div className="section-header-row">
-            <div className="section-badge-icon">
-              <Building2 size={18} />
-            </div>
-            <div>
-              <h3>5. Ứng Dụng Thực Tế Tại Đà Nẵng</h3>
-              <p>Phù hợp với từng loại hình kiến trúc và khu vực cụ thể.</p>
-            </div>
-          </div>
-
-          <div className="form-field full-width" style={{ marginBottom: "16px" }}>
-            <label>Tiêu Đề Khối Ứng Dụng</label>
-            <input
-              type="text"
-              value={formData.applications?.title || ""}
-              onChange={(e) => handleAppTitleChange(e.target.value)}
-            />
-          </div>
-
-          <div className="dynamic-items-container">
-            {(formData.applications?.items || []).map((item, idx) => (
-              <div key={idx} className="dynamic-string-row">
-                <span className="row-index">#{idx + 1}</span>
+          {/* TAB 1: SOẠN THẢO BÀI VIẾT (KHUNG DUY NHẤT) */}
+          {editorTab === "article" && (
+            <div className="unified-tab-pane">
+              {/* Tiêu đề chính */}
+              <div className="unified-field-group">
+                <label className="unified-field-label">
+                  Tiêu Đề Chính Bài Viết (H1 Heading)
+                  <span className="unified-hint">Hiển thị tiêu đề lớn nhất ở đầu bài viết</span>
+                </label>
                 <input
                   type="text"
-                  value={item || ""}
-                  onChange={(e) => handleAppItemChange(idx, e.target.value)}
-                  placeholder="Ví dụ: Nhà phố, nhà ống mặt tiền các trục đường sầm uất..."
+                  className="unified-input-title"
+                  value={formData.h1 || ""}
+                  onChange={(e) => handleSimpleChange("h1", e.target.value)}
+                  placeholder="Ví dụ: Cửa Cuốn Đà Nẵng - Báo Giá & Thi Công Lắp Đặt Cửa Cuốn BossDoor Chính Hãng 2026"
+                  required
                 />
-                <button
-                  type="button"
-                  className="btn-row-delete"
-                  onClick={() => handleDeleteAppItem(idx)}
-                >
-                  <Trash2 size={16} />
-                </button>
               </div>
-            ))}
 
-            <button
-              type="button"
-              className="btn-add-dynamic-item"
-              onClick={handleAddAppItem}
-            >
-              <Plus size={16} /> Thêm Ứng Dụng Mới
-            </button>
-          </div>
-        </div>
+              {/* Đoạn tóm tắt Sapo */}
+              <div className="unified-field-group">
+                <label className="unified-field-label">
+                  Đoạn Mở Bài Tóm Tắt (Sapo)
+                  <span className="unified-hint">1 đoạn văn ngắn mở đầu làm nổi bật dịch vụ</span>
+                </label>
+                <textarea
+                  rows={3}
+                  className="unified-textarea-sapo"
+                  value={formData.summary || ""}
+                  onChange={(e) => handleSimpleChange("summary", e.target.value)}
+                  placeholder="Đoạn mở đầu nêu bật vị thế, năng lực thi công tại Đà Nẵng, cam kết bảo hành và chất lượng..."
+                />
+              </div>
 
-        {/* 6. BUYING GUIDE */}
-        <div className="admin-card-section">
-          <div className="section-header-row">
-            <div className="section-badge-icon">
-              <Wrench size={18} />
-            </div>
-            <div>
-              <h3>6. Kinh Nghiệm Lựa Chọn Sản Phẩm</h3>
-              <p>Cẩm nang tư vấn giúp khách hàng chọn mua chuẩn xác và tiết kiệm.</p>
-            </div>
-          </div>
+              {/* KHUNG SOẠN THẢO BÀI VIẾT TOÀN DIỆN (CHỈ 1 KHUNG DUY NHẤT) */}
+              <div className="unified-field-group">
+                <div className="unified-editor-header-bar">
+                  <div className="unified-editor-title-wrap">
+                    <span className="unified-editor-main-label">Nội Dung Bài Viết Bán Hàng Toàn Diện</span>
+                    <span className="unified-stats-badge">
+                      {contentWords} từ • {contentChars} ký tự
+                    </span>
+                  </div>
 
-          <div className="form-field full-width" style={{ marginBottom: "16px" }}>
-            <label>Tiêu Đề Khối Kinh Nghiệm</label>
-            <input
-              type="text"
-              value={formData.buyingGuide?.title || ""}
-              onChange={(e) => handleGuideTitleChange(e.target.value)}
-            />
-          </div>
-
-          <div className="dynamic-items-container">
-            {(formData.buyingGuide?.steps || []).map((step, idx) => (
-              <div key={idx} className="dynamic-item-card">
-                <div className="item-card-header">
-                  <span className="item-card-index">Kinh nghiệm #{idx + 1}</span>
                   <button
                     type="button"
-                    className="btn-item-delete"
-                    onClick={() => handleDeleteGuideStep(idx)}
+                    className="btn-consolidate"
+                    onClick={handleConsolidateIntoArticle}
+                    title="Gộp tất cả các mục Cấu tạo, Lợi ích, FAQ mẫu vào khung này để dễ sửa thành bài viết liền mạch"
                   >
-                    <Trash2 size={15} /> Xóa
+                    <Copy size={14} /> Gộp mẫu toàn bộ vào khung này
                   </button>
                 </div>
-                <div className="item-card-body">
-                  <textarea
-                    rows={2}
-                    value={step || ""}
-                    onChange={(e) => handleGuideStepChange(idx, e.target.value)}
-                    placeholder="Mô tả kinh nghiệm chọn kích thước, tải trọng mô tơ, chọn lưu điện..."
+
+                <textarea
+                  className="unified-textarea-full-content"
+                  rows={16}
+                  value={formData.content || ""}
+                  onChange={(e) => handleSimpleChange("content", e.target.value)}
+                  placeholder="Viết toàn bộ nội dung bài viết bán hàng chi tiết tại đây...&#10;&#10;💡 Cách viết rất đơn giản:&#10;- Bấm Enter 2 lần để xuống dòng thành đoạn văn mới.&#10;- Gõ '### Tên Tiêu Đề' để tạo tiêu đề con in đậm đẹp mắt.&#10;- Gõ '- Nội dung' để tạo danh sách gạch đầu dòng."
+                />
+
+                <div className="unified-editor-tips">
+                  <span>💡 <strong>Hướng dẫn tiện lợi:</strong> Bạn có thể gõ toàn bộ bài viết, các mục cấu tạo, ưu điểm trong đúng 1 khung soạn thảo này. Xuống dòng 2 lần để tách đoạn văn, hoặc gõ <code>### Tiêu đề mục</code> để tạo tiêu đề phân đoạn trên web.</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 2: CẤU HÌNH SEO GOOGLE */}
+          {editorTab === "seo" && (
+            <div className="unified-tab-pane">
+              <div className="unified-seo-grid">
+                <div className="unified-field-group">
+                  <label className="unified-field-label">
+                    Meta Title (Tiêu đề Google & Tab trình duyệt)
+                    <span className="unified-hint">Khuyến nghị: 50 - 65 ký tự</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="unified-input-text"
+                    value={formData.metaTitle || ""}
+                    onChange={(e) => handleSimpleChange("metaTitle", e.target.value)}
+                    placeholder="Ví dụ: Cửa Cuốn Đà Nẵng - Báo Giá & Lắp Đặt Cửa Cuốn BossDoor Chính Hãng 2026"
                   />
                 </div>
+
+                <div className="unified-field-group">
+                  <label className="unified-field-label">
+                    Meta Description (Đoạn mô tả hiển thị trên Google)
+                    <span className="unified-hint">Khuyến nghị: 135 - 160 ký tự</span>
+                  </label>
+                  <textarea
+                    rows={3}
+                    className="unified-textarea-sapo"
+                    value={formData.metaDescription || ""}
+                    onChange={(e) => handleSimpleChange("metaDescription", e.target.value)}
+                    placeholder="Mô tả ngắn gọn, thu hút người dùng bấm vào khi tìm kiếm trên Google..."
+                  />
+                </div>
+
+                <div className="unified-field-group">
+                  <label className="unified-field-label">
+                    Từ Khóa Mục Tiêu (Target Keywords)
+                    <span className="unified-hint">Phân cách các từ bằng dấu phẩy</span>
+                  </label>
+                  <input
+                    type="text"
+                    className="unified-input-text"
+                    value={Array.isArray(formData.targetKeywords) ? formData.targetKeywords.join(", ") : (formData.targetKeywords || "")}
+                    onChange={handleKeywordsChange}
+                    placeholder="cửa cuốn Đà Nẵng, cửa cuốn BossDoor, báo giá cửa cuốn Đà Nẵng..."
+                  />
+                </div>
+
+                {/* GOOGLE PREVIEW BOX TRỰC QUAN */}
+                <div className="unified-serp-preview">
+                  <span className="serp-preview-label">Xem trước kết quả tìm kiếm trên Google:</span>
+                  <div className="serp-box">
+                    <div className="serp-cite">https://bossdoordanang.com.vn &gt; san-pham</div>
+                    <div className="serp-title">{formData.metaTitle || formData.h1 || "Tiêu đề trang sản phẩm"}</div>
+                    <div className="serp-desc">{formData.metaDescription || formData.summary || "Đoạn văn mô tả tóm tắt hiển thị trên kết quả tìm kiếm Google..."}</div>
+                  </div>
+                </div>
               </div>
-            ))}
-
-            <button
-              type="button"
-              className="btn-add-dynamic-item"
-              onClick={handleAddGuideStep}
-            >
-              <Plus size={16} /> Thêm Kinh Nghiệm Mới
-            </button>
-          </div>
-        </div>
-
-        {/* 7. FAQS */}
-        <div className="admin-card-section">
-          <div className="section-header-row">
-            <div className="section-badge-icon">
-              <HelpCircle size={18} />
             </div>
-            <div>
-              <h3>7. Câu Hỏi Thường Gặp (FAQ Schema)</h3>
-              <p>Được nhúng tự động dạng JSON-LD giúp Google xếp hạng cao trên kết quả tìm kiếm.</p>
-            </div>
-          </div>
+          )}
 
-          <div className="dynamic-items-container">
-            {(formData.faqs || []).map((faq, idx) => (
-              <div key={idx} className="dynamic-item-card">
-                <div className="item-card-header">
-                  <span className="item-card-index">Câu hỏi FAQ #{idx + 1}</span>
-                  <button
-                    type="button"
-                    className="btn-item-delete"
-                    onClick={() => handleDeleteFaq(idx)}
-                  >
-                    <Trash2 size={15} /> Xóa
+          {/* TAB 3: KHỐI KỸ THUẬT & FAQ (NÂNG CAO - NẾU CẦN TÙY BIẾN CHI TIẾT) */}
+          {editorTab === "advanced" && (
+            <div className="unified-tab-pane">
+              <div className="unified-advanced-helper">
+                <AlertCircle size={18} />
+                <span>
+                  <strong>Lưu ý:</strong> Các mục dưới đây là tùy chọn nâng cao dùng để xuất hiện thành các khối thẻ đặc thù (schema FAQ, bộ phận cơ khí). Nếu bạn đã gộp nội dung vào khung bài viết chính ở Tab 1 thì không nhất thiết phải điền thêm ở đây.
+                </span>
+              </div>
+
+              {/* 3.1 CẤU TẠO KỸ THUẬT */}
+              <div className="unified-accordion-box">
+                <div className="unified-accordion-head">
+                  <div className="accordion-title-row">
+                    <Settings size={18} />
+                    <h4>Cấu Tạo Kỹ Thuật & Bộ Phận Cơ Khí</h4>
+                  </div>
+                  <button type="button" className="btn-add-item-compact" onClick={handleAddTechPoint}>
+                    <Plus size={14} /> Thêm Bộ Phận
                   </button>
                 </div>
-                <div className="item-card-body">
-                  <div className="form-field">
-                    <label>Câu Hỏi (Question)</label>
-                    <input
-                      type="text"
-                      value={faq.q || ""}
-                      onChange={(e) => handleFaqChange(idx, "q", e.target.value)}
-                      placeholder="Ví dụ: Giá 1 bộ cửa cuốn tại Đà Nẵng bao nhiêu tiền?"
-                    />
-                  </div>
-                  <div className="form-field">
-                    <label>Câu Trả Lời (Answer)</label>
-                    <textarea
-                      rows={3}
-                      value={faq.a || ""}
-                      onChange={(e) => handleFaqChange(idx, "a", e.target.value)}
-                      placeholder="Câu trả lời giải đáp thắc mắc chi tiết..."
-                    />
+                <div className="unified-accordion-body">
+                  <div className="compact-items-list">
+                    {(formData.structureAndTech?.points || []).map((pt, idx) => (
+                      <div key={idx} className="compact-item-row">
+                        <input
+                          type="text"
+                          className="item-input-title"
+                          value={pt.heading || ""}
+                          onChange={(e) => handleTechPointChange(idx, "heading", e.target.value)}
+                          placeholder="Tên bộ phận..."
+                        />
+                        <input
+                          type="text"
+                          className="item-input-desc"
+                          value={pt.detail || ""}
+                          onChange={(e) => handleTechPointChange(idx, "detail", e.target.value)}
+                          placeholder="Mô tả thông số kỹ thuật..."
+                        />
+                        <button type="button" className="btn-item-remove" onClick={() => handleDeleteTechPoint(idx)}>
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
+                    ))}
                   </div>
                 </div>
               </div>
-            ))}
 
+              {/* 3.2 ƯU ĐIỂM & LỢI ÍCH */}
+              <div className="unified-accordion-box">
+                <div className="unified-accordion-head">
+                  <div className="accordion-title-row">
+                    <Award size={18} />
+                    <h4>Ưu Điểm & Lợi Ích Vượt Trội</h4>
+                  </div>
+                  <button type="button" className="btn-add-item-compact" onClick={handleAddBenefit}>
+                    <Plus size={14} /> Thêm Lợi Ích
+                  </button>
+                </div>
+                <div className="unified-accordion-body">
+                  <div className="compact-items-list">
+                    {(formData.benefits || []).map((b, idx) => (
+                      <div key={idx} className="compact-item-row">
+                        <input
+                          type="text"
+                          className="item-input-title"
+                          value={b.title || ""}
+                          onChange={(e) => handleBenefitChange(idx, "title", e.target.value)}
+                          placeholder="Tiêu đề lợi ích..."
+                        />
+                        <input
+                          type="text"
+                          className="item-input-desc"
+                          value={b.desc || ""}
+                          onChange={(e) => handleBenefitChange(idx, "desc", e.target.value)}
+                          placeholder="Diễn giải chi tiết..."
+                        />
+                        <button type="button" className="btn-item-remove" onClick={() => handleDeleteBenefit(idx)}>
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* 3.3 CÂU HỎI THƯỜNG GẶP FAQ */}
+              <div className="unified-accordion-box">
+                <div className="unified-accordion-head">
+                  <div className="accordion-title-row">
+                    <HelpCircle size={18} />
+                    <h4>Câu Hỏi Thường Gặp (FAQ Schema)</h4>
+                  </div>
+                  <button type="button" className="btn-add-item-compact" onClick={handleAddFaq}>
+                    <Plus size={14} /> Thêm Câu Hỏi FAQ
+                  </button>
+                </div>
+                <div className="unified-accordion-body">
+                  <div className="compact-items-list">
+                    {(formData.faqs || []).map((faq, idx) => (
+                      <div key={idx} className="compact-faq-card">
+                        <div className="compact-faq-q">
+                          <input
+                            type="text"
+                            value={faq.q || ""}
+                            onChange={(e) => handleFaqChange(idx, "q", e.target.value)}
+                            placeholder="Nhập câu hỏi (Ví dụ: Giá cửa cuốn bao nhiêu tiền?)..."
+                          />
+                          <button type="button" className="btn-item-remove" onClick={() => handleDeleteFaq(idx)}>
+                            <Trash2 size={15} />
+                          </button>
+                        </div>
+                        <textarea
+                          rows={2}
+                          value={faq.a || ""}
+                          onChange={(e) => handleFaqChange(idx, "a", e.target.value)}
+                          placeholder="Nhập câu trả lời giải đáp..."
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* 5. FOOTER SAVE BAR TÍCH HỢP Ở ĐÁY KHUNG */}
+          <div className="unified-box-footer">
             <button
               type="button"
-              className="btn-add-dynamic-item"
-              onClick={handleAddFaq}
+              className="btn-footer-reset"
+              onClick={handleResetDefault}
             >
-              <Plus size={16} /> Thêm Câu Hỏi FAQ Mới
+              <RotateCcw size={15} /> Khôi Phục Mẫu
+            </button>
+            <button
+              type="submit"
+              className="btn-footer-save"
+              disabled={isSaving}
+            >
+              <Save size={18} /> {isSaving ? "Đang Lưu Cập Nhật..." : "LƯU CẬP NHẬT BÀI VIẾT"}
             </button>
           </div>
-        </div>
 
-        {/* BOTTOM SUBMIT BAR */}
-        <div className="admin-form-bottom-bar">
-          <button
-            type="button"
-            className="btn-admin-reset"
-            onClick={handleResetDefault}
-          >
-            <RotateCcw size={16} /> Khôi Phục Mẫu Chuẩn SEO
-          </button>
-          <button
-            type="submit"
-            className="btn-admin-save-large"
-            disabled={isSaving}
-          >
-            <Save size={18} /> {isSaving ? "Đang Lưu Cập Nhật..." : "LƯU CẬP NHẬT BÀI VIẾT BÁN HÀNG"}
-          </button>
-        </div>
-
-      </form>
+        </form>
+      </div>
     </div>
   );
 }
-
