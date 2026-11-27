@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { 
-  FileText, 
-  Download, 
-  ExternalLink, 
   Phone, 
   Mail,
   MapPin,
@@ -23,7 +20,6 @@ import {
 import "./CompanyProfile.css";
 
 const GOOGLE_DRIVE_DOWNLOAD_URL = "https://drive.google.com/uc?export=download&id=1IxLIKEYCc_RVlHsyq8nCDEMXVp0cLvAr";
-const GOOGLE_DRIVE_VIEW_URL = "https://drive.google.com/file/d/1IxLIKEYCc_RVlHsyq8nCDEMXVp0cLvAr/view?pli=1";
 
 export default function CompanyProfile() {
   const [tocOpen, setTocOpen] = useState(true);
@@ -166,7 +162,6 @@ export default function CompanyProfile() {
                 <li><a href="#8-nang-luc-tai-chinh">8. Năng lực tài chính & Cơ sở vật chất kỹ thuật</a></li>
                 <li><a href="#9-du-an-tieu-bieu">9. Một số công trình & dự án tiêu biểu</a></li>
                 <li><a href="#10-bao-chi-noi-ve-boss">10. Báo chí nói về BossDoor Đà Nẵng</a></li>
-                <li><a href="#11-tai-ban-pdf">11. Tải bản Hồ sơ năng lực gốc (PDF)</a></li>
               </ul>
             )}
           </div>
@@ -382,49 +377,6 @@ export default function CompanyProfile() {
                 <span>"CEO Hoàng Nhật Quỳnh và hành trình đưa thương hiệu BossDoor phủ sóng các công trình trọng điểm"</span>
               </li>
             </ul>
-          </section>
-
-          {/* 11. TẢI BẢN HỒ SƠ NĂNG LỰC GỐC (PDF) */}
-          <section className="profile-article-section section-pdf-download" id="11-tai-ban-pdf">
-            <h2>11. Tải bản Hồ sơ năng lực gốc (PDF)</h2>
-            <p>
-              Quý Khách hàng, Chủ đầu tư và Tổng thầu có thể tải trực tiếp bản <strong>Company Profile đầy đủ (File gốc PDF 32MB)</strong> 
-              để in ấn, lưu trữ hoặc phục vụ công tác nộp hồ sơ thầu dự án:
-            </p>
-
-            <div className="pdf-clean-action-box">
-              <div className="pdf-clean-info">
-                <FileText size={32} className="pdf-icon" />
-                <div>
-                  <strong>HỒ SƠ NĂNG LỰC CÔNG TY BOSS ĐÀ NẴNG (COMPANY PROFILE)</strong>
-                  <p>Định dạng: PDF | Dung lượng: ~32 MB | Cập nhật chính thức 2026</p>
-                </div>
-              </div>
-
-              <div className="pdf-clean-buttons">
-                <a 
-                  href={GOOGLE_DRIVE_DOWNLOAD_URL} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="btn-download-pdf-clean"
-                  title="Tải trực tiếp bản PDF về máy"
-                >
-                  <Download size={16} />
-                  <span>Tải Bản PDF Về Máy</span>
-                </a>
-
-                <a 
-                  href={GOOGLE_DRIVE_VIEW_URL} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="btn-preview-pdf-clean"
-                  title="Mở xem trên Google Drive"
-                >
-                  <ExternalLink size={15} />
-                  <span>Xem Trên Google Drive</span>
-                </a>
-              </div>
-            </div>
           </section>
 
           {/* FOOTER RATING BOX */}
