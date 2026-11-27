@@ -481,6 +481,7 @@
 /* CTA BANNER */
 /* ==========================================================
    RESPONSIVE DESIGN (MOBILE & TABLET)
+   GIỮ NGUYÊN GIAO DIỆN MÁY TÍNH (> 768px), TỐI ƯU FONT CHỮ DỄ NHÌN TRÊN MOBILE
    ========================================================== */
 
 @media (max-width: 1024px) {
@@ -494,22 +495,145 @@
 
 @media (max-width: 768px) {
   .seo-article-wrapper {
-    padding: 24px 18px;
+    padding: 20px 16px;
     border-radius: 16px;
-    margin-bottom: 30px;
+    margin-bottom: 28px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
   }
+
+  .seo-article-header {
+    margin-bottom: 20px;
+  }
+
+  /* Tiêu đề chính trên điện thoại: cân đối cỡ chữ, thanh thoát, không thô gắt */
   .seo-main-heading {
-    font-size: 21px;
+    font-size: 19px !important;
+    font-weight: 750 !important;
+    line-height: 1.38 !important;
+    letter-spacing: -0.01em !important;
+    color: #004d32 !important;
+    margin: 0 0 8px !important;
   }
+
+  .seo-heading-divider {
+    margin: 10px auto 14px !important;
+    gap: 6px;
+  }
+
+  .seo-heading-divider .bar {
+    width: 48px;
+    height: 2px;
+  }
+
+  /* Đoạn văn bản mở đầu: căn trái (bỏ justify giãn khoảng trắng), chữ 14.5px thoáng mắt */
   .seo-lead-text {
-    font-size: 14.5px;
-    line-height: 1.7;
+    font-size: 14.5px !important;
+    line-height: 1.68 !important;
+    color: #334155 !important;
+    text-align: left !important;
+    letter-spacing: normal !important;
+    word-break: normal !important;
   }
+
+  /* Nội dung bài viết SEO & Rich Word content */
+  .seo-body-content,
+  .rich-word-rendered-content {
+    font-size: 14.5px !important;
+    line-height: 1.68 !important;
+    color: #334155 !important;
+    text-align: left !important;
+  }
+
+  .seo-body-content p,
+  .rich-word-rendered-content p {
+    margin-bottom: 12px !important;
+    text-align: left !important;
+    line-height: 1.68 !important;
+    color: #334155 !important;
+  }
+
+  /* Headings trong bài viết rich word */
+  .rich-word-rendered-content h1 {
+    font-size: 18.5px !important;
+    font-weight: 750 !important;
+    line-height: 1.36 !important;
+    margin: 20px 0 10px !important;
+    padding-bottom: 6px !important;
+  }
+
+  .rich-word-rendered-content h2,
+  .seo-content-h3 {
+    font-size: 17px !important;
+    font-weight: 750 !important;
+    line-height: 1.38 !important;
+    margin: 22px 0 10px !important;
+    padding-left: 10px !important;
+    border-left-width: 3.5px !important;
+  }
+
+  .rich-word-rendered-content h3 {
+    font-size: 15.5px !important;
+    font-weight: 700 !important;
+    line-height: 1.4 !important;
+    margin: 16px 0 8px !important;
+  }
+
+  .rich-word-rendered-content ul,
+  .rich-word-rendered-content ol,
+  .seo-content-list {
+    margin: 8px 0 14px 18px !important;
+    padding-left: 0 !important;
+    color: #334155 !important;
+  }
+
+  .rich-word-rendered-content li,
+  .seo-content-list li {
+    margin-bottom: 6px !important;
+    line-height: 1.6 !important;
+    text-align: left !important;
+  }
+
+  /* Bảng biểu trong bài viết khi xem trên mobile cuộn ngang mượt */
+  .rich-word-rendered-content table {
+    display: block !important;
+    width: 100% !important;
+    overflow-x: auto !important;
+    font-size: 13px !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .rich-word-rendered-content th,
+  .rich-word-rendered-content td {
+    padding: 8px 10px !important;
+    white-space: nowrap !important;
+  }
+
   .benefits-grid {
     grid-template-columns: 1fr;
+    gap: 12px;
   }
+
   .section-title-wrap h3 {
-    font-size: 17.5px;
+    font-size: 16.5px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .seo-article-wrapper {
+    padding: 18px 14px;
+    border-radius: 14px;
+  }
+
+  .seo-main-heading {
+    font-size: 17.5px !important;
+    line-height: 1.36 !important;
+  }
+
+  .seo-lead-text,
+  .seo-body-content,
+  .rich-word-rendered-content {
+    font-size: 14px !important;
+    line-height: 1.65 !important;
   }
 }
 

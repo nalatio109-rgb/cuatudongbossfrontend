@@ -6824,3 +6824,104 @@ footer {
     z-index: 10000 !important;
   }
 }
+
+/* ==========================================================================
+   TỐI ƯU HÓA TYPOGRAPHY TRÊN GIAO DIỆN ĐIỆN THOẠI (DỄ NHÌN, SẮC NÉT, MƯỢT MÀ)
+   GIỮ NGUYÊN 100% GIAO DIỆN KHI MỞ BẰNG MÁY TÍNH (> 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Be Vietnam Pro', 'Inter', sans-serif !important;
+    font-size: 14.5px !important;
+    line-height: 1.65 !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Cân đối lại toàn bộ tiêu đề trên mobile: không quá to, không thô gắt, ngắt dòng tự nhiên */
+  h1, .h1 {
+    font-size: 21px !important;
+    line-height: 1.35 !important;
+    font-weight: 750 !important;
+    letter-spacing: -0.015em !important;
+  }
+
+  h2, .h2 {
+    font-size: 18.5px !important;
+    line-height: 1.36 !important;
+    font-weight: 750 !important;
+    letter-spacing: -0.01em !important;
+  }
+
+  h3, .h3 {
+    font-size: 16.5px !important;
+    line-height: 1.38 !important;
+    font-weight: 700 !important;
+  }
+
+  h4, .h4 {
+    font-size: 15px !important;
+    line-height: 1.4 !important;
+    font-weight: 700 !important;
+  }
+
+  /* Bỏ căn đều 2 bên (justify) trên màn hình hẹp điện thoại vì gây giãn khoảng trắng xấu */
+  p, 
+  .description, 
+  .lead-text, 
+  .summary-text,
+  .article-body p,
+  .rich-text-content p,
+  .project-article-rendered-content p,
+  .news-article-rendered-content p,
+  .service-article-rendered-content p {
+    text-align: left !important;
+    line-height: 1.68 !important;
+    word-break: normal !important;
+    overflow-wrap: break-word !important;
+    color: #334155;
+  }
+
+  /* Các danh sách ul/ol trên mobile */
+  .article-body ul, 
+  .article-body ol,
+  .rich-text-content ul,
+  .rich-text-content ol,
+  .project-article-rendered-content ul,
+  .project-article-rendered-content ol {
+    padding-left: 18px !important;
+    margin-bottom: 12px !important;
+    text-align: left !important;
+  }
+
+  .article-body li,
+  .rich-text-content li,
+  .project-article-rendered-content li {
+    margin-bottom: 6px !important;
+    line-height: 1.6 !important;
+    text-align: left !important;
+    color: #334155;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 14px !important;
+  }
+
+  h1, .h1 {
+    font-size: 19px !important;
+    line-height: 1.34 !important;
+  }
+
+  h2, .h2 {
+    font-size: 17px !important;
+    line-height: 1.35 !important;
+  }
+
+  p {
+    font-size: 14px !important;
+    line-height: 1.65 !important;
+  }
+}
