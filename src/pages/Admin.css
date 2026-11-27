@@ -3,7 +3,7 @@ body.admin-mode {
   padding-top: 0 !important;
   margin: 0 !important;
   background: #080d16 !important;
-  overflow-x: hidden;
+  overflow-x: clip !important;
 }
 
 /* Keyframe Animations */
@@ -54,7 +54,6 @@ body.admin-mode {
   color: #f8fafc;
   font-family: 'Outfit', 'Inter', sans-serif;
   display: flex;
-  animation: adminFadeInUp 0.4s ease-out;
 }
 
 /* Sidebar */
@@ -992,7 +991,7 @@ body.admin-mode {
     box-sizing: border-box !important;
     min-height: 100vh;
     padding-top: 58px !important; /* Bù đắp chiều cao của thanh topbar cố định (fixed) */
-    overflow-x: hidden !important;
+    overflow-x: clip !important;
   }
 
   /* Fixed Topbar trên Điện thoại (luôn giữ nguyên vị trí ở đầu màn hình khi cuộn trang) */

@@ -9,22 +9,21 @@
   border: 1.5px solid #cbd5e1;
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  overflow: visible;
-  display: flex;
-  flex-direction: column;
+  overflow: visible !important;
+  display: block;
   position: relative;
 }
 
 /* THANH NAVBAR / TOOLBAR CỐ ĐỊNH KHI CUỘN TRANG (STICKY) */
 .word-editor-sticky-navbar {
-  position: -webkit-sticky;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: #ffffff;
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1000 !important;
+  background: #ffffff !important;
   border-top-left-radius: 14px;
   border-top-right-radius: 14px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.09);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12) !important;
 }
 
 /* 1. TOP HEADER BAR */
@@ -593,14 +592,21 @@
 
 /* 5. BOTTOM STATUS BAR */
 .word-bottom-status-bar {
-  padding: 14px 24px;
+  position: -webkit-sticky;
+  position: sticky;
+  bottom: 0;
+  z-index: 990;
   background: #f8fafc;
   border-top: 1.5px solid #cbd5e1;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 16px;
   flex-wrap: wrap;
+  border-bottom-left-radius: 14px;
+  border-bottom-right-radius: 14px;
+  padding: 14px 24px;
 }
 
 .status-stats {
