@@ -3750,16 +3750,20 @@ textarea {
 }
 
 .news-card-title {
-  font-size: 13.5px;
+  font-size: 13px;
   color: #043c23;
-  margin-bottom: 12px;
-  line-height: 1.42;
-  font-weight: 750;
+  margin-bottom: 10px;
+  line-height: 1.4;
+  font-weight: 700;
   min-height: 38px;
 }
 
+.news-card .news-card-title a,
 .news-card-title a {
-  color: inherit;
+  font-size: 13px !important;
+  font-weight: 700 !important;
+  line-height: 1.4 !important;
+  color: #043c23 !important;
   text-decoration: none;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -3768,8 +3772,9 @@ textarea {
   transition: color 0.2s ease;
 }
 
+.news-card .news-card-title a:hover,
 .news-card-title a:hover {
-  color: #0b6a3a;
+  color: #0b6a3a !important;
 }
 
 .news-link {

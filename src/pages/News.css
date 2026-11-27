@@ -243,13 +243,13 @@
   line-height: 1.35;
 }
 
-.news-card-title a {
+.news-page-card .news-card-title a {
   background: none;
   border: none;
   padding: 0;
   font-family: inherit;
-  font-size: 1.08rem;
-  font-weight: 800;
+  font-size: 0.98rem;
+  font-weight: 750;
   color: #043c23;
   text-align: left;
   cursor: pointer;
@@ -259,7 +259,7 @@
   text-decoration: none;
 }
 
-.news-card-title a:hover {
+.news-page-card .news-card-title a:hover {
   color: #dc2626;
 }
 
