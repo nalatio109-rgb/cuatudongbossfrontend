@@ -2057,3 +2057,157 @@
     font-size: 12px;
   }
 }
+
+/* ==========================================
+   ENHANCED MEDIA ATTACHMENTS (1 VIDEO + MULTIPLE IMAGES)
+========================================== */
+.media-attachment-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+.media-section-main-label {
+  font-size: 12.5px;
+  font-weight: 850;
+  color: #0f172a;
+  margin-bottom: 2px !important;
+}
+
+.media-sub-block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.media-sub-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.media-sub-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #1e293b;
+}
+
+.btn-add-more-photos {
+  background: #eef6f2;
+  color: #07522f;
+  border: 1px dashed #86efac;
+  border-radius: 6px;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-weight: 750;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-add-more-photos:hover {
+  background: #07522f;
+  color: #ffffff;
+  border-color: #07522f;
+}
+
+.btn-media-opt.full-width {
+  width: 100%;
+}
+
+/* Attached Images Grid in Form */
+.attached-images-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.attached-img-item {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1.5px solid #cbd5e1;
+  background: #0f172a;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.attached-img-item:hover {
+  transform: scale(1.03);
+  border-color: #07522f;
+}
+
+.attached-img-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.btn-remove-single-img {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(239, 68, 68, 0.95);
+  color: #ffffff;
+  border: 1px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+  transition: background 0.15s ease;
+}
+
+.btn-remove-single-img:hover {
+  background: #b91c1c;
+}
+
+.img-order-badge {
+  position: absolute;
+  bottom: 2px;
+  left: 3px;
+  font-size: 8.5px;
+  font-weight: 800;
+  background: rgba(0, 0, 0, 0.65);
+  color: #ffffff;
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+
+/* Gallery in Feature Card (Testimonials Section) */
+.review-images-gallery {
+  margin-top: 8px;
+}
+
+.review-images-gallery.multi-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 8px;
+}
+
+.review-images-gallery.multi-images .review-media-image {
+  max-height: 110px;
+  height: 95px;
+}
+
+.review-images-gallery.multi-images .review-media-image img {
+  height: 100%;
+  object-fit: cover;
+}

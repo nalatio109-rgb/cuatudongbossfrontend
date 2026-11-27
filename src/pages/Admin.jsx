@@ -3283,29 +3283,44 @@ export default function Admin() {
                           </p>
                         </td>
                         <td>
-                          {item.mediaUrl ? (
-                            item.mediaType === "video" ? (
-                              <button
-                                type="button"
-                                className="admin-media-thumb-btn"
-                                onClick={() => setViewingReview(item)}
-                                title="Bấm để xem video thực tế"
-                              >
-                                <VideoIcon size={13} /> Video clip
-                              </button>
-                            ) : (
+                          {(() => {
+                            const revVid = item.videoUrl || (item.mediaType === "video" ? item.mediaUrl : null);
+                            const revImgs = Array.isArray(item.images) && item.images.length > 0
+                              ? item.images
+                              : (item.mediaType === "image" && item.mediaUrl ? [item.mediaUrl] : []);
+
+                            if (!revVid && revImgs.length === 0) {
+                              return <span className="no-media-text">-</span>;
+                            }
+
+                            return (
                               <div
-                                className="admin-review-thumb-wrap"
+                                style={{ display: "inline-flex", alignItems: "center", gap: "6px", cursor: "pointer" }}
                                 onClick={() => setViewingReview(item)}
-                                title="Bấm để xem ảnh phóng to"
+                                title="Bấm để xem chi tiết video và ảnh"
                               >
-                                <img src={item.mediaUrl} alt="Ảnh thực tế" />
-                                <span className="thumb-zoom-badge"><Eye size={10} /></span>
+                                {revVid && (
+                                  <button
+                                    type="button"
+                                    className="admin-media-thumb-btn"
+                                    style={{ padding: "3px 8px" }}
+                                  >
+                                    <VideoIcon size={12} /> Video
+                                  </button>
+                                )}
+                                {revImgs.length > 0 && (
+                                  <div className="admin-review-thumb-wrap">
+                                    <img src={revImgs[0]} alt="Ảnh thực tế" />
+                                    {revImgs.length > 1 && (
+                                      <span className="thumb-zoom-badge" style={{ fontSize: "9px", padding: "1px 3px" }}>
+                                        +{revImgs.length}
+                                      </span>
+                                    )}
+                                  </div>
+                                )}
                               </div>
-                            )
-                          ) : (
-                            <span className="no-media-text">-</span>
-                          )}
+                            );
+                          })()}
                         </td>
                         <td>
                           <span className="admin-date-badge">
@@ -3383,15 +3398,35 @@ export default function Admin() {
 
                       <p className="m-review-body">“{item.text}”</p>
 
-                      {item.mediaUrl && (
-                        <div className="m-review-media">
-                          {item.mediaType === "video" ? (
-                            <video src={item.mediaUrl} controls style={{ maxHeight: "150px", width: "100%", borderRadius: "8px" }} />
-                          ) : (
-                            <img src={item.mediaUrl} alt="Ảnh đính kèm" style={{ maxHeight: "150px", width: "100%", objectFit: "cover", borderRadius: "8px" }} />
-                          )}
-                        </div>
-                      )}
+                      {(() => {
+                        const revVid = item.videoUrl || (item.mediaType === "video" ? item.mediaUrl : null);
+                        const revImgs = Array.isArray(item.images) && item.images.length > 0
+                          ? item.images
+                          : (item.mediaType === "image" && item.mediaUrl ? [item.mediaUrl] : []);
+
+                        if (!revVid && revImgs.length === 0) return null;
+
+                        return (
+                          <div className="m-review-media" style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                            {revVid && (
+                              <video src={revVid} controls style={{ maxHeight: "150px", width: "100%", borderRadius: "8px" }} />
+                            )}
+                            {revImgs.length > 0 && (
+                              <div style={{ display: "flex", gap: "6px", overflowX: "auto", paddingBottom: "4px" }}>
+                                {revImgs.map((img, i) => (
+                                  <img
+                                    key={i}
+                                    src={img}
+                                    alt={`Ảnh ${i + 1}`}
+                                    onClick={() => setViewingReview(item)}
+                                    style={{ width: "60px", height: "60px", objectFit: "cover", borderRadius: "6px", flexShrink: 0, cursor: "pointer", border: "1px solid #cbd5e1" }}
+                                  />
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })()}
 
                       <div className="m-review-footer">
                         <span className="m-review-date">
@@ -3757,17 +3792,56 @@ export default function Admin() {
                 <p className="readonly-text">“{viewingReview.text}”</p>
               </div>
 
-              {/* Media Preview if attached */}
-              {viewingReview.mediaUrl && (
-                <div className="readonly-media-box">
-                  <label>Hình ảnh / Video thực tế đính kèm:</label>
-                  {viewingReview.mediaType === "video" ? (
-                    <video src={viewingReview.mediaUrl} controls autoPlay={false} className="readonly-video-player" />
-                  ) : (
-                    <img src={viewingReview.mediaUrl} alt="Ảnh thực tế" className="readonly-img-view" />
-                  )}
-                </div>
-              )}
+              {/* Media Preview if attached (Hỗ trợ hiển thị cả 1 Video VÀ Nhiều Ảnh) */}
+              {(() => {
+                const revVid = viewingReview.videoUrl || (viewingReview.mediaType === "video" ? viewingReview.mediaUrl : null);
+                const revImgs = Array.isArray(viewingReview.images) && viewingReview.images.length > 0
+                  ? viewingReview.images
+                  : (viewingReview.mediaType === "image" && viewingReview.mediaUrl ? [viewingReview.mediaUrl] : []);
+
+                if (!revVid && revImgs.length === 0) return null;
+
+                return (
+                  <div className="readonly-media-box">
+                    <label>Hình ảnh & Video thực tế đính kèm:</label>
+                    {revVid && (
+                      <div style={{ marginBottom: revImgs.length > 0 ? "14px" : "0" }}>
+                        <span style={{ fontSize: "12px", fontWeight: 750, color: "#07522f", display: "inline-flex", alignItems: "center", gap: "5px", marginBottom: "6px" }}>
+                          <VideoIcon size={13} /> Video clip thực tế:
+                        </span>
+                        {revVid.includes("youtube.com") || revVid.includes("youtu.be") ? (
+                          <iframe
+                            src={revVid.replace("watch?v=", "embed/")}
+                            title="Video review"
+                            style={{ width: "100%", height: "220px", borderRadius: "8px", border: "none" }}
+                            allowFullScreen
+                          />
+                        ) : (
+                          <video src={revVid} controls autoPlay={false} className="readonly-video-player" />
+                        )}
+                      </div>
+                    )}
+                    {revImgs.length > 0 && (
+                      <div>
+                        <span style={{ fontSize: "12px", fontWeight: 750, color: "#07522f", display: "inline-flex", alignItems: "center", gap: "5px", marginBottom: "6px" }}>
+                          <ImageIcon size={13} /> Hình ảnh công trình ({revImgs.length} ảnh):
+                        </span>
+                        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(110px, 1fr))", gap: "8px" }}>
+                          {revImgs.map((imgSrc, imgIdx) => (
+                            <a key={imgIdx} href={imgSrc} target="_blank" rel="noopener noreferrer" title="Bấm để mở ảnh lớn">
+                              <img
+                                src={imgSrc}
+                                alt={`Ảnh ${imgIdx + 1}`}
+                                style={{ width: "100%", height: "90px", objectFit: "cover", borderRadius: "8px", border: "1px solid #cbd5e1" }}
+                              />
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
 
               {/* Transparency Notice */}
               <div className="readonly-transparency-note">

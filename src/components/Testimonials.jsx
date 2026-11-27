@@ -248,14 +248,15 @@ export default function Testimonials() {
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [lightboxMedia, setLightboxMedia] = useState(null);
 
-  // Form fields
+  // Form fields - Hỗ trợ đính kèm 1 Video VÀ Nhiều Hình Ảnh
   const [rating, setRating] = useState(5);
   const [hoverRating, setHoverRating] = useState(0);
   const [role, setRole] = useState("");
   const [reviewText, setReviewText] = useState("");
-  const [mediaType, setMediaType] = useState(null); // 'image' | 'video' | null
-  const [mediaUrl, setMediaUrl] = useState("");
+  const [videoUrl, setVideoUrl] = useState("");
+  const [images, setImages] = useState([]);
   const [videoUrlInput, setVideoUrlInput] = useState("");
+  const [isCompressingImages, setIsCompressingImages] = useState(false);
   const [submittedSuccess, setSubmittedSuccess] = useState(false);
 
   const fileInputRef = useRef(null);
@@ -264,7 +265,7 @@ export default function Testimonials() {
 
   // Tự động cuộn xuống khi đính kèm hình ảnh/video để người dùng nhìn thấy ngay
   useEffect(() => {
-    if (mediaUrl && modalBodyRef.current) {
+    if ((videoUrl || images.length > 0) && modalBodyRef.current) {
       setTimeout(() => {
         if (modalBodyRef.current) {
           modalBodyRef.current.scrollTo({
@@ -274,7 +275,7 @@ export default function Testimonials() {
         }
       }, 80);
     }
-  }, [mediaUrl]);
+  }, [videoUrl, images.length]);
 
   const goTo = useCallback((idx) => {
     if (reviews.length === 0) return;
@@ -362,29 +363,38 @@ export default function Testimonials() {
     });
   };
 
-  // Image Upload handler với tính năng tự động nén ảnh thông minh
-  const handleImageFile = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (file.size > 20 * 1024 * 1024) {
-      alert("Dung lượng file ảnh quá lớn (vui lòng chọn ảnh dưới 20MB).");
+  // Image Upload handler - Cho phép chọn nhiều ảnh công trình, tự động nén từng ảnh
+  const handleImageFiles = async (e) => {
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
+
+    if (images.length + files.length > 10) {
+      alert("Bạn có thể đính kèm tối đa 10 hình ảnh cho mỗi đánh giá.");
       return;
     }
+
+    setIsCompressingImages(true);
     try {
-      const compressedUrl = await compressImageFile(file);
-      setMediaType("image");
-      setMediaUrl(compressedUrl);
-    } catch (_) {
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        setMediaType("image");
-        setMediaUrl(ev.target.result);
-      };
-      reader.readAsDataURL(file);
+      const newCompressed = [];
+      for (const file of files) {
+        if (file.size > 25 * 1024 * 1024) continue;
+        const comp = await compressImageFile(file);
+        if (comp) newCompressed.push(comp);
+      }
+      setImages((prev) => [...prev, ...newCompressed]);
+    } catch (err) {
+      console.warn("Compress images error:", err);
+    } finally {
+      setIsCompressingImages(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
     }
   };
 
-  // Video Upload handler - Nhận trực tiếp video từ máy (hỗ trợ tối đa 100MB, lưu vào IndexedDB không giới hạn)
+  const handleRemoveImage = (idxToRemove) => {
+    setImages((prev) => prev.filter((_, idx) => idx !== idxToRemove));
+  };
+
+  // Video Upload handler - Hỗ trợ tối đa 1 video clip từ máy (lưu IndexedDB)
   const handleVideoFile = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -394,21 +404,24 @@ export default function Testimonials() {
     }
     const reader = new FileReader();
     reader.onload = (ev) => {
-      setMediaType("video");
-      setMediaUrl(ev.target.result);
+      setVideoUrl(ev.target.result);
     };
     reader.readAsDataURL(file);
+    if (videoInputRef.current) videoInputRef.current.value = "";
   };
 
-  // Handle paste video link
+  const handleRemoveVideo = () => {
+    setVideoUrl("");
+  };
+
+  // Handle paste video link (YouTube / MP4 online)
   const handleAddVideoLink = () => {
     if (!videoUrlInput.trim()) return;
-    setMediaType("video");
-    setMediaUrl(videoUrlInput.trim());
+    setVideoUrl(videoUrlInput.trim());
     setVideoUrlInput("");
   };
 
-  // Submit review với cơ chế lưu trữ bền vững IndexedDB
+  // Submit review với cơ chế lưu trữ bền vững IndexedDB (Hỗ trợ 1 Video + Nhiều Ảnh)
   const handleSubmitReview = async (e) => {
     e.preventDefault();
     if (!currentUser) {
@@ -426,6 +439,11 @@ export default function Testimonials() {
     const brandColors = ["#07522f", "#1d4ed8", "#b45309", "#7c3aed", "#0e7490", "#047857"];
     const randomColor = brandColors[Math.floor(Math.random() * brandColors.length)];
 
+    const hasVideo = !!videoUrl;
+    const hasImages = Array.isArray(images) && images.length > 0;
+    const computedMediaType = hasVideo && hasImages ? "mixed" : (hasVideo ? "video" : (hasImages ? "image" : null));
+    const primaryMediaUrl = videoUrl || (hasImages ? images[0] : "");
+
     const newReview = {
       id: Date.now(),
       name: userName,
@@ -435,8 +453,10 @@ export default function Testimonials() {
       rating: rating,
       text: reviewText.trim(),
       color: randomColor,
-      mediaType: mediaType,
-      mediaUrl: mediaUrl,
+      videoUrl: videoUrl || "",
+      images: images || [],
+      mediaType: computedMediaType,
+      mediaUrl: primaryMediaUrl,
       verified: true,
       createdAt: new Date().toLocaleDateString("vi-VN"),
     };
@@ -444,7 +464,7 @@ export default function Testimonials() {
     const updated = [newReview, ...reviews];
     setReviews(updated);
 
-    // 1. Lưu ngay vào IndexedDB (đảm bảo tệp video 25MB-50MB hay ảnh lớn đều được lưu trọn vẹn 100%)
+    // 1. Lưu ngay vào IndexedDB (lưu trữ trọn vẹn cả video 25MB-50MB và toàn bộ ảnh)
     await putReviewToIndexedDB(newReview);
     saveReviewsToIndexedDB(updated);
 
@@ -486,8 +506,8 @@ export default function Testimonials() {
       setShowModal(false);
       setReviewText("");
       setRole("");
-      setMediaType(null);
-      setMediaUrl("");
+      setVideoUrl("");
+      setImages([]);
     }, 1800);
   };
 
@@ -611,38 +631,56 @@ export default function Testimonials() {
 
                   <p className="feature-review-text">“{review.text}”</p>
 
-                  {/* Hiển thị Hình ảnh hoặc Video đính kèm nếu có */}
-                  {review.mediaUrl && (
-                    <div className="review-media-box">
-                      {review.mediaType === "video" ? (
-                        <div className="review-media-video">
-                          {review.mediaUrl.includes("youtube.com") || review.mediaUrl.includes("youtu.be") ? (
-                            <iframe
-                              src={review.mediaUrl.replace("watch?v=", "embed/")}
-                              title="Video đánh giá thực tế"
-                              allowFullScreen
-                            />
-                          ) : (
-                            <video src={review.mediaUrl} controls playsInline preload="metadata" />
-                          )}
-                          <span className="media-badge">
-                            <VideoIcon size={12} /> Video thực tế
-                          </span>
-                        </div>
-                      ) : (
-                        <div
-                          className="review-media-image"
-                          onClick={() => setLightboxMedia(review.mediaUrl)}
-                          title="Nhấn để xem ảnh phóng to"
-                        >
-                          <img src={review.mediaUrl} alt="Hình ảnh công trình thực tế" />
-                          <span className="media-badge">
-                            <ImageIcon size={12} /> Ảnh thực tế (Nhấn xem lớn)
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  )}
+                  {/* Hiển thị Hình ảnh hoặc Video đính kèm nếu có (Hỗ trợ cả 1 Video VÀ Nhiều Ảnh) */}
+                  {(() => {
+                    const revVideo = review.videoUrl || (review.mediaType === "video" ? review.mediaUrl : null);
+                    const revImages = Array.isArray(review.images) && review.images.length > 0
+                      ? review.images
+                      : (review.mediaType === "image" && review.mediaUrl ? [review.mediaUrl] : []);
+
+                    if (!revVideo && revImages.length === 0) return null;
+
+                    return (
+                      <div className="review-media-box">
+                        {/* 1. Hiển thị Video nếu có */}
+                        {revVideo && (
+                          <div className="review-media-video">
+                            {revVideo.includes("youtube.com") || revVideo.includes("youtu.be") ? (
+                              <iframe
+                                src={revVideo.replace("watch?v=", "embed/")}
+                                title="Video đánh giá thực tế"
+                                allowFullScreen
+                              />
+                            ) : (
+                              <video src={revVideo} controls playsInline preload="metadata" />
+                            )}
+                            <span className="media-badge">
+                              <VideoIcon size={12} /> Video thực tế
+                            </span>
+                          </div>
+                        )}
+
+                        {/* 2. Hiển thị Hình ảnh (Lưới ảnh nếu nhiều ảnh hoặc 1 ảnh đơn) */}
+                        {revImages.length > 0 && (
+                          <div className={`review-images-gallery ${revImages.length === 1 ? "single-image" : "multi-images"}`}>
+                            {revImages.map((imgUrl, imgIdx) => (
+                              <div
+                                key={imgIdx}
+                                className="review-media-image"
+                                onClick={() => setLightboxMedia(imgUrl)}
+                                title="Nhấn để xem ảnh phóng to"
+                              >
+                                <img src={imgUrl} alt={`Hình ảnh công trình ${imgIdx + 1}`} />
+                                <span className="media-badge">
+                                  <ImageIcon size={11} /> {revImages.length > 1 ? `Ảnh ${imgIdx + 1}/${revImages.length}` : "Ảnh thực tế (Xem lớn)"}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })()}
 
                   <div className="feature-reviewer">
                     <div
@@ -796,99 +834,153 @@ export default function Testimonials() {
                     />
                   </div>
 
-                  {/* THÊM HÌNH ẢNH HOẶC VIDEO THỰC TẾ (NẾU CÓ) */}
-                  <div className="form-group-review">
-                    <label>Đính kèm hình ảnh hoặc video thực tế (nếu có)</label>
+                  {/* THÊM 1 VIDEO VÀ NHIỀU HÌNH ẢNH THỰC TẾ */}
+                  <div className="form-group-review media-attachment-section">
+                    <label className="media-section-main-label">
+                      Đính kèm hình ảnh & video thực tế (1 video và nhiều ảnh)
+                    </label>
 
-                    {/* File previews if attached */}
-                    {mediaUrl ? (
-                      <div className="attached-media-preview">
-                        <div className="media-preview-card">
-                          <div className="preview-thumb-wrap">
-                            {mediaType === "video" ? (
-                              <video src={mediaUrl} className="preview-thumb-media" />
-                            ) : (
-                              <img src={mediaUrl} alt="Preview" className="preview-thumb-media" />
-                            )}
-                            <span className="thumb-type-tag">
-                              {mediaType === "video" ? <VideoIcon size={10} /> : <ImageIcon size={10} />}
-                              {mediaType === "video" ? "Video" : "Hình ảnh"}
-                            </span>
+                    {/* KHỐI 1: ĐÍNH KÈM VIDEO (TỐI ĐA 1 VIDEO) */}
+                    <div className="media-sub-block">
+                      <div className="media-sub-header">
+                        <span className="media-sub-title">
+                          <VideoIcon size={14} color="#07522f" /> 1. Video công trình thực tế (Tối đa 1 video)
+                        </span>
+                      </div>
+
+                      {videoUrl ? (
+                        <div className="attached-media-preview">
+                          <div className="media-preview-card">
+                            <div className="preview-thumb-wrap">
+                              {videoUrl.includes("youtube.com") || videoUrl.includes("youtu.be") ? (
+                                <iframe
+                                  src={videoUrl.replace("watch?v=", "embed/")}
+                                  title="Video preview"
+                                  className="preview-thumb-media"
+                                />
+                              ) : (
+                                <video src={videoUrl} className="preview-thumb-media" />
+                              )}
+                              <span className="thumb-type-tag">
+                                <VideoIcon size={10} /> Video
+                              </span>
+                            </div>
+
+                            <div className="preview-info-wrap">
+                              <strong className="preview-title">
+                                <CheckCircle2 size={13} color="#059669" /> Đã chọn video thực tế
+                              </strong>
+                              <span className="preview-sub">Video sẽ hiển thị cùng bài đánh giá của bạn</span>
+                              <button
+                                type="button"
+                                className="btn-remove-media"
+                                onClick={handleRemoveVideo}
+                              >
+                                <Trash2 size={12} /> Xóa video
+                              </button>
+                            </div>
                           </div>
+                        </div>
+                      ) : (
+                        <div className="video-input-options">
+                          <button
+                            type="button"
+                            className="btn-media-opt"
+                            onClick={() => videoInputRef.current?.click()}
+                          >
+                            <VideoIcon size={15} /> Tải video từ máy tính
+                          </button>
+                          <input
+                            type="file"
+                            ref={videoInputRef}
+                            accept="video/*"
+                            style={{ display: "none" }}
+                            onChange={handleVideoFile}
+                          />
 
-                          <div className="preview-info-wrap">
-                            <strong className="preview-title">
-                              <CheckCircle2 size={13} color="#059669" /> Đã chọn {mediaType === "video" ? "video" : "ảnh"} thực tế
-                            </strong>
-                            <span className="preview-sub">Tệp sẽ hiển thị cùng bài đánh giá của bạn</span>
+                          <div className="video-link-input-row">
+                            <input
+                              type="url"
+                              placeholder="Hoặc dán đường link video (YouTube / MP4 online)..."
+                              value={videoUrlInput}
+                              onChange={(e) => setVideoUrlInput(e.target.value)}
+                            />
                             <button
                               type="button"
-                              className="btn-remove-media"
-                              onClick={() => {
-                                setMediaUrl("");
-                                setMediaType(null);
-                              }}
+                              className="btn-add-link"
+                              onClick={handleAddVideoLink}
+                              disabled={!videoUrlInput.trim()}
                             >
-                              <Trash2 size={12} /> Xóa {mediaType === "video" ? "video" : "ảnh"}
+                              Thêm link
                             </button>
                           </div>
                         </div>
-                      </div>
-                    ) : (
-                      <div className="media-upload-options">
-                        {/* Upload Image Button */}
-                        <button
-                          type="button"
-                          className="btn-media-opt"
-                          onClick={() => fileInputRef.current?.click()}
-                        >
-                          <ImageIcon size={15} /> Thêm ảnh công trình
-                        </button>
-                        <input
-                          type="file"
-                          ref={fileInputRef}
-                          accept="image/*"
-                          style={{ display: "none" }}
-                          onChange={handleImageFile}
-                        />
+                      )}
+                    </div>
 
-                        {/* Upload Video Button */}
-                        <button
-                          type="button"
-                          className="btn-media-opt"
-                          onClick={() => videoInputRef.current?.click()}
-                        >
-                          <VideoIcon size={15} /> Tải video thực tế
-                        </button>
-                        <input
-                          type="file"
-                          ref={videoInputRef}
-                          accept="video/*"
-                          style={{ display: "none" }}
-                          onChange={handleVideoFile}
-                        />
+                    {/* KHỐI 2: ĐÍNH KÈM HÌNH ẢNH (NHIỀU ẢNH) */}
+                    <div className="media-sub-block">
+                      <div className="media-sub-header">
+                        <span className="media-sub-title">
+                          <ImageIcon size={14} color="#07522f" /> 2. Hình ảnh công trình thực tế ({images.length} ảnh đã chọn)
+                        </span>
+                        {images.length > 0 && (
+                          <button
+                            type="button"
+                            className="btn-add-more-photos"
+                            onClick={() => fileInputRef.current?.click()}
+                          >
+                            + Thêm ảnh khác
+                          </button>
+                        )}
                       </div>
-                    )}
 
-                    {/* Or paste video link */}
-                    {!mediaUrl && (
-                      <div className="video-link-input-row">
-                        <input
-                          type="url"
-                          placeholder="Hoặc dán đường link video (YouTube / MP4)..."
-                          value={videoUrlInput}
-                          onChange={(e) => setVideoUrlInput(e.target.value)}
-                        />
-                        <button
-                          type="button"
-                          className="btn-add-link"
-                          onClick={handleAddVideoLink}
-                          disabled={!videoUrlInput.trim()}
-                        >
-                          Thêm link
-                        </button>
-                      </div>
-                    )}
+                      {/* Danh sách ảnh đã chọn */}
+                      {images.length > 0 && (
+                        <div className="attached-images-grid">
+                          {images.map((imgSrc, idx) => (
+                            <div key={idx} className="attached-img-item" title="Nhấn vào dấu X để xóa ảnh này">
+                              <img src={imgSrc} alt={`Ảnh đã chọn ${idx + 1}`} onClick={() => setLightboxMedia(imgSrc)} />
+                              <button
+                                type="button"
+                                className="btn-remove-single-img"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleRemoveImage(idx);
+                                }}
+                                title="Xóa ảnh này"
+                              >
+                                <X size={12} />
+                              </button>
+                              <span className="img-order-badge">#{idx + 1}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Nút thêm ảnh khi chưa có hoặc khi muốn thêm */}
+                      {images.length === 0 && (
+                        <div className="image-input-options">
+                          <button
+                            type="button"
+                            className="btn-media-opt full-width"
+                            onClick={() => fileInputRef.current?.click()}
+                            disabled={isCompressingImages}
+                          >
+                            <ImageIcon size={15} /> {isCompressingImages ? "Đang xử lý ảnh..." : "Chọn ảnh công trình (Có thể chọn nhiều ảnh)"}
+                          </button>
+                        </div>
+                      )}
+
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        multiple
+                        accept="image/*"
+                        style={{ display: "none" }}
+                        onChange={handleImageFiles}
+                      />
+                    </div>
                   </div>
                 </div>
 
