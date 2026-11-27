@@ -21,6 +21,12 @@ import {
 
 import RevealOnScroll from "./RevealOnScroll";
 import { useAuth } from "../context/AuthContext";
+import {
+  getReviewsFromIndexedDB,
+  saveReviewsToIndexedDB,
+  putReviewToIndexedDB,
+  safeSaveToLocalStorage
+} from "../utils/reviewStorage";
 import "./Testimonials.css";
 
 const formatReviewDate = (val) => {
@@ -177,44 +183,53 @@ export default function Testimonials() {
     );
   };
 
-  // Nạp danh sách đánh giá từ MongoDB backend API kết hợp Smart Merge với localStorage
+  // Nạp danh sách đánh giá từ IndexedDB + MongoDB backend API + localStorage fallback
   useEffect(() => {
-    const fetchReviews = async () => {
+    const loadAllReviews = async () => {
       try {
-        const backendBase = import.meta.env.VITE_API_URL || "";
-        const res = await fetch(`${backendBase}/api/reviews`);
-        const json = await res.json();
-        if (json && json.success && Array.isArray(json.data) && json.data.length > 0) {
-          const normalized = json.data.map((item) => ({
-            ...item,
-            id: item._id || item.id,
-            role: "",
-          }));
-
-          // Đọc danh sách local hiện tại để KHÔNG bị ghi đè xóa mất đánh giá mới của khách
-          let localReviews = [];
-          try {
-            const saved = localStorage.getItem("boss_customer_reviews");
-            if (saved) {
-              const parsed = JSON.parse(saved);
-              if (Array.isArray(parsed)) localReviews = parsed;
-            }
-          } catch (_) { }
-
-          // Giữ lại các đánh giá mới ở local mà backend chưa có (so khớp theo ID, text và tên)
-          const unSynced = localReviews.filter(
-            (lr) => !normalized.some((br) => (br._id && br._id === lr._id) || br.id === lr.id || (br.text === lr.text && br.name === lr.name))
-          );
-
-          const merged = [...unSynced, ...normalized];
-          setReviews(merged);
-          try {
-            localStorage.setItem("boss_customer_reviews", JSON.stringify(merged));
-          } catch (_) { }
+        // 1. Nạp từ IndexedDB trước (nơi lưu trữ trọn vẹn tệp video/ảnh lớn mà không bị giới hạn 5MB)
+        const idbReviews = await getReviewsFromIndexedDB();
+        if (Array.isArray(idbReviews) && idbReviews.length > 0) {
+          setReviews(idbReviews);
         }
-      } catch (_) { }
+
+        // 2. Fetch từ MongoDB backend API nếu khả dụng
+        const backendBase = import.meta.env.VITE_API_URL || "";
+        const res = await fetch(`${backendBase}/api/reviews`).catch(() => null);
+        if (res && res.ok) {
+          const json = await res.json().catch(() => null);
+          if (json && json.success && Array.isArray(json.data) && json.data.length > 0) {
+            const normalized = json.data.map((item) => ({
+              ...item,
+              id: item._id || item.id,
+              role: "",
+            }));
+
+            // Smart Merge với IndexedDB và localStorage để không làm mất đánh giá mới
+            setReviews((prevReviews) => {
+              const currentList = idbReviews.length > 0 ? idbReviews : prevReviews;
+              const unSynced = currentList.filter(
+                (lr) => !normalized.some((br) => (br._id && br._id === lr._id) || br.id === lr.id || (br.text === lr.text && br.name === lr.name))
+              );
+              const merged = [...unSynced, ...normalized];
+              saveReviewsToIndexedDB(merged);
+              safeSaveToLocalStorage(merged);
+              return merged;
+            });
+            return;
+          }
+        }
+
+        // 3. Nếu chưa có backend, đồng bộ idbReviews vào localStorage
+        if (idbReviews.length > 0) {
+          safeSaveToLocalStorage(idbReviews);
+        }
+      } catch (err) {
+        console.warn("Load reviews error:", err);
+      }
     };
-    fetchReviews();
+
+    loadAllReviews();
   }, []);
 
   // Lắng nghe sự kiện đồng bộ đánh giá thời gian thực từ Admin hoặc các tab khác
@@ -369,20 +384,13 @@ export default function Testimonials() {
     }
   };
 
-  // Video Upload handler
+  // Video Upload handler - Nhận trực tiếp video từ máy (hỗ trợ tối đa 100MB, lưu vào IndexedDB không giới hạn)
   const handleVideoFile = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 50 * 1024 * 1024) {
-      alert("Dung lượng video quá lớn (vui lòng chọn dưới 50MB, hoặc dán link YouTube/Online để tối ưu tốc độ).");
+    if (file.size > 100 * 1024 * 1024) {
+      alert("Dung lượng video quá lớn (vui lòng chọn video dưới 100MB).");
       return;
-    }
-    // Cảnh báo nếu file video từ máy nặng hơn 4MB (gần mốc 5MB giới hạn của trình duyệt)
-    if (file.size > 4 * 1024 * 1024) {
-      const confirmUpload = window.confirm(
-        `Video của bạn nặng ${(file.size / (1024 * 1024)).toFixed(1)}MB. Trình duyệt giới hạn bộ nhớ cục bộ tối đa 5MB, nên để tối ưu nhất bạn có thể dán đường link video (YouTube/Drive/MP4). Bạn vẫn muốn dùng tệp video này chứ?`
-      );
-      if (!confirmUpload) return;
     }
     const reader = new FileReader();
     reader.onload = (ev) => {
@@ -400,8 +408,8 @@ export default function Testimonials() {
     setVideoUrlInput("");
   };
 
-  // Submit review với cơ chế lưu trữ an toàn (Safe Persistence)
-  const handleSubmitReview = (e) => {
+  // Submit review với cơ chế lưu trữ bền vững IndexedDB
+  const handleSubmitReview = async (e) => {
     e.preventDefault();
     if (!currentUser) {
       setShowLoginPrompt(true);
@@ -436,30 +444,14 @@ export default function Testimonials() {
     const updated = [newReview, ...reviews];
     setReviews(updated);
 
-    // Lưu vào localStorage an toàn tuyệt đối với fallback chống QuotaExceededError
-    try {
-      localStorage.setItem("boss_customer_reviews", JSON.stringify(updated));
-    } catch (quotaErr) {
-      console.warn("Storage quota exceeded, trying safe fallback:", quotaErr);
-      try {
-        // Fallback: Nếu tệp video/ảnh quá lớn làm đầy localStorage, lưu review nhưng lược bớt tệp base64 khổng lồ
-        const safeReviews = updated.map((r, idx) => {
-          if (idx === 0 && r.mediaUrl && r.mediaUrl.length > 500000) {
-            return {
-              ...r,
-              mediaUrl: "",
-              mediaNote: r.mediaType === "video" ? "Video đính kèm từ máy (kích thước lớn)" : "Ảnh đính kèm"
-            };
-          }
-          return r;
-        });
-        localStorage.setItem("boss_customer_reviews", JSON.stringify(safeReviews));
-      } catch (innerErr) {
-        console.error("Fatal localStorage error:", innerErr);
-      }
-    }
+    // 1. Lưu ngay vào IndexedDB (đảm bảo tệp video 25MB-50MB hay ảnh lớn đều được lưu trọn vẹn 100%)
+    await putReviewToIndexedDB(newReview);
+    saveReviewsToIndexedDB(updated);
 
-    // Phát sự kiện thông báo để Admin cập nhật ngay lập tức nếu đang mở
+    // 2. Lưu an toàn vào localStorage (tự động nén/tối ưu nếu quá giới hạn 5MB)
+    safeSaveToLocalStorage(updated);
+
+    // 3. Phát sự kiện thông báo để Admin cập nhật ngay lập tức nếu đang mở
     window.dispatchEvent(new CustomEvent("boss_customer_reviews_updated", { detail: updated }));
 
     // Gửi đánh giá lên MongoDB backend

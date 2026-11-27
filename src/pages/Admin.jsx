@@ -22,6 +22,12 @@ import { matchKeywords, extractSearchableText } from "../utils/searchHelper";
 import { DEFAULT_SERVICES as DEFAULT_SAMPLE_SERVICES } from "../data/defaultServices";
 import { compressImage } from "../utils/imageCompressor";
 import { sortByNewest } from "../utils/sortHelper";
+import {
+  getReviewsFromIndexedDB,
+  saveReviewsToIndexedDB,
+  deleteReviewFromIndexedDB,
+  safeSaveToLocalStorage
+} from "../utils/reviewStorage";
 import "./Admin.css";
 
 const DEFAULT_SAMPLE_REVIEWS = [
@@ -439,22 +445,25 @@ export default function Admin() {
       localStorage.setItem("boss_admin_services", JSON.stringify(loadedServices));
       window.dispatchEvent(new CustomEvent("boss_services_updated", { detail: loadedServices }));
 
-      // Reviews: Hybrid MongoDB backend + localStorage fallback với Smart Merge (chống ghi đè mất đánh giá)
+      // Reviews: Hybrid IndexedDB + MongoDB backend + localStorage fallback với Smart Merge
       let loadedReviews = [];
-      let localReviews = [];
-      const localR = localStorage.getItem("boss_customer_reviews");
-      if (localR) {
-        try {
-          const parsedR = JSON.parse(localR);
-          if (Array.isArray(parsedR)) localReviews = parsedR;
-        } catch (e) {
-          console.error("Parse local reviews error:", e);
+      const idbReviews = await getReviewsFromIndexedDB().catch(() => []);
+      let localReviews = Array.isArray(idbReviews) && idbReviews.length > 0 ? idbReviews : [];
+      if (localReviews.length === 0) {
+        const localR = localStorage.getItem("boss_customer_reviews");
+        if (localR) {
+          try {
+            const parsedR = JSON.parse(localR);
+            if (Array.isArray(parsedR)) localReviews = parsedR;
+          } catch (e) {
+            console.error("Parse local reviews error:", e);
+          }
         }
       }
 
       if (dataR && dataR.success && Array.isArray(dataR.data) && dataR.data.length > 0) {
         const backendReviews = dataR.data.map(item => ({ ...item, id: item._id || item.id }));
-        // Giữ lại các đánh giá mới của khách ở local mà backend chưa có (chống ghi đè mất đánh giá mới)
+        // Giữ lại các đánh giá mới của khách ở local/IndexedDB mà backend chưa có (chống ghi đè mất đánh giá mới)
         const unSynced = localReviews.filter(lr =>
           !backendReviews.some(br => (br._id && br._id === lr._id) || br.id === lr.id || (br.text === lr.text && br.name === lr.name))
         );
@@ -463,9 +472,8 @@ export default function Admin() {
         loadedReviews = localReviews.length > 0 ? localReviews : DEFAULT_SAMPLE_REVIEWS;
       }
       setReviews(loadedReviews);
-      try {
-        localStorage.setItem("boss_customer_reviews", JSON.stringify(loadedReviews));
-      } catch (_) { }
+      saveReviewsToIndexedDB(loadedReviews);
+      safeSaveToLocalStorage(loadedReviews);
 
       // Auto-sync with backend if backend DB is empty
       if (dataS && dataS.success && Array.isArray(dataS.data) && dataS.data.length === 0) {
@@ -1605,20 +1613,20 @@ export default function Admin() {
       if (res && res.ok) {
         // Backend deletion success
       }
+      deleteReviewFromIndexedDB(id);
       const updated = reviews.filter(r => (r._id || r.id) !== id);
       setReviews(updated);
-      try {
-        localStorage.setItem("boss_customer_reviews", JSON.stringify(updated));
-      } catch (_) { }
+      saveReviewsToIndexedDB(updated);
+      safeSaveToLocalStorage(updated);
       window.dispatchEvent(new CustomEvent("boss_customer_reviews_updated", { detail: updated }));
       showToast("🗑️ Đã xóa đánh giá khách hàng thành công!");
     } catch (err) {
       console.error("Delete review error:", err);
+      deleteReviewFromIndexedDB(id);
       const updated = reviews.filter(r => (r._id || r.id) !== id);
       setReviews(updated);
-      try {
-        localStorage.setItem("boss_customer_reviews", JSON.stringify(updated));
-      } catch (_) { }
+      saveReviewsToIndexedDB(updated);
+      safeSaveToLocalStorage(updated);
       window.dispatchEvent(new CustomEvent("boss_customer_reviews_updated", { detail: updated }));
       showToast("🗑️ Đã xóa đánh giá khỏi bộ nhớ!");
     }
