@@ -456,4 +456,28 @@
     min-width: unset;
     padding: 14px 16px;
   }
+
+  /* Thư ngỏ box: cho chữ sát ra mép khung theo yêu cầu */
+  .profile-letter-box {
+    padding: 14px 10px 14px 12px !important;
+    margin: 14px 0 !important;
+    font-size: 14px !important;
+    line-height: 1.65 !important;
+    border-radius: 6px !important;
+  }
+
+  .profile-letter-box p {
+    margin-bottom: 12px !important;
+    text-align: left !important;
+  }
+
+  .letter-sign-text {
+    margin-top: 14px !important;
+  }
+
+  .quote-callout-box {
+    padding: 10px 10px 10px 12px !important;
+    font-size: 13.5px !important;
+    margin: 14px 0 !important;
+  }
 }
