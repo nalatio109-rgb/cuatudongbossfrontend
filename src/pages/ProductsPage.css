@@ -1017,7 +1017,7 @@
   .products-page-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
-    margin-bottom: 30px;
+    margin-bottom: 14px;
   }
   .product-page-card {
     border-radius: 12px;

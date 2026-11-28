@@ -4,9 +4,9 @@
 
 .seo-content-section {
   width: 100%;
-  margin-top: 40px;
-  padding-top: 20px;
-  border-top: 1px solid #e2e8f0;
+  margin-top: 24px;
+  padding-top: 0;
+  border-top: none;
 }
 
 .seo-container {
@@ -494,6 +494,12 @@
 }
 
 @media (max-width: 768px) {
+  .seo-content-section {
+    margin-top: 10px !important;
+    padding-top: 0 !important;
+    border-top: none !important;
+  }
+
   .seo-article-wrapper {
     padding: 0 !important;
     background: transparent !important;
