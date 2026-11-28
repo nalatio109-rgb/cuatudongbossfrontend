@@ -1910,7 +1910,7 @@ export default function ProductPricing() {
               <ShieldCheck size={18} className="g-icon" />
             </div>
             <div className="g-text">
-              <h4>CHÍNH HÃNG 100%</h4>
+              <h4>Chính hãng 100%</h4>
               <p>Đầy đủ C/O, C/Q</p>
             </div>
           </div>
@@ -1919,7 +1919,7 @@ export default function ProductPricing() {
               <CheckCircle2 size={18} className="g-icon gold" />
             </div>
             <div className="g-text">
-              <h4>BẢO HÀNH 10 NĂM</h4>
+              <h4>Bảo hành 10 năm</h4>
               <p>Tận nơi, hỗ trợ 24/7</p>
             </div>
           </div>
@@ -1928,7 +1928,7 @@ export default function ProductPricing() {
               <Star size={18} className="g-icon red" />
             </div>
             <div className="g-text">
-              <h4>LẮP ĐẶT 24H</h4>
+              <h4>Lắp đặt 24h</h4>
               <p>Nhanh gọn, chuẩn kỹ thuật</p>
             </div>
           </div>
@@ -1937,7 +1937,7 @@ export default function ProductPricing() {
               <HeadphonesIcon size={18} className="g-icon teal" />
             </div>
             <div className="g-text">
-              <h4>TƯ VẤN MIỄN PHÍ</h4>
+              <h4>Tư vấn miễn phí</h4>
               <p>Khảo sát tận nơi 0đ</p>
             </div>
           </div>

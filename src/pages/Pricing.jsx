@@ -289,28 +289,28 @@ export default function Pricing() {
           <div className="g-item">
             <ShieldCheck size={32} className="g-icon" />
             <div>
-              <h4>CHÍNH HÃNG 100%</h4>
+              <h4>Chính hãng 100%</h4>
               <p>Nhập khẩu có chứng nhận C/O, C/Q đầy đủ</p>
             </div>
           </div>
           <div className="g-item">
             <CheckCircle2 size={32} className="g-icon gold" />
             <div>
-              <h4>BẢO HÀNH 10 NĂM</h4>
+              <h4>Bảo hành 10 năm</h4>
               <p>Bảo trì tận nơi, hỗ trợ kỹ thuật 24/7</p>
             </div>
           </div>
           <div className="g-item">
             <Star size={32} className="g-icon red" />
             <div>
-              <h4>LẮP ĐẶT 24H</h4>
+              <h4>Lắp đặt 24h</h4>
               <p>Thi công nhanh gọn, chuẩn quy trình kĩ thuật</p>
             </div>
           </div>
           <div className="g-item">
             <HeadphonesIcon size={32} className="g-icon" />
             <div>
-              <h4>TƯ VẤN MIỄN PHÍ</h4>
+              <h4>Tư vấn miễn phí</h4>
               <p>Khảo sát tận công trình hoàn toàn miễn phí</p>
             </div>
           </div>
