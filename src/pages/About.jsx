@@ -371,15 +371,6 @@ const About = () => {
               <div className="exact-timeline-row">
                 <div className="exact-timeline-item">
                   <div className="exact-timeline-dot"></div>
-                  <div className="exact-timeline-year">2015</div>
-                  <div className="exact-timeline-desc">
-                    <span className="about-desktop-text">Thành lập BOSS Đà Nẵng</span>
-                    <span className="about-mobile-text">Thành lập thương hiệu</span>
-                  </div>
-                </div>
-
-                <div className="exact-timeline-item">
-                  <div className="exact-timeline-dot"></div>
                   <div className="exact-timeline-year">2018</div>
                   <div className="exact-timeline-desc">
                     <span className="about-desktop-text">Mở rộng nhà xưởng, đầu tư công nghệ hiện đại</span>
@@ -396,14 +387,23 @@ const About = () => {
                   </div>
                 </div>
 
-                <div className="exact-timeline-item current-milestone">
-                  <div className="exact-timeline-dot">
-                    <span className="dot-ripple"></span>
-                  </div>
+                <div className="exact-timeline-item">
+                  <div className="exact-timeline-dot"></div>
                   <div className="exact-timeline-year">2026</div>
                   <div className="exact-timeline-desc">
                     <span className="about-desktop-text">Ra mắt showroom hiện đại & mở rộng thị trường miền Trung</span>
                     <span className="about-mobile-text">Showroom mới & mở rộng miền Trung</span>
+                  </div>
+                </div>
+
+                <div className="exact-timeline-item current-milestone">
+                  <div className="exact-timeline-dot">
+                    <span className="dot-ripple"></span>
+                  </div>
+                  <div className="exact-timeline-year">Hiện nay</div>
+                  <div className="exact-timeline-desc">
+                    <span className="about-desktop-text">Dẫn đầu giải pháp cửa thông minh & thi công toàn diện</span>
+                    <span className="about-mobile-text">Dẫn đầu giải pháp cửa thông minh</span>
                   </div>
                 </div>
               </div>
