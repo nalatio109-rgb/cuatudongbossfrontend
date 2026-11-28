@@ -1312,39 +1312,45 @@
   /* 5. GUARANTEE BAR DẠNG LƯỚI 2x2 TINH GỌN */
   .pricing-hub-guarantee {
     grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-    padding: 14px 12px;
-    border-radius: 14px;
-  }
-
-  .pricing-hub-guarantee .g-item {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    padding: 10px 6px;
-    gap: 6px;
-    background: #f8fafc;
-    border-radius: 10px;
+    gap: 12px 14px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
     border: 1px solid #f1f5f9;
   }
 
+  .pricing-hub-guarantee .g-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    padding: 0;
+    gap: 8px;
+    background: transparent;
+    border-radius: 0;
+    border: none;
+  }
+
   .pricing-hub-guarantee .g-icon {
-    width: 24px;
-    height: 24px;
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    flex-shrink: 0;
   }
 
   .pricing-hub-guarantee h4 {
-    font-size: 12px;
-    font-weight: 800;
-    margin-bottom: 2px;
-    line-height: 1.3;
+    font-size: 11.5px;
+    font-weight: 750;
+    margin: 0;
+    line-height: 1.25;
     color: #0f172a;
+    letter-spacing: -0.1px;
+    white-space: nowrap;
   }
 
   .pricing-hub-guarantee p {
-    font-size: 10px;
-    line-height: 1.35;
-    color: #64748b;
+    display: none !important;
   }
 }
 
