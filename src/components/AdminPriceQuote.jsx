@@ -32,14 +32,21 @@ import {
   ListOrdered,
   AlignLeft,
   AlignCenter,
+  AlignRight,
+  Minus,
+  Columns2,
   Palette,
   Highlighter,
   Code,
   Type,
   RemoveFormatting,
   ZoomIn,
+  ZoomOut,
+  Maximize2,
   ExternalLink,
-  Link2
+  Link2,
+  Table,
+  ArrowUp
 } from "lucide-react";
 import { DEFAULT_PRICE_QUOTES } from "../data/defaultPriceQuotes";
 import "./AdminPriceQuote.css";
@@ -303,7 +310,11 @@ const RichArticleEditor = ({
   placeholder,
   minHeight = 120,
   badgeText = "Bài Viết Chi Tiết",
-  hintText = "Nội dung bài viết chi tiết, hướng dẫn kỹ thuật"
+  hintText = "Nội dung bài viết chi tiết, hướng dẫn kỹ thuật",
+  tableColumns = null,
+  tableRows = null,
+  onScrollToTable = null,
+  allQuotes = null
 }) => {
   const editorRef = useRef(null);
   const lastHtmlRef = useRef("");
@@ -312,7 +323,14 @@ const RichArticleEditor = ({
   const [showImgModal, setShowImgModal] = useState(false);
   const [imgUrl, setImgUrl] = useState("");
   const [imgCaption, setImgCaption] = useState("");
+  const [imgSize, setImgSize] = useState("medium"); // small (35%) | medium (65%) | large (85%) | full (100%)
+  const [showQuickTable, setShowQuickTable] = useState(false);
   const fileInputRef = useRef(null);
+
+  // Image resizer & align controller (thanh điều khiển nổi cỡ ảnh giống Quản lý bài viết)
+  const [selectedImgEl, setSelectedImgEl] = useState(null);
+  const [selectedImgSize, setSelectedImgSize] = useState("100%");
+  const [imgToolbarPos, setImgToolbarPos] = useState(null);
 
   // Chuẩn hóa nội dung ban đầu (nếu là plain text có dấu xuống dòng \n -> chuyển thành thẻ <p>)
   const toHtml = (val) => {
@@ -335,6 +353,202 @@ const RichArticleEditor = ({
       setCodeValue(formatted);
     }
   }, [value]);
+
+  // Cập nhật vị trí thanh công cụ ảnh khi cuộn trang hoặc resize
+  useEffect(() => {
+    const handleScrollOrResize = () => {
+      if (selectedImgEl) {
+        const rect = selectedImgEl.getBoundingClientRect();
+        if (rect.bottom < 0 || rect.top > window.innerHeight) {
+          selectedImgEl.classList.remove("img-selected");
+          selectedImgEl.removeAttribute("data-selected");
+          setSelectedImgEl(null);
+          setImgToolbarPos(null);
+        } else {
+          setImgToolbarPos({
+            top: Math.max(10, rect.top - 52),
+            left: rect.left + rect.width / 2
+          });
+        }
+      }
+    };
+
+    window.addEventListener("scroll", handleScrollOrResize, true);
+    window.addEventListener("resize", handleScrollOrResize);
+    return () => {
+      window.removeEventListener("scroll", handleScrollOrResize, true);
+      window.removeEventListener("resize", handleScrollOrResize);
+    };
+  }, [selectedImgEl]);
+
+  // Bấm ra ngoài hoặc bấm Esc để đóng thanh chỉnh ảnh
+  useEffect(() => {
+    const handleDocClick = (e) => {
+      if (
+        selectedImgEl &&
+        !e.target.closest(".editor-image-control-toolbar") &&
+        e.target !== selectedImgEl
+      ) {
+        selectedImgEl.classList.remove("img-selected");
+        selectedImgEl.removeAttribute("data-selected");
+        setSelectedImgEl(null);
+        setImgToolbarPos(null);
+      }
+    };
+
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape" && selectedImgEl) {
+        selectedImgEl.classList.remove("img-selected");
+        selectedImgEl.removeAttribute("data-selected");
+        setSelectedImgEl(null);
+        setImgToolbarPos(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleDocClick);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleDocClick);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [selectedImgEl]);
+
+  // Lắng nghe click vào ảnh trong bài viết để bật thanh điều khiển kích thước ảnh
+  useEffect(() => {
+    const editor = editorRef.current;
+    if (!editor) return;
+
+    const handleImgClick = (e) => {
+      const target = e.target;
+      if (target && target.tagName === "IMG") {
+        e.stopPropagation();
+        if (selectedImgEl && selectedImgEl !== target) {
+          selectedImgEl.classList.remove("img-selected");
+          selectedImgEl.removeAttribute("data-selected");
+        }
+        target.classList.add("img-selected");
+        target.setAttribute("data-selected", "true");
+        setSelectedImgEl(target);
+        const rect = target.getBoundingClientRect();
+        const currentWidth = target.style.width || "100%";
+        setSelectedImgSize(currentWidth);
+        setImgToolbarPos({
+          top: Math.max(10, rect.top - 52),
+          left: rect.left + rect.width / 2
+        });
+      }
+    };
+
+    editor.addEventListener("click", handleImgClick);
+    return () => {
+      editor.removeEventListener("click", handleImgClick);
+    };
+  }, [selectedImgEl]);
+
+  const handleSetTwoImagesLayout = () => {
+    if (!selectedImgEl) return;
+    selectedImgEl.style.width = "calc(50% - 10px)";
+    selectedImgEl.style.maxWidth = "calc(50% - 10px)";
+    selectedImgEl.style.height = "auto";
+    selectedImgEl.style.display = "inline-block";
+    selectedImgEl.style.verticalAlign = "top";
+    selectedImgEl.style.margin = "10px 5px";
+    selectedImgEl.style.float = "none";
+    selectedImgEl.style.boxSizing = "border-box";
+
+    const parentFig = selectedImgEl.closest("figure");
+    if (parentFig) {
+      parentFig.style.display = "inline-block";
+      parentFig.style.width = "calc(50% - 10px)";
+      parentFig.style.maxWidth = "calc(50% - 10px)";
+      parentFig.style.verticalAlign = "top";
+      parentFig.style.margin = "10px 5px";
+      parentFig.style.boxSizing = "border-box";
+    }
+
+    setSelectedImgSize("50%");
+    setTimeout(() => {
+      if (selectedImgEl) {
+        const rect = selectedImgEl.getBoundingClientRect();
+        setImgToolbarPos({
+          top: Math.max(10, rect.top - 52),
+          left: rect.left + rect.width / 2
+        });
+      }
+    }, 50);
+    handleInput();
+  };
+
+  const handleSetImageSize = (sizePercent) => {
+    if (!selectedImgEl) return;
+    if (sizePercent === "50%") {
+      handleSetTwoImagesLayout();
+      return;
+    }
+    selectedImgEl.style.width = sizePercent;
+    selectedImgEl.style.maxWidth = "100%";
+    selectedImgEl.style.height = "auto";
+    selectedImgEl.style.display = "block";
+    selectedImgEl.style.margin = "16px auto";
+    selectedImgEl.style.float = "none";
+    const parentFig = selectedImgEl.closest("figure");
+    if (parentFig) {
+      parentFig.style.display = "block";
+      parentFig.style.width = "100%";
+      parentFig.style.maxWidth = "100%";
+      parentFig.style.margin = "24px auto";
+    }
+    setSelectedImgSize(sizePercent);
+    setTimeout(() => {
+      if (selectedImgEl) {
+        const rect = selectedImgEl.getBoundingClientRect();
+        setImgToolbarPos({
+          top: Math.max(10, rect.top - 52),
+          left: rect.left + rect.width / 2
+        });
+      }
+    }, 50);
+    handleInput();
+  };
+
+  const handleStepImageSize = (deltaPercent) => {
+    if (!selectedImgEl) return;
+    let currentVal = parseInt(selectedImgEl.style.width || "100", 10);
+    if (isNaN(currentVal)) currentVal = 100;
+    let nextVal = Math.min(100, Math.max(20, currentVal + deltaPercent));
+    handleSetImageSize(`${nextVal}%`);
+  };
+
+  const handleSetImageAlign = (align) => {
+    if (!selectedImgEl) return;
+    if (align === "center") {
+      selectedImgEl.style.display = "block";
+      selectedImgEl.style.margin = "16px auto";
+      selectedImgEl.style.float = "none";
+    } else if (align === "left") {
+      selectedImgEl.style.display = "inline-block";
+      selectedImgEl.style.margin = "10px 18px 10px 0";
+      selectedImgEl.style.float = "left";
+    } else if (align === "right") {
+      selectedImgEl.style.display = "inline-block";
+      selectedImgEl.style.margin = "10px 0 10px 18px";
+      selectedImgEl.style.float = "right";
+    }
+    handleInput();
+  };
+
+  const handleDeleteSelectedImg = () => {
+    if (!selectedImgEl) return;
+    const parent = selectedImgEl.parentElement;
+    if (parent && parent.tagName === "FIGURE") {
+      parent.remove();
+    } else {
+      selectedImgEl.remove();
+    }
+    setSelectedImgEl(null);
+    setImgToolbarPos(null);
+    handleInput();
+  };
 
   const handleInput = () => {
     if (editorRef.current) {
@@ -367,21 +581,77 @@ const RichArticleEditor = ({
     exec("insertHTML", calloutHtml);
   };
 
+  const handleInsertOtherPricesTable = () => {
+    let list = allQuotes;
+    if (!list || list.length === 0) {
+      try {
+        const local = localStorage.getItem("boss_admin_price_quotes");
+        if (local) list = JSON.parse(local);
+      } catch (e) {}
+    }
+    if (!list || list.length === 0) {
+      list = DEFAULT_PRICE_QUOTES;
+    }
+
+    const rows = [];
+    for (let i = 0; i < list.length; i += 2) {
+      rows.push([list[i], list[i + 1] || null]);
+    }
+
+    const rowsHtml = rows.map((pair, rIdx) => {
+      const bg = rIdx % 2 === 0 ? "#eef2f6" : "#ffffff";
+      const col1 = pair[0];
+      const col2 = pair[1];
+      const title1 = col1.productTitle || col1.title || col1.name || "Bảng giá";
+      const code1 = col1.productCode || col1.code || col1.id;
+      const td1 = `<td style="width: 50%; border: 1px solid #cbd5e1; padding: 12px 16px;"><a href="/bang-gia/${code1}" style="color: #0284c7; font-weight: 500; text-decoration: none;">${title1}</a></td>`;
+
+      let td2 = `<td style="width: 50%; border: 1px solid #cbd5e1; padding: 12px 16px;">&nbsp;</td>`;
+      if (col2) {
+        const title2 = col2.productTitle || col2.title || col2.name || "Bảng giá";
+        const code2 = col2.productCode || col2.code || col2.id;
+        td2 = `<td style="width: 50%; border: 1px solid #cbd5e1; padding: 12px 16px;"><a href="/bang-gia/${code2}" style="color: #0284c7; font-weight: 500; text-decoration: none;">${title2}</a></td>`;
+      }
+
+      return `<tr style="background-color: ${bg};">${td1}${td2}</tr>`;
+    }).join("");
+
+    const tableHtml = `
+      <div class="other-door-pricing-wrapper" style="margin: 28px 0 20px 0; width: 100%;">
+        <h3 style="font-size: 16px; font-weight: 700; color: #1e293b; margin: 0 0 12px 0;">Xem thêm bảng giá các dòng cửa:</h3>
+        <table class="other-door-pricing-table" style="width: 100%; border-collapse: collapse; border: 1px solid #cbd5e1; background-color: #ffffff;">
+          <tbody>
+            ${rowsHtml}
+          </tbody>
+        </table>
+      </div><p><br></p>
+    `;
+    exec("insertHTML", tableHtml);
+  };
+
   const handleInsertImage = () => {
     if (!imgUrl.trim()) {
       alert("Vui lòng nhập link ảnh hoặc chọn ảnh từ máy!");
       return;
     }
     const caption = imgCaption.trim() || "Hình ảnh minh họa sản phẩm";
+    const sizeConfig = {
+      small: { width: "35%", maxHeight: "280px" },
+      medium: { width: "65%", maxHeight: "440px" },
+      large: { width: "85%", maxHeight: "580px" },
+      full: { width: "100%", maxHeight: "750px" }
+    }[imgSize] || { width: "65%", maxHeight: "440px" };
+
     const figureHtml = `
       <figure style="text-align: center; margin: 18px 0;">
-        <img src="${imgUrl.trim()}" alt="${caption}" style="max-width: 100%; max-height: 400px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; object-fit: contain;" />
+        <img src="${imgUrl.trim()}" alt="${caption}" style="max-width: ${sizeConfig.width}; width: 100%; max-height: ${sizeConfig.maxHeight}; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; object-fit: contain; cursor: zoom-in;" title="Bấm để phóng to ảnh xem chi tiết" />
         <figcaption style="margin-top: 6px; font-size: 13px; color: #64748b; font-style: italic;">${caption}</figcaption>
       </figure><p><br></p>
     `;
     exec("insertHTML", figureHtml);
     setImgUrl("");
     setImgCaption("");
+    setImgSize("medium");
     setShowImgModal(false);
   };
 
@@ -414,16 +684,92 @@ const RichArticleEditor = ({
 
   return (
     <div className="rich-article-editor-card">
-      {/* HEADER CỦA BLOCK */}
-      <div className="article-block-header">
-        <span className="article-block-badge">
-          <FileText size={14} /> {badgeText}
-        </span>
-        <span className="article-block-hint">{hintText}</span>
-      </div>
+      {/* KHỐI STICKY HEADER GỒM TIÊU ĐỀ BADGE, NÚT XEM NHANH BẢNG GIÁ & THANH CÔNG CỤ TOOLBAR (ĐI THEO KHI LƯỚT XUỐNG) */}
+      <div className="rich-editor-sticky-header">
+        {/* HEADER CỦA BLOCK */}
+        <div className="article-block-header">
+          <div className="article-block-header-left">
+            <span className="article-block-badge">
+              <FileText size={14} /> {badgeText}
+            </span>
+            <span className="article-block-hint">{hintText}</span>
+          </div>
 
-      {/* THANH CÔNG CỤ TOOLBAR */}
-      <div className="rich-editor-toolbar">
+          {tableRows && tableRows.length > 0 && (
+            <div className="article-block-header-right">
+              <button
+                type="button"
+                className={`btn-quick-view-table ${showQuickTable ? "active" : ""}`}
+                onClick={() => setShowQuickTable(!showQuickTable)}
+                title="Bấm để xem nhanh bảng giá đối chiếu số liệu khi viết bài"
+              >
+                <Table size={13} />
+                <span>{showQuickTable ? "Ẩn Bảng Giá" : "Xem Nhanh Bảng Giá"}</span>
+              </button>
+              {onScrollToTable && (
+                <button
+                  type="button"
+                  className="btn-scroll-to-table"
+                  onClick={onScrollToTable}
+                  title="Cuộn lên bảng giá phía trên"
+                >
+                  <ArrowUp size={13} />
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* BẢNG GIÁ THU NHỎ XEM NHANH ĐI THEO MÀN HÌNH */}
+        {showQuickTable && tableColumns && (
+          <div className="quick-table-floating-drawer">
+            <div className="quick-table-drawer-header">
+              <div className="drawer-title" style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                <Sparkles size={14} className="gold-icon" />
+                <strong>Bảng Giá Đối Chiếu Số Liệu (Ghim đi theo màn hình để viết bài):</strong>
+              </div>
+              <button
+                type="button"
+                className="btn-close-quick-table"
+                onClick={() => setShowQuickTable(false)}
+                title="Đóng bảng xem nhanh"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="quick-table-drawer-scroll">
+              <table className="quick-table-compact">
+                <thead>
+                  <tr>
+                    {tableColumns.map((col) => (
+                      <th key={col.id}>{col.label}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {tableRows.map((row, rIdx) => (
+                    <tr key={row.rowId || rIdx}>
+                      {tableColumns.map((col) => (
+                        <td key={col.id}>
+                          {col.type === "image" ? (
+                            row[col.key || col.id] ? (
+                              <img src={row[col.key || col.id]} alt="" style={{ height: "24px", maxWidth: "45px", objectFit: "contain" }} />
+                            ) : "-"
+                          ) : (
+                            row[col.key || col.id] || "-"
+                          )}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* THANH CÔNG CỤ TOOLBAR */}
+        <div className="rich-editor-toolbar">
         {/* Nhóm Tiêu đề Headings */}
         <div className="toolbar-group">
           <select
@@ -588,6 +934,14 @@ const RichArticleEditor = ({
           >
             <ImageIcon size={13} /> <span>Chèn ảnh</span>
           </button>
+          <button
+            type="button"
+            className="tb-btn-special"
+            onMouseDown={(e) => { e.preventDefault(); handleInsertOtherPricesTable(); }}
+            title="Chèn bảng liên kết 'Xem thêm bảng giá các loại cửa cuốn' (8 dòng x 2 cột)"
+          >
+            <Table size={13} /> <span>Bảng giá khác</span>
+          </button>
         </div>
 
         {/* Nhóm Xem Mã & Xóa định dạng */}
@@ -609,6 +963,7 @@ const RichArticleEditor = ({
             <Code size={14} /> <span>{isCodeView ? "Trực quan" : "Mã HTML"}</span>
           </button>
         </div>
+      </div>
       </div>
 
       {/* POPUP CHÈN ẢNH VÀO BÀI VIẾT NẾU MỞ */}
@@ -654,6 +1009,27 @@ const RichArticleEditor = ({
                 onChange={(e) => setImgCaption(e.target.value)}
               />
             </div>
+            <div className="popover-field">
+              <label>Kích thước ảnh trong bài (Phóng to / Thu nhỏ):</label>
+              <div className="img-size-selector-row">
+                {[
+                  { key: "small", label: "Nhỏ (35%)", desc: "Ảnh minh họa phụ / góc nhỏ" },
+                  { key: "medium", label: "Vừa (65%)", desc: "Kích thước tiêu chuẩn đẹp mắt" },
+                  { key: "large", label: "Lớn (85%)", desc: "Ảnh chi tiết rõ nét" },
+                  { key: "full", label: "Toàn khung (100%)", desc: "Ảnh ngang toàn bài" }
+                ].map((s) => (
+                  <button
+                    key={s.key}
+                    type="button"
+                    className={`btn-img-size-chip ${imgSize === s.key ? "active" : ""}`}
+                    onClick={() => setImgSize(s.key)}
+                    title={s.desc}
+                  >
+                    {s.label}
+                  </button>
+                ))}
+              </div>
+            </div>
             {imgUrl && (
               <div className="popover-preview">
                 <img src={imgUrl} alt="preview" onError={(e) => { e.target.style.display = "none"; }} />
@@ -668,6 +1044,110 @@ const RichArticleEditor = ({
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* FLOATING IMAGE RESIZER & ALIGN TOOLBAR KHI CLICK VÀO ẢNH */}
+      {selectedImgEl && imgToolbarPos && (
+        <div
+          className="editor-image-control-toolbar"
+          style={{
+            position: "fixed",
+            top: `${Math.max(10, imgToolbarPos.top)}px`,
+            left: `${Math.max(12, Math.min(window.innerWidth - 320, imgToolbarPos.left))}px`,
+            transform: "translateX(-50%)",
+            zIndex: 999999
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div className="img-toolbar-label">
+            <span>📐 Cỡ ảnh:</span>
+          </div>
+          <div className="img-size-buttons">
+            {["35%", "50%", "70%", "100%"].map((sz) => (
+              <button
+                key={sz}
+                type="button"
+                className={`size-pill-btn ${selectedImgSize === sz || (sz === "100%" && !selectedImgEl.style.width) ? "active" : ""}`}
+                onClick={() => handleSetImageSize(sz)}
+              >
+                {sz}
+              </button>
+            ))}
+          </div>
+          <button
+            type="button"
+            className={`size-pill-btn ${selectedImgSize === "50%" ? "active" : ""}`}
+            onClick={handleSetTwoImagesLayout}
+            title="Xếp 2 ảnh nằm ngang hàng cạnh nhau (50% - 50%)"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "4px",
+              background: selectedImgSize === "50%" ? "#10b981" : "rgba(16, 185, 129, 0.2)",
+              color: selectedImgSize === "50%" ? "#ffffff" : "#10b981",
+              border: "1px solid rgba(16, 185, 129, 0.4)",
+              padding: "3px 8px"
+            }}
+          >
+            <Columns2 size={12} />
+            <span>2 ảnh ngang (50%)</span>
+          </button>
+          <div className="img-adjust-group">
+            <button
+              type="button"
+              className="img-btn-adjust"
+              onClick={() => handleStepImageSize(-10)}
+              title="Thu nhỏ 10%"
+            >
+              <Minus size={13} />
+            </button>
+            <span className="img-current-percent">
+              {selectedImgEl.style.width || "100%"}
+            </span>
+            <button
+              type="button"
+              className="img-btn-adjust"
+              onClick={() => handleStepImageSize(10)}
+              title="Phóng to 10%"
+            >
+              <Plus size={13} />
+            </button>
+          </div>
+          <div className="img-align-group">
+            <button
+              type="button"
+              className="img-btn-align"
+              onClick={() => handleSetImageAlign("left")}
+              title="Căn trái"
+            >
+              <AlignLeft size={13} />
+            </button>
+            <button
+              type="button"
+              className="img-btn-align"
+              onClick={() => handleSetImageAlign("center")}
+              title="Căn giữa"
+            >
+              <AlignCenter size={13} />
+            </button>
+            <button
+              type="button"
+              className="img-btn-align"
+              onClick={() => handleSetImageAlign("right")}
+              title="Căn phải"
+            >
+              <AlignRight size={13} />
+            </button>
+          </div>
+          <button
+            type="button"
+            className="img-btn-delete"
+            onClick={handleDeleteSelectedImg}
+            title="Xóa ảnh"
+          >
+            <Trash2 size={13} />
+          </button>
         </div>
       )}
 
@@ -759,6 +1239,67 @@ export default function AdminPriceQuote({ showToast }) {
   const [inputRowsCount, setInputRowsCount] = useState(7);
   const [emptyCellsHighlight, setEmptyCellsHighlight] = useState(new Set());
   const [zoomModalImg, setZoomModalImg] = useState(null); // { url, title }
+  const [zoomScale, setZoomScale] = useState(1);
+  const [zoomRotation, setZoomRotation] = useState(0);
+  const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
+  const [isDraggingZoom, setIsDraggingZoom] = useState(false);
+  const dragStartRef = useRef({ x: 0, y: 0 });
+
+  // Reset trạng thái zoom khi mở ảnh mới hoặc đóng
+  useEffect(() => {
+    setZoomScale(1);
+    setZoomRotation(0);
+    setZoomPosition({ x: 0, y: 0 });
+    setIsDraggingZoom(false);
+  }, [zoomModalImg?.url]);
+
+  // Cung cấp hàm phóng to ảnh toàn cục cho bài viết
+  useEffect(() => {
+    window.__adminZoomImg = (url, title) => {
+      setZoomModalImg({ url, title });
+    };
+    return () => {
+      delete window.__adminZoomImg;
+    };
+  }, []);
+
+  const handleZoomIn = () => setZoomScale((prev) => Math.min(Number((prev + 0.25).toFixed(2)), 3.5));
+  const handleZoomOut = () => setZoomScale((prev) => Math.max(Number((prev - 0.25).toFixed(2)), 0.5));
+  const handleResetZoom = () => {
+    setZoomScale(1);
+    setZoomRotation(0);
+    setZoomPosition({ x: 0, y: 0 });
+  };
+  const handleRotateZoom = () => setZoomRotation((prev) => (prev + 90) % 360);
+
+  const handleZoomWheel = (e) => {
+    if (e.deltaY < 0) {
+      setZoomScale((prev) => Math.min(Number((prev + 0.15).toFixed(2)), 3.5));
+    } else {
+      setZoomScale((prev) => Math.max(Number((prev - 0.15).toFixed(2)), 0.5));
+    }
+  };
+
+  const handleZoomMouseDown = (e) => {
+    if (e.button !== 0) return;
+    setIsDraggingZoom(true);
+    dragStartRef.current = {
+      x: e.clientX - zoomPosition.x,
+      y: e.clientY - zoomPosition.y
+    };
+  };
+
+  const handleZoomMouseMove = (e) => {
+    if (!isDraggingZoom) return;
+    setZoomPosition({
+      x: e.clientX - dragStartRef.current.x,
+      y: e.clientY - dragStartRef.current.y
+    });
+  };
+
+  const handleZoomMouseUp = () => {
+    setIsDraggingZoom(false);
+  };
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -1958,7 +2499,12 @@ export default function AdminPriceQuote({ showToast }) {
 
                 {editingQuote.image && (
                   <div className="quote-image-preview-card">
-                    <div className="quote-img-thumb-wrap">
+                    <div
+                      className="quote-img-thumb-wrap"
+                      onClick={() => setZoomModalImg({ url: editingQuote.image, title: editingQuote.productTitle || "Ảnh đại diện bảng giá" })}
+                      style={{ cursor: "zoom-in" }}
+                      title="Nhấn để phóng to / thu nhỏ ảnh"
+                    >
                       <img
                         src={editingQuote.image}
                         alt="Ảnh đại diện bảng giá"
@@ -1967,6 +2513,9 @@ export default function AdminPriceQuote({ showToast }) {
                           e.target.style.opacity = "0.3";
                         }}
                       />
+                      <span className="quote-img-zoom-hint">
+                        <ZoomIn size={12} /> Phóng to
+                      </span>
                     </div>
                     <div className="quote-img-preview-info">
                       <span className="preview-label">Ảnh đã chọn</span>
@@ -2056,6 +2605,7 @@ export default function AdminPriceQuote({ showToast }) {
                 minHeight={80}
                 badgeText="Bài Viết / Giới Thiệu (Phía Trên Bảng Giá)"
                 hintText="Đoạn văn bản giới thiệu mở đầu hiển thị ngay phía trên bảng giá ngoài trang web"
+                allQuotes={quotesList}
               />
             </div>
 
@@ -2083,7 +2633,9 @@ export default function AdminPriceQuote({ showToast }) {
                           style={{
                             width: colWidth,
                             minWidth: colMinWidth,
-                            position: "relative"
+                            position: "sticky",
+                            top: 0,
+                            zIndex: 10
                           }}
                         >
                           <div className={`col-header-interactive ${isSttCol ? "stt-header-interactive" : ""} ${isCodeCol ? "code-header-interactive" : ""}`}>
@@ -2302,6 +2854,13 @@ export default function AdminPriceQuote({ showToast }) {
                 minHeight={120}
                 badgeText="Bài Viết Chi Tiết & Tư Vấn Kỹ Thuật (Phía Dưới Bảng Giá)"
                 hintText="Nội dung bài viết chi tiết, hướng dẫn kỹ thuật, lưu ý thi công hiển thị phía dưới bảng giá"
+                tableColumns={gridColumns}
+                tableRows={gridRows}
+                allQuotes={quotesList}
+                onScrollToTable={() => {
+                  const el = document.querySelector('.spreadsheet-wrapper') || document.querySelector('.matrix-quick-hint');
+                  el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }}
               />
             </div>
           </div>
@@ -2427,7 +2986,7 @@ export default function AdminPriceQuote({ showToast }) {
         </div>
       </section>
 
-      {/* MODAL PHÓNG TO HÌNH ẢNH TRONG ADMIN */}
+      {/* MODAL PHÓNG TO / THU NHỎ HÌNH ẢNH TRONG ADMIN */}
       {zoomModalImg && (
         <div
           className="admin-zoom-modal-backdrop"
@@ -2437,23 +2996,109 @@ export default function AdminPriceQuote({ showToast }) {
             className="admin-zoom-modal-content"
             onClick={(e) => e.stopPropagation()}
           >
-            <button
-              type="button"
-              className="btn-close-zoom-modal"
-              onClick={() => setZoomModalImg(null)}
-              title="Đóng (Esc)"
-            >
-              ✕
-            </button>
             <div className="zoom-modal-header">
-              <h3 className="zoom-modal-title">{zoomModalImg.title || "Xem ảnh phóng to"}</h3>
+              <div className="zoom-modal-header-left">
+                <Sparkles size={16} className="gold-icon" />
+                <h3 className="zoom-modal-title">{zoomModalImg.title || "Xem ảnh chi tiết"}</h3>
+              </div>
+
+              {/* THANH ĐIỀU KHIỂN PHÓNG TO / THU NHỎ / XOAY ẢNH */}
+              <div className="zoom-modal-controls-bar">
+                <button
+                  type="button"
+                  className="btn-zoom-action"
+                  onClick={handleZoomOut}
+                  title="Thu nhỏ ảnh (-25%)"
+                  disabled={zoomScale <= 0.5}
+                >
+                  <ZoomOut size={16} />
+                </button>
+
+                <button
+                  type="button"
+                  className="btn-zoom-scale-indicator"
+                  onClick={handleResetZoom}
+                  title="Bấm để đưa về 100% kích thước chuẩn"
+                >
+                  {Math.round(zoomScale * 100)}%
+                </button>
+
+                <button
+                  type="button"
+                  className="btn-zoom-action"
+                  onClick={handleZoomIn}
+                  title="Phóng to ảnh (+25%)"
+                  disabled={zoomScale >= 3.5}
+                >
+                  <ZoomIn size={16} />
+                </button>
+
+                <div className="zoom-modal-sep" />
+
+                <button
+                  type="button"
+                  className="btn-zoom-action"
+                  onClick={handleRotateZoom}
+                  title="Xoay ảnh 90 độ"
+                >
+                  <RotateCcw size={15} style={{ transform: "scaleX(-1)" }} />
+                </button>
+
+                <button
+                  type="button"
+                  className="btn-zoom-action btn-zoom-reset"
+                  onClick={handleResetZoom}
+                  title="Đặt lại ảnh về ban đầu"
+                >
+                  Mặc định
+                </button>
+
+                <div className="zoom-modal-sep" />
+
+                <button
+                  type="button"
+                  className="btn-close-zoom-modal-clean"
+                  onClick={() => setZoomModalImg(null)}
+                  title="Đóng (Esc)"
+                >
+                  ✕
+                </button>
+              </div>
             </div>
-            <div className="zoom-modal-image-wrapper">
+
+            {/* VÙNG HIỂN THỊ HÌNH ẢNH CÓ HỖ TRỢ ZOOM & DRAG */}
+            <div
+              className={`zoom-modal-image-wrapper ${isDraggingZoom ? "is-dragging" : ""}`}
+              onWheel={handleZoomWheel}
+              onMouseDown={handleZoomMouseDown}
+              onMouseMove={handleZoomMouseMove}
+              onMouseUp={handleZoomMouseUp}
+              onMouseLeave={handleZoomMouseUp}
+              onDoubleClick={() => {
+                if (zoomScale === 1) {
+                  setZoomScale(2);
+                } else {
+                  handleResetZoom();
+                }
+              }}
+              style={{
+                cursor: zoomScale > 1 ? (isDraggingZoom ? "grabbing" : "grab") : "zoom-in"
+              }}
+            >
               <img
                 src={zoomModalImg.url}
                 alt={zoomModalImg.title || "Xem ảnh"}
                 className="zoom-modal-img"
+                style={{
+                  transform: `translate(${zoomPosition.x}px, ${zoomPosition.y}px) scale(${zoomScale}) rotate(${zoomRotation}deg)`,
+                  transition: isDraggingZoom ? "none" : "transform 0.2s cubic-bezier(0.16, 1, 0.3, 1)"
+                }}
+                draggable={false}
               />
+            </div>
+
+            <div className="zoom-modal-footer-hint">
+              <span>💡 Dùng <strong>con lăn chuột</strong> hoặc nút <strong>+ / -</strong> để phóng to/thu nhỏ, <strong>kéo giữ chuột</strong> để di chuyển ảnh, <strong>nhấp đúp</strong> để phóng to nhanh 200%.</span>
             </div>
           </div>
         </div>

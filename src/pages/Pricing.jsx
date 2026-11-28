@@ -17,6 +17,7 @@ import { PRICING_ARTICLES } from "../data/pricingArticlesData";
 import { DEFAULT_PRICE_QUOTES } from "../data/defaultPriceQuotes";
 import { matchKeywords } from "../utils/searchHelper";
 import RevealOnScroll from "../components/RevealOnScroll";
+import OtherDoorPricingTable from "../components/OtherDoorPricingTable";
 import "./Pricing.css";
 
 export default function Pricing() {
@@ -283,6 +284,11 @@ export default function Pricing() {
             </div>
           </div>
         </section>
+
+        {/* BẢNG GIÁ CÁC DÒNG CỬA (ĐỒNG BỘ 100% VỚI MENU BÁO GIÁ) */}
+        <RevealOnScroll animation="fade-up" delay={80}>
+          <OtherDoorPricingTable title="Xem thêm bảng giá các dòng cửa:" />
+        </RevealOnScroll>
 
         {/* 5. GUARANTEE BAR */}
         <section className="pricing-hub-guarantee">

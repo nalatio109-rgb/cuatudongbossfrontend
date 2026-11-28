@@ -475,11 +475,14 @@ export default function ProjectDetail() {
         {/* NÚT QUAY LẠI & CHIA SẺ */}
         <div className="detail-top-controls">
           <Link to="/cong-trinh" className="btn-back-link">
-            <ArrowLeft size={16} /> Danh sách công trình
+            <ArrowLeft size={16} />
+            <span className="btn-ctrl-text-desktop">Danh sách công trình</span>
+            <span className="btn-ctrl-text-mobile">Công trình</span>
           </Link>
           <button type="button" onClick={handleShare} className="btn-share-link">
             <Share2 size={15} />
-            <span>{copied ? 'Đã sao chép link!' : 'Chia sẻ bài viết'}</span>
+            <span className="btn-ctrl-text-desktop">{copied ? 'Đã sao chép link!' : 'Chia sẻ bài viết'}</span>
+            <span className="btn-ctrl-text-mobile">{copied ? 'Đã chép link!' : 'Chia sẻ'}</span>
           </button>
         </div>
 
@@ -489,11 +492,15 @@ export default function ProjectDetail() {
             <span className="badge-category">{project.category || 'Công trình tiêu biểu'}</span>
             {project.completedDate && (
               <span className="badge-year">
-                <Calendar size={13} /> Hoàn thiện: {project.completedDate}
+                <Calendar size={13} />
+                <span className="badge-year-text-desktop">Hoàn thiện: </span>
+                {project.completedDate}
               </span>
             )}
             <span className="badge-verified">
-              <ShieldCheck size={14} /> Kỹ thuật BOSS Đà Nẵng thi công 100%
+              <ShieldCheck size={14} />
+              <span className="badge-verified-desktop">Kỹ thuật BOSS Đà Nẵng thi công 100%</span>
+              <span className="badge-verified-mobile">Thi công 100%</span>
             </span>
           </div>
 

@@ -1,0 +1,107 @@
+/* Khối Bảng Giá Các Dòng Cửa (Đồng bộ 100% với danh sách Báo giá website) */
+.other-door-pricing-wrapper {
+  margin: 32px 0 24px 0;
+  width: 100%;
+}
+
+.other-door-pricing-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 14px 0;
+  line-height: 1.4;
+  letter-spacing: -0.2px;
+}
+
+.other-door-pricing-table-container {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 4px;
+}
+
+.other-door-pricing-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1px solid #cbd5e1;
+  background-color: #ffffff;
+}
+
+.other-door-pricing-table tr.row-stripe-bg {
+  background-color: #eef2f6;
+}
+
+.other-door-pricing-table tr.row-white-bg {
+  background-color: #ffffff;
+}
+
+.other-door-pricing-table tr:hover {
+  background-color: #e2e8f0;
+  transition: background-color 0.15s ease;
+}
+
+.other-door-pricing-td {
+  width: 50%;
+  border: 1px solid #cbd5e1;
+  padding: 13px 20px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.other-door-pricing-td.is-current-page {
+  background-color: #f0fdf4 !important;
+}
+
+.other-door-pricing-link {
+  color: #0284c7;
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  display: inline-block;
+  line-height: 1.4;
+  transition: color 0.18s ease;
+}
+
+.other-door-pricing-link:hover {
+  color: #0369a1;
+  text-decoration: underline;
+}
+
+.other-door-pricing-current-badge {
+  display: inline-block;
+  margin-left: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #047857;
+  background: #d1fae5;
+  border: 1px solid #a7f3d0;
+  padding: 2px 7px;
+  border-radius: 999px;
+  vertical-align: middle;
+}
+
+.other-door-pricing-empty {
+  display: block;
+  min-height: 20px;
+}
+
+/* Tối ưu hóa trên giao diện thiết bị di động (Mobile) */
+@media (max-width: 640px) {
+  .other-door-pricing-wrapper {
+    margin: 24px 0 18px 0;
+  }
+
+  .other-door-pricing-title {
+    font-size: 15px;
+    margin-bottom: 10px;
+  }
+
+  .other-door-pricing-td {
+    padding: 10px 12px;
+  }
+
+  .other-door-pricing-link {
+    font-size: 13.5px;
+    line-height: 1.35;
+    word-break: break-word;
+  }
+}

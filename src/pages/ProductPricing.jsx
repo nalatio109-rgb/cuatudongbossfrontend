@@ -42,6 +42,7 @@ import { getProductCardDescription } from "../utils/productDescriptionHelper";
 import { formatProductPrice } from "../utils/priceFormatter";
 import { useAuth } from "../context/AuthContext";
 import RevealOnScroll from "../components/RevealOnScroll";
+import OtherDoorPricingTable from "../components/OtherDoorPricingTable";
 import "./ProductPricing.css";
 
 const sanitizeSpec = (text) => {
@@ -1908,6 +1909,16 @@ export default function ProductPricing() {
               ))}
             </div>
           </section>
+        )}
+
+        {/* BẢNG GIÁ CÁC DÒNG CỬA (ĐỒNG BỘ 100% VỚI MENU BÁO GIÁ) */}
+        {(!priceQuote?.articleBelow || !priceQuote.articleBelow.includes("other-door-pricing-table")) && (
+          <RevealOnScroll animation="fade-up" delay={80}>
+            <OtherDoorPricingTable
+              title="Xem thêm bảng giá các dòng cửa:"
+              currentCode={product?.code || priceQuote?.productCode || id}
+            />
+          </RevealOnScroll>
         )}
 
         {/* 7. GUARANTEE BAR */}
