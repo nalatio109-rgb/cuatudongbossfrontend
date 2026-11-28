@@ -1079,8 +1079,8 @@
   /* 4. GUARANTEE BAR TINH GỌN 2 CỘT TIẾT KIỆM DIỆN TÍCH */
   .catalog-guarantee-bar {
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px 14px;
-    padding: 12px 14px;
+    gap: 10px 8px;
+    padding: 12px 10px;
     border-radius: 12px;
     margin: 10px 0 20px;
     background: #ffffff;
@@ -1090,22 +1090,23 @@
   .guarantee-item {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
+    min-width: 0;
   }
   .catalog-guarantee-bar .g-icon {
-    width: 22px !important;
-    height: 22px !important;
-    min-width: 22px !important;
+    width: 18px !important;
+    height: 18px !important;
+    min-width: 18px !important;
     margin-top: 0;
     flex-shrink: 0;
   }
   .guarantee-item h4 {
-    font-size: 11.5px;
-    font-weight: 750;
+    font-size: clamp(10px, 2.85vw, 11px);
+    font-weight: 700;
     margin: 0;
     line-height: 1.25;
     color: #0f172a;
-    letter-spacing: -0.1px;
+    letter-spacing: -0.2px;
     white-space: nowrap;
   }
   /* Xóa/ẩn các dòng chữ nhỏ trên điện thoại theo yêu cầu */
