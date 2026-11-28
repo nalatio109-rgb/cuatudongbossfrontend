@@ -41,6 +41,7 @@ import { getProductSlug } from "../utils/slug.js";
 import { getProductCardDescription } from "../utils/productDescriptionHelper";
 import { formatProductPrice } from "../utils/priceFormatter";
 import { useAuth } from "../context/AuthContext";
+import RevealOnScroll from "../components/RevealOnScroll";
 import "./ProductPricing.css";
 
 const sanitizeSpec = (text) => {
@@ -1858,90 +1859,98 @@ export default function ProductPricing() {
           <section className="related-pricing-section">
             <div className="related-compact-grid">
               {relatedPriceQuotes.map((item, idx) => (
-                <article
-                  key={idx}
-                  className="related-compact-card"
-                  onClick={() => navigate(item.path)}
+                <RevealOnScroll
+                  key={item.id || item.code || idx}
+                  animation="fade-up"
+                  delay={(idx % 6) * 80}
+                  className="related-compact-card-reveal"
                 >
-                  {/* Hình ảnh nhỏ ở phía bên góc trái */}
-                  <div className="related-thumb-box">
-                    <img src={item.image} alt={item.title} loading="lazy" />
-                  </div>
-
-                  {/* Chữ bên cột phải */}
-                  <div className="related-content-col">
-                    <div className="related-meta-tags">
-                      <span className="related-cat-pill">{item.categoryName}</span>
-                      <span className="related-code-pill">MÃ: {item.code}</span>
+                  <article
+                    className="related-compact-card"
+                    onClick={() => navigate(item.path)}
+                  >
+                    {/* Hình ảnh nhỏ ở phía bên góc trái */}
+                    <div className="related-thumb-box">
+                      <img src={item.image} alt={item.title} loading="lazy" />
                     </div>
 
-                    <h3 className="related-title-text">
-                      <Link
-                        to={item.path}
-                        className="related-title-link"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        {item.title}
-                      </Link>
-                    </h3>
+                    {/* Chữ bên cột phải */}
+                    <div className="related-content-col">
+                      <div className="related-meta-tags">
+                        <span className="related-cat-pill">{item.categoryName}</span>
+                        <span className="related-code-pill">MÃ: {item.code}</span>
+                      </div>
 
-                    <div className="related-action-row">
-                      <Link
-                        to={item.path}
-                        className="related-link-action"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        <Tag size={13} className="related-tag-icon" />
-                        <span>Bảng giá</span>
-                        <ArrowRight size={13} className="related-arrow-icon" />
-                      </Link>
+                      <h3 className="related-title-text">
+                        <Link
+                          to={item.path}
+                          className="related-title-link"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {item.title}
+                        </Link>
+                      </h3>
+
+                      <div className="related-action-row">
+                        <Link
+                          to={item.path}
+                          className="related-link-action"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <Tag size={13} className="related-tag-icon" />
+                          <span>Bảng giá</span>
+                          <ArrowRight size={13} className="related-arrow-icon" />
+                        </Link>
+                      </div>
                     </div>
-                  </div>
-                </article>
+                  </article>
+                </RevealOnScroll>
               ))}
             </div>
           </section>
         )}
 
         {/* 7. GUARANTEE BAR */}
-        <section className="pricing-guarantee-bar">
-          <div className="guarantee-item">
-            <div className="g-icon-box">
-              <ShieldCheck size={18} className="g-icon" />
+        <RevealOnScroll animation="fade-up" delay={120} className="pricing-guarantee-bar-reveal">
+          <section className="pricing-guarantee-bar">
+            <div className="guarantee-item">
+              <div className="g-icon-box">
+                <ShieldCheck size={18} className="g-icon" />
+              </div>
+              <div className="g-text">
+                <h4>Chính hãng 100%</h4>
+                <p>Đầy đủ C/O, C/Q</p>
+              </div>
             </div>
-            <div className="g-text">
-              <h4>Chính hãng 100%</h4>
-              <p>Đầy đủ C/O, C/Q</p>
+            <div className="guarantee-item">
+              <div className="g-icon-box gold">
+                <CheckCircle2 size={18} className="g-icon gold" />
+              </div>
+              <div className="g-text">
+                <h4>Bảo hành 10 năm</h4>
+                <p>Tận nơi, hỗ trợ 24/7</p>
+              </div>
             </div>
-          </div>
-          <div className="guarantee-item">
-            <div className="g-icon-box gold">
-              <CheckCircle2 size={18} className="g-icon gold" />
+            <div className="guarantee-item">
+              <div className="g-icon-box red">
+                <Star size={18} className="g-icon red" />
+              </div>
+              <div className="g-text">
+                <h4>Lắp đặt 24h</h4>
+                <p>Nhanh gọn, chuẩn kỹ thuật</p>
+              </div>
             </div>
-            <div className="g-text">
-              <h4>Bảo hành 10 năm</h4>
-              <p>Tận nơi, hỗ trợ 24/7</p>
+            <div className="guarantee-item">
+              <div className="g-icon-box teal">
+                <HeadphonesIcon size={18} className="g-icon teal" />
+              </div>
+              <div className="g-text">
+                <h4>Tư vấn miễn phí</h4>
+                <p>Khảo sát tận nơi 0đ</p>
+              </div>
             </div>
-          </div>
-          <div className="guarantee-item">
-            <div className="g-icon-box red">
-              <Star size={18} className="g-icon red" />
-            </div>
-            <div className="g-text">
-              <h4>Lắp đặt 24h</h4>
-              <p>Nhanh gọn, chuẩn kỹ thuật</p>
-            </div>
-          </div>
-          <div className="guarantee-item">
-            <div className="g-icon-box teal">
-              <HeadphonesIcon size={18} className="g-icon teal" />
-            </div>
-            <div className="g-text">
-              <h4>Tư vấn miễn phí</h4>
-              <p>Khảo sát tận nơi 0đ</p>
-            </div>
-          </div>
-        </section>
+          </section>
+        </RevealOnScroll>
 
       </main>
 
