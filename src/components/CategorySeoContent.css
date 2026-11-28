@@ -15,13 +15,13 @@
   padding: 0 16px;
 }
 
-/* Article Wrapper - Always full height */
+/* Article Wrapper - Nằm trực tiếp trên nền trang web (không đóng khung hộp) */
 .seo-article-wrapper {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 20px;
-  padding: 40px 36px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 10px 0 30px;
+  box-shadow: none;
   position: relative;
   margin-bottom: 40px;
 }
@@ -495,10 +495,12 @@
 
 @media (max-width: 768px) {
   .seo-article-wrapper {
-    padding: 20px 16px;
-    border-radius: 16px;
-    margin-bottom: 28px;
-    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    margin-bottom: 24px !important;
   }
 
   .seo-article-header {
@@ -620,8 +622,11 @@
 
 @media (max-width: 480px) {
   .seo-article-wrapper {
-    padding: 18px 14px;
-    border-radius: 14px;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
   }
 
   .seo-main-heading {
